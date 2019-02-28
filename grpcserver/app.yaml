@@ -1,0 +1,64 @@
+consul:
+  addr: '127.0.0.1:8500'
+  #consul service prefix
+  serverPrefix: s
+  #room service prefix
+  roomPrefix: r
+  #ttl(second)
+  ttl: 15
+
+grpc:
+  listen: '0.0.0.0:5001'
+  addr: '127.0.0.1'
+  port: 5001
+  name: 's.0'
+  dcsa: 5
+  interval: 5
+  tags: []
+  maxConnect: 1000
+
+database:
+  driver: 'mongodb'
+  url3: 'mongodb://localhost:27088'
+  url: 'mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs'
+  name: 'game'
+  watch: ['-appConf','-packConf','-chanConf','-hintConf']
+  refresh:
+    appConf: 5
+    packConf: 5
+    chanConf: 5
+    hintConf: 30
+
+#慢操作记录（MS）
+slowOp: 10
+#per connection read timeout(ms)
+readTimeout: 1500000
+#per connection output message queue, packet will be dropped if exceeds
+outChanLen: 128
+#per connection in message queue, packet will be dropped if exceeds
+inChanLen: 128
+#max connect number limit
+maxConnect: 4000
+#per connection rpm limit
+rpmLimit: 200
+#http://localhost:6061/debug/pprof
+pprof: '0.0.0.0:6061'
+#log level: debug/info/warn/error/fatal/panic
+logLevel: 'debug'
+#消息编码
+codec: msg
+
+#初始金币
+initBag:
+  #版本
+  v: 0
+  #钱包金币,1结尾的表示钱包
+  gc1: 1000000
+  #银行金币,2结尾的表示银行
+  gc2: 1000000
+
+
+
+
+
+

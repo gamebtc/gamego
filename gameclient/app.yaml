@@ -1,0 +1,35 @@
+tcp:
+  listen: '0.0.0.0:8888'
+  readBuf: 131072
+  writeBuf: 1048576
+
+server: '127.0.0.1:8888'
+#per connection read timeout(second)
+readTimeout: 600
+#per connection write timeout(second)
+writeTimeout: 600
+#per connection output message queue, packet will be dropped if exceeds
+recvChanLen: 128
+#per connection in message queue, packet will be dropped if exceeds
+sendChanLen: 256
+#max connect number limit
+maxConnect: 4000
+#per connection rpm limit
+rpmLimit: 200
+#http://localhost:6060/debug/pprof
+pprof: '0.0.0.0:6071'
+#log level: debug/info/warn/error/fatal/panic
+logLevel: 'debug'
+#慢操作记录（MS）
+slowOp: 100
+#服务编号
+agentId: 1
+#同一IP的最大连接数
+sameIp: 5
+#消息编码
+codec: msg
+
+
+
+
+

@@ -1,0 +1,65 @@
+consul:
+  addr: '127.0.0.1:8500'
+  #consul service prefix
+  serverPrefix: 's.'
+  #room service prefix
+  roomPrefix: 'x.'
+
+tcp:
+  listen: '0.0.0.0:8888'
+  #TCP read buffer 128K
+  readBuf: 131072
+  #TCP write buffer 1MB
+  writeBuf: 1048576
+
+udp:
+  listen: '0.0.0.0:8888'
+  #UDP read buffer 256K
+  readBuf: 262144
+  #UDP write buffer 1MB
+  writeBuf: 1048576
+  #set DSCP(6bit)
+  dscp: 46
+
+kcp:
+  #per connection UDP send window
+  sndwnd: 32
+  #per connection UDP recv window
+  rcvwnd: 32
+  #MTU of UDP packets, without IP(20) + UDP(8)
+  mtu: 1280
+  #ikcp_nodelay()
+  nodelay: 1
+  interval: 20
+  resend: 1
+  nc: 1
+
+#per connection read timeout(second)
+readTimeout: 32
+#per connection write timeout(second)
+writeTimeout: 32
+#per connection output message queue, packet will be dropped if exceeds
+recvChanLen: 128
+#per connection in message queue, packet will be dropped if exceeds
+sendChanLen: 256
+#max connect number limit
+maxConnect: 4000
+#per connection rpm limit
+rpmLimit: 200
+#http://localhost:6060/debug/pprof
+pprof: '0.0.0.0:6060'
+#log level: debug/info/warn/error/fatal/panic
+logLevel: 'debug'
+#慢操作记录（MS）
+slowOp: 100
+#服务编号
+agentId: 1
+#同一IP的最大连接数
+sameIp: 5
+#消息编码
+codec: msg
+
+
+
+
+

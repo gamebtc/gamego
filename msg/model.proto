@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package msg;
+
+// game definition
+service Game {
+    rpc Send(stream GameFrame) returns (stream GameFrame);       // 异步调用
+    rpc Call(GameFrame) returns (GameFrame);                       // 同步调用
+}
+
+message GameFrame {
+    bytes data = 1;
+}
+
+//message Request {
+//    sfixed64 agent = 1;
+//    sfixed32 user = 2;
+//    fixed32 ip = 3;
+//    bytes data = 4;
+//}

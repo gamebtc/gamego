@@ -1,0 +1,16 @@
+#http://localhost:6060/debug/pprof
+pprof: '0.0.0.0:6060'
+#log level: debug/info/warn/error/fatal/panic
+logLevel: 'debug'
+period: 60
+
+dns: ['114.114.114.114:53','119.29.29.29:53','8.8.8.8:53','223.5.5.5:53']
+
+host:
+  'www.baidu.com': []
+  'www.google.com': []
+
+
+
+
+

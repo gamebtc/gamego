@@ -1,0 +1,166 @@
+syntax = "proto3";
+
+package msg;
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "game.proto";
+
+// (龙虎/红黑/百家乐/骰宝)用户日志
+message FolksUserLog {
+	// 关联的游戏日志ID
+	int64 log = 1 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
+	// 桌子ID
+	int32 tab = 2 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
+	// 投注总金额
+	int64 bet = 3 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	// 开牌情况
+	bytes poker = 4 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
+	// 玩家投注分组(0:龙赢,1:虎赢,2:和)
+	repeated int64 group = 5 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+}
+
+// 用户日志(龙虎/红黑/百家乐/骰宝)
+message GameBill {
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	// 开始游戏时带的钱
+	int64 coin = 2 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
+	// 投注总额
+	int64 bet = 3 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	// 玩家投注分组(0:龙赢,1:虎赢,2:和)
+	repeated int64 group = 4 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+	// 输赢情况
+	sint64 win = 5 [(gogoproto.jsontag) = 'w,omitempty', (gogoproto.moretags) = 'bson:"w,omitempty" msg:"w,omitempty"'];
+	// 税收
+	int64 tax = 6 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
+	// 玩家类型
+	int32 job = 7 [(gogoproto.jsontag) = 'j,omitempty', (gogoproto.moretags) = 'bson:"j,omitempty" msg:"j,omitempty"'];
+}
+
+// 富豪
+message RichRole {
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	// 名字
+	string name = 2 [(gogoproto.jsontag) = 'n', (gogoproto.moretags) = 'bson:"n" msg:"n"'];
+	// 开始游戏时带的钱
+	int64 coin = 3 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
+}
+
+// 百人游戏日志(龙虎/红黑/百家乐/骰宝)
+message FolksGameRound {
+	// 游戏ID
+	int64 id = 1 [(gogoproto.jsontag) = '_id', (gogoproto.moretags) = 'bson:"_id" msg:"_id"'];
+	// 游戏开始时间
+	int64 start = 2 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
+	// 游戏结束时间
+	int64 end = 3 [(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
+	// 房间ID
+	int32 room = 4 [(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	// 桌子ID
+	int32 tab = 5 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
+	// 所有玩家下注汇总
+	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	// 下注情况(msg.Bet三个字段顺序压入)
+	repeated int32 flow = 7 [(gogoproto.jsontag) = 'f', (gogoproto.moretags) = 'bson:"f" msg:"f"'];
+	// 玩家投注分组(0:龙赢,1:虎赢,2:和)
+	repeated int64 group = 8 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+	// 发牌情况
+	bytes poker = 9 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
+	// 赔付情况
+	repeated sint32 odds = 10 [(gogoproto.jsontag) = 'o', (gogoproto.moretags) = 'bson:"o" msg:"o"'];
+	// 系统税收
+	int64 tax = 11 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
+	// 系统输赢
+	sint64 win = 12 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	// 备注
+	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
+	// 富豪(第1个位置为赌神后面5个为富豪ID)
+	repeated RichRole rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
+	// 是否有真玩家下注
+	bool real = 15 [(gogoproto.jsontag) = '-', (gogoproto.moretags) = 'bson:"-" msg:"-"'];
+}
+
+//// 投注信息()
+//message Bet {
+//	// 玩家ID
+//	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+//	// 投注项,根据游戏定义
+//	int32 item = 2 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
+//	// 投注金额
+//	int32 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+//}
+
+message FolksGameInitAck {
+	// 当前游戏ID
+	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 当前游戏状态
+	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
+	// 富豪玩家
+	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	// 各个区域的投注情况
+	repeated int64 sum = 4 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
+	// 我的投注情况
+	repeated int64 bet = 5 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	// 最近的发牌的日志
+	bytes log = 6 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
+}
+
+// 请求下注(红黑/龙虎/百家乐/色宝)
+message BetReq{
+	// 投注项,根据游戏定义
+	int32 item = 1 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
+	// 投注金额
+	int32 coin = 2 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+}
+
+// 下注返回(红黑/龙虎/百家乐/色宝)
+message BetAck{
+	// 投注项,根据游戏定义
+	int32 item = 1 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
+	// 投注金额
+	int32 coin = 2 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+	// 我的投注情况
+	repeated int64 bet = 3 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+}
+
+// 玩家下注信息
+message UserBetAck{
+	// 每三个项表示一条记录Bet(依次为玩家ID，投注项，投注金额）
+	repeated int32 bet = 1[(gogoproto.moretags) = 'bson:"item" msg:"item"'];
+}
+
+// 开放下注
+message OpenBetAck {
+	// 当前游戏ID
+	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 当前游戏状态
+	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
+	// 富豪玩家
+	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+}
+
+// 开奖结果(红黑/龙虎/百家乐/色宝)
+message FolksGameResult{
+	// 当前游戏ID
+	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// A的牌
+	bytes a = 2 [(gogoproto.moretags) = 'bson:"a" msg:"a"'];
+	// B的牌
+	bytes b = 3 [(gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	// 各个区域的赔付情况
+	repeated int32 odd = 4 [(gogoproto.moretags) = 'bson:"odd" msg:"odd"'];
+	// 各个区域的投注情况
+	repeated int64 bet = 5 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	// 富豪玩家的输赢
+	repeated int64 rich = 6 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+}
+
+// 关闭下注
+message CloseBetAck {
+	// 多人游戏开奖结果
+	FolksGameResult r = 1 [(gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	// 我的输赢情况
+	int64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
+	// 我的金币数
+	int64 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+}

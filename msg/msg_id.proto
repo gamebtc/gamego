@@ -1,0 +1,120 @@
+syntax = "proto3";
+//import "game.proto";
+package msg;
+
+message MsgId{
+	enum Code{
+	    Control               = 0;   // 控制消息
+        HandshakeReq          = 2;   // 握手
+        HandshakeAck          = 3;   // 握手返回
+		VerCheckReq           = 4;   // 游戏版本检查
+		VerCheckAck           = 5;   // 游戏版本检查返回
+		RegistReq             = 7;   // 用户注册
+		RegistAck             = 8;   // 用户注册返回
+		ErrorInfo             = 9;   // 通用错误信息
+		FatalInfo             = 12;  // 严重错误信息
+        UserLoginReq          = 13;  // 登录请求
+        UserLoginSuccessAck   = 15;  // 登录成功
+        UserLoginFailAck      = 17;  // 登录失败
+        ClientErrorAck        = 19;  // 客户端错误
+		CodeLoginPwdReq       = 20;  // 获取验证码(找回密码)
+		CodeLoginPwdAck       = 21;  // 获取验证码(找回密码)
+
+        // 100以上需要登录才能调用的协议
+        UserMessageHeadSplit  = 100; // 已登录用户消息分隔
+		HeartBeatReq          = 102; // 心跳请求
+		HeartBeatAck          = 103; // 心跳应答
+		GameListReq           = 104; // 获取游戏列表
+		GameListAck           = 105; // 返回游戏列表
+
+		CodeUpAccountReq      = 110; // 获取验证码(升级账号)
+		CodeUpAccountAck      = 111; // 获取验证码(升级账号)
+		UpdateAccountReq      = 112; // 升级为正式账号
+		UpdateAccountAck      = 113; // 升级为正式账号
+		CodeSetPwdReq         = 114; // 获取验证码(修改密码)
+		CodeSetPwdAck         = 115; // 获取验证码(修改密码)
+		ChangePwdReq          = 116; // 修改密码
+		ChangePwdAck          = 117; // 修改密码
+
+		BagGetReq             = 120; // 获取金币信息
+		BagGetAck             = 121; // 获取金币信息
+		BagMoveReq            = 122; // 金币移动
+		BagMoveAck            = 123; // 金币移动
+
+		RepayInfoReq          = 140; // 获取兑换信息
+		RepayInfoAck          = 141; // 获取兑换信息
+		RepaySetAliReq        = 142; // 设置兑换支付宝
+		RepaySetAliAck        = 143; // 设置兑换支付宝
+		RepaySetBankReq       = 144; // 设置兑换银行卡
+		RepaySetBankAck       = 145; // 设置兑换银行卡
+		RepayListOrderReq     = 146; // 获取兑换列表
+		RepayListOrderAck     = 147; // 获取兑换列表
+		RepayNewOrderReq      = 148; // 兑换
+		RepayNewOrderAck      = 149; // 兑换
+
+		CustomSendReq         = 160; // 发送问题
+		CustomSendAck         = 161; // 发送问题
+		CustomRecvReq         = 162; // 接收问题
+		CustomRecvAck         = 163; // 接收问题
+		CustomCommonReq       = 164; // 常见问题
+		CustomCommonAck       = 165; // 常见问题
+		CustomNoteReq         = 166; // 大厅跑马灯
+		CustomNoteAck         = 167; // 大厅跑马灯
+
+		RankGetReq            = 170; // 获取排行榜
+		RankGetAck            = 171; // 获取排行榜
+
+		LoginRoomReq          = 201; // 请求连接房间
+		LoginRoomAck          = 202; // 连接房间返回
+		SendRoomFail          = 204; // 消息发送到房间失败，需要客户端重新连接房间
+
+		// 1024=1个服务段，共8个服务段
+		//OtherMessageHeadSplit  = 1024; // 每个服务占用1024个协议，共支持8个服务
+
+		PayInfoReq            = 1100; // 获取充值信息
+		PayInfoAck            = 1101; // 获取充值信息
+		PayOrderReq           = 1102; // 创建充值订单
+		PayOrderAck           = 1103; // 创建充值订单
+
+		MailListReq           = 1110; // 获取邮件列表
+		MailListAck           = 1111; // 获取邮件列表
+		MailReadReq           = 1112; // 读取邮件
+		MailReadAck           = 1113; // 读取邮件
+		MailDeleteReq         = 1114; // 删除邮件
+		MailDeleteAck         = 1115; // 删除邮件
+
+		SpreadGetReq          = 1130; // 获取师父信息
+		SpreadGetAck          = 1131; // 获取师父信息
+		SpreadSetReq          = 1132; // 设置师父信息
+		SpreadSetAck          = 1133; // 设置师父信息
+		SpreadGiftReq         = 1134; // 获取师徒收益
+		SpreadGiftAck         = 1135; // 获取师徒收益
+
+        // 8192以上是游戏请求
+        GameMessageHeadSplit  = 8192;
+        ReadyGameReq          = 8193; // 准备游戏
+        ReadyGameAck          = 8194; // 准备游戏
+
+		BetReq                = 8201; // 下注
+		BetAck                = 8202; // 下注返回
+		FolksGameInitAck      = 8203; // 初始化游戏
+		UserBetAck            = 8204; // 用户下注
+		OpenBetAck            = 8205; // 开启下注
+		CloseBetAck           = 8206; // 关闭下注
+	}
+}
+
+message Error{
+	enum Code{
+        option allow_alias = true;
+		None = 0;
+		Success = 0;
+		OK = 0;
+		LoginRepeat = 1;        // 重复登录
+		LoginFail = 2;          // 登录失败
+		LoginOther = 3;         // 其它错误
+		CreateUserFail = 4;     // 创建用户失败
+		DatabaseFail = 5;       // 数据库操作失败
+	}
+}
+

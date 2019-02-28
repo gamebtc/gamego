@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package msg;
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+//import "google/protobuf/any.proto";
+//import "google/protobuf/type.proto";
+
+// 握手返回
+message Handshake {
+    int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];
+    int32 seed = 2 [(gogoproto.moretags) = 'bson:"seed" msg:"seed"'];
+    string msg = 3 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];
+    repeated string ip = 4 [(gogoproto.moretags) = 'bson:"ip" msg:"ip"'];
+}
+
+// 心跳请求
+message HeartBeatReq{
+    int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+}
+
+// 心跳回复
+message HeartBeatAck{
+    int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+}
+
+// 一般性错误回复,0代表成功
+message ErrorInfo{
+    int32 reqId = 1 [(gogoproto.moretags) = 'bson:"reqId" msg:"reqId"'];
+    int32 code = 2 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];
+    string msg = 3 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];
+    string key = 4 [(gogoproto.moretags) = 'bson:"key" msg:"key"'];
+}
+
+// 严重错误回复,0代表成功
+message FatalInfo{
+    int32 reqId = 1 [(gogoproto.moretags) = 'bson:"reqId" msg:"reqId"'];
+    int32 code = 2 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];
+    string msg = 3 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];
+    string key = 4 [(gogoproto.moretags) = 'bson:"key" msg:"key"'];
+}
+
+// 设备信息
+message DeviceInfo {
+    string id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];            // 设备ID()
+    string vend = 2 [(gogoproto.moretags) = 'bson:"vend" msg:"vend"'];      // 设备制造商
+    string name = 3 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];      // 产品型号
+    string mac = 4 [(gogoproto.moretags) = 'bson:"mac" msg:"mac"'];         // 设备mac地址
+    string imei = 5 [(gogoproto.moretags) = 'bson:"imei" msg:"imei"'];      // 设备imei地址
+    string emid = 6 [(gogoproto.moretags) = 'bson:"emid" msg:"emid"'];      // 设备emid地址
+    string sn = 7 [(gogoproto.moretags) = 'bson:"sn" msg:"sn"'];            // 序列号
+    string osLang = 8 [(gogoproto.moretags) = 'bson:"osLang" msg:"osLang"'];// 操作系统语言
+    string osVer = 9 [(gogoproto.moretags) = 'bson:"osVer" msg:"osVer"'];   // 操作系统版本
+    string other = 10 [(gogoproto.moretags) = 'bson:"other" msg:"other"'];  // 设备其它信息
+}
+
+// 应用环境信息
+message Envirnment{
+    int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];                 // 应用类型(同一应用类型的客户端可以互通)
+    int32 pack = 2 [(gogoproto.moretags) = 'bson:"pack" msg:"pack"'];           // 包ID(用于区分来源，写死在程序中)
+    string ver = 3 [(gogoproto.moretags) = 'bson:"ver" msg:"ver"'];             // 应用版本号
+    string chan = 4 [(gogoproto.moretags) = 'bson:"chan" msg:"chan"'];          // 渠道ID(用于统计推广渠道)
+    string refer = 5 [(gogoproto.moretags) = 'bson:"refer" msg:"refer"'];       // 推广ID(玩家推广)
+    string other = 6 [(gogoproto.moretags) = 'bson:"other" msg:"other"'];       // 应用其它信息
+}
+
+// 检查版本
+message VerCheckReq{
+    Envirnment env = 1 [(gogoproto.moretags) = 'bson:"env" msg:"env"'];         // 应用信息
+    int32 time = 2 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];           // 时间
+    int32 check = 3 [(gogoproto.moretags) = 'bson:"check" msg:"check"'];        // check(md5(机器码+时间+签名)的前2位数为0,)
+}
+
+// 检查版本
+message VerCheckAck {
+    int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];
+    string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];
+    int32 canReg = 3 [(gogoproto.moretags) = 'bson:"canReg" msg:"canReg"'];
+    int32 canLogin = 4 [(gogoproto.moretags) = 'bson:"canLogin" msg:"canLogin"'];
+    string url = 5 [(gogoproto.moretags) = 'bson:"url" msg:"url"'];
+    string country = 6 [(gogoproto.moretags) = 'bson:"country" msg:"country"'];
+    string region = 7 [(gogoproto.moretags) = 'bson:"region" msg:"region"'];
+    string city = 8 [(gogoproto.moretags) = 'bson:"city" msg:"city"'];
+    map<string, string> conf = 9 [(gogoproto.moretags) = 'bson:"conf" msg:"conf"'];
+}
+
+// 用户登录请求
+message LoginReq {
+    int32 type = 1 [(gogoproto.moretags) = 'bson:"type" msg:"type"'];           // 账号类型 0:用户名密码 1：uid 2：客户端证书
+    string name = 2 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 用户名或UID
+    string pwd = 3 [(gogoproto.moretags) = 'bson:"pwd" msg:"pwd"'];             // 密码
+    string udid = 4 [(gogoproto.moretags) = 'bson:"udid" msg:"udid"'];          // 机器码
+    int32 user = 5 [(gogoproto.moretags) = 'bson:"user" msg:"user"'];           // 玩家ID
+    int32 time = 6 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];           // 登录时间
+    DeviceInfo dev = 7 [(gogoproto.moretags) = 'bson:"dev" msg:"dev"'];         // 设备信息
+    Envirnment env = 8 [(gogoproto.moretags) = 'bson:"env" msg:"env"'];         // 应用信息
+}
+
+// 用户登录成功消息
+message LoginSuccessAck{
+    int32 id = 1 [(gogoproto.moretags) = 'bson:"_id" msg:"id"'];                    // 玩家ID
+    int64 agent = 2 [(gogoproto.moretags) = 'bson:"agent" msg:"agent"'];            // 当前所在代理号
+    int32 icon = 3 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"'];               // 头像
+    int32 sex = 4 [(gogoproto.moretags) = 'bson:"sex" msg:"sex"'];                  // 性别
+    int32 vip = 5 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"'];                  // vip等级
+    string act = 6 [(gogoproto.moretags) = 'bson:"act" msg:"act"'];                 // 关联的账号
+    string name = 7 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];              // 玩家昵称
+    string phone = 8 [(gogoproto.moretags) = 'bson:"phone" msg:"phone"'];           // 手机号
+    map<string, int64> bag = 9 [(gogoproto.moretags) = 'bson:"bag" msg:"bag"'];     // 钱包
+    int32 kind = 10 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];              // 所在游戏分类
+    int32 room = 11 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];              // 当前所在游戏房间
+    int32 tab = 12 [(gogoproto.moretags) = 'bson:"tab" msg:"tab"'];                 // 当前所在游戏桌子号
+}
+
+// 用户登录失败消息
+message LoginFailAck{
+    int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];           // 错误代码
+    string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];             // 错误消息
+}

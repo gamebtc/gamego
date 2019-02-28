@@ -1,0 +1,1 @@
+codecgen.exe -o values_codecgen.go login.pb.go game.pb.go
