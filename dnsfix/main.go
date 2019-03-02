@@ -36,6 +36,7 @@ func main() {
 
 	period := time.Duration(config.Period) * time.Second
 	ticker := time.NewTicker(period)
+	defer ticker.Stop()
 	for {
 		if lookup() {
 			writeHost(config.Host)

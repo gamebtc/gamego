@@ -112,21 +112,24 @@ func (d *driver) LockUser(agent int64, user *model.User, req *msg.LoginReq) (*mo
 
 	query := bson.D{{"_id", user.Id}}
 	lock := new(model.UserLocker)
+	replace := false
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, upsert).Decode(lock); err != nil {
 		if err != model.ErrNoDocuments {
 			return nil, err
 		}
 	} else {
-		if lock.Log1.IsZero() == false {
-			//旧的连接设置为强制退出
+		replace = !lock.Log1.IsZero()
+		if replace {
+			// 旧的连接设置为强制退出
 			set := bson.D{{"$set", bson.D{
 				{"up", t},
 				{"state", 2},
 				{"kind", lock.Kind},
 				{"room", lock.Room},
+				{"room", lock.Room},
 			}}}
 			query[0].Value = lock.Log1 //bson.D{{"_id", lock.Log1}
-			d.loginLog.UpdateOne(nil, query, set)
+			d.loginLog.UpdateOne(d.ctx, query, set)
 		}
 	}
 
@@ -141,6 +144,10 @@ func (d *driver) LockUser(agent int64, user *model.User, req *msg.LoginReq) (*mo
 		bson.E{Key: "udid", Value: req.Udid},
 		bson.E{Key: "env", Value: req.Env},
 		bson.E{Key: "dev", Value: req.Dev})
+
+	if replace{
+		newLock = append(newLock, bson.E{Key: "f", Value:lock.Log1})
+	}
 
 	d.loginLog.InsertOne(d.ctx, newLock)
 
@@ -181,6 +188,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	}
 	newId := model.NewObjectId()
 	up := bson.D{{"$set", bson.D{{"log2", newId}, {"kind", kind}, {"room", roomId}}}, upNow}
+
 	oldLock := new(model.UserLocker)
 	if changed, err := d.locker.UpdateOne(d.ctx, query, up); err != nil {
 		return nil, err
@@ -193,8 +201,10 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 			return nil, err
 		}
 	}
-	if oldLock.Log2.IsZero() {
-		//旧的连接设置为强制退出
+
+	replace := !oldLock.Log2.IsZero()
+	if replace{
+		// 旧的连接设置为强制退出
 		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", oldLock.Log2}}, bson.D{{"$set", bson.D{{"state", int32(2)}}}, upNow})
 	}
 
@@ -202,7 +212,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	if err := d.user.FindOne(d.ctx, query[:1]).Decode(user); err != nil {
 		return nil, err
 	}
-	//写登录房间日志
+	// 写登录房间日志
 	newLock := bson.D{
 		{"_id", newId},
 		{"win", zeroInt32},
@@ -212,6 +222,9 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 		{"user", user.Id},
 		{"bag", user.Bag},
 		{"ip", user.LastIp},
+	}
+	if replace {
+		newLock = append(newLock, bson.E{Key: "f", Value:oldLock.Log2})
 	}
 	d.roomLog.InsertOne(d.ctx, newLock)
 

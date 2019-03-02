@@ -158,15 +158,18 @@ func Init(config *AppConfig, r Roomer) error {
 	roomInfo, err := driver.LockRoomServer(&config.Room)
 	if err != nil {
 		return err
-	} else {
-		if roomInfo == nil {
-			return errors.New(fmt.Sprintf("room config not find:%#v", config.Room))
-		}
-		Config = roomInfo
+	}
+	if roomInfo == nil {
+		return errors.New(fmt.Sprintf("room config not find:%#v", config.Room))
 	}
 
+	Config = *roomInfo
+	RoomId = roomInfo.Id
+	KindId = roomInfo.Kind
+	CoinKey = roomInfo.CoinKey
+
 	log.Infof("room:%#v", roomInfo)
-	logName = "play" + roomInfo.CoinKey + "_" + strconv.Itoa(int(roomInfo.Kind))
+	logName = "play" + CoinKey + "_" + strconv.Itoa(int(KindId))
 	// 加载房间
 	//d.Users = make(map[int32]*Session, roomInfo.Cap*2)
 	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
@@ -198,10 +201,23 @@ func Send(m interface{}) {
 //
 func mainLoop() {
 	// 帧更新周期
-	roomer.Init(Config)
+	roomer.Init(&Config)
 	period := time.Duration(Config.Period) * time.Millisecond
-	frameTimer := time.NewTicker(period)
-	go roomConfigCheck(Config.Id, Config.Ver)
+	ticker := time.NewTicker(period)
+	defer ticker.Stop()
+	
+	go func(ver int32){
+		for {
+			select {
+			case <-signal.Die():
+				return
+			default:
+				ver = roomConfigCheck(ver)
+				time.Sleep(time.Minute)
+			}
+		}
+	}(Config.Ver)
+
 	for {
 		select {
 		case m, ok := <-messageChan:
@@ -210,7 +226,7 @@ func mainLoop() {
 			} else {
 				return
 			}
-		case <-frameTimer.C: // 帧更新
+		case <-ticker.C: // 帧更新
 			roomer.Update()
 		case <-signal.Die():
 			return
@@ -218,21 +234,14 @@ func mainLoop() {
 	}
 }
 
-func roomConfigCheck(id, ver int32) {
+func roomConfigCheck(ver int32) int32{
 	defer util.PrintPanicStack()
-	for {
-		select {
-		case <-signal.Die():
-			return
-		default:
-			newConf, err := driver.GetRoom(id, ver)
-			if err == nil && newConf != nil && newConf.Id == id {
-				ver = newConf.Ver
-				Send(&GameEvent{Id: EventConfigChanged, Arg: newConf})
-			}
-			time.Sleep(time.Minute)
-		}
+	newConf, err := driver.GetRoom(RoomId, ver)
+	if err == nil && newConf != nil && newConf.Id == RoomId {
+		ver = newConf.Ver
+		Send(&GameEvent{Id: EventConfigChanged, Arg: newConf})
 	}
+	return ver
 }
 
 // 关闭房间
@@ -253,7 +262,7 @@ func NewSn(count uint16) (sn int64) {
 		sn = startSn
 		startSn += allot
 		countSn -= allot
-	} else if newStart := driver.NewSN(Config.Kind, math.MaxUint16); newStart > 0 {
+	} else if newStart := driver.NewSN(KindId, math.MaxUint16); newStart > 0 {
 		// 需要重新分配
 		sn = newStart
 		startSn = newStart + allot
@@ -286,7 +295,7 @@ func WriteCoin(flow *model.CoinFlow) error {
 			flow.Sn = NewSn(1)
 		}
 	}
-	return driver.BagDeal(Config.CoinKey, flow)
+	return driver.BagDeal(CoinKey, flow)
 }
 
 func SaveLog(log interface{}) error {

@@ -94,7 +94,7 @@ func (table *Table) NewGameRound() {
 	round := &msg.FolksGameRound{
 		Id:    id,
 		Start: room.Now(),
-		Room:  room.Config.Id,
+		Room:  room.RoomId,
 		Tab:   table.Id,
 		Group: make([]int64, betItem),
 	}

@@ -12,12 +12,13 @@ import (
 
 // 每个玩家的游戏数据
 type Role struct {
-	*model.User               // 玩家信息
-	session     *room.Session // 为空则为机器人
-	table       *Table        // 桌子ID
-	flowSn      int64         // 最后的写分序号，返回时用于验证
-	bill        *msg.GameBill // 输赢情况
-	online      bool          // 是否在线
+	*model.User           // 玩家信息
+	session *room.Session // 为空则为机器人
+	table   *Table        // 桌子ID
+	bill    *msg.GameBill // 输赢情况
+	flowSn  int64         // 最后的写分序号，返回时用于验证
+	online  bool          // 是否在线
+	play    bool          // 是否正在游戏中
 }
 
 // 检查投注项位置0:龙赢,1:虎赢,2:和
@@ -146,8 +147,8 @@ func (role *Role) Balance() *model.CoinFlow {
 		Add:    addCoin,
 		Tax:    tax,
 		Expect: role.Coin,
-		Kind:   room.Config.Kind,
-		Room:   room.Config.Id,
+		Room:   room.RoomId,
+		Kind:   room.KindId,
 		Type:   1,
 		Note:   round.Note + fmt.Sprintf("%v", ulog.Group),
 		Att:    ulog,

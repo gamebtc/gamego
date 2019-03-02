@@ -117,7 +117,7 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 		return nil, err
 	}
 	roomId := int32(req.Id)
-	if sess.roomId != 0 {
+	if sess.RoomId != 0 {
 		sess.closeRoom()
 	}
 	if ret, err := loginRoom2(sess, roomId, date); err == nil {

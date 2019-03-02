@@ -126,6 +126,7 @@ func (d *driver) renewCache(caches []*cacheItem) {
 		}
 	}()
 	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C: // 每秒钟执行一次

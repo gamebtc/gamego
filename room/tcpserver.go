@@ -122,7 +122,7 @@ func newSession(conn net.Conn) {
 
 	agent, uid, ip := GetUserHead(head[:])
 	sess := &Session{
-		Id:       agent,
+		AgentId:  agent,
 		UserId:   uid,
 		Ip:       ip,
 		Created:  time.Now(),

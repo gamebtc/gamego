@@ -9,7 +9,7 @@ require (
 	github.com/templexxx/xor v0.0.0-20181023030647-4e92f724b73b // indirect
 	github.com/tjfoc/gmsm v1.0.1 // indirect
 	github.com/xtaci/kcp-go v4.3.4+incompatible
-	google.golang.org/grpc v1.18.0
+	google.golang.org/grpc v1.19.0
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0

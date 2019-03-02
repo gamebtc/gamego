@@ -15,7 +15,12 @@ import (
 )
 
 // 房间配置
-var Config *model.RoomInfo
+var(
+	Config    model.RoomInfo
+	RoomId    int32   //房间唯一ID
+	KindId    int32   //游戏分类
+	CoinKey   string  //金币类型
+)
 
 type AppConfig struct {
 	Consul   ConsulConfig   `yaml:"consul"`
@@ -57,6 +62,5 @@ func InitConfig(path string) *AppConfig {
 			log.SetOutput(mw)
 		}
 	}
-
 	return cfg
 }

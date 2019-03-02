@@ -33,27 +33,25 @@ var (
 )
 
 type Session struct {
-	Id     int64  // 连接唯一ID
-	Ip     uint32 // IP地址
-	Seed   uint32 // 接收加密种子
-	Addr   string // 玩家IP地址
-	Act    string // 玩家账号
-	UserId UserId // 玩家ID
-	Coder         // 编码解码
+	Id      int64     // 连接唯一ID
+	Ip      uint32    // IP地址
+	Seed    uint32    // 接收加密种子
+	Addr    string    // 玩家IP地址
+	Act     string    // 玩家账号
+	UserId  UserId    // 玩家ID
+	RoomId  int32     // 房间服ID
+	Coder             // 编码解码
+	Flag    int32     // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
+	Created time.Time // TCP链接建立时间
 
-	roomId     int32         // 房间服ID
-	gameChan   chan struct{} //
-	gameStream GameStream    // 后端房间服数据流
-	services   [8]GameClient // 服务连接
-
-	Flag      int32            // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
-	Created   time.Time        // TCP链接建立时间
-	conn      net.Conn         // 底层网络连接
-	totalRecv int64            // 总接收字节数
-	dieChan   chan struct{}    // 会话关闭信号
-	dieOnce   int32            // 会话关闭保护
-	callCtx   context.Context  // 调用上下文
-
+	gameChan   chan struct{}   //
+	gameStream GameStream      // 后端房间服数据流
+	services   [8]GameClient   // 服务连接
+	conn       net.Conn        // 底层网络连接
+	totalRecv  int64           // 总接收字节数
+	dieChan    chan struct{}   // 会话关闭信号
+	dieOnce    int32           // 会话关闭保护
+	callCtx    context.Context // 调用上下文
 }
 
 // mail goroutine
@@ -175,7 +173,7 @@ func (sess *Session) Close() {
 func (sess *Session) closeRoom() {
 	if c := sess.gameChan; c != nil {
 		close(c)
-		sess.roomId = 0
+		sess.RoomId = 0
 		sess.gameStream = nil
 		sess.gameChan = nil
 	}
@@ -317,7 +315,7 @@ func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (int
 				}
 				sess.gameChan = newChan
 				sess.gameStream = stream
-				sess.roomId = roomId
+				sess.RoomId = roomId
 				go sess.readFromGame(roomId, newChan, stream)
 			}
 		}

@@ -46,7 +46,7 @@ func (s *grpcServer) Send(stream msg.Game_SendServer) (err error) {
 
 func (s *grpcServer) newSession(stream msg.GameStream, user *msg.UserContext) error {
 	sess := &Session{
-		Id:       user.AgentId,
+		AgentId:  user.AgentId,
 		UserId:   user.UserId,
 		Ip:       user.Ip,
 		Created:  time.Now(),

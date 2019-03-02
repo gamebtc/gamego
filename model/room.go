@@ -43,8 +43,6 @@ type RoomInfo struct {
 	Cache   Raw       `bson:"cache"`   //其它缓存
 }
 
-
-
 func (room *RoomInfo) GetMsg() *msg.RoomInfo {
 	return &msg.RoomInfo{
 		Id:      room.Id,

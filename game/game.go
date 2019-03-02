@@ -13,34 +13,35 @@ const second = 1000 * time.Millisecond
 
 // 百人游戏(龙虎/红黑/百家乐/色子)
 type folksGame struct {
+	config *model.RoomInfo
 	room.DefaultRoomer
-	table *Table
+	Tables []*Table
 }
 
 func NewGame() room.Roomer {
-	g := &folksGame{}
+	g := &folksGame{
+		Tables: make([]*Table, 0, 1),
+	}
 	return g
 }
 
 func (this *folksGame) Update() {
-	//log.Debugf("update:%v", this.count)
-	//for _, v := range room.Tables {
-	//	v.Update()
-	//}
+	for _, v := range this.Tables {
+		v.Update()
+	}
 }
 
 func (this *folksGame) Init(config *model.RoomInfo) {
-
+	this.config = config
 	table := NewTable(config)
-	this.table = table
+	this.Tables = append(this.Tables, table)
 	table.Init()
 
 	this.DefaultRoomer.Init(config)
 	this.EventHandler[room.EventConfigChanged] = configChange
-	//this.EventHandler[room.EventRoomClose] = roomClose
-
 	this.RegistHandler(msg.MsgId_BetReq, &msg.BetReq{}, betReq)
 
+	//this.EventHandler[room.EventRoomClose] = roomClose
 	//room.RegistMsg(msg.MsgId_BetAck, &msg.BetAck{})
 	//room.RegistMsg(msg.MsgId_FolksGameInitAck, &msg.FolksGameInitAck{})
 	//room.RegistMsg(msg.MsgId_UserBetAck, &msg.UserBetAck{})
@@ -62,27 +63,28 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User) {
 	role := &Role{
 		User: user,
 	}
-	role.table = this.table
+	table := this.Tables[0]
+
+	role.table = table
 	role.online = true
 	sess.Role = role
 	role.session = sess
 
 	// 发送登录游戏信息
 	sess.UnsafeSend(&msg.LoginRoomAck{
-		Room: room.Config.Id,
-		Kind: room.Config.Kind,
-		Tab:  this.table.Id,
+		Room: room.RoomId,
+		Kind: room.KindId,
+		Tab:  table.Id,
 	})
-	role.table.AddRole(role)
-
+	table.AddRole(role)
 	// 发送游戏内容
-
 }
 
 // 用户下线
 func (this *folksGame) UserOffline(sess *room.Session) {
 	if data, ok := sess.Role.(*Role); ok && data != nil {
 		data.online = false
+		//if
 	}
 }
 
