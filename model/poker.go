@@ -179,7 +179,16 @@ func UpsetPro(src []byte, a, b int64) {
 	}
 }
 
-func PokerArrayString(src []byte, split string) string {
+func PokerArrayString(src []byte) string {
+	b := strings.Builder{}
+	b.Grow(len(src) * 4)
+	for _, poker := range src {
+		b.WriteString(pokerMap[poker])
+	}
+	return b.String()
+}
+
+func PokerArrayString2(src []byte, split string) string {
 	b := strings.Builder{}
 	b.Grow(len(src) * (4 + len(split)))
 	for _, poker := range src {

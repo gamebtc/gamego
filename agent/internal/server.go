@@ -25,6 +25,8 @@ var (
 	coder           msg.Coder         //编码方式
 	rpcServicePool  msg.ServicePool
 	roomServicePool msg.ServicePool
+	tcpReadBuf 		int
+	tcpWriteBuf 	int
 )
 
 func startServer(config *conf.AppConfig) {
@@ -117,9 +119,9 @@ func tcpServer(config *conf.AppConfig) {
 				ip := util.IpToUint32(ipStr)
 				if addIpLimit(ip) {
 					// set socket read buffer
-					conn.SetReadBuffer(config.Tcp.ReadBuf)
+					conn.SetReadBuffer(tcpReadBuf)
 					// set socket write buffer
-					conn.SetWriteBuffer(config.Tcp.WriteBuf)
+					conn.SetWriteBuffer(tcpWriteBuf)
 					conn.Write(success)
 					// start a goroutine for every incoming connection for reading
 					go handleClient(ip, addr, conn)

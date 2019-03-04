@@ -30,9 +30,14 @@ func(c *AppCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mongo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(ctx, s, op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-die:
+						return
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -43,17 +48,12 @@ func(c *AppCache) Watch() error {
 }
 
 func(c *AppCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions)bool {
+	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
-	defer func() { recover() }()
-	select {
-	case <-die:
-		return false
-	default:
-		if stream == nil {
-			if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
-				return true
-			}
+	if stream == nil {
+		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
+			return true
 		}
 	}
 	defer stream.Close(ctx)
@@ -66,16 +66,16 @@ func(c *AppCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *
 				}
 			}
 		}
+		select {
+		case <-die:
+			return false
+		default:
+		}
 		if stream.Err() != nil {
 			//op.ResumeAfter = stream.ID()
 			log.Debugf("AppCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
 			break
 		}
-	}
-	select {
-	case <-die:
-		return false
-	default:
 	}
 	return true
 }
@@ -104,9 +104,14 @@ func(c *PackCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mongo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(ctx, s, op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-die:
+						return
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -117,17 +122,12 @@ func(c *PackCache) Watch() error {
 }
 
 func(c *PackCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
-	defer func() { recover() }()
-	select {
-	case <-die:
-		return false
-	default:
-		if stream == nil {
-			if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
-				return true
-			}
+	if stream == nil {
+		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
+			return true
 		}
 	}
 	defer stream.Close(ctx)
@@ -140,15 +140,15 @@ func(c *PackCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 				}
 			}
 		}
-		if stream.Err() != nil {
-			//op.ResumeAfter = stream.ID()
-			log.Debugf("PackCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
-			break
-		}
 		select {
 		case <-die:
 			return false
 		default:
+		}
+		if stream.Err() != nil {
+			//op.ResumeAfter = stream.ID()
+			log.Debugf("PackCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
+			break
 		}
 	}
 	return true
@@ -178,9 +178,14 @@ func(c *ChanCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mongo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(ctx, s, op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-die:
+						return
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -191,17 +196,12 @@ func(c *ChanCache) Watch() error {
 }
 
 func(c *ChanCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
-	defer func() { recover() }()
-	select {
-	case <-die:
-		return false
-	default:
-		if stream == nil {
-			if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
-				return true
-			}
+	if stream == nil {
+		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
+			return true
 		}
 	}
 	defer stream.Close(ctx)
@@ -214,16 +214,16 @@ func(c *ChanCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 				}
 			}
 		}
+		select {
+		case <-die:
+			return false
+		default:
+		}
 		if stream.Err() != nil {
 			//op.ResumeAfter = stream.ID()
 			log.Debugf("ChanCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
 			break
 		}
-	}
-	select {
-	case <-die:
-		return false
-	default:
 	}
 	return true
 }
@@ -253,9 +253,14 @@ func(c *HintCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mongo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(ctx, s, op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-die:
+						return
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -266,17 +271,12 @@ func(c *HintCache) Watch() error {
 }
 
 func(c *HintCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
-	defer func() { recover() }()
-	select {
-	case <-die:
-		return false
-	default:
-		if stream == nil {
-			if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
-				return true
-			}
+	if stream == nil {
+		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
+			return true
 		}
 	}
 	defer stream.Close(ctx)
@@ -289,15 +289,15 @@ func(c *HintCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 				}
 			}
 		}
-		if stream.Err() != nil {
-			//op.ResumeAfter = stream.ID()
-			log.Debugf("HintCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
-			break
-		}
 		select {
 		case <-die:
 			return false
 		default:
+		}
+		if stream.Err() != nil {
+			//op.ResumeAfter = stream.ID()
+			log.Debugf("HintCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
+			break
 		}
 	}
 	return true
@@ -320,7 +320,6 @@ func(c *HintCache) Renew() error {
 	return err
 }
 
-
 func(c *RoomCache) Watch() error {
 	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
 	ctx := context.Background()
@@ -328,9 +327,14 @@ func(c *RoomCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mongo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(ctx, s, op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-die:
+						return
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -341,17 +345,12 @@ func(c *RoomCache) Watch() error {
 }
 
 func(c *RoomCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
-	defer func() { recover() }()
-	select {
-	case <-die:
-		return false
-	default:
-		if stream == nil {
-			if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
-				return true
-			}
+	if stream == nil {
+		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
+			return true
 		}
 	}
 	defer stream.Close(ctx)
@@ -364,15 +363,15 @@ func(c *RoomCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 				}
 			}
 		}
-		if stream.Err() != nil {
-			//op.ResumeAfter = stream.ID()
-			log.Debugf("RoomCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
-			break
-		}
 		select {
 		case <-die:
 			return false
 		default:
+		}
+		if stream.Err() != nil {
+			//op.ResumeAfter = stream.ID()
+			log.Debugf("RoomCache: err:%v, resume:%v", stream.Err(), op.ResumeAfter)
+			break
 		}
 	}
 	return true

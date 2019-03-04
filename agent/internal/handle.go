@@ -165,6 +165,11 @@ func loginRoom2(sess *Session, roomId int32, v []byte) (interface{}, error) {
 		return nil, errors.New("cannot connect room:" + strconv.Itoa(int(roomId)))
 	}
 
+	if tcpConn, ok := conn.(*net.TCPConn); ok {
+		tcpConn.SetReadBuffer(tcpWriteBuf * 2)
+		tcpConn.SetWriteBuffer(tcpReadBuf * 2)
+	}
+
 	// 发送头信息
 	head := NewUserHead(sess.Id, sess.UserId, sess.Ip)
 	if _, err := conn.Write(head); err != nil {

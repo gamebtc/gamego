@@ -13,12 +13,12 @@ message RoomInfo{
 	int64 doorMin = 7 [(gogoproto.moretags) = 'bson:"doorMin" msg:"doorMin"'];		// 进入房间最低限度
 	int64 doorMax = 8 [(gogoproto.moretags) = 'bson:"doorMax" msg:"doorMax"'];		// 进入房间最高限度
 	int64 stayMin = 9 [(gogoproto.moretags) = 'bson:"stayMin" msg:"stayMin"'];		// 停留房间最低限度
-	int64 stayMax = 10 [(gogoproto.moretags) = 'bson:"stayMax" msg:"stayMax"'];	// 停留房间最高限度
-	int64 playMin = 11 [(gogoproto.moretags) = 'bson:"playMin" msg:"playMin"'];	// 玩游戏的最低限度
-	int64 playMax = 12 [(gogoproto.moretags) = 'bson:"playMax" msg:"playMax"'];	// 玩游戏的最高限度
+	int64 stayMax = 10 [(gogoproto.moretags) = 'bson:"stayMax" msg:"stayMax"'];	    // 停留房间最高限度
+	int64 playMin = 11 [(gogoproto.moretags) = 'bson:"playMin" msg:"playMin"'];	    // 玩游戏的最低限度
+	int64 playMax = 12 [(gogoproto.moretags) = 'bson:"playMax" msg:"playMax"'];	    // 玩游戏的最高限度
 	string coinKey = 13 [(gogoproto.moretags) = 'bson:"coinKey" msg:"coinKey"'];	// 玩游的金币类型
 	int32 icon = 14 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"'];       		// 房间图标
-	int32 online = 15 [(gogoproto.moretags) = 'bson:"online" msg:"online"'];   	// 当前在线人数
+	int32 online = 15 [(gogoproto.moretags) = 'bson:"online" msg:"online"'];   	    // 当前在线人数
 }
 
 // 获取房间列表
@@ -40,25 +40,26 @@ message LoginRoomReq{
 message LoginRoomAck{
     int32 kind = 1 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];       // 游戏ID
 	int32 room = 2 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
-	int32 tab = 3 [(gogoproto.moretags) = 'bson:"tab" msg:"tab"'];    		 // 桌子号
+	int32 tab = 3 [(gogoproto.moretags) = 'bson:"tab" msg:"tab"'];    		// 桌子号
 	int32 seat = 4 [(gogoproto.moretags) = 'bson:"seat" msg:"seat"'];       // 座位号
 	int32 code = 5 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];       // 错误代码
 	string msg = 6 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];         // 错误消息
 }
 
 // 消息转发到房间失败，需要重新连接房间
-message SendRoomFail{
-	int32 room = 1 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
-	int32 code = 2 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];       // 错误代码
-	string msg = 3 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];         // 错误消息
+message SendRoomFail {
+	int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"']; 		// 错误代码
+	string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"']; 		// 错误消息
+	int32 kind = 3 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"']; 		// 所在游戏分类
+	int32 room = 4 [(gogoproto.moretags) = 'bson:"room" msg:"room"']; 		// 当前所在游戏房间
 }
 
 // 别的玩家信息
 message User {
 	int32 id = 1 [(gogoproto.moretags) = 'bson:"_id" msg:"id"']; 			// 玩家ID
 	int32 icon = 2 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"']; 		// 玩家头像
-	int32 vip = 3 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"']; 		// VIP等级
+	int32 vip = 3 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"']; 		    // VIP等级
 	int64 coin = 4 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"']; 		// 玩家带的分
-	string name = 5 [(gogoproto.moretags) = 'bson:"name" msg:"name"']; 	// 玩家名称
+	string name = 5 [(gogoproto.moretags) = 'bson:"name" msg:"name"']; 	    // 玩家名称
 }
 

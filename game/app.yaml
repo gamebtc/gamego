@@ -8,18 +8,20 @@ consul:
   ttl: 15
 
 grpc:
-  listen: '0.0.0.0:27001'
+  listen: '0.0.0.0:22001'
   addr: '127.0.0.1'
-  port: 27001
-  name: 'x.27001'
+  port: 22001
+  name: 'x.22001'
   dcsa: 5
   interval: 5
   tags: []
   maxConnect: 1000
 
 tcp:
-  listen: '0.0.0.0:27001'
-  readBuf: 1048576
+  listen: '0.0.0.0:22001'
+  #UDP read buffer 256K
+  readBuf: 262144
+  #UDP write buffer 1MB
   writeBuf: 1048576
 
 database:
@@ -56,10 +58,10 @@ logLevel: 'debug'
 logFile: ''
 
 room:
-  #28001,27001
-  id: 27001
-  #280,270
-  kind: 270
+  #22001,27001,28001,22001
+  id: 22001
+  #220,270,280,290
+  kind: 220
   addr: '127.0.0.1:50001'
   key: 'fdf843JJE'
 

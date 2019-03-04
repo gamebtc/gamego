@@ -37,7 +37,9 @@ type Roomer interface {
 	// 获取玩家信息
 	GetUser(int32) *Session
 	// 设置玩家信息
-	SetUser(sess *Session)
+	AddUser(sess *Session)
+	// 删除玩家信息
+	RemoveUser(sess *Session) bool
 	// 玩家上线
 	UserOnline(sess *Session, user *model.User)
 	// 玩家下线
@@ -89,15 +91,26 @@ func (r *DefaultRoomer) GetUser(id int32) *Session {
 	return nil
 }
 
-func (r *DefaultRoomer) SetUser(sess *Session) {
+func (r *DefaultRoomer) AddUser(sess *Session) {
 	r.Users[sess.UserId] = sess
+}
+
+func(r *DefaultRoomer) RemoveUser(sess *Session) bool{
+	uid := sess.UserId
+	if s, ok := r.Users[uid]; ok && s == sess{
+		delete(r.Users, uid)
+		return true
+	}
+	return false
 }
 
 func (r *DefaultRoomer) Exec(m interface{}) {
 	switch m := m.(type) {
 	case *NetMessage:
 		if f := r.MessageHandler[m.Id]; f != nil {
-			f(m)
+			if m.UserId != 0 && m.Disposed == false {
+				f(m)
+			}
 		}
 	case *GameEvent:
 		if f := r.EventHandler[m.Id]; f != nil {
@@ -207,13 +220,13 @@ func mainLoop() {
 	defer ticker.Stop()
 	
 	go func(ver int32){
+		t := time.Tick(time.Minute)
 		for {
 			select {
+			case <- t:
+				ver = roomConfigCheck(ver)
 			case <-signal.Die():
 				return
-			default:
-				ver = roomConfigCheck(ver)
-				time.Sleep(time.Minute)
 			}
 		}
 	}(Config.Ver)

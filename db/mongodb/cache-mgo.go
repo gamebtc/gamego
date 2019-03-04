@@ -29,9 +29,12 @@ func(c *AppCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mgo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(s, &op) {
 					s = nil
-					time.Sleep(time.Second)
+					select{
+						case <- t:
+					}
 				}
 			}(stream)
 		} else {
@@ -99,9 +102,12 @@ func(c *PackCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mgo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(s, &op) {
 					s = nil
-					time.Sleep(time.Second)
+					select {
+					case <-t:
+					}
 				}
 			}(stream)
 		} else {
@@ -169,9 +175,12 @@ func(c *ChanCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mgo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(s, &op) {
 					s = nil
-					time.Sleep(time.Second)
+					select{
+					case <- t:
+					}
 				}
 			}(stream)
 		} else {
@@ -239,9 +248,12 @@ func(c *HintCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mgo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(s, &op) {
 					s = nil
-					time.Sleep(time.Second)
+					select{
+					case <- t:
+					}
 				}
 			}(stream)
 		} else {
@@ -309,9 +321,12 @@ func(c *RoomCache) Watch() error {
 	if err == nil {
 		if err = c.Renew(); err == nil {
 			go func(s *mgo.ChangeStream) {
+				t := time.Tick(time.Second)
 				for c.watchLoop(s, &op) {
 					s = nil
-					time.Sleep(time.Second)
+					select{
+					case <- t:
+					}
 				}
 			}(stream)
 		} else {

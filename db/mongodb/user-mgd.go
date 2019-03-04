@@ -172,7 +172,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 		// 更新对应的日志记录
 		up = bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow}
 		d.loginLog.UpdateOne(d.ctx, bson.D{{"_id", newLock.Log1}}, up)
-		// 删除玩家在线记录
+		// 删除玩家锁
 		d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
 		return true
 	}
@@ -192,18 +192,20 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	oldLock := new(model.UserLocker)
 	if changed, err := d.locker.UpdateOne(d.ctx, query, up); err != nil {
 		return nil, err
-	} else {
-		if changed.MatchedCount == 0 {
-			// 登录已过期
-			if err = d.locker.FindOne(d.ctx, query[:1]).Decode(oldLock); err != nil {
-				return nil, err
-			}
+	} else if changed != nil && changed.MatchedCount == 0 {
+		if err = d.locker.FindOne(d.ctx, query[:1]).Decode(oldLock); err != nil {
 			return nil, err
 		}
+		if oldLock.Id != userId || oldLock.Agent != agent {
+			// 登录已过期
+		} else if oldLock.Room != roomId {
+			// 已登录其它房间
+		}
+		return nil, err
 	}
 
 	replace := !oldLock.Log2.IsZero()
-	if replace{
+	if replace {
 		// 旧的连接设置为强制退出
 		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", oldLock.Log2}}, bson.D{{"$set", bson.D{{"state", int32(2)}}}, upNow})
 	}
@@ -224,7 +226,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 		{"ip", user.LastIp},
 	}
 	if replace {
-		newLock = append(newLock, bson.E{Key: "f", Value:oldLock.Log2})
+		newLock = append(newLock, bson.E{Key: "f", Value: oldLock.Log2})
 	}
 	d.roomLog.InsertOne(d.ctx, newLock)
 
@@ -235,20 +237,17 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
 	query := bson.D{
 		{"_id", userId},
-		{"agent", agent},
 		{"room", roomId},
 	}
 	up := bson.D{{"$set", bson.D{{"kind", zeroInt32}, {"room", zeroInt32}}}, upNow}
 	lock := new(model.UserLocker)
 	if changed, err := d.locker.UpdateOne(d.ctx, query, up); err == nil {
-		if changed.MatchedCount == 1 {
+		if changed != nil && changed.MatchedCount == 1 {
 			// 更新对应的日志记录
 			up1 := bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow}
 			d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}}, up1)
-			// 删除玩家在线记录
-			query[1].Value = 0
-			query[2].Value = 0
-			d.locker.DeleteOne(d.ctx, query)
+			// 删除玩家锁
+			d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
 			return true
 		}
 	}

@@ -41,12 +41,10 @@ type Account struct {
 
 // User struct: 玩家基本信息
 type User struct {
-	msg.User         `bson:",inline"`
-	//Id     UserId    `bson:"_id"`    //唯一ID
-	//Icon   int32     `bson:"icon"`   //头像
-	//Vip    int32     `bson:"vip "`   //vip等级
-	//Name   string    `bson:"name"`   //玩家昵称
-	//Coin   int64     `bson:"-"`      //当前房间使用的币
+	Id     UserId    `bson:"_id"`    //唯一ID
+	Icon   int32     `bson:"icon"`   //头像
+	Vip    int32     `bson:"vip "`   //vip等级
+	Name   string    `bson:"name"`   //玩家昵称
 	App    int32     `bson:"app"`    //所属应用(同一应用类型的客户端可以互通)
 	Sex    int32     `bson:"sex"`    //性别
 	State  int32     `bson:"state"`  //账号状态(0:正常)
@@ -63,17 +61,18 @@ type User struct {
 	Init   time.Time `bson:"init"`   //创建时间
 	Up     time.Time `bson:"up"`     //更新时间
 	Ver    int64     `bson:"ver"`    //币的版本
+	Coin   int64     `bson:"-"`      //当前房间使用的币
 }
 
 func (this *User)GetMsgUser() *msg.User {
-	return &this.User
-	//return &msg.User{
-	//	Id:    this.Id,
-	//	Icon:  this.Icon,
-	//	Vip:   this.Vip,
-	//	Name:  this.Name,
-	//	Coin:  this.Coin,
-	//}
+	//return &this.User
+	return &msg.User{
+		Id:    this.Id,
+		Icon:  this.Icon,
+		Vip:   this.Vip,
+		Name:  this.Name,
+		Coin:  this.Coin,
+	}
 }
 
 // 在线玩家锁定信息

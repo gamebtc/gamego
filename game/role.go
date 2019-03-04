@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
@@ -12,13 +11,12 @@ import (
 
 // 每个玩家的游戏数据
 type Role struct {
-	*model.User           // 玩家信息
-	session *room.Session // 为空则为机器人
-	table   *Table        // 桌子ID
-	bill    *msg.GameBill // 输赢情况
-	flowSn  int64         // 最后的写分序号，返回时用于验证
-	online  bool          // 是否在线
-	play    bool          // 是否正在游戏中
+	*model.User          // 玩家信息
+	*room.Session        // 为空则为机器人
+	table  *Table        // 桌子ID
+	bill   *msg.GameBill // 输赢情况
+	flowSn int64         // 最后的写分序号，返回时用于验证
+	online bool          // 是否在线
 }
 
 // 检查投注项位置0:龙赢,1:虎赢,2:和
@@ -82,17 +80,18 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 	bill.Group[bet.Item] += coin
 	bill.Bet += coin
 	// 有真实玩家下注
-	if role.session != nil {
+	if role.Session != nil {
 		role.table.round.Real = true
 		log.Debugf("玩家下注:%v,%v", role.Id, bet)
 	}
 	return true
 }
 
-// 结算,亚赔方式计算,赔率放大100倍
+// 结算,欧赔方式计算,赔率放大100倍
 const radix = 100
+const lostRadix = 0
 
-func (role *Role) Balance() *model.CoinFlow {
+func (role *Role)Balance(taxs []int64) *model.CoinFlow {
 	bill := role.bill
 	round := role.table.round
 	if bill == nil || bill.Bet <= 0 || round == nil {
@@ -107,30 +106,26 @@ func (role *Role) Balance() *model.CoinFlow {
 		if bet := bill.Group[i]; bet > 0 {
 			betIndex = i
 			//有钱回收,包含输1半
-			if odd := int64(odds[i]); odd > -radix {
+			if odd := int64(odds[i]); odd > lostRadix {
 				w := bet * odd / radix
-				if w > 0 {
+				if w > bet {
 					// 赢钱了收税，税率按千分比配置，需除以1000
-					if r := role.table.dealer.Tax(i); r > 0 {
-						tax += w * r / 1000
-					}
+					tax += (w-bet) * taxs[i] / 1000
 				}
-				//前面是亚赔方式计算,所以需要把本金加上，变为欧赔
-				prize += w + bet
+				prize += w
 			}
 		}
 	}
 	// 扣税后返给玩家的钱
 	prize -= tax
 	role.Coin += prize
-	// 实际输赢要扣掉本金
+	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bill.Bet
 
 	bill.Win = addCoin
 	bill.Tax = tax
 	round.Tax += tax
 	round.Win -= addCoin
-
 	ulog := &msg.FolksUserLog{
 		Tab:   role.table.Id,
 		Bet:   bill.Bet,

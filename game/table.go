@@ -1,7 +1,7 @@
 package main
 
 import (
-	"math/rand"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -14,17 +14,20 @@ const RicherCount = 6
 
 var betItem int                // 可投注的项
 
+type Plan struct {
+	// 要执行的函数
+	f func(*Table)
+	// 下一步执行的时间
+	d time.Duration
+}
+
 type Dealer interface {
 	// 随机发牌
-	Deal() ([]byte, []byte)
-	// 比较大小并返回赔率
-	Pk(a []byte, b []byte) (odds []int32)
-	// 税率千分比
-	Tax(i int) int64
+	Deal(table *Table)
 	// 可投注的项
 	BetItem() int
-	// 控制发牌
-	Control(interface{}) ([]byte, []byte)
+	// 流程
+	Schedule()[]Plan
 }
 
 func newDealer(config *model.RoomInfo) Dealer {
@@ -33,24 +36,33 @@ func newDealer(config *model.RoomInfo) Dealer {
 		return NewRbdzDealer(config)
 	case model.GameKind_LHDZ:
 		return NewLhdzDealer(config)
+	case model.GameKind_SBAO:
+		return NewSbaoDealer(config)
+	case model.GameKind_BJL:
+		return NewBjlDealer(config)
 	}
 	return nil
 }
+
 
 // 开始下注：下注时间12秒
 // 停止下注：发牌开：2秒
 // 结算：    2秒
 // 游戏桌子
 type Table struct {
-	Id      int32              //桌子ID
-	CurId   int32              //当前局的ID
-	LastId  int32              //最后的局ID
-	Log     []byte             //最后60局的输赢情况0:龙赢,1:虎赢,2:和
-	State   int32              //0:暂停;1:洗牌;2:下注;3:结算
-	Richer  [RicherCount]*Role //富豪ID,位置0为赌神ID
-	Roles   map[int32]*Role    //所有游戏玩家，含机器人
-	round   *msg.FolksGameRound
-	dealer  Dealer
+	Id     int32              //桌子ID
+	CurId  int32              //当前局的ID
+	LastId int32              //最后的局ID
+	Log    []byte             //最后60局的输赢情况0:龙赢,1:虎赢,2:和
+	State  int32              //0:暂停;1:洗牌;2:下注;3:结算
+	Richer [RicherCount]*Role //富豪ID,位置0为赌神ID
+	Roles  map[int32]*Role    //所有游戏玩家，含机器人
+	round  *msg.FolksGameRound
+	dealer Dealer
+
+	timer     *time.Timer
+	schedule  []Plan
+	planIndex int
 }
 
 func NewTable(config *model.RoomInfo) *Table {
@@ -67,7 +79,7 @@ func NewTable(config *model.RoomInfo) *Table {
 func (table *Table) AddRole(role *Role) {
 	table.Roles[role.Id] = role
 	// 真实玩家
-	if role.session != nil {
+	if role.Session != nil {
 		ack := &msg.FolksGameInitAck{
 			Id:    table.round.Id,
 			State: table.State,
@@ -82,14 +94,13 @@ func (table *Table) AddRole(role *Role) {
 				ack.Rich = append(ack.Rich, rich.GetMsgUser())
 			}
 		}
-		role.session.Send(ack)
+		role.Session.Send(ack)
 	}
 }
 
-func (table *Table) Init() {
-}
-
 func (table *Table) NewGameRound() {
+	table.State = 1
+	table.CurId += 1
 	id := room.NewGameRoundId()
 	round := &msg.FolksGameRound{
 		Id:    id,
@@ -109,12 +120,16 @@ func (table *Table) NewGameRound() {
 		}
 	}
 	table.round = round
+}
 
+func (table *Table) Init(){
 }
 
 func (table *Table) Start() {
 	table.startRobot()
-	table.gameReady()
+	table.schedule = table.dealer.Schedule()
+
+	table.timer = time.NewTimer(time.Microsecond)
 }
 
 func (table *Table) startRobot() {
@@ -124,8 +139,8 @@ func (table *Table) startRobot() {
 	table.addRobot(5593465380, 1775005)
 }
 
-func (table *Table) addRobot(agentid int64, userid int32) {
-	if user := room.LoadRobot(agentid, userid); user != nil {
+func (table *Table) addRobot(agentId int64, userId int32) {
+	if user := room.LoadRobot(agentId, userId); user != nil {
 		role := &Role{
 			User: user,
 		}
@@ -137,86 +152,19 @@ func (table *Table) addRobot(agentid int64, userid int32) {
 	}
 }
 
-// 准备
-func (table *Table) gameReady() {
-	table.State = 1
-	room.AfterCall(second, table.openBet)
-	table.CurId += 1
-
-	// 重置玩家下注信息
-	for _, role := range table.Roles {
-		role.Reset()
-	}
-
-	table.NewGameRound()
-}
-
-// 开始
-func (table *Table) openBet() {
-	// 发送开始下注消息给所有玩家
-	table.State = 2
-	log.Debugf("开始下注:%v", table.CurId)
-	table.robotBet(0)
-}
-
-func (table *Table) robotBet(i int32) {
-	if i >= 10 {
-		table.closeBet()
-	} else {
-		i += 1
-		room.AfterCall(second, func() { table.robotBet(i) })
-		for _, role := range table.Roles {
-			if role.session == nil && (role.Id%5) == rand.Int31n(5) {
-				bet := msg.BetReq{
-					Item: rand.Int31n(3),
-					Coin: 100 + rand.Int31n(100)*100,
-				}
-				if role.RobotCanBet(bet.Item) {
-					role.AddBet(bet)
-					//log.Debugf("机器人下注:%v,%v", bet, r)
-				}
-			}
-		}
-	}
-}
-
-// 结算
-func (table *Table) closeBet() {
-	table.State = 3
-	room.AfterCall(second, table.gameReady)
-	//log.Debugf("停止下注:%v", table.CurId)
-	// 统计下注信息
-
-	// 发牌PK
-	a, b := table.dealer.Deal()
-	note := model.PokerArrayString(a, "") + "|" + model.PokerArrayString(b, "")
-	round := table.round
-	round.Odds = table.dealer.Pk(a, b)
-	round.Poker = []byte{a[0], b[0]}
-	round.Note = note
-	//log.Debugf("发牌:%v,%v", note, round.Odds)
-
-	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			if role.session != nil {
-				log.Debugf("结算:%v", flow)
-			}
-		}
-	}
-	// 结算结果发给玩家
-	table.LastId = table.CurId
-	round.End = room.Now()
-
-	room.SaveLog(round)
-
-	// 添加发牌日志
-
-	//log.Debugf("round:%v", round)
-}
-
 func (table *Table) Update() {
-
+	select {
+	case <-table.timer.C:
+		cur := table.planIndex
+		table.timer.Reset(table.schedule[cur].d)
+		if cur >= len(table.schedule)-1 {
+			table.planIndex = 0
+		} else {
+			table.planIndex = cur + 1
+		}
+		table.schedule[cur].f(table)
+	default:
+	}
 }
 
 // 投注
@@ -236,4 +184,9 @@ func betReq(m *room.NetMessage) {
 	}
 	log.Debugf("add bet: %v", req)
 	role.AddBet(*req)
+}
+
+// 准备
+func gameReady(table *Table) {
+	table.NewGameRound()
 }

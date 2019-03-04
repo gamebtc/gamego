@@ -76,8 +76,8 @@ message FolksGameRound {
 	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
 	// 富豪(第1个位置为赌神后面5个为富豪ID)
 	repeated RichRole rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
-	// 是否有真玩家下注
-	bool real = 15 [(gogoproto.jsontag) = '-', (gogoproto.moretags) = 'bson:"-" msg:"-"'];
+	// 是否有真实玩家下注
+	bool real = 15 [(gogoproto.jsontag) = '-', (gogoproto.moretags) = 'bson:"z" msg:"-"'];
 }
 
 //// 投注信息()

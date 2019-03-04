@@ -21,6 +21,8 @@ var (
 
 func Run(config *conf.AppConfig) {
 	// listeners
+	tcpReadBuf = config.Tcp.ReadBuf
+	tcpWriteBuf = config.Tcp.WriteBuf
 	sendChanLen = config.SendChanLen
 	recvChanLen = config.RecvChanLen
 	readTimeout = time.Duration(config.ReadTimeout) * time.Second

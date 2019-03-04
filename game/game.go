@@ -68,7 +68,7 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User) {
 	role.table = table
 	role.online = true
 	sess.Role = role
-	role.session = sess
+	role.Session = sess
 
 	// 发送登录游戏信息
 	sess.UnsafeSend(&msg.LoginRoomAck{
@@ -84,7 +84,7 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User) {
 func (this *folksGame) UserOffline(sess *room.Session) {
 	if data, ok := sess.Role.(*Role); ok && data != nil {
 		data.online = false
-		//if
+
 	}
 }
 

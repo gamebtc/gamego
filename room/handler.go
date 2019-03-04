@@ -8,15 +8,15 @@ import (
 )
 
 // 主线程调用，玩家上线
-func userOnline(sess *Session) {
+func userOnline(sess *Session, uid int32) {
 	log.Debugf("userOnline:%v", sess)
 	// 登录检查
-	oldSess := roomer.GetUser(sess.UserId)
+	oldSess := roomer.GetUser(uid)
 	if oldSess == sess {
 		return
 	}
 	// 锁定玩家
-	user, err := driver.LockUserRoom(sess.AgentId, sess.UserId, KindId, RoomId)
+	user, err := sess.LockRoom()
 	if err != nil {
 		// 发送错误消息
 		sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "登录失败", err.Error())
@@ -24,17 +24,21 @@ func userOnline(sess *Session) {
 		return
 	}
 	if user == nil {
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v", sess.AgentId, sess.UserId, KindId, RoomId)
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v", sess.AgentId, uid, KindId, RoomId)
 		sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "登录失败2", "")
 		sess.Close()
 		return
 	}
+
+	sess.UserId = uid
 	if oldSess != nil {
-		oldSess.Online = false
-
-		roomer.SetUser(sess)
 		sess.Online = true
-
+		sess.Playing = oldSess.Playing
+		sess.Role = oldSess.Role
+		oldSess.Online = false
+		oldSess.Disposed = true
+		oldSess.UserId = 0
+		roomer.AddUser(sess)
 		roomer.UserReline(oldSess, sess)
 		// 发送错误消息,顶掉玩家
 		oldSess.Close()
@@ -48,6 +52,8 @@ func userOnline(sess *Session) {
 			return
 		}
 		user.Coin = coin
+
+		roomer.AddUser(sess)
 		roomer.UserOnline(sess, user)
 	}
 }
@@ -55,11 +61,7 @@ func userOnline(sess *Session) {
 // 主线程调用，玩家下线
 func userOffline(sess *Session) {
 	log.Debugf("userOffline:%v", sess)
-	defer func() {
-		if sess.Playing == false {
-			driver.UnlockUserRoom(sess.AgentId, sess.UserId, Config.Id)
-		}
-	}()
+	defer sess.UnlockRoom()
 	sess.Online = false
 	roomer.UserOffline(sess)
 }

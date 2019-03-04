@@ -47,10 +47,8 @@ func (s *grpcServer) Send(stream msg.Game_SendServer) (err error) {
 func (s *grpcServer) newSession(stream msg.GameStream, user *msg.UserContext) error {
 	sess := &Session{
 		AgentId:  user.AgentId,
-		UserId:   user.UserId,
 		Ip:       user.Ip,
 		Created:  time.Now(),
-		dieChan:  make(chan struct{}),
 		sendChan: make(chan interface{}, 512),
 		stopSend: make(chan struct{}),
 	}
@@ -58,13 +56,15 @@ func (s *grpcServer) newSession(stream msg.GameStream, user *msg.UserContext) er
 	// cleanup work
 	defer func() {
 		// 连接断开事件
-		Call(func() { userOffline(sess) })
+		if sess.UserId!=0 {
+			Call(func() { userOffline(sess) })
+		}
 		sess.Close()
 		log.Infof("connection closed user:%v, Ip:%v", user.UserId, user.Ip)
 	}()
 
 	// 连接事件
-	Call(func() { userOnline(sess) })
+	Call(func() { userOnline(sess, user.UserId) })
 	sess.Start(stream)
 	return nil
 }

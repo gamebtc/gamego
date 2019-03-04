@@ -86,7 +86,6 @@ func TestSession(t *testing.T) {
 	}
 }
 
-
 func TestIn(t *testing.T) {
 	if client, err := mongo.NewClientWithOptions("mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs"); err != nil {
 		t.Fatal(err)

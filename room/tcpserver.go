@@ -121,12 +121,14 @@ func newSession(conn net.Conn) {
 	}
 
 	agent, uid, ip := GetUserHead(head[:])
+	if agent == 0 || uid == 0 {
+		return
+	}
+
 	sess := &Session{
 		AgentId:  agent,
-		UserId:   uid,
 		Ip:       ip,
 		Created:  time.Now(),
-		dieChan:  make(chan struct{}),
 		sendChan: make(chan interface{}, 512),
 		stopSend: make(chan struct{}),
 	}
@@ -135,13 +137,15 @@ func newSession(conn net.Conn) {
 	// cleanup work
 	defer func() {
 		// 连接断开事件
-		Call(func() { userOffline(sess) })
+		if sess.UserId != 0 {
+			Call(func() { userOffline(sess) })
+		}
 		sess.Close()
 		log.Infof("connection closed user:%v, Ip:%v", uid, ip)
 	}()
 
 	// 连接事件
-	Call(func() { userOnline(sess) })
+	Call(func() { userOnline(sess, uid) })
 	sess.Start(&NetStream{
 		conn: conn,
 	})
