@@ -99,30 +99,46 @@ func (p *service_pool) GetService(id int32) (conn *grpc.ClientConn) {
 }
 
 func (p *service_pool) GetValue(k string) []byte {
-	config := api.DefaultConfig()
-	config.Address = p.addr
-	client, err := api.NewClient(config)
-	if err != nil {
-		return nil
-	}
-	kv := client.KV()
-	pair, _, err := kv.Get(k, nil)
-	return pair.Value
+	return ConsulGetValue(p.addr, k)
 }
 
 func (p *service_pool) SetValue(k string, v []byte) bool {
+	return ConsulSetValue(p.addr, k, v)
+}
+
+func ConsulGetValue(addr string, k string) []byte {
 	config := api.DefaultConfig()
-	config.Address = p.addr
-	client, err := api.NewClient(config)
-	if err != nil {
-		return false
+	config.Address = addr
+	if client, err := api.NewClient(config); err == nil {
+		kv := client.KV()
+		if pair, _, err := kv.Get(k, nil); err == nil && pair != nil {
+			return pair.Value
+		}
 	}
-	kv := client.KV()
-	// PUT a new KV pair
-	pair := &api.KVPair{Key: k, Value: v}
-	_, err = kv.Put(pair, nil)
-	if err != nil {
-		return false
+	return nil
+}
+
+func ConsulSetValue(addr string, k string, v []byte) bool {
+	config := api.DefaultConfig()
+	config.Address = addr
+	if client, err := api.NewClient(config); err != nil {
+		kv := client.KV()
+		pair := &api.KVPair{Key: k, Value: v}
+		if _, err = kv.Put(pair, nil); err == nil {
+			return true
+		}
 	}
-	return true
+	return false
+}
+
+func ConsulRemove(addr string, k string)bool{
+	config := api.DefaultConfig()
+	config.Address = addr
+	if client, err := api.NewClient(config); err != nil {
+		kv := client.KV()
+		if _, err = kv.Delete(k, nil); err == nil {
+			return true
+		}
+	}
+	return false
 }

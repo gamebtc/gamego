@@ -16,14 +16,16 @@ func userOnline(sess *Session, uid int32) {
 		return
 	}
 	// 锁定玩家
-	user, err := sess.LockRoom()
+	user, err := sess.LockRoom(uid)
 	if err != nil {
 		// 发送错误消息
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId,err.Error())
 		sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "登录失败", err.Error())
 		sess.Close()
 		return
 	}
 	if user == nil {
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败2", sess.AgentId, uid, KindId, RoomId)
 		log.Debugf("id:%v,uid:%v,kid:%v,room:%v", sess.AgentId, uid, KindId, RoomId)
 		sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "登录失败2", "")
 		sess.Close()
@@ -47,6 +49,7 @@ func userOnline(sess *Session, uid int32) {
 		coin := user.Bag[CoinKey]
 		if coin < Config.DoorMin || coin > Config.DoorMax {
 			// 所带金币不符合要求发送错误消息
+			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId,"金币不足")
 			sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "金币不足", "")
 			sess.Close()
 			return

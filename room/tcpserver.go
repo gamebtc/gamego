@@ -4,6 +4,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -25,33 +26,39 @@ func startServer(config *AppConfig) {
 	if config.Udp.Listen != "" {
 		go udpServer(config)
 	}
+
 }
 
 func tcpServer(config *AppConfig) {
 	// resolve address & start listening
 	l, err := net.Listen("tcp", config.Tcp.Listen)
-	log.Info("listening on:", l.Addr())
 	checkError(err)
+	log.Info("listening on:", l.Addr())
 
 	lis := l.(*net.TCPListener)
 	defer lis.Close()
+
+	// 注册服务器地址
+	ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	defer func(){
+		ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+	}()
+
 	// loop accepting
 	for {
 		select {
 		case <-signal.Die():
 			return
 		default:
-			conn, err := lis.AcceptTCP()
-			if err != nil {
-				log.Warning("accept failed:", err)
-				continue
+			lis.SetDeadline( time.Now().Add(10* time.Second))
+			if conn, err := lis.AcceptTCP(); err == nil {
+				atomic.LoadInt32(&connectCount)
+				// set socket read buffer
+				conn.SetReadBuffer(config.Tcp.ReadBuf)
+				// set socket write buffer
+				conn.SetWriteBuffer(config.Tcp.WriteBuf)
+				go handleClient(conn)
 			}
-			atomic.LoadInt32(&connectCount)
-			// set socket read buffer
-			conn.SetReadBuffer(config.Tcp.ReadBuf)
-			// set socket write buffer
-			conn.SetWriteBuffer(config.Tcp.WriteBuf)
-			go handleClient(conn)
 		}
 	}
 }
@@ -72,25 +79,30 @@ func udpServer(config *AppConfig) {
 	if err := lis.SetDSCP(config.Udp.Dscp); err != nil {
 		log.Println("SetDSCP:", err)
 	}
+
+	// 注册服务器地址
+	ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	defer func(){
+		ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+	}()
+
 	// loop accepting
 	for {
 		select {
 		case <-signal.Die():
 			return
 		default:
-			conn, err := lis.AcceptKCP()
-			if err != nil {
-				log.Warning("accept failed:", err)
-				continue
+			lis.SetDeadline( time.Now().Add(10* time.Second))
+			if conn, err := lis.AcceptKCP(); err==nil {
+				atomic.LoadInt32(&connectCount)
+				// set kcp parameters
+				conn.SetWindowSize(config.Kcp.Sndwnd, config.Kcp.Rcvwnd)
+				conn.SetNoDelay(config.Kcp.Nodelay, config.Kcp.Interval, config.Kcp.Resend, config.Kcp.Nc)
+				conn.SetStreamMode(true)
+				conn.SetMtu(config.Kcp.Mtu)
+				// start a goroutine for every incoming connection for reading
+				go handleClient(conn)
 			}
-			atomic.LoadInt32(&connectCount)
-			// set kcp parameters
-			conn.SetWindowSize(config.Kcp.Sndwnd, config.Kcp.Rcvwnd)
-			conn.SetNoDelay(config.Kcp.Nodelay, config.Kcp.Interval, config.Kcp.Resend, config.Kcp.Nc)
-			conn.SetStreamMode(true)
-			conn.SetMtu(config.Kcp.Mtu)
-			// start a goroutine for every incoming connection for reading
-			go handleClient(conn)
 		}
 	}
 }

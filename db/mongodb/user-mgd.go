@@ -3,8 +3,6 @@
 package mongodb
 
 import (
-	"fmt"
-
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 	log "github.com/sirupsen/logrus"
@@ -89,7 +87,7 @@ func (d *driver) CreateUser(user *model.User, req *msg.LoginReq) (err error) {
 		up := bson.D{{"$push", bson.D{{"users", id}}}, upNow}
 		_, err = d.account.UpdateOne(d.ctx, query, up)
 	}
-	fmt.Printf("CreateUser:%#v", err)
+	log.Debugf("CreateUser:%v,err%v",user, err)
 	return
 }
 

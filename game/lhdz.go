@@ -1,13 +1,11 @@
 package main
 
 import (
-	"math/rand"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
 	"local.com/abc/game/room"
 )
 
@@ -21,15 +19,13 @@ import (
 
 var (
 	// 0:龙赢，1赔1，和虎全输
-	dragonWin = []int32{radix*1 + radix, lostRadix, lostRadix}
+	dragonWin = []int32{1*radix + radix, lostRadix, lostRadix}
 	// 1:虎赢，1赔1，和龙全输
-	tigerWin = []int32{lostRadix, radix*1 + radix, lostRadix}
+	tigerWin = []int32{lostRadix, 1*radix + radix, lostRadix}
 	// 2和1赔8, 龙虎全退
-	dtTie = []int32{0 + radix, 0 + radix, radix*8 + radix}
+	dtTie = []int32{0 + radix, 0 + radix, 8*radix + radix}
 	// 龙虎点数映射表
 	dtPoint = [64]byte{}
-	// 龙虎税率千分比
-	lhdzTaxs = []int64{50, 50, 50}
 )
 
 func init() {
@@ -59,89 +55,59 @@ var(
 	// 执行步骤
 	lhdzSchedule = []Plan{
 		{f: gameReady, d: second},
-		{f: lhdzOpen, d: time.Microsecond},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzBet, d: second},
-		{f: lhdzClose, d: second},
-		{f: lhdzDeal, d: 2*second},
+		{f: gameOpen, d: time.Microsecond},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gamePlay, d: second},
+		{f: gameStop, d: second},
+		{f: gameDeal, d: 2 * second},
 	}
 )
 
-func NewLhdzDealer(config *model.RoomInfo) *LhdzDealer {
+func NewLhdzDealer() GameDriver {
 	d := &LhdzDealer{
 	}
 	return d
-}
-
-// 开始
-func lhdzOpen (table *Table){
-	// 发送开始下注消息给所有玩家
-	table.State = 2
-	log.Debugf("龙虎大战开始下注:%v", table.CurId)
-}
-
-func lhdzBet(table *Table) {
-	for _, role := range table.Roles {
-		if role.Session == nil && (role.Id%5) == rand.Int31n(5) {
-			bet := msg.BetReq{
-				Item: rand.Int31n(3),
-				Coin: 100 + rand.Int31n(100)*100,
-			}
-			if role.RobotCanBet(bet.Item) {
-				role.AddBet(bet)
-				//log.Debugf("机器人下注:%v,%v", bet, r)
-			}
-		}
-	}
-}
-
-// 停止下注
-func lhdzClose (table *Table) {
-	table.State = 3
-	log.Debugf("停止下注:%v", table.CurId)
-}
-
-// 发牌结算
-func lhdzDeal(table *Table){
-	table.State = 4
-	log.Debugf("发牌结算:%v", table.CurId)
-	// 发牌PK
-	table.dealer.Deal(table)
 }
 
 func(this *LhdzDealer) Schedule()[]Plan{
 	return lhdzSchedule
 }
 
-func (this *LhdzDealer) Deal(table *Table) {
-	// 检查剩余牌数量
-	if this.Offset >= len(this.Poker)*2/3 {
-		log.Debugf("重新洗牌:%v", this.i)
-		this.Poker = model.NewPoker(8, false, true)
-		this.Offset = 0
-	}
-	// 龙虎各取1张牌
-	a := this.Poker[this.Offset : this.Offset+1]
-	b := this.Poker[this.Offset+1 : this.Offset+2]
-	this.Offset += 2
+// 准备游戏, 状态1
+func(this *LhdzDealer)Ready(table *Table){
 
+}
+// 开始下注, 状态1
+func(this *LhdzDealer)Open(table *Table){
+
+}
+// 游戏中
+func(this *LhdzDealer)Play(table *Table){
+
+}
+// 停止下注
+func(this *LhdzDealer)Stop(table *Table){
+
+}
+
+func (this *LhdzDealer) Deal(table *Table) {
+	a, b, odds := this.GetPokers(table)
 	note := model.PokerArrayString(a) + "|" + model.PokerArrayString(b)
 	round := table.round
-	round.Odds = lhdzPk(a, b)
+	round.Odds = odds
 	round.Poker = []byte{a[0], b[0]}
 	round.Note = note
-	// log.Debugf("发牌:%v,%v", note, round.Odds)
-
+	log.Debugf("发牌:%v,%v", note, odds)
 	for _, role := range table.Roles {
-		if flow := role.Balance(lhdzTaxs); flow != nil {
+		if flow := role.Balance(); flow != nil {
 			room.WriteCoin(flow)
 			if role.Session != nil {
 				log.Debugf("结算:%v", flow)
@@ -153,8 +119,40 @@ func (this *LhdzDealer) Deal(table *Table) {
 	round.End = room.Now()
 
 	room.SaveLog(round)
+}
 
-	return
+func (this *LhdzDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
+	// 检查剩余牌数量
+	offset := this.Offset
+	if offset >= len(this.Poker)/2 {
+		log.Debugf("重新洗牌:%v", this.i)
+		this.Poker = model.NewPoker(8, false, true)
+		offset = 0
+	}
+	// 龙虎各取1张牌
+	a := this.Poker[offset : offset+1]
+	b := this.Poker[offset+1 : offset+2]
+
+	odds := lhdzPk(a, b)
+
+	// 系统必须赢
+	if table.round.Real && MustWin() {
+		for table.CheckWin(odds) < 0 {
+			offset += 1
+			if offset >= len(this.Poker)/2 {
+				log.Debugf("重新洗牌:%v", this.i)
+				this.Poker = model.NewPoker(8, false, true)
+				offset = 0
+			}
+			a = this.Poker[offset : offset+1]
+			b = this.Poker[offset+1 : offset+2]
+			odds = lhdzPk(a, b)
+			log.Debugf("系统无敌:%v,%v,%v", a, b, odds)
+		}
+	}
+
+	this.Offset = offset + 2
+	return a, b, odds
 }
 
 func lhdzPk(a []byte, b []byte) (odds []int32) {
@@ -169,9 +167,4 @@ func lhdzPk(a []byte, b []byte) (odds []int32) {
 		odds = dtTie
 	}
 	return
-}
-
-func (this *LhdzDealer) BetItem() int{
-	// 可下注的选项数量(0:龙赢,1:虎赢,2:和)
-	return 3
 }

@@ -44,16 +44,22 @@ func (role *Role) Reset() {
 
 // 投注
 func (role *Role) AddBet(bet msg.BetReq) bool {
+	// 检查投注项
+	i := bet.Item
+	if i >= int32(betItem) {
+		log.Debugf("投注项错误:%v,%v", i, betItem)
+		return false
+	}
 	// 检查金币
 	coin := int64(bet.Coin)
 	if coin <= 0 || coin > role.Coin {
-		// 金币不足
 		log.Debugf("金币不足:%v,%v", role.Coin, coin)
 		return false
 	}
+
 	round := role.table.round
-	if round == nil {
-		log.Debugf("round is null:%v,%v", role.Coin, coin)
+	if round == nil || role.table.State != 2 {
+		log.Debugf("下游已停止:%v,%v", role.Coin, coin)
 		return false
 	}
 
@@ -73,15 +79,16 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 		round.Bill = append(round.Bill, bill)
 	}
 
-	round.Flow = append(round.Flow, role.Id, bet.Item, bet.Coin)
-	round.Group[bet.Item] += coin
+	round.Flow = append(round.Flow, role.Id, i, bet.Coin)
+	round.Group[i] += coin
 
 	role.Coin -= coin
-	bill.Group[bet.Item] += coin
+	bill.Group[i] += coin
 	bill.Bet += coin
 	// 有真实玩家下注
 	if role.Session != nil {
-		role.table.round.Real = true
+		round.Real = true
+		round.UserGroup[i] += coin
 		log.Debugf("玩家下注:%v,%v", role.Id, bet)
 	}
 	return true
@@ -91,45 +98,33 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 const radix = 100
 const lostRadix = 0
 
-func (role *Role)Balance(taxs []int64) *model.CoinFlow {
+func (role *Role) Balance() *model.CoinFlow {
 	bill := role.bill
 	round := role.table.round
 	if bill == nil || bill.Bet <= 0 || round == nil {
 		return nil //没有投注
 	}
-	odds := round.Odds
-	prize := int64(0)
-	tax := int64(0)
-	betIndex := -1 //最后一个有下注的项
-	for i := 0; i < betItem; i++ {
-		// 下注金额大于0
-		if bet := bill.Group[i]; bet > 0 {
-			betIndex = i
-			//有钱回收,包含输1半
-			if odd := int64(odds[i]); odd > lostRadix {
-				w := bet * odd / radix
-				if w > bet {
-					// 赢钱了收税，税率按千分比配置，需除以1000
-					tax += (w-bet) * taxs[i] / 1000
-				}
-				prize += w
-			}
-		}
+
+	prize, tax, bet := Balance(bill.Group, round.Odds)
+	if bet != bill.Bet {
+		log.Errorf("Balance error:uid:%v,bet1:%v,bet2:%v", role.Id, bet, bill.Bet)
 	}
+
 	// 扣税后返给玩家的钱
 	prize -= tax
 	role.Coin += prize
 	// 实际输赢要扣掉本金(用于写分)
-	addCoin := prize - bill.Bet
+	addCoin := prize - bet
 
 	bill.Win = addCoin
 	bill.Tax = tax
 	round.Tax += tax
 	round.Win -= addCoin
+
 	ulog := &msg.FolksUserLog{
 		Tab:   role.table.Id,
-		Bet:   bill.Bet,
-		Group: bill.Group[0 : betIndex+1],
+		Bet:   bet,
+		Group: TrimEndZero(bill.Group),
 		Log:   round.Id,
 		Poker: round.Poker,
 	}

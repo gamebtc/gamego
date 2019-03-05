@@ -128,6 +128,7 @@ func (sess *Session) recvLoop(stream GameStream) {
 			}
 		}
 	}
+	sess.Close()
 }
 
 func (sess *Session) Call(id int32, arg interface{}) bool {
@@ -146,8 +147,8 @@ func (sess *Session) Close() {
 	}
 }
 
-func(sess *Session)LockRoom() (*model.User, error) {
-	return driver.LockUserRoom(sess.AgentId, sess.UserId, KindId, RoomId)
+func(sess *Session)LockRoom(uid int32) (*model.User, error) {
+	return driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId)
 }
 
 func(sess *Session)UnlockRoom() bool {

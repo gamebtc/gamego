@@ -1,6 +1,9 @@
 package main
 
 import (
+	crand "crypto/rand"
+	"encoding/binary"
+	"math/rand"
 	"time"
 
 	"local.com/abc/game/model"
@@ -8,8 +11,30 @@ import (
 	"local.com/abc/game/room"
 )
 
+var (
+	newDriver   func()GameDriver
+	betItem     int     // 可投注的项
+	taxRate     []int64 // 税率千分比
+	gameName    string  // 游戏名称
+	schedule    []Plan
+	mustWinRate int32   // 必赢概率百分比
+	mustWinRand *rand.Rand
+)
 
 const second = 1000 * time.Millisecond
+type GameRound = msg.FolksGameRound
+
+func newRand()*rand.Rand{
+	bin := make([]byte, 8)
+	crand.Read(bin)
+	seed := binary.LittleEndian.Uint64(bin)
+	return rand.New(rand.NewSource(int64(seed)))
+}
+
+func MustWin()bool {
+	r := mustWinRand.Int31n(100)
+	return mustWinRate > r
+}
 
 // 百人游戏(龙虎/红黑/百家乐/色子)
 type folksGame struct {
@@ -33,7 +58,41 @@ func (this *folksGame) Update() {
 
 func (this *folksGame) Init(config *model.RoomInfo) {
 	this.config = config
-	table := NewTable(config)
+	mustWinRate = config.WinRate
+	mustWinRand = newRand()
+
+	switch config.Kind {
+	case model.GameKind_BJL:
+		schedule = bjlSchedule
+		newDriver = NewBjlDealer
+		gameName = "百家乐"
+		betItem = 5
+		taxRate = []int64{50, 50, 50, 50, 50}
+	case model.GameKind_HHDZ:
+		schedule = rbdzSchedule
+		newDriver = NewRbdzDealer
+		gameName = "红黑大战"
+		betItem = 3
+		taxRate = []int64{50, 50, 50}
+	case model.GameKind_LHDZ:
+		schedule = lhdzSchedule
+		newDriver = NewLhdzDealer
+		gameName = "龙虎大战"
+		betItem = 3
+		taxRate = []int64{50, 50, 50}
+	case model.GameKind_SBAO:
+		schedule = sbaoSchedule
+		newDriver = NewSbaoDealer
+		gameName = "骰宝"
+		betItem = 31
+		taxRate = []int64{
+			50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+			50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+			50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
+		}
+	}
+
+	table := NewTable()
 	this.Tables = append(this.Tables, table)
 	table.Init()
 
@@ -102,6 +161,7 @@ func configChange(event *room.GameEvent) {
 	args := event.Arg.(*model.RoomInfo)
 
 	args.Pause = 0
+	mustWinRate = args.WinRate
 	//oldSess := args[0]
 	//newSess := args[1]
 	//oldSess.Role.Role = nil
@@ -112,4 +172,34 @@ func configChange(event *room.GameEvent) {
 func roomClose(event *room.GameEvent) {
 	args := event.Arg.(*model.RoomInfo)
 	args.Pause = 0
+}
+
+// 预算输赢(prize:扣税前总返奖，tax:总税收，bet:总下注)
+func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
+	for i := 0; i < betItem; i++ {
+		// 下注金额大于0
+		if b := group[i]; b > 0 {
+			bet += b
+			//有钱回收,包含输1半
+			if odd := int64(odds[i]); odd > lostRadix {
+				w := b * odd / radix
+				if w > b {
+					// 赢钱了收税，税率按千分比配置，需除以1000
+					tax += (w - b) * taxRate[i] / 1000
+				}
+				prize += w
+			}
+		}
+	}
+	return
+}
+
+// 去掉数组结尾的0
+func TrimEndZero(a []int64) []int64 {
+	for i := len(a); i > 0; i-- {
+		if a[i-1] > 0 {
+			return a[:i]
+		}
+	}
+	return a
 }

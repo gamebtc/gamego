@@ -62,7 +62,7 @@ message FolksGameRound {
 	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
 	// 下注情况(msg.Bet三个字段顺序压入)
 	repeated int32 flow = 7 [(gogoproto.jsontag) = 'f', (gogoproto.moretags) = 'bson:"f" msg:"f"'];
-	// 玩家投注分组(0:龙赢,1:虎赢,2:和)
+	// 玩家投注分组
 	repeated int64 group = 8 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
 	// 发牌情况
 	bytes poker = 9 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
@@ -77,7 +77,9 @@ message FolksGameRound {
 	// 富豪(第1个位置为赌神后面5个为富豪ID)
 	repeated RichRole rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
 	// 是否有真实玩家下注
-	bool real = 15 [(gogoproto.jsontag) = '-', (gogoproto.moretags) = 'bson:"z" msg:"-"'];
+	bool real = 15 [(gogoproto.jsontag) = 'z', (gogoproto.moretags) = 'bson:"z" msg:"z"'];
+	// 真实玩家下注分组
+	repeated int64 userGroup = 16 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }
 
 //// 投注信息()

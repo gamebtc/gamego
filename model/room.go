@@ -41,6 +41,7 @@ type RoomInfo struct {
 	Ver     int32     `bson:"ver"`     //房间版本
 	Conf    Raw       `bson:"conf"`    //其它配置项
 	Cache   Raw       `bson:"cache"`   //其它缓存
+	WinRate int32     `bson:"winRate"` //必赢局概率千分比(0-1000)
 }
 
 func (room *RoomInfo) GetMsg() *msg.RoomInfo {

@@ -42,7 +42,7 @@ package room
 //	Seat           []int32            // 座位
 //	isClose        bool               //
 //	closeSig       chan bool          //
-//	Game           Gamer              // 当前游戏
+//	Game           GameDriver              // 当前游戏
 //	Users          map[int32]*Session // 在线用户
 //	EventHandler   func(*GameEvent)   // 事件处理器
 //	MessageHandler func(*NetMessage)  // 消息处理器
