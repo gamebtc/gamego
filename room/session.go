@@ -27,7 +27,6 @@ type Session struct {
 	Ip       model.IP         // IP地址
 	Online   bool             // 是否在线(只有在线才处理接收到的消息)
 	Disposed bool             // 是否已销毁(被强制退出)
-	Playing  bool             // 是否在游戏中
 	Role     interface{}      // 游戏角色数据
 	Created  time.Time        // TCP链接建立时间
 	Flag     int32            // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
@@ -152,7 +151,7 @@ func(sess *Session)LockRoom(uid int32) (*model.User, error) {
 }
 
 func(sess *Session)UnlockRoom() bool {
-	if sess.Playing == false && sess.Disposed == false && sess.UserId != 0{
+	if sess.Disposed == false && sess.UserId != 0{
 		sess.Disposed = true
 		if driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId) {
 			return true

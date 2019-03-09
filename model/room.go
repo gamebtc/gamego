@@ -6,6 +6,16 @@ import (
 	"local.com/abc/game/msg"
 )
 
+// 房间机器人配置
+type RoomRobot struct {
+	Start int32 `bson:"st"`  //每天起始时间(分钟)
+	End   int32 `bson:"end"` //每天结束时间(分钟)
+	Min   int32 `bson:"min"` //最小人数
+	Max   int32 `bson:"max"` //最大人数
+	Base  int32 `bson:"max"` //基础人数
+	Rate  int32 `bson:"max"` //真实玩家的百分比人数
+}
+
 // 房间信息
 type RoomInfo struct {
 	Id      int32     `bson:"_id"`     //房间唯一ID
@@ -42,6 +52,7 @@ type RoomInfo struct {
 	Conf    Raw       `bson:"conf"`    //其它配置项
 	Cache   Raw       `bson:"cache"`   //其它缓存
 	WinRate int32     `bson:"winRate"` //必赢局概率千分比(0-1000)
+	Robot   []int32   `bson:"robot"`   //机器人上线计划(6个字段一组，意思见RoomRobot)
 }
 
 func (room *RoomInfo) GetMsg() *msg.RoomInfo {

@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"time"
@@ -10,7 +10,7 @@ import (
 )
 
 var(
-	// 龙虎点数映射表
+	// 百家乐点数映射表
 	bjlPoint = [64]byte{}
 )
 func init() {
@@ -95,49 +95,42 @@ func (this *BjlDealer) Deal(table *Table) {
 	for _, role := range table.Roles {
 		if flow := role.Balance(); flow != nil {
 			room.WriteCoin(flow)
-			if role.Session != nil {
+			if !role.IsRobot() {
 				log.Debugf("结算:%v", flow)
 			}
 		}
 	}
-	// 结算结果发给玩家
-	table.LastId = table.CurId
-	round.End = room.Now()
-	room.SaveLog(round)
 }
 
 func getBjlPoint(a []byte)byte {
-	return ((bjlPoint[a[0]]) + (bjlPoint[a[1]]) + (bjlPoint[a[2]])) % 10
+	return (bjlPoint[a[0]] + bjlPoint[a[1]] + bjlPoint[a[2]]) % 10
 }
 
 // 是否补牌
 func(this *BjlDealer)RepairCard(a, b []byte, offset int) int {
 	count := 0
-	pointA := getBjlPoint(a)
-	pointB := getBjlPoint(b)
+	pa := getBjlPoint(a)
+	pb := getBjlPoint(b)
 	// 检查是否补牌
-	if pointA >= 8 || pointB >= 8 || (pointA >= 6 && pointB >= 6) {
+	if pa >= 8 || pb >= 8 || (pa >= 6 && pb >= 6) {
 		//任何一家拿到9点（天生赢家），牌局就算结束，不再补牌
 	} else {
+		var aa byte = 255 //闲家补的牌点数,255表示没有补牌
 		//闲家0-5必须博牌
-		addA := false
-		if pointA < 6 {
-			addA = true
+		if pa <= 5 {
 			a[2] = this.Poker[offset]
+			aa = bjlPoint[a[2]] % 10
+			offset++
 			count++
 		}
 		addB := false
-		//庄家0-2必须博牌
-		if pointB < 3 {
+		// 庄家0-2必须博牌
+		if pb <= 2 {
 			addB = true
 		} else {
-			aa := byte(255)
-			if addA {
-				aa = bjlPoint[a[2]]
-			}
-			switch pointB {
+			switch pb {
 			case 3:
-				// 如果闲家补得第三张牌（非三张牌点数相加，下同）是8点，不须补牌，其他则需补牌
+				// 如果闲家补得第三张牌（非三张牌点数相加）是8点，不须补牌，其他则需补牌
 				addB = aa != 8
 			case 4:
 				// 如果闲家补得第三张牌是0,1,8,9点，不须补牌，其他则需补牌
@@ -147,11 +140,11 @@ func(this *BjlDealer)RepairCard(a, b []byte, offset int) int {
 				addB = (aa != 0) && (aa != 1) && (aa != 2) && (aa != 3) && (aa != 8) && (aa != 9)
 			case 6:
 				// 如果闲家需补牌（即前提是闲家为1至5点）而补得第三张牌是6或7点，补一张牌，其他则不需补牌
-				addB = addA && (aa == 6 || aa == 7)
+				addB = (aa == 6) || (aa == 7)
 			}
 		}
 		if addB {
-			b[2] = this.Poker[offset+count]
+			b[2] = this.Poker[offset]
 			count++
 		}
 	}
@@ -188,12 +181,10 @@ func (this *BjlDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
 			odds = bjlPk(a, b)
 			log.Debugf("系统无敌:%v,%v,%v", a, b, odds)
 		}
-
 	}
 	this.Offset = offset + 4 + count
 	return a, b, odds
 }
-
 
 func bjlPk(a []byte, b []byte) (odds []int32) {
 	pa := getBjlPoint(a)
@@ -207,8 +198,8 @@ func bjlPk(a []byte, b []byte) (odds []int32) {
 		// 庄赢
 		odds[1] = 1*radix + radix
 	} else {
-		// 和
-		odds[2] = 8*radix + radix
+		// 和(1赔8，闲/庄退回)
+		odds[0], odds[1], odds[2] = radix, radix, 8*radix+radix
 	}
 	//闲对
 	if (bjlPoint[a[0]]) == (bjlPoint[a[1]]) {

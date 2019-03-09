@@ -40,6 +40,9 @@ type GameDriver interface {
 	GetUser(id int32) (user *model.User, err error)
 	// 加载用户
 	LoadUser(*model.User) error
+    // 加载机器人
+    LoadRobot(room int32, count int32)[]*model.User
+
 	// 锁定用户到指定房间
 	LockUserRoom(agent int64, userId int32, kind int32, roomId int32) (*model.User, error)
 	// 解锁用户从指定房间

@@ -36,16 +36,6 @@ message GameBill {
 	int32 job = 7 [(gogoproto.jsontag) = 'j,omitempty', (gogoproto.moretags) = 'bson:"j,omitempty" msg:"j,omitempty"'];
 }
 
-// 富豪
-message RichRole {
-	// 玩家ID
-	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
-	// 名字
-	string name = 2 [(gogoproto.jsontag) = 'n', (gogoproto.moretags) = 'bson:"n" msg:"n"'];
-	// 开始游戏时带的钱
-	int64 coin = 3 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
-}
-
 // 百人游戏日志(龙虎/红黑/百家乐/骰宝)
 message FolksGameRound {
 	// 游戏ID
@@ -75,7 +65,7 @@ message FolksGameRound {
 	// 备注
 	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
 	// 富豪(第1个位置为赌神后面5个为富豪ID)
-	repeated RichRole rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
+	repeated int32 rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
 	// 是否有真实玩家下注
 	bool real = 15 [(gogoproto.jsontag) = 'z', (gogoproto.moretags) = 'bson:"z" msg:"z"'];
 	// 真实玩家下注分组
@@ -97,7 +87,7 @@ message FolksGameInitAck {
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
-	// 富豪玩家
+	// 富豪玩家(第1个位置为赌神后面5个为富豪)
 	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 各个区域的投注情况
 	repeated int64 sum = 4 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
@@ -137,7 +127,7 @@ message OpenBetAck {
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
-	// 富豪玩家
+	// 富豪玩家(第1个位置为赌神后面5个为富豪)
 	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 }
 

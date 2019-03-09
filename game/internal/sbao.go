@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"math/rand"
@@ -76,17 +76,12 @@ func (this *SbaoDealer) Deal(table *Table) {
 	for _, role := range table.Roles {
 		if flow := role.Balance(); flow != nil {
 			room.WriteCoin(flow)
-			if role.Session != nil {
+			if !role.IsRobot() {
 				log.Debugf("结算:%v", flow)
 			}
 		}
 	}
-	// 结算结果发给玩家
-	table.LastId = table.CurId
-	round.End = room.Now()
-	room.SaveLog(round)
 }
-
 
 func (this *SbaoDealer)GetPokers(table *Table)([]byte,[]int32) {
 	if this.offset > 32 {

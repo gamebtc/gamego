@@ -19,7 +19,7 @@ func userOnline(sess *Session, uid int32) {
 	user, err := sess.LockRoom(uid)
 	if err != nil {
 		// 发送错误消息
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId,err.Error())
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, err.Error())
 		sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "登录失败", err.Error())
 		sess.Close()
 		return
@@ -35,7 +35,6 @@ func userOnline(sess *Session, uid int32) {
 	sess.UserId = uid
 	if oldSess != nil {
 		sess.Online = true
-		sess.Playing = oldSess.Playing
 		sess.Role = oldSess.Role
 		oldSess.Online = false
 		oldSess.Disposed = true
@@ -49,15 +48,13 @@ func userOnline(sess *Session, uid int32) {
 		coin := user.Bag[CoinKey]
 		if coin < Config.DoorMin || coin > Config.DoorMax {
 			// 所带金币不符合要求发送错误消息
-			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId,"金币不足")
+			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "金币不足")
 			sess.SendError(int32(msg.MsgId_LoginRoomReq), 1000, "金币不足", "")
 			sess.Close()
 			return
 		}
-		user.Coin = coin
-
 		roomer.AddUser(sess)
-		roomer.UserOnline(sess, user)
+		roomer.UserOnline(sess, user, coin)
 	}
 }
 
@@ -69,12 +66,13 @@ func userOffline(sess *Session) {
 	roomer.UserOffline(sess)
 }
 
-func LoadRobot(agentId int64, userId int32) *model.User {
+//
+func LoadRobot(room int32, count int32) []*model.User {
 	// 锁定玩家
 	user, err := driver.LockUserRoom(agentId, userId, KindId, RoomId)
 	if err == nil && user != nil {
 		// 检查房间配置
-		user.Coin = user.Bag[CoinKey]
+		//user.Coin = user.Bag[CoinKey]
 	}
 	return user
 }

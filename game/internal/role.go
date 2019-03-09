@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -9,37 +9,52 @@ import (
 	"local.com/abc/game/room"
 )
 
-// 每个玩家的游戏数据
-type Role struct {
-	*model.User          // 玩家信息
-	*room.Session        // 为空则为机器人
-	table  *Table        // 桌子ID
-	bill   *msg.GameBill // 输赢情况
-	flowSn int64         // 最后的写分序号，返回时用于验证
-	online bool          // 是否在线
+
+type Sender interface {
+    Send(val interface{})bool
 }
 
-// 检查投注项位置0:龙赢,1:虎赢,2:和
+// 每个玩家的游戏数据
+type Role struct {
+	*model.User            // 玩家信息
+	Sender                 // 发送消息
+	Online   bool          // 是否在线
+	TotalWin int64         // 进入之后的赢钱总数
+	Coin     int64         // 当前房间使用的币
+	table    *Table        // 桌子ID
+	bill     *msg.GameBill // 输赢情况
+	flowSn   int64         // 最后的写分序号，返回时用于验证
+}
+
+func (role *Role)GetMsgUser() *msg.User {
+	//return &this.User
+	return &msg.User{
+		Id:    role.Id,
+		Icon:  role.Icon,
+		Vip:   role.Vip,
+		Name:  role.Name,
+		Coin:  role.Coin,
+	}
+}
+
+func(role *Role)IsRobot()bool {
+	return role.User.Job == 10
+}
+
+// 检查投注项位置
 func (role *Role) RobotCanBet(item int32) bool {
 	if role.bill != nil {
-		if item == 0 {
-			return role.bill.Group[1] == 0
-		} else if item == 1 {
-			return role.bill.Group[0] == 0
+		for k, v := range role.bill.Group {
+			if k != int(item) && v > int64(0) {
+				return false
+			}
 		}
 	}
 	return true
 }
 
 func (role *Role) Reset() {
-	if role.bill == nil || role.bill.Bet > 0 {
-		role.bill = &msg.GameBill{
-			Uid:   role.Id,
-			Coin:  role.Coin,
-			Group: make([]int64, betItem),
-			Job:   role.Job,
-		}
-	}
+	role.bill = nil
 }
 
 // 投注
@@ -72,10 +87,7 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 			Job:   role.Job,
 		}
 		role.bill = bill
-	}
-
-	// 首次投注
-	if bill.Bet == 0 {
+		// 首次投注
 		round.Bill = append(round.Bill, bill)
 	}
 
@@ -86,7 +98,7 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 	bill.Group[i] += coin
 	bill.Bet += coin
 	// 有真实玩家下注
-	if role.Session != nil {
+	if !role.IsRobot(){
 		round.Real = true
 		round.UserGroup[i] += coin
 		log.Debugf("玩家下注:%v,%v", role.Id, bet)
@@ -115,6 +127,9 @@ func (role *Role) Balance() *model.CoinFlow {
 	role.Coin += prize
 	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bet
+	if addCoin > 0 {
+		role.TotalWin += addCoin
+	}
 
 	bill.Win = addCoin
 	bill.Tax = tax

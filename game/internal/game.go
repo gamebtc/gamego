@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	crand "crypto/rand"
@@ -67,7 +67,7 @@ func (this *folksGame) Init(config *model.RoomInfo) {
 		newDriver = NewBjlDealer
 		gameName = "百家乐"
 		betItem = 5
-		taxRate = []int64{50, 50, 50, 50, 50}
+		taxRate = []int64{0, 50, 50, 50, 50}
 	case model.GameKind_HHDZ:
 		schedule = rbdzSchedule
 		newDriver = NewRbdzDealer
@@ -110,24 +110,25 @@ func (this *folksGame) Init(config *model.RoomInfo) {
 	room.Call(table.Start)
 }
 
-// 创建游戏角色
-func NewGameData(r *model.User) *Role {
-	data := new(Role)
-	data.Id, data.Name, data.Coin, data.Job = r.Id, r.Name, r.Coin, r.Job
-	return data
-}
+//// 创建游戏角色
+//func NewGameData(r *model.User) *Role {
+//	data := new(Role)
+//	data.Id, data.Name, data.Coin, data.Job = r.Id, r.Name, r.Coin, r.Job
+//	return data
+//}
 
 // 用户上线
-func (this *folksGame) UserOnline(sess *room.Session, user *model.User) {
-	role := &Role{
-		User: user,
-	}
+func (this *folksGame) UserOnline(sess *room.Session, user *model.User, coin int64) {
 	table := this.Tables[0]
 
-	role.table = table
-	role.online = true
+	role := &Role{
+		User:   user,
+		Coin:   coin,
+		table:  table,
+		Online: true,
+		Sender: sess,
+	}
 	sess.Role = role
-	role.Session = sess
 
 	// 发送登录游戏信息
 	sess.UnsafeSend(&msg.LoginRoomAck{
@@ -142,7 +143,7 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User) {
 // 用户下线
 func (this *folksGame) UserOffline(sess *room.Session) {
 	if data, ok := sess.Role.(*Role); ok && data != nil {
-		data.online = false
+		data.Online = false
 
 	}
 }
@@ -151,7 +152,7 @@ func (this *folksGame) UserOffline(sess *room.Session) {
 func (this *folksGame) UserReline(oldSess *room.Session, newSess *room.Session) {
 	if data, ok := oldSess.Role.(*Role); ok && data != nil {
 		oldSess.Role = nil
-		data.online = true
+		data.Online = true
 		newSess.Role = data
 	}
 }
@@ -166,6 +167,8 @@ func configChange(event *room.GameEvent) {
 	//newSess := args[1]
 	//oldSess.Role.Role = nil
 	//newSess.Role.Role = nil
+
+	//
 }
 
 // 房间关闭通知

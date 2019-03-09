@@ -1275,53 +1275,12 @@ func (z *FolksGameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 			if cap(z.Rich) >= int(zjqz) {
 				z.Rich = (z.Rich)[:zjqz]
 			} else {
-				z.Rich = make([]*RichRole, zjqz)
+				z.Rich = make([]int32, zjqz)
 			}
 			for zawn := range z.Rich {
-				if dc.IsNil() {
-					err = dc.ReadNil()
-					if err != nil {
-						return
-					}
-					z.Rich[zawn] = nil
-				} else {
-					if z.Rich[zawn] == nil {
-						z.Rich[zawn] = new(RichRole)
-					}
-					var zkct uint32
-					zkct, err = dc.ReadMapHeader()
-					if err != nil {
-						return
-					}
-					for zkct > 0 {
-						zkct--
-						field, err = dc.ReadMapKeyPtr()
-						if err != nil {
-							return
-						}
-						switch msgp.UnsafeString(field) {
-						case "u":
-							z.Rich[zawn].Uid, err = dc.ReadInt32()
-							if err != nil {
-								return
-							}
-						case "n":
-							z.Rich[zawn].Name, err = dc.ReadString()
-							if err != nil {
-								return
-							}
-						case "c":
-							z.Rich[zawn].Coin, err = dc.ReadInt64()
-							if err != nil {
-								return
-							}
-						default:
-							err = dc.Skip()
-							if err != nil {
-								return
-							}
-						}
-					}
+				z.Rich[zawn], err = dc.ReadInt32()
+				if err != nil {
+					return
 				}
 			}
 		case "z":
@@ -1330,15 +1289,15 @@ func (z *FolksGameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "u":
-			var ztmt uint32
-			ztmt, err = dc.ReadArrayHeader()
+			var zkct uint32
+			zkct, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.UserGroup) >= int(ztmt) {
-				z.UserGroup = (z.UserGroup)[:ztmt]
+			if cap(z.UserGroup) >= int(zkct) {
+				z.UserGroup = (z.UserGroup)[:zkct]
 			} else {
-				z.UserGroup = make([]int64, ztmt)
+				z.UserGroup = make([]int64, zkct)
 			}
 			for zwel := range z.UserGroup {
 				z.UserGroup[zwel], err = dc.ReadInt64()
@@ -1517,40 +1476,9 @@ func (z *FolksGameRound) EncodeMsg(en *msgp.Writer) (err error) {
 		return
 	}
 	for zawn := range z.Rich {
-		if z.Rich[zawn] == nil {
-			err = en.WriteNil()
-			if err != nil {
-				return
-			}
-		} else {
-			// map header, size 3
-			// write "u"
-			err = en.Append(0x83, 0xa1, 0x75)
-			if err != nil {
-				return err
-			}
-			err = en.WriteInt32(z.Rich[zawn].Uid)
-			if err != nil {
-				return
-			}
-			// write "n"
-			err = en.Append(0xa1, 0x6e)
-			if err != nil {
-				return err
-			}
-			err = en.WriteString(z.Rich[zawn].Name)
-			if err != nil {
-				return
-			}
-			// write "c"
-			err = en.Append(0xa1, 0x63)
-			if err != nil {
-				return err
-			}
-			err = en.WriteInt64(z.Rich[zawn].Coin)
-			if err != nil {
-				return
-			}
+		err = en.WriteInt32(z.Rich[zawn])
+		if err != nil {
+			return
 		}
 	}
 	// write "z"
@@ -1646,20 +1574,7 @@ func (z *FolksGameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	o = append(o, 0xa1, 0x68)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Rich)))
 	for zawn := range z.Rich {
-		if z.Rich[zawn] == nil {
-			o = msgp.AppendNil(o)
-		} else {
-			// map header, size 3
-			// string "u"
-			o = append(o, 0x83, 0xa1, 0x75)
-			o = msgp.AppendInt32(o, z.Rich[zawn].Uid)
-			// string "n"
-			o = append(o, 0xa1, 0x6e)
-			o = msgp.AppendString(o, z.Rich[zawn].Name)
-			// string "c"
-			o = append(o, 0xa1, 0x63)
-			o = msgp.AppendInt64(o, z.Rich[zawn].Coin)
-		}
+		o = msgp.AppendInt32(o, z.Rich[zawn])
 	}
 	// string "z"
 	o = append(o, 0xa1, 0x7a)
@@ -1677,13 +1592,13 @@ func (z *FolksGameRound) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var ztco uint32
-	ztco, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var ztmt uint32
+	ztmt, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for ztco > 0 {
-		ztco--
+	for ztmt > 0 {
+		ztmt--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -1715,15 +1630,15 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "b":
-			var zana uint32
-			zana, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var ztco uint32
+			ztco, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Bill) >= int(zana) {
-				z.Bill = (z.Bill)[:zana]
+			if cap(z.Bill) >= int(ztco) {
+				z.Bill = (z.Bill)[:ztco]
 			} else {
-				z.Bill = make([]*GameBill, zana)
+				z.Bill = make([]*GameBill, ztco)
 			}
 			for ztaf := range z.Bill {
 				if msgp.IsNil(bts) {
@@ -1743,15 +1658,15 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				}
 			}
 		case "f":
-			var ztyy uint32
-			ztyy, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zana uint32
+			zana, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Flow) >= int(ztyy) {
-				z.Flow = (z.Flow)[:ztyy]
+			if cap(z.Flow) >= int(zana) {
+				z.Flow = (z.Flow)[:zana]
 			} else {
-				z.Flow = make([]int32, ztyy)
+				z.Flow = make([]int32, zana)
 			}
 			for zeth := range z.Flow {
 				z.Flow[zeth], bts, err = msgp.ReadInt32Bytes(bts)
@@ -1760,15 +1675,15 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				}
 			}
 		case "g":
-			var zinl uint32
-			zinl, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var ztyy uint32
+			ztyy, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Group) >= int(zinl) {
-				z.Group = (z.Group)[:zinl]
+			if cap(z.Group) >= int(ztyy) {
+				z.Group = (z.Group)[:ztyy]
 			} else {
-				z.Group = make([]int64, zinl)
+				z.Group = make([]int64, ztyy)
 			}
 			for zsbz := range z.Group {
 				z.Group[zsbz], bts, err = msgp.ReadInt64Bytes(bts)
@@ -1782,15 +1697,15 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "o":
-			var zare uint32
-			zare, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zinl uint32
+			zinl, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Odds) >= int(zare) {
-				z.Odds = (z.Odds)[:zare]
+			if cap(z.Odds) >= int(zinl) {
+				z.Odds = (z.Odds)[:zinl]
 			} else {
-				z.Odds = make([]int32, zare)
+				z.Odds = make([]int32, zinl)
 			}
 			for zrjx := range z.Odds {
 				z.Odds[zrjx], bts, err = msgp.ReadInt32Bytes(bts)
@@ -1814,61 +1729,20 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "h":
-			var zljy uint32
-			zljy, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zare uint32
+			zare, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Rich) >= int(zljy) {
-				z.Rich = (z.Rich)[:zljy]
+			if cap(z.Rich) >= int(zare) {
+				z.Rich = (z.Rich)[:zare]
 			} else {
-				z.Rich = make([]*RichRole, zljy)
+				z.Rich = make([]int32, zare)
 			}
 			for zawn := range z.Rich {
-				if msgp.IsNil(bts) {
-					bts, err = msgp.ReadNilBytes(bts)
-					if err != nil {
-						return
-					}
-					z.Rich[zawn] = nil
-				} else {
-					if z.Rich[zawn] == nil {
-						z.Rich[zawn] = new(RichRole)
-					}
-					var zixj uint32
-					zixj, bts, err = msgp.ReadMapHeaderBytes(bts)
-					if err != nil {
-						return
-					}
-					for zixj > 0 {
-						zixj--
-						field, bts, err = msgp.ReadMapKeyZC(bts)
-						if err != nil {
-							return
-						}
-						switch msgp.UnsafeString(field) {
-						case "u":
-							z.Rich[zawn].Uid, bts, err = msgp.ReadInt32Bytes(bts)
-							if err != nil {
-								return
-							}
-						case "n":
-							z.Rich[zawn].Name, bts, err = msgp.ReadStringBytes(bts)
-							if err != nil {
-								return
-							}
-						case "c":
-							z.Rich[zawn].Coin, bts, err = msgp.ReadInt64Bytes(bts)
-							if err != nil {
-								return
-							}
-						default:
-							bts, err = msgp.Skip(bts)
-							if err != nil {
-								return
-							}
-						}
-					}
+				z.Rich[zawn], bts, err = msgp.ReadInt32Bytes(bts)
+				if err != nil {
+					return
 				}
 			}
 		case "z":
@@ -1877,15 +1751,15 @@ func (z *FolksGameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "u":
-			var zrsc uint32
-			zrsc, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zljy uint32
+			zljy, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.UserGroup) >= int(zrsc) {
-				z.UserGroup = (z.UserGroup)[:zrsc]
+			if cap(z.UserGroup) >= int(zljy) {
+				z.UserGroup = (z.UserGroup)[:zljy]
 			} else {
-				z.UserGroup = make([]int64, zrsc)
+				z.UserGroup = make([]int64, zljy)
 			}
 			for zwel := range z.UserGroup {
 				z.UserGroup[zwel], bts, err = msgp.ReadInt64Bytes(bts)
@@ -1914,15 +1788,7 @@ func (z *FolksGameRound) Msgsize() (s int) {
 			s += z.Bill[ztaf].Msgsize()
 		}
 	}
-	s += 2 + msgp.ArrayHeaderSize + (len(z.Flow) * (msgp.Int32Size)) + 2 + msgp.ArrayHeaderSize + (len(z.Group) * (msgp.Int64Size)) + 2 + msgp.BytesPrefixSize + len(z.Poker) + 2 + msgp.ArrayHeaderSize + (len(z.Odds) * (msgp.Int32Size)) + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.StringPrefixSize + len(z.Note) + 2 + msgp.ArrayHeaderSize
-	for zawn := range z.Rich {
-		if z.Rich[zawn] == nil {
-			s += msgp.NilSize
-		} else {
-			s += 1 + 2 + msgp.Int32Size + 2 + msgp.StringPrefixSize + len(z.Rich[zawn].Name) + 2 + msgp.Int64Size
-		}
-	}
-	s += 2 + msgp.BoolSize + 2 + msgp.ArrayHeaderSize + (len(z.UserGroup) * (msgp.Int64Size))
+	s += 2 + msgp.ArrayHeaderSize + (len(z.Flow) * (msgp.Int32Size)) + 2 + msgp.ArrayHeaderSize + (len(z.Group) * (msgp.Int64Size)) + 2 + msgp.BytesPrefixSize + len(z.Poker) + 2 + msgp.ArrayHeaderSize + (len(z.Odds) * (msgp.Int32Size)) + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.StringPrefixSize + len(z.Note) + 2 + msgp.ArrayHeaderSize + (len(z.Rich) * (msgp.Int32Size)) + 2 + msgp.BoolSize + 2 + msgp.ArrayHeaderSize + (len(z.UserGroup) * (msgp.Int64Size))
 	return
 }
 
@@ -1930,13 +1796,13 @@ func (z *FolksGameRound) Msgsize() (s int) {
 func (z *FolksUserLog) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zswy uint32
-	zswy, err = dc.ReadMapHeader()
+	var zrsc uint32
+	zrsc, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zswy > 0 {
-		zswy--
+	for zrsc > 0 {
+		zrsc--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -1963,18 +1829,18 @@ func (z *FolksUserLog) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "g":
-			var znsg uint32
-			znsg, err = dc.ReadArrayHeader()
+			var zctn uint32
+			zctn, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Group) >= int(znsg) {
-				z.Group = (z.Group)[:znsg]
+			if cap(z.Group) >= int(zctn) {
+				z.Group = (z.Group)[:zctn]
 			} else {
-				z.Group = make([]int64, znsg)
+				z.Group = make([]int64, zctn)
 			}
-			for zctn := range z.Group {
-				z.Group[zctn], err = dc.ReadInt64()
+			for zixj := range z.Group {
+				z.Group[zixj], err = dc.ReadInt64()
 				if err != nil {
 					return
 				}
@@ -2037,8 +1903,8 @@ func (z *FolksUserLog) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zctn := range z.Group {
-		err = en.WriteInt64(z.Group[zctn])
+	for zixj := range z.Group {
+		err = en.WriteInt64(z.Group[zixj])
 		if err != nil {
 			return
 		}
@@ -2065,8 +1931,8 @@ func (z *FolksUserLog) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "g"
 	o = append(o, 0xa1, 0x67)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Group)))
-	for zctn := range z.Group {
-		o = msgp.AppendInt64(o, z.Group[zctn])
+	for zixj := range z.Group {
+		o = msgp.AppendInt64(o, z.Group[zixj])
 	}
 	return
 }
@@ -2075,13 +1941,13 @@ func (z *FolksUserLog) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *FolksUserLog) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zrus uint32
-	zrus, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zswy uint32
+	zswy, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zrus > 0 {
-		zrus--
+	for zswy > 0 {
+		zswy--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -2108,18 +1974,18 @@ func (z *FolksUserLog) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "g":
-			var zsvm uint32
-			zsvm, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var znsg uint32
+			znsg, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Group) >= int(zsvm) {
-				z.Group = (z.Group)[:zsvm]
+			if cap(z.Group) >= int(znsg) {
+				z.Group = (z.Group)[:znsg]
 			} else {
-				z.Group = make([]int64, zsvm)
+				z.Group = make([]int64, znsg)
 			}
-			for zctn := range z.Group {
-				z.Group[zctn], bts, err = msgp.ReadInt64Bytes(bts)
+			for zixj := range z.Group {
+				z.Group[zixj], bts, err = msgp.ReadInt64Bytes(bts)
 				if err != nil {
 					return
 				}
@@ -2145,13 +2011,13 @@ func (z *FolksUserLog) Msgsize() (s int) {
 func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zfzb uint32
-	zfzb, err = dc.ReadMapHeader()
+	var zsvm uint32
+	zsvm, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zfzb > 0 {
-		zfzb--
+	for zsvm > 0 {
+		zsvm--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -2173,18 +2039,18 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "g":
-			var zsbo uint32
-			zsbo, err = dc.ReadArrayHeader()
+			var zaoz uint32
+			zaoz, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Group) >= int(zsbo) {
-				z.Group = (z.Group)[:zsbo]
+			if cap(z.Group) >= int(zaoz) {
+				z.Group = (z.Group)[:zaoz]
 			} else {
-				z.Group = make([]int64, zsbo)
+				z.Group = make([]int64, zaoz)
 			}
-			for zaoz := range z.Group {
-				z.Group[zaoz], err = dc.ReadInt64()
+			for zrus := range z.Group {
+				z.Group[zrus], err = dc.ReadInt64()
 				if err != nil {
 					return
 				}
@@ -2253,8 +2119,8 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zaoz := range z.Group {
-		err = en.WriteInt64(z.Group[zaoz])
+	for zrus := range z.Group {
+		err = en.WriteInt64(z.Group[zrus])
 		if err != nil {
 			return
 		}
@@ -2305,8 +2171,8 @@ func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "g"
 	o = append(o, 0xa1, 0x67)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Group)))
-	for zaoz := range z.Group {
-		o = msgp.AppendInt64(o, z.Group[zaoz])
+	for zrus := range z.Group {
+		o = msgp.AppendInt64(o, z.Group[zrus])
 	}
 	// string "w"
 	o = append(o, 0xa1, 0x77)
@@ -2324,13 +2190,13 @@ func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zjif uint32
-	zjif, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zfzb uint32
+	zfzb, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zjif > 0 {
-		zjif--
+	for zfzb > 0 {
+		zfzb--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -2352,18 +2218,18 @@ func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "g":
-			var zqgz uint32
-			zqgz, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zsbo uint32
+			zsbo, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Group) >= int(zqgz) {
-				z.Group = (z.Group)[:zqgz]
+			if cap(z.Group) >= int(zsbo) {
+				z.Group = (z.Group)[:zsbo]
 			} else {
-				z.Group = make([]int64, zqgz)
+				z.Group = make([]int64, zsbo)
 			}
-			for zaoz := range z.Group {
-				z.Group[zaoz], bts, err = msgp.ReadInt64Bytes(bts)
+			for zrus := range z.Group {
+				z.Group[zrus], bts, err = msgp.ReadInt64Bytes(bts)
 				if err != nil {
 					return
 				}
@@ -2404,13 +2270,13 @@ func (z *GameBill) Msgsize() (s int) {
 func (z *OpenBetAck) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var ztls uint32
-	ztls, err = dc.ReadMapHeader()
+	var zqgz uint32
+	zqgz, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for ztls > 0 {
-		ztls--
+	for zqgz > 0 {
+		zqgz--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -2427,28 +2293,28 @@ func (z *OpenBetAck) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "rich":
-			var zmvo uint32
-			zmvo, err = dc.ReadArrayHeader()
+			var zsnw uint32
+			zsnw, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Rich) >= int(zmvo) {
-				z.Rich = (z.Rich)[:zmvo]
+			if cap(z.Rich) >= int(zsnw) {
+				z.Rich = (z.Rich)[:zsnw]
 			} else {
-				z.Rich = make([]*User, zmvo)
+				z.Rich = make([]*User, zsnw)
 			}
-			for zsnw := range z.Rich {
+			for zjif := range z.Rich {
 				if dc.IsNil() {
 					err = dc.ReadNil()
 					if err != nil {
 						return
 					}
-					z.Rich[zsnw] = nil
+					z.Rich[zjif] = nil
 				} else {
-					if z.Rich[zsnw] == nil {
-						z.Rich[zsnw] = new(User)
+					if z.Rich[zjif] == nil {
+						z.Rich[zjif] = new(User)
 					}
-					err = z.Rich[zsnw].DecodeMsg(dc)
+					err = z.Rich[zjif].DecodeMsg(dc)
 					if err != nil {
 						return
 					}
@@ -2494,14 +2360,14 @@ func (z *OpenBetAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zsnw := range z.Rich {
-		if z.Rich[zsnw] == nil {
+	for zjif := range z.Rich {
+		if z.Rich[zjif] == nil {
 			err = en.WriteNil()
 			if err != nil {
 				return
 			}
 		} else {
-			err = z.Rich[zsnw].EncodeMsg(en)
+			err = z.Rich[zjif].EncodeMsg(en)
 			if err != nil {
 				return
 			}
@@ -2523,11 +2389,11 @@ func (z *OpenBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "rich"
 	o = append(o, 0xa4, 0x72, 0x69, 0x63, 0x68)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Rich)))
-	for zsnw := range z.Rich {
-		if z.Rich[zsnw] == nil {
+	for zjif := range z.Rich {
+		if z.Rich[zjif] == nil {
 			o = msgp.AppendNil(o)
 		} else {
-			o, err = z.Rich[zsnw].MarshalMsg(o)
+			o, err = z.Rich[zjif].MarshalMsg(o)
 			if err != nil {
 				return
 			}
@@ -2540,13 +2406,13 @@ func (z *OpenBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *OpenBetAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zigk uint32
-	zigk, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var ztls uint32
+	ztls, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zigk > 0 {
-		zigk--
+	for ztls > 0 {
+		ztls--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -2563,28 +2429,28 @@ func (z *OpenBetAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "rich":
-			var zopb uint32
-			zopb, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zmvo uint32
+			zmvo, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Rich) >= int(zopb) {
-				z.Rich = (z.Rich)[:zopb]
+			if cap(z.Rich) >= int(zmvo) {
+				z.Rich = (z.Rich)[:zmvo]
 			} else {
-				z.Rich = make([]*User, zopb)
+				z.Rich = make([]*User, zmvo)
 			}
-			for zsnw := range z.Rich {
+			for zjif := range z.Rich {
 				if msgp.IsNil(bts) {
 					bts, err = msgp.ReadNilBytes(bts)
 					if err != nil {
 						return
 					}
-					z.Rich[zsnw] = nil
+					z.Rich[zjif] = nil
 				} else {
-					if z.Rich[zsnw] == nil {
-						z.Rich[zsnw] = new(User)
+					if z.Rich[zjif] == nil {
+						z.Rich[zjif] = new(User)
 					}
-					bts, err = z.Rich[zsnw].UnmarshalMsg(bts)
+					bts, err = z.Rich[zjif].UnmarshalMsg(bts)
 					if err != nil {
 						return
 					}
@@ -2604,151 +2470,13 @@ func (z *OpenBetAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *OpenBetAck) Msgsize() (s int) {
 	s = 1 + 3 + msgp.Int64Size + 6 + msgp.Int32Size + 5 + msgp.ArrayHeaderSize
-	for zsnw := range z.Rich {
-		if z.Rich[zsnw] == nil {
+	for zjif := range z.Rich {
+		if z.Rich[zjif] == nil {
 			s += msgp.NilSize
 		} else {
-			s += z.Rich[zsnw].Msgsize()
+			s += z.Rich[zjif].Msgsize()
 		}
 	}
-	return
-}
-
-// DecodeMsg implements msgp.Decodable
-func (z *RichRole) DecodeMsg(dc *msgp.Reader) (err error) {
-	var field []byte
-	_ = field
-	var zuop uint32
-	zuop, err = dc.ReadMapHeader()
-	if err != nil {
-		return
-	}
-	for zuop > 0 {
-		zuop--
-		field, err = dc.ReadMapKeyPtr()
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "u":
-			z.Uid, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
-		case "n":
-			z.Name, err = dc.ReadString()
-			if err != nil {
-				return
-			}
-		case "c":
-			z.Coin, err = dc.ReadInt64()
-			if err != nil {
-				return
-			}
-		default:
-			err = dc.Skip()
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// EncodeMsg implements msgp.Encodable
-func (z RichRole) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 3
-	// write "u"
-	err = en.Append(0x83, 0xa1, 0x75)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt32(z.Uid)
-	if err != nil {
-		return
-	}
-	// write "n"
-	err = en.Append(0xa1, 0x6e)
-	if err != nil {
-		return err
-	}
-	err = en.WriteString(z.Name)
-	if err != nil {
-		return
-	}
-	// write "c"
-	err = en.Append(0xa1, 0x63)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt64(z.Coin)
-	if err != nil {
-		return
-	}
-	return
-}
-
-// MarshalMsg implements msgp.Marshaler
-func (z RichRole) MarshalMsg(b []byte) (o []byte, err error) {
-	o = msgp.Require(b, z.Msgsize())
-	// map header, size 3
-	// string "u"
-	o = append(o, 0x83, 0xa1, 0x75)
-	o = msgp.AppendInt32(o, z.Uid)
-	// string "n"
-	o = append(o, 0xa1, 0x6e)
-	o = msgp.AppendString(o, z.Name)
-	// string "c"
-	o = append(o, 0xa1, 0x63)
-	o = msgp.AppendInt64(o, z.Coin)
-	return
-}
-
-// UnmarshalMsg implements msgp.Unmarshaler
-func (z *RichRole) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var field []byte
-	_ = field
-	var zedl uint32
-	zedl, bts, err = msgp.ReadMapHeaderBytes(bts)
-	if err != nil {
-		return
-	}
-	for zedl > 0 {
-		zedl--
-		field, bts, err = msgp.ReadMapKeyZC(bts)
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "u":
-			z.Uid, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "n":
-			z.Name, bts, err = msgp.ReadStringBytes(bts)
-			if err != nil {
-				return
-			}
-		case "c":
-			z.Coin, bts, err = msgp.ReadInt64Bytes(bts)
-			if err != nil {
-				return
-			}
-		default:
-			bts, err = msgp.Skip(bts)
-			if err != nil {
-				return
-			}
-		}
-	}
-	o = bts
-	return
-}
-
-// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z RichRole) Msgsize() (s int) {
-	s = 1 + 2 + msgp.Int32Size + 2 + msgp.StringPrefixSize + len(z.Name) + 2 + msgp.Int64Size
 	return
 }
 
@@ -2756,31 +2484,31 @@ func (z RichRole) Msgsize() (s int) {
 func (z *UserBetAck) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zome uint32
-	zome, err = dc.ReadMapHeader()
+	var zopb uint32
+	zopb, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zome > 0 {
-		zome--
+	for zopb > 0 {
+		zopb--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
 		case "item":
-			var zrvj uint32
-			zrvj, err = dc.ReadArrayHeader()
+			var zuop uint32
+			zuop, err = dc.ReadArrayHeader()
 			if err != nil {
 				return
 			}
-			if cap(z.Bet) >= int(zrvj) {
-				z.Bet = (z.Bet)[:zrvj]
+			if cap(z.Bet) >= int(zuop) {
+				z.Bet = (z.Bet)[:zuop]
 			} else {
-				z.Bet = make([]int32, zrvj)
+				z.Bet = make([]int32, zuop)
 			}
-			for zupd := range z.Bet {
-				z.Bet[zupd], err = dc.ReadInt32()
+			for zigk := range z.Bet {
+				z.Bet[zigk], err = dc.ReadInt32()
 				if err != nil {
 					return
 				}
@@ -2807,8 +2535,8 @@ func (z *UserBetAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	for zupd := range z.Bet {
-		err = en.WriteInt32(z.Bet[zupd])
+	for zigk := range z.Bet {
+		err = en.WriteInt32(z.Bet[zigk])
 		if err != nil {
 			return
 		}
@@ -2823,8 +2551,8 @@ func (z *UserBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "item"
 	o = append(o, 0x81, 0xa4, 0x69, 0x74, 0x65, 0x6d)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Bet)))
-	for zupd := range z.Bet {
-		o = msgp.AppendInt32(o, z.Bet[zupd])
+	for zigk := range z.Bet {
+		o = msgp.AppendInt32(o, z.Bet[zigk])
 	}
 	return
 }
@@ -2833,31 +2561,31 @@ func (z *UserBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *UserBetAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zarz uint32
-	zarz, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zedl uint32
+	zedl, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zarz > 0 {
-		zarz--
+	for zedl > 0 {
+		zedl--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
 		case "item":
-			var zknt uint32
-			zknt, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			var zupd uint32
+			zupd, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
 				return
 			}
-			if cap(z.Bet) >= int(zknt) {
-				z.Bet = (z.Bet)[:zknt]
+			if cap(z.Bet) >= int(zupd) {
+				z.Bet = (z.Bet)[:zupd]
 			} else {
-				z.Bet = make([]int32, zknt)
+				z.Bet = make([]int32, zupd)
 			}
-			for zupd := range z.Bet {
-				z.Bet[zupd], bts, err = msgp.ReadInt32Bytes(bts)
+			for zigk := range z.Bet {
+				z.Bet[zigk], bts, err = msgp.ReadInt32Bytes(bts)
 				if err != nil {
 					return
 				}

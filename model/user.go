@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"local.com/abc/game/msg"
 )
 
 // 支付信息
@@ -61,18 +59,6 @@ type User struct {
 	Init   time.Time `bson:"init"`   //创建时间
 	Up     time.Time `bson:"up"`     //更新时间
 	Ver    int64     `bson:"ver"`    //币的版本
-	Coin   int64     `bson:"-"`      //当前房间使用的币
-}
-
-func (this *User)GetMsgUser() *msg.User {
-	//return &this.User
-	return &msg.User{
-		Id:    this.Id,
-		Icon:  this.Icon,
-		Vip:   this.Vip,
-		Name:  this.Name,
-		Coin:  this.Coin,
-	}
 }
 
 // 在线玩家锁定信息

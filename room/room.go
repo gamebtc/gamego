@@ -41,7 +41,7 @@ type Roomer interface {
 	// 删除玩家信息
 	RemoveUser(sess *Session) bool
 	// 玩家上线
-	UserOnline(sess *Session, user *model.User)
+	UserOnline(sess *Session, user *model.User, coin int64)
 	// 玩家下线
 	UserOffline(sess *Session)
 	// 玩家重新上线

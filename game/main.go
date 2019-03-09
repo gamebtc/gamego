@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 
+	"game/internal"
 	"local.com/abc/game/room"
 )
 
@@ -11,6 +12,6 @@ func main() {
 	flag.StringVar(&name, "conf", "app.yaml", "config file name")
 	flag.Parse()
 
-	router := NewGame()
+	router := internal.NewGame()
 	room.Start(name, router)
 }
