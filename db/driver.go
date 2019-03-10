@@ -7,6 +7,11 @@ import (
 	"local.com/abc/game/msg"
 )
 
+var(
+	Driver GameDriver
+)
+
+
 type GameDriver interface {
 	// 获取包配置
 	GetPackConf(id int32) *model.PackInfo
@@ -40,8 +45,13 @@ type GameDriver interface {
 	GetUser(id int32) (user *model.User, err error)
 	// 加载用户
 	LoadUser(*model.User) error
+
     // 加载机器人
     LoadRobot(room int32, count int32)[]*model.User
+	// 卸载机器人
+	UnloadRobot(room int32, ids[]int32)
+	// 清理机器人
+	ClearRobot(room int32)
 
 	// 锁定用户到指定房间
 	LockUserRoom(agent int64, userId int32, kind int32, roomId int32) (*model.User, error)

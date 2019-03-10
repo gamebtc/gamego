@@ -3,7 +3,8 @@ package room
 import (
 	log "github.com/sirupsen/logrus"
 
-	"local.com/abc/game/model"
+	//"local.com/abc/game/db"
+	//"local.com/abc/game/model"
 	"local.com/abc/game/msg"
 )
 
@@ -66,13 +67,3 @@ func userOffline(sess *Session) {
 	roomer.UserOffline(sess)
 }
 
-//
-func LoadRobot(room int32, count int32) []*model.User {
-	// 锁定玩家
-	user, err := driver.LockUserRoom(agentId, userId, KindId, RoomId)
-	if err == nil && user != nil {
-		// 检查房间配置
-		//user.Coin = user.Bag[CoinKey]
-	}
-	return user
-}

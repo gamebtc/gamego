@@ -6,7 +6,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"local.com/abc/game/db"
 	"local.com/abc/game/msg"
 	"local.com/abc/game/util"
 )
@@ -31,7 +30,6 @@ var (
 )
 
 var (
-	driver db.GameDriver
 	signal *util.AppSignal
 	coder  msg.Coder
 )

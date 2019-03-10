@@ -14,6 +14,15 @@ type Sender interface {
     Send(val interface{})bool
 }
 
+type RoleSender struct{}
+func (s *RoleSender)  Send(val interface{})bool{
+	return true
+}
+
+var(
+	roleSender = &RoleSender{}
+)
+
 // 每个玩家的游戏数据
 type Role struct {
 	*model.User            // 玩家信息
@@ -27,7 +36,6 @@ type Role struct {
 }
 
 func (role *Role)GetMsgUser() *msg.User {
-	//return &this.User
 	return &msg.User{
 		Id:    role.Id,
 		Icon:  role.Icon,

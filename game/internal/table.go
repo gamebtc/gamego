@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"local.com/abc/game/db"
 	//"local.com/abc/game/model"
 	"local.com/abc/game/msg"
 	"local.com/abc/game/room"
@@ -39,14 +40,14 @@ type GameDriver interface {
 // 游戏桌子
 type Table struct {
 	GameDriver
-	Id     int32           //桌子ID
-	CurId  int32           //当前局的ID
-	LastId int32           //最后的局ID
-	Log    []byte          //最后60局的输赢情况0:龙赢,1:虎赢,2:和
-	State  int32           //0:暂停;1:洗牌;2:下注;3:结算
-	Roles  map[int32]*Role //所有真实游戏玩家
-	Robot  map[int32]*Role //所有机器人
-	Richer []*msg.User     //富豪
+	Id     int32       //桌子ID
+	CurId  int32       //当前局的ID
+	LastId int32       //最后的局ID
+	Log    []byte      //最后60局的输赢情况0:龙赢,1:虎赢,2:和
+	State  int32       //0:暂停;1:洗牌;2:下注;3:结算
+	Roles  []*Role     //所有真实游戏玩家
+	Robot  []*Role     //所有机器人
+	Richer []*msg.User //富豪
 	round  *GameRound
 
 	timer     *time.Timer
@@ -56,29 +57,28 @@ type Table struct {
 func NewTable() *Table {
 	dealer := newDriver()
 	t := &Table{
-		Roles:      make(map[int32]*Role, 100),
+		Roles:      make([]*Role, 0, 100),
+		Robot:      make([]*Role, 0, 100),
 		GameDriver: dealer,
 	}
 	return t
 }
 
-// 增加新的玩家
+// 增加真实的玩家
 func (table *Table) AddRole(role *Role) {
-	table.Roles[role.Id] = role
+	table.Roles = append(table.Roles, role)
 	// 真实玩家
-	if role.IsRobot() == false {
-		ack := &msg.FolksGameInitAck{
-			Id:    table.round.Id,
-			State: table.State,
-			Sum:   table.round.Group,
-			Log:   table.Log,
-		}
-		if bill := role.bill; bill != nil {
-			ack.Bet = bill.Group
-		}
-		ack.Rich = table.Richer
-		role.Send(ack)
+	ack := &msg.FolksGameInitAck{
+		Id:    table.round.Id,
+		State: table.State,
+		Sum:   table.round.Group,
+		Log:   table.Log,
 	}
+	if bill := role.bill; bill != nil {
+		ack.Bet = bill.Group
+	}
+	ack.Rich = table.Richer
+	role.Send(ack)
 }
 
 // 查找1位赌神和5位富豪
@@ -200,33 +200,23 @@ func betReq(m *room.NetMessage) {
 	role.AddBet(*req)
 }
 
-func (table *Table) startRobot() {
-	//table.addRobot(5593465379, 4743924)
-	//table.addRobot(5593465381, 2743405)
-	//table.addRobot(5593465378, 2223178)
-	//table.addRobot(5593465380, 1775005)
-}
-
-func (table *Table) addRobot(agentId int64, userId int32) {
-	if user := room.LoadRobot(agentId, userId); user != nil {
-		role := &Role{
-			User: user,
-		}
-		role.table = table
-		role.Online = true
-		role.Reset()
-		table.AddRole(role)
-		log.Debugf("addRobot:%v", role)
-	}
-}
-
 func(table *Table) loadRobot(count int32) {
-
 	if count < 0 {
 		// 退出部分机器人
 	} else if count > 0 {
 
 		// 增加机器人
+		robots := db.Driver.LoadRobot(room.RoomId, count)
+		for _,user:=range robots{
+			robot := &Role{
+				Sender: roleSender,
+				User: user,
+			}
+			robot.table = table
+			robot.Online = true
+			robot.Reset()
+			table.Robot = append(table.Robot,robot)
+		}
 	}
 }
 

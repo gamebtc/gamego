@@ -165,10 +165,10 @@ func Init(config *AppConfig, r Roomer) error {
 	if d, err := db.CreateDriver(&config.Database); err != nil {
 		return err
 	} else {
-		driver = d
+		db.Driver = d
 	}
 
-	roomInfo, err := driver.LockRoomServer(&config.Room)
+	roomInfo, err := db.Driver.LockRoomServer(&config.Room)
 	if err != nil {
 		return err
 	}
@@ -249,7 +249,7 @@ func mainLoop() {
 
 func roomConfigCheck(ver int32) int32{
 	defer util.PrintPanicStack()
-	newConf, err := driver.GetRoom(RoomId, ver)
+	newConf, err := db.Driver.GetRoom(RoomId, ver)
 	if err == nil && newConf != nil && newConf.Id == RoomId {
 		ver = newConf.Ver
 		Send(&GameEvent{Id: EventConfigChanged, Arg: newConf})
@@ -275,7 +275,7 @@ func NewSn(count uint16) (sn int64) {
 		sn = startSn
 		startSn += allot
 		countSn -= allot
-	} else if newStart := driver.NewSN(KindId, math.MaxUint16); newStart > 0 {
+	} else if newStart := db.Driver.NewSN(KindId, math.MaxUint16); newStart > 0 {
 		// 需要重新分配
 		sn = newStart
 		startSn = newStart + allot
@@ -291,7 +291,7 @@ func NewGameRoundId() (sn int64) {
 	if startRoundId < endRoundId {
 		sn = startRoundId
 		startRoundId++
-	} else if newStart := driver.NewSN(logName, roundAllot); newStart > 0 {
+	} else if newStart := db.Driver.NewSN(logName, roundAllot); newStart > 0 {
 		sn = newStart
 		startRoundId = newStart + 1
 		endRoundId = newStart + roundAllot
@@ -308,11 +308,11 @@ func WriteCoin(flow *model.CoinFlow) error {
 			flow.Sn = NewSn(1)
 		}
 	}
-	return driver.BagDeal(CoinKey, flow)
+	return db.Driver.BagDeal(CoinKey, flow)
 }
 
 func SaveLog(log interface{}) error {
-	return driver.SaveLog(logName, log)
+	return db.Driver.SaveLog(logName, log)
 }
 
 func Now() int64 {

@@ -7,8 +7,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"local.com/abc/game/db"
 	"local.com/abc/game/model"
-	. "local.com/abc/game/msg"
+	"local.com/abc/game/msg"
 	"local.com/abc/game/util"
 )
 
@@ -56,10 +57,10 @@ func (sess *Session) Send(val interface{}) bool {
 }
 
 func (sess *Session) SendError(id int32, code int32, m string, k string) {
-	sess.UnsafeSend(&ErrorInfo{ReqId: id, Code: code, Msg: m, Key: k})
+	sess.UnsafeSend(&msg.ErrorInfo{ReqId: id, Code: code, Msg: m, Key: k})
 }
 
-func (sess *Session) Start(stream GameStream) {
+func (sess *Session) Start(stream msg.GameStream) {
 	if stream != nil{
 		go sess.sendLoop(stream)
 		sess.recvLoop(stream)
@@ -71,7 +72,7 @@ func (sess *Session) Start(stream GameStream) {
 }
 
 // 写消息循环
-func (sess *Session) sendLoop(stream GameStream) {
+func (sess *Session) sendLoop(stream msg.GameStream) {
 	defer util.PrintPanicStack()
 	defer close(sess.stopSend)
 	for {
@@ -101,7 +102,7 @@ func (sess *Session) sendLoop(stream GameStream) {
 	}
 }
 
-func (sess *Session) recvLoop(stream GameStream) {
+func (sess *Session) recvLoop(stream msg.GameStream) {
 	defer util.PrintPanicStack()
 	for sess.Flag < SESS_CLOSE {
 		select {
@@ -116,7 +117,7 @@ func (sess *Session) recvLoop(stream GameStream) {
 				}
 				return
 			} else {
-				if len(data) < HeadLen {
+				if len(data) < msg.HeadLen {
 					return
 				}
 				id, arg, e := coder.Decode(data)
@@ -147,13 +148,13 @@ func (sess *Session) Close() {
 }
 
 func(sess *Session)LockRoom(uid int32) (*model.User, error) {
-	return driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId)
+	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId)
 }
 
 func(sess *Session)UnlockRoom() bool {
 	if sess.Disposed == false && sess.UserId != 0{
 		sess.Disposed = true
-		if driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId) {
+		if db.Driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId) {
 			return true
 		}
 	}

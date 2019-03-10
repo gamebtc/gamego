@@ -30,3 +30,8 @@ db.robot.createIndex(
     { "room": 1 },
     { unique: false, background: true }
 );
+
+db.robot.createIndex(
+    { "ver": 1 },
+    { unique: false, background: true }
+);

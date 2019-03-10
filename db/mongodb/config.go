@@ -14,6 +14,7 @@ const (
 
 	CollAccount = "account"
 	CollAccountLog = "accountLog"
+	CollRobot = "robot"
 	CollUser = "user"
 	CollUserId = "userId"
 	CollUserLocker ="userLocker"

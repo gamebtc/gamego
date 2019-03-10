@@ -39,6 +39,7 @@ type driver struct {
 	locker   Collection
 	userId   Collection
 	gameConf Collection
+	robot    Collection
 
 	appCache  *AppCache
 	packCache *PackCache
@@ -66,6 +67,7 @@ func (d *driver) Init(db *Database) {
 	d.ip = d.GetColl(CollIp)
 	d.id = d.GetColl(CollId)
 	d.account = d.GetColl(CollAccount)
+	d.robot = d.GetColl(CollRobot)
 	d.user = d.GetColl(CollUser)
 	d.locker = d.GetColl(CollUserLocker)
 	d.userId = d.GetColl(CollUserId)
