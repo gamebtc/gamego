@@ -43,7 +43,7 @@ type Table struct {
 	Id     int32       //桌子ID
 	CurId  int32       //当前局的ID
 	LastId int32       //最后的局ID
-	Log    []byte      //最后60局的输赢情况0:龙赢,1:虎赢,2:和
+	Log    []byte      //最后60局的发牌情况
 	State  int32       //0:暂停;1:洗牌;2:下注;3:结算
 	Roles  []*Role     //所有真实游戏玩家
 	Robot  []*Role     //所有机器人

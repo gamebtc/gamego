@@ -12,7 +12,7 @@ cd ../../agent
 go get -u
 cd ../room
 go get -u
-cd ../game
+cd ../game100
 go get -u
 cd ../gameclient
 go get -u

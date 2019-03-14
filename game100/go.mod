@@ -1,4 +1,4 @@
-module game
+module game100
 
 require (
 	github.com/go-stack/stack v1.8.0 // indirect

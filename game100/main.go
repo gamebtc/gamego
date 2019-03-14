@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"game/internal"
+	"game100/internal"
 	"local.com/abc/game/room"
 )
 

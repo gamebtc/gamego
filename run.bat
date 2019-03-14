@@ -10,6 +10,6 @@ cd ../grpcserver
 go build
 start grpcserver
 
-cd ../game
+cd ../game100
 go build
-start game
+start game100
