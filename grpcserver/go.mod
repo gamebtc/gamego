@@ -1,8 +1,6 @@
 module grpcserver
 
 require (
-	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/golang/snappy v0.0.1 // indirect
 	github.com/ipipdotnet/ipdb-go v1.1.0
 	github.com/sirupsen/logrus v1.4.0
 	google.golang.org/grpc v1.19.0
@@ -17,6 +15,6 @@ replace (
 	local.com/abc/game/db => ../db
 	local.com/abc/game/db/mongodb => ../db/mongodb
 	local.com/abc/game/model => ../model
-	local.com/abc/game/protocol => ../msg
+	local.com/abc/game/protocol => ../protocol
 	local.com/abc/game/util => ../util
 )

@@ -9,4 +9,4 @@ require (
 	local.com/abc/game/protocol v0.0.0
 )
 
-replace local.com/abc/game/protocol => ../msg
+replace local.com/abc/game/protocol => ../protocol

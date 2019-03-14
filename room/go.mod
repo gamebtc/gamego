@@ -21,6 +21,6 @@ replace (
 	local.com/abc/game/db => ../db
 	local.com/abc/game/db/mongodb => ../db/mongodb
 	local.com/abc/game/model => ../model
-	local.com/abc/game/protocol => ../msg
+	local.com/abc/game/protocol => ../protocol
 	local.com/abc/game/util => ../util
 )
