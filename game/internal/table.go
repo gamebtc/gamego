@@ -225,7 +225,7 @@ func betReq(m *room.NetMessage) {
 		log.Debugf("betReq: is nil")
 		return
 	}
-	log.Debugf("add bet: %v", req)
+	log.Debugf("add bet: %#v", req)
 
 	ack := &msg.BetAck{
 		Sn:   req.Sn,

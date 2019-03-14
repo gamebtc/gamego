@@ -8,7 +8,7 @@ import(
 
 //玩家类型(0:用户；1:代理；10:测试；11:管理；12:机器人)
 const JobPlayer = 0
-const JobAgent = 1
+//const JobAgent = 1
 const JobTest = 10
 const JobManager = 11
 const JobRobot = 12

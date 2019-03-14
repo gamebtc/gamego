@@ -4,7 +4,7 @@ require (
 	github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e // indirect
 	github.com/klauspost/crc32 v0.0.0-20170628072449-bab58d77464a // indirect
 	github.com/klauspost/reedsolomon v0.0.0-20180704173009-925cb01d6510 // indirect
-	github.com/sirupsen/logrus v1.3.0
+	github.com/sirupsen/logrus v1.4.0
 	github.com/xtaci/kcp-go v2.0.3+incompatible
 	golang.org/x/net v0.0.0-20190310074541-c10a0554eabf
 	google.golang.org/grpc v1.19.0

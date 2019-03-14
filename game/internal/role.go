@@ -129,8 +129,8 @@ func (role *Role) AddBet(req msg.BetReq)(error) {
 			round.BetGroup = make([]int64, betItemCount)
 		}
 		round.BetGroup[i] += bet
+		log.Debugf("%v下注:%v_%v", role.Id, i,bet/100)
 	}
-	log.Debugf("%v下注:%v_%v", role.Id, i,bet/100)
 	return nil
 }
 
