@@ -9,11 +9,11 @@ require (
 	golang.org/x/net v0.0.0-20190310074541-c10a0554eabf
 	google.golang.org/grpc v1.19.0
 	gopkg.in/yaml.v2 v2.2.2
-	local.com/abc/game/msg v0.0.0
+	local.com/abc/game/protocol v0.0.0
 	local.com/abc/game/util v0.0.0
 )
 
 replace (
-	local.com/abc/game/msg => ../msg
+	local.com/abc/game/protocol => ../protocol
 	local.com/abc/game/util => ../util
 )

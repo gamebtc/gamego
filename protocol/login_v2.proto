@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package msg;
+package protocol;
 //import "google/protobuf/any.proto";
 
 //// 处理未登录时的用户消息(版本检查/公告/登录/注册)

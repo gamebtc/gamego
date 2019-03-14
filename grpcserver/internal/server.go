@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/db"
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -30,7 +30,7 @@ func init(){
 }
 
 
-// server is used to implement msg.GameService.
+// server is used to implement protocol.GameService.
 type Server struct {
 	ServerBase
 }

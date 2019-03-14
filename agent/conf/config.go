@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 )
 
 type AppConfig struct {

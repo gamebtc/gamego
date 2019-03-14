@@ -7,18 +7,18 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 const BAN_LOGIN = 0  //禁止登录
 const BAN_REGIST = 1 //禁止注册
 
-func loginFailAck(code int32, args ...interface{}) *msg.LoginFailAck {
+func loginFailAck(code int32, args ...interface{}) *protocol.LoginFailAck {
 	m := driver.GetHint(code)
 	if len(args) != 0 {
 		m = fmt.Sprintf(m, args...)
 	}
-	return &msg.LoginFailAck{Code: code, Msg: m}
+	return &protocol.LoginFailAck{Code: code, Msg: m}
 }
 
 func getBan(ban []int32, i int) int32 {
@@ -34,9 +34,9 @@ func getRandName() string {
 
 // 登录
 func Login(ctx context.Context, in interface{}) interface{} {
-	uctx := ctx.(*msg.UserContext)
+	uctx := ctx.(*protocol.UserContext)
 	uid, agent := uctx.UserId, uctx.AgentId
-	req := in.(*msg.LoginReq)
+	req := in.(*protocol.LoginReq)
 	log.Infof("login a:%v,u:%v,i:%v, req: %#v", agent, uid, uctx.Ip, req)
 	now := driver.Now()
 	nowInt := int32(now.Unix())
@@ -152,7 +152,7 @@ func Login(ctx context.Context, in interface{}) interface{} {
 		log.Debugf("login%#v", user)
 	}
 
-	return &msg.LoginSuccessAck{
+	return &protocol.LoginSuccessAck{
 		Id:    int32(user.Id),
 		Agent: agent,
 		Icon:  user.Icon,

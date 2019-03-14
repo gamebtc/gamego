@@ -1,5 +1,17 @@
 package room
 
+
+
+// 去掉数组结尾的0
+func TrimEndZero(a []int64) []int64 {
+	for i := len(a) - 1; i >= 0; i-- {
+		if a[i] > 0 {
+			return a[:i+1]
+		}
+	}
+	return a
+}
+
 //// 桌子和游戏绑定
 //type Tabler interface {
 //	Update()                    // 更新

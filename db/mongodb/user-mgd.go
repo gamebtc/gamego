@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 var (
@@ -35,7 +35,7 @@ func (d *driver) GetAccount(app int32, t int32, name string) (acc *model.Account
 }
 
 // 创建账号
-func (d *driver) CreateAccount(acc *model.Account, req *msg.LoginReq) (err error) {
+func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err error) {
 	if _, err = d.account.InsertOne(d.ctx, acc); err == nil {
 		// 更新为数据库时间
 		set := bson.D{initNow, {"$set", bson.D{{"env", req.Env}, {"dev", req.Dev}}}}
@@ -69,7 +69,7 @@ func (d *driver) newUserId() *userIdN {
 }
 
 // 创建账号
-func (d *driver) CreateUser(user *model.User, req *msg.LoginReq) (err error) {
+func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error) {
 	i := d.newUserId()
 	id := i.N
 	if id == 0 {
@@ -95,7 +95,7 @@ func (d *driver) CreateUser(user *model.User, req *msg.LoginReq) (err error) {
 var zeroRoom = bson.D{{"kind", zeroInt32}, {"room", zeroInt32}, {"table", zeroInt32}}
 var maxRoom = bson.E{Key: "$max", Value: zeroRoom}
 
-func (d *driver) LockUser(agent int64, user *model.User, req *msg.LoginReq) (*model.UserLocker, error) {
+func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
 	t := user.Last
 	newId := model.NewObjectId()
 	newLock := bson.D{
@@ -269,7 +269,7 @@ func (d *driver) SetValue(id, v interface{}) error {
 	return err
 }
 
-func (d *driver) UserLogin(req *msg.LoginReq) (*msg.LoginSuccessAck, error) {
+func (d *driver) UserLogin(req *protocol.LoginReq) (*protocol.LoginSuccessAck, error) {
 	return nil, nil
 }
 

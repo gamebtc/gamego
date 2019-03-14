@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 // 房间机器人配置
@@ -55,8 +55,8 @@ type RoomInfo struct {
 	Robot   []int32   `bson:"robot"`   //机器人上线计划(6个字段一组，意思见RoomRobot)
 }
 
-func (room *RoomInfo) GetMsg() *msg.RoomInfo {
-	return &msg.RoomInfo{
+func (room *RoomInfo) GetMsg() *protocol.RoomInfo {
+	return &protocol.RoomInfo{
 		Id:      room.Id,
 		Kind:    room.Kind,
 		Name:    room.Name,

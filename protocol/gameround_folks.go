@@ -1,4 +1,4 @@
-package msg
+package protocol
 
 // 游戏币流水
 type CoinFlow struct {

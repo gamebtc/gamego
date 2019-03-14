@@ -6,7 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -31,10 +31,10 @@ var (
 
 var (
 	signal *util.AppSignal
-	Coder  msg.Coder
+	Coder  protocol.Coder
 )
 
-func RegistMsg(id msg.MsgId_Code, arg interface{}) {
+func RegistMsg(id protocol.MsgId_Code, arg interface{}) {
 	t := reflect.TypeOf(arg)
 	if _, ok := Coder.GetMsgId(t); ok {
 		log.Fatalf("message %v is already registered", t)

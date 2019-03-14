@@ -10,7 +10,7 @@ import (
 
 	"agent/conf"
 
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 

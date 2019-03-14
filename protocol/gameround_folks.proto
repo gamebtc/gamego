@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package msg;
+package protocol;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "game.proto";
 
@@ -50,7 +50,7 @@ message FolksGameRound {
 	int32 tab = 5 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
 	// 所有玩家下注汇总
 	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
-	// 下注情况(msg.Bet三个字段顺序压入)
+	// 下注情况(protocol.Bet三个字段顺序压入)
 	repeated int32 flow = 7 [(gogoproto.jsontag) = 'f', (gogoproto.moretags) = 'bson:"f" msg:"f"'];
 	// 玩家投注分组
 	repeated int64 group = 8 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];

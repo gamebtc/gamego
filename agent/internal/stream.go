@@ -1,12 +1,11 @@
 package internal
 
-
 import (
 	"google.golang.org/grpc"
 	"io"
 	"net"
 
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 )
 
 type GrpcStream struct {

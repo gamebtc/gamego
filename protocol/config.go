@@ -1,4 +1,4 @@
-package msg
+package protocol
 
 type IP = int64
 type UserId = int32

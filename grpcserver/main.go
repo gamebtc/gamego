@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 
 	"grpcserver/internal"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -28,10 +28,10 @@ func main() {
 	gs := grpc.NewServer()
 	s := &internal.Server{}
 	s.Init(config)
-	msg.RegisterGameServer(gs, s)
-	msg.RegisterGrpcServer(gs)
+	protocol.RegisterGameServer(gs, s)
+	protocol.RegisterGrpcServer(gs)
 
-	err = msg.RegistConsul(config.Consul.Addr, &config.Grpc)
+	err = protocol.RegistConsul(config.Consul.Addr, &config.Grpc)
 	if err != nil {
 		panic(err)
 	}

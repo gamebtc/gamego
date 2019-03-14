@@ -1,6 +1,6 @@
 cd util
 go get -u
-cd ../msg
+cd ../protocol
 go get -u
 cd ../model
 go get -u

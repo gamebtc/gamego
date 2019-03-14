@@ -1,4 +1,4 @@
-module msg
+module protocol
 
 require (
 	github.com/dodoZeng/grpclb v0.0.0-20180915104112-80ff200cce51

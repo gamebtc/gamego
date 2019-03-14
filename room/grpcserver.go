@@ -8,25 +8,25 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
-// grpcServer is used to implement msg.GameService.
+// grpcServer is used to implement protocol.GameService.
 type grpcServer struct {
-	msg.ServerBase
+	protocol.ServerBase
 	connectCount int32
 	maxConnect   int32
 }
 
-func (s *grpcServer) Call(ctx context.Context, req *msg.GameFrame) (res *msg.GameFrame, err error) {
-	res = &msg.GameFrame{}
+func (s *grpcServer) Call(ctx context.Context, req *protocol.GameFrame) (res *protocol.GameFrame, err error) {
+	res = &protocol.GameFrame{}
 	return
 }
 
 // stream processing
 // the center of game logic
-func (s *grpcServer) Send(stream msg.Game_SendServer) (err error) {
+func (s *grpcServer) Send(stream protocol.Game_SendServer) (err error) {
 	defer util.PrintPanicStack()
 	defer atomic.AddInt32(&s.connectCount, -1)
 	count := atomic.AddInt32(&s.connectCount, 1)
@@ -34,7 +34,7 @@ func (s *grpcServer) Send(stream msg.Game_SendServer) (err error) {
 		return ErrorServiceBusy
 	}
 
-	user := msg.ParseUserContext(stream.Context())
+	user := protocol.ParseUserContext(stream.Context())
 	if user.AgentId == 0 || user.UserId == 0 {
 		err = ErrorIncorrectFrameType
 		return
@@ -44,7 +44,7 @@ func (s *grpcServer) Send(stream msg.Game_SendServer) (err error) {
 	return s.newSession(&GrpcStream{ServerStream: stream}, user)
 }
 
-func (s *grpcServer) newSession(stream msg.GameStream, user *msg.UserContext) error {
+func (s *grpcServer) newSession(stream protocol.GameStream, user *protocol.UserContext) error {
 	sess := &Session{
 		AgentId:  user.AgentId,
 		Ip:       user.Ip,
@@ -74,11 +74,11 @@ type GrpcStream struct {
 }
 
 func (stream *GrpcStream) Send(d []byte) error {
-	return stream.ServerStream.SendMsg(&msg.GameFrame{Data: d})
+	return stream.ServerStream.SendMsg(&protocol.GameFrame{Data: d})
 }
 
 func (stream *GrpcStream) Recv() ([]byte, error) {
-	ret := msg.GameFrame{}
+	ret := protocol.GameFrame{}
 	if err := stream.ServerStream.RecvMsg(&ret); err != nil {
 		return nil, err
 	}

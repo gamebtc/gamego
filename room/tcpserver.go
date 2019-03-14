@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/xtaci/kcp-go"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 var (
@@ -39,9 +39,9 @@ func tcpServer(config *AppConfig) {
 	defer lis.Close()
 
 	// 注册服务器地址
-	msg.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
 	defer func(){
-		msg.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
 	// loop accepting
@@ -81,9 +81,9 @@ func udpServer(config *AppConfig) {
 	}
 
 	// 注册服务器地址
-	msg.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
 	defer func(){
-		msg.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
 	// loop accepting
@@ -132,7 +132,7 @@ func newSession(conn net.Conn) {
 		return
 	}
 
-	agent, uid, ip := msg.GetUserHead(head[:])
+	agent, uid, ip := protocol.GetUserHead(head[:])
 	if agent == 0 || uid == 0 {
 		return
 	}
@@ -172,7 +172,7 @@ func checkError(err error) {
 
 type NetStream struct {
 	conn net.Conn
-	head [msg.HeadLen]byte
+	head [protocol.HeadLen]byte
 }
 
 func (stream *NetStream) Send(d []byte) error {
@@ -186,16 +186,16 @@ func (stream *NetStream) Send(d []byte) error {
 func (stream *NetStream) Recv() ([]byte, error) {
 	head := stream.head[:]
 	n, err := io.ReadFull(stream.conn, head)
-	if err != nil || n != msg.HeadLen {
+	if err != nil || n != protocol.HeadLen {
 		return nil, err
 	}
-	size := int(msg.GetHeadLen(head))
-	payload := make([]byte, msg.HeadLen+size)
-	n, err = io.ReadFull(stream.conn, payload[msg.HeadLen:])
+	size := int(protocol.GetHeadLen(head))
+	payload := make([]byte, protocol.HeadLen+size)
+	n, err = io.ReadFull(stream.conn, payload[protocol.HeadLen:])
 	if err != nil || n != size {
 		return nil, err
 	}
-	copy(payload[:msg.HeadLen], head)
+	copy(payload[:protocol.HeadLen], head)
 	return payload, nil
 }
 

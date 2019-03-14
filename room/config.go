@@ -11,7 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 // 房间配置
@@ -23,16 +23,16 @@ var(
 )
 
 type AppConfig struct {
-	Consul   msg.ConsulConfig   `yaml:"consul"`
-	Tcp      msg.TcpConfig      `yaml:"tcp"`
-	Udp      msg.UdpConfig      `yaml:"udp"`
-	Kcp      msg.KcpConfig      `yaml:"kcp"`
-	Grpc     msg.GrpcConfig     `yaml:"grpc"`
+	Consul   protocol.ConsulConfig   `yaml:"consul"`
+	Tcp      protocol.TcpConfig      `yaml:"tcp"`
+	Udp      protocol.UdpConfig      `yaml:"udp"`
+	Kcp      protocol.KcpConfig      `yaml:"kcp"`
+	Grpc     protocol.GrpcConfig     `yaml:"grpc"`
 	Pprof    string             `yaml:"pprof"`
 	LogLevel string             `yaml:"logLevel"`
 	LogFile  string             `yaml:"logFile"`
-	Database msg.DatabaseConfig `yaml:"database"`
-	Room     msg.RoomConfig     `yaml:"room"` //房间配置
+	Database protocol.DatabaseConfig `yaml:"database"`
+	Room     protocol.RoomConfig     `yaml:"room"` //房间配置
 	Codec    string             `yaml:"codec"`
 }
 
@@ -49,7 +49,7 @@ func InitConfig(path string) *AppConfig {
 		log.SetLevel(lv)
 	}
 
-	Coder = msg.GetCoder(cfg.Codec)
+	Coder = protocol.GetCoder(cfg.Codec)
 
 	if cfg.Pprof != "" {
 		go http.ListenAndServe(cfg.Pprof, nil)

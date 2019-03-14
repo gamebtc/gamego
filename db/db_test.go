@@ -3,9 +3,9 @@ package db
 import (
 	"testing"
 
-	"local.com/abc/game/db/mongodb"
+	"db/mongodb"
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 // go test -v -run="指定函数名"
@@ -29,7 +29,7 @@ const kind = 0
 
 func getTestDrive(t *testing.T)GameDriver {
 	var testUrl = "mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs"
-	conf := new(msg.DatabaseConfig)
+	conf := new(protocol.DatabaseConfig)
 	conf.Url = testUrl
 	conf.Name = "game"
 	conf.Driver = "mongodb"

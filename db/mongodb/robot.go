@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
-	//"local.com/abc/game/msg"
+	//"local.com/abc/game/protocol"
 )
 
 var(

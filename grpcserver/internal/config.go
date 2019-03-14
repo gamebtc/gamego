@@ -7,13 +7,13 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 type AppConfig struct {
-	Consul   msg.ConsulConfig   `yaml:"consul"`
-	Grpc     msg.GrpcConfig     `yaml:"grpc"`
-	Database msg.DatabaseConfig `yaml:"database"`
+	Consul   protocol.ConsulConfig   `yaml:"consul"`
+	Grpc     protocol.GrpcConfig     `yaml:"grpc"`
+	Database protocol.DatabaseConfig `yaml:"database"`
 	InitBag  model.CoinBag      `yaml:"initBag"`
 	Pprof    string             `yaml:"pprof"`
 	LogLevel string             `yaml:"logLevel"`

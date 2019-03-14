@@ -6,10 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
-func (d *driver) LockRoomServer(room *msg.RoomConfig) (obj *model.RoomInfo, err error) {
+func (d *driver) LockRoomServer(room *protocol.RoomConfig) (obj *model.RoomInfo, err error) {
 	query := bson.D{
 		{"_id", room.Id},
 		{"kind", room.Kind},

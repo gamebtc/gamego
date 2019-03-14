@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package msg;
+package protocol;
 
 // game definition
 service Game {
@@ -11,10 +11,3 @@ service Game {
 message GameFrame {
     bytes data = 1;
 }
-
-//message Request {
-//    sfixed64 agent = 1;
-//    sfixed32 user = 2;
-//    fixed32 ip = 3;
-//    bytes data = 4;
-//}

@@ -3,7 +3,7 @@ package model
 import(
 	"time"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 //玩家类型(0:用户；1:代理；10:测试；11:管理；12:机器人)
@@ -13,8 +13,8 @@ const JobTest = 10
 const JobManager = 11
 const JobRobot = 12
 
-type UserId = msg.UserId
-type IP = msg.IP
+type UserId = protocol.UserId
+type IP = protocol.IP
 type CoinBag = map[string]int64
 type ConfType = map[string]string
 type TagType = map[string]int32

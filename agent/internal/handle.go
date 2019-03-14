@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	log "github.com/sirupsen/logrus"
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 )
 
 // 握手

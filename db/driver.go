@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 var(
@@ -24,17 +24,17 @@ type GameDriver interface {
 	// 获取单个房间信息
 	GetRoom(roomId int32, ver int32) (*model.RoomInfo, error)
 	// 锁定房间服务
-	LockRoomServer(room *msg.RoomConfig) (obj *model.RoomInfo, err error)
+	LockRoomServer(room *protocol.RoomConfig) (obj *model.RoomInfo, err error)
 	// 获取所有房间
 	GetAllRoom(query interface{}) ([]*model.RoomInfo, error)
 	// 获取账号
 	GetAccount(app int32, t int32, name string) (*model.Account, error)
 	// 创建账号
-	CreateAccount(*model.Account, *msg.LoginReq) error
+	CreateAccount(*model.Account, *protocol.LoginReq) error
 	// 创建用户
-	CreateUser(*model.User, *msg.LoginReq) error
+	CreateUser(*model.User, *protocol.LoginReq) error
 	// 锁定用户
-	LockUser(int64, *model.User, *msg.LoginReq) (*model.UserLocker, error)
+	LockUser(int64, *model.User, *protocol.LoginReq) (*model.UserLocker, error)
 	// 解锁用户
 	UnlockUser(agent int64, userId int32) bool
 	// 创建新的ID

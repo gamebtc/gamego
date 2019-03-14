@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"local.com/abc/game/model"
-	. "local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 )
 
 // 房间配置

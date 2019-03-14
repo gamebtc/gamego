@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/room"
 )
 
@@ -20,7 +20,7 @@ type Role struct {
 
 	Coin   int64         // 当前房间使用的币
 	table  *Table        // 桌子ID
-	bill   *msg.GameBill // 输赢情况
+	bill   *protocol.GameBill // 输赢情况
 	flowSn int64         // 最后的写分序号，返回时用于验证
 
 	TotalWin     int64                // 进入之后的赢钱金额
@@ -33,8 +33,8 @@ type Role struct {
 	LastWinCount byte
 }
 
-func (role *Role)GetMsgUser() *msg.User {
-	return &msg.User{
+func (role *Role)GetMsgUser() *protocol.User {
+	return &protocol.User{
 		Id:    role.Id,
 		Icon:  role.Icon,
 		Vip:   role.Vip,
@@ -78,7 +78,7 @@ func ExistsBetItem(bet int32)bool {
 }
 
 // 投注
-func (role *Role) AddBet(req msg.BetReq)(error) {
+func (role *Role) AddBet(req protocol.BetReq)(error) {
 	// 检查投注项
 	i := req.Item
 	bet := int64(req.Bet)
@@ -106,7 +106,7 @@ func (role *Role) AddBet(req msg.BetReq)(error) {
 
 	bill := role.bill
 	if bill == nil {
-		bill = &msg.GameBill{
+		bill = &protocol.GameBill{
 			Uid:   role.Id,
 			Coin:  role.Coin,
 			Group: make([]int64, betItemCount),
@@ -186,10 +186,10 @@ func (role *Role) Balance() *model.CoinFlow {
 		round.Win -= addCoin
 	}
 
-	ulog := &msg.FolksUserLog{
+	ulog := &protocol.FolksUserLog{
 		Tab:   role.table.Id,
 		Bet:   bet,
-		Group: TrimEndZero(bill.Group),
+		Group: room.TrimEndZero(bill.Group),
 		Log:   round.Id,
 		Poker: round.Poker,
 	}

@@ -1,6 +1,6 @@
 syntax = "proto3";
 //import "game.proto";
-package msg;
+package protocol;
 
 message MsgId{
 	enum Code{

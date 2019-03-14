@@ -3,10 +3,10 @@ package model
 import (
 	"time"
 
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
-type CoinFlow = msg.CoinFlow
+type CoinFlow = protocol.CoinFlow
 
 type LoginLog struct {
 	Id    ObjectId        `bson:"_id"` //唯一ID
@@ -20,6 +20,6 @@ type LoginLog struct {
 	User  int32           `bson:"user"`
 	Bag   CoinBag         `bson:"bag"`
 	Udid  string          `bson:"udid"`
-	Dev   *msg.DeviceInfo `bson:"dev"`
-	Env   *msg.Envirnment `bson:"env"`
+	Dev   *protocol.DeviceInfo `bson:"dev"`
+	Env   *protocol.Envirnment `bson:"env"`
 }

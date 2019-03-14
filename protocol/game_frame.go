@@ -1,5 +1,5 @@
 
-package msg
+package protocol
 
 func (m *GameFrame) Marshal() (dAtA []byte, err error) {
 	return m.Data, nil

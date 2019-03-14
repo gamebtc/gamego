@@ -11,7 +11,7 @@ import (
 	_"github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -33,7 +33,7 @@ type Retval struct{
 	Msg    string    `bson:"msg"`
 }
 
-func NewGameDriver(conf *msg.DatabaseConfig)(d *driver, err error) {
+func NewGameDriver(conf *protocol.DatabaseConfig)(d *driver, err error) {
 	defer util.PrintPanicStack()
 	var s *mgo.Session
 	if s, err = mgo.DialWithTimeout(conf.Url, 10*time.Second); err != nil {

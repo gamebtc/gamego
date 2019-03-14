@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -30,7 +30,7 @@ type Retval struct {
 	Msg  string   `bson:"msg"`
 }
 
-func NewGameDriver(conf *msg.DatabaseConfig)(d *driver, err error) {
+func NewGameDriver(conf *protocol.DatabaseConfig)(d *driver, err error) {
 	defer util.PrintPanicStack()
 	var client *mongo.Client
 	if client, err = mongo.NewClient(options.Client().ApplyURI(conf.Url)); err != nil {

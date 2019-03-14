@@ -7,7 +7,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	_ "github.com/sirupsen/logrus"
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
 var (
@@ -31,7 +31,7 @@ func (d *driver) GetAccount(app int32, t int32, name string) (acc *model.Account
 }
 
 // 创建账号
-func (d *driver) CreateAccount(acc *model.Account, req *msg.LoginReq) (err error) {
+func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err error) {
 	err = d.account.Insert(acc)
 	if err == nil {
 		set := bson.DocElem{Name: "$set", Value: bson.D{{"env", req.Env}, {"dev", req.Dev}}}
@@ -79,7 +79,7 @@ func (d *driver) newUserId() *userIdN {
 }
 
 // 创建账号
-func (d *driver) CreateUser(user *model.User, req *msg.LoginReq) (err error) {
+func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error) {
 	i := d.newUserId()
 	id := i.N
 	if id == 0 {
@@ -102,7 +102,7 @@ func (d *driver) CreateUser(user *model.User, req *msg.LoginReq) (err error) {
 var zeroRoom = bson.D{{"kind", zeroInt32}, {"room", zeroInt32}, {"table", zeroInt32}}
 var maxRoom = bson.DocElem{Name: "$max", Value: zeroRoom}
 
-func (d *driver) LockUser(agent int64, user *model.User, req *msg.LoginReq) (*model.UserLocker, error) {
+func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
 	t := user.Last
 	newId := model.NewObjectId()
 	newLock := bson.D{
@@ -264,6 +264,6 @@ func (d *driver) SetValue(id, v interface{}) error {
 	return err
 }
 
-func (d *driver) UserLogin(req *msg.LoginReq) (*msg.LoginSuccessAck, error) {
+func (d *driver) UserLogin(req *protocol.LoginReq) (*protocol.LoginSuccessAck, error) {
 	return nil, nil
 }

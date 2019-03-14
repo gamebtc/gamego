@@ -13,7 +13,7 @@ import (
 
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -65,7 +65,7 @@ type DefaultRoomer struct {
 	Users          map[int32]*Session                // 在线玩家
 }
 
-func (r *DefaultRoomer) RegistHandler(id msg.MsgId_Code, arg interface{}, f func(*NetMessage)) {
+func (r *DefaultRoomer) RegistHandler(id protocol.MsgId_Code, arg interface{}, f func(*NetMessage)) {
 	if f != nil {
 		r.MessageHandler[id] = f
 	}
@@ -75,13 +75,13 @@ func (r *DefaultRoomer) RegistHandler(id msg.MsgId_Code, arg interface{}, f func
 func (r *DefaultRoomer) Init(info *model.RoomInfo) {
 	r.Users = make(map[int32]*Session, info.Cap*2)
 
-	RegistMsg(msg.MsgId_ErrorInfo, &msg.ErrorInfo{})
-	RegistMsg(msg.MsgId_LoginRoomAck, &msg.LoginRoomAck{})
-	RegistMsg(msg.MsgId_UserBetAck, &msg.UserBetAck{})
-	RegistMsg(msg.MsgId_OpenBetAck, &msg.OpenBetAck{})
-	RegistMsg(msg.MsgId_CloseBetAck, &msg.CloseBetAck{})
-	RegistMsg(msg.MsgId_FolksGameInitAck, &msg.FolksGameInitAck{})
-	RegistMsg(msg.MsgId_BetAck, &msg.BetAck{})
+	RegistMsg(protocol.MsgId_ErrorInfo, &protocol.ErrorInfo{})
+	RegistMsg(protocol.MsgId_LoginRoomAck, &protocol.LoginRoomAck{})
+	RegistMsg(protocol.MsgId_UserBetAck, &protocol.UserBetAck{})
+	RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
+	RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
+	RegistMsg(protocol.MsgId_FolksGameInitAck, &protocol.FolksGameInitAck{})
+	RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
 }
 
 func (r *DefaultRoomer) GetUser(id int32) *Session {
@@ -150,10 +150,10 @@ func startGrpc(config *AppConfig) {
 	}
 	gs := grpc.NewServer()
 	s := &grpcServer{}
-	msg.RegisterGameServer(gs, s)
-	msg.RegisterGrpcServer(gs)
+	protocol.RegisterGameServer(gs, s)
+	protocol.RegisterGrpcServer(gs)
 
-	err = msg.RegistConsul(config.Consul.Addr, &config.Grpc)
+	err = protocol.RegistConsul(config.Consul.Addr, &config.Grpc)
 	if err != nil {
 		panic(err)
 	}
@@ -263,7 +263,7 @@ func Close() {
 
 // 游戏
 type Gamer interface {
-	Process(*Session, *msg.GameFrame)
+	Process(*Session, *protocol.GameFrame)
 }
 
 var startSn int64 //起始值

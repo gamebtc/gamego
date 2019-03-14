@@ -12,7 +12,7 @@ import (
 
 	"agent/conf"
 
-	"local.com/abc/game/msg"
+	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
 
@@ -22,18 +22,18 @@ var (
 	sameIp          uint32            //同一IP连接数限制
 	connectCount    int32             //当前连接数
 	maxConnect      int32             //最大连接数
-	coder           msg.Coder         //编码方式
-	rpcServicePool  msg.ServicePool
-	roomServicePool msg.ServicePool
+	coder           Coder         //编码方式
+	rpcServicePool  ServicePool
+	roomServicePool ServicePool
 	tcpReadBuf 		int
 	tcpWriteBuf 	int
 )
 
 func startServer(config *conf.AppConfig) {
-	rpcServicePool = msg.NewServicePool(config.Consul.Addr, config.Consul.ServerPrefix, config.Consul.Services, true)
+	rpcServicePool = NewServicePool(config.Consul.Addr, config.Consul.ServerPrefix, config.Consul.Services, true)
 
 	if config.Consul.RoomPrefix != "" {
-		roomServicePool = msg.NewServicePool(config.Consul.Addr, config.Consul.RoomPrefix, config.Consul.Services, false)
+		roomServicePool = NewServicePool(config.Consul.Addr, config.Consul.RoomPrefix, config.Consul.Services, false)
 	}
 
 	maxConnect = config.MaxConnect
@@ -78,7 +78,7 @@ func decIpLimit(ip uint32) {
 	}
 }
 
-func makeMsg(h *msg.Handshake) []byte {
+func makeMsg(h *Handshake) []byte {
 	src, _ := coder.Encode(h)
 	return src
 }
@@ -89,11 +89,11 @@ func tcpServer(config *conf.AppConfig) {
 	log.Info("listening on:", l.Addr())
 	checkError(err)
 
-	success := makeMsg(&msg.Handshake{
+	success := makeMsg(&Handshake{
 		Ip: []string{"127.0.0.1"},
 	})
 	// TODO: IP实现服务自发现
-	fail := makeMsg(&msg.Handshake{
+	fail := makeMsg(&Handshake{
 		Code: 1,
 		Msg:  "服务器忙",
 	})
@@ -149,8 +149,8 @@ func kcpServer(config *conf.AppConfig) {
 		log.Fatalf("SetDSCP:", err)
 	}
 
-	success := makeMsg(new(msg.Handshake))
-	fail := makeMsg(&msg.Handshake{
+	success := makeMsg(new(Handshake))
+	fail := makeMsg(&Handshake{
 		Code: 1,
 		Msg:  "服务器忙",
 	})

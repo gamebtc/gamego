@@ -2,10 +2,10 @@ package db
 
 import (
 	"local.com/abc/game/db/mongodb"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 )
 
-func CreateDriver(conf *msg.DatabaseConfig)(d GameDriver, err error) {
+func CreateDriver(conf *protocol.DatabaseConfig)(d GameDriver, err error) {
 	if conf.Driver == "mongodb" {
 		d, err = mongodb.NewGameDriver(conf)
 	}

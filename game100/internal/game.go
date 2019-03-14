@@ -8,7 +8,7 @@ import (
 
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
-	"local.com/abc/game/msg"
+	"local.com/abc/game/protocol"
 	"local.com/abc/game/room"
 )
 
@@ -27,7 +27,7 @@ var (
 )
 
 const second = 1000 * time.Millisecond
-type GameRound = msg.FolksGameRound
+type GameRound = protocol.FolksGameRound
 
 func newRand()*rand.Rand{
 	bin := make([]byte, 8)
@@ -47,26 +47,26 @@ func robetRandBetItem() int32 {
 }
 
 // 百人游戏(龙虎/红黑/百家乐/色子)
-type folksGame struct {
+type gameHall struct {
 	config *model.RoomInfo
 	room.DefaultRoomer
-	Tables []*Table
+	tables []*Table
 }
 
 func NewGame() room.Roomer {
-	g := &folksGame{
-		Tables: make([]*Table, 0, 1),
+	g := &gameHall{
+		tables: make([]*Table, 0, 1),
 	}
 	return g
 }
 
-func (this *folksGame) Update() {
-	for _, v := range this.Tables {
+func (this *gameHall) Update() {
+	for _, v := range this.tables {
 		v.Update()
 	}
 }
 
-func (this *folksGame) Init(config *model.RoomInfo) {
+func (this *gameHall) Init(config *model.RoomInfo) {
 	this.config = config
 	mustWinRate = config.WinRate
 	mustWinRand = newRand()
@@ -128,19 +128,19 @@ func (this *folksGame) Init(config *model.RoomInfo) {
 	db.Driver.ClearRobot(config.Id)
 
 	table := NewTable()
-	this.Tables = append(this.Tables, table)
+	this.tables = append(this.tables, table)
 	table.Init()
 
 	this.DefaultRoomer.Init(config)
 	this.EventHandler[room.EventConfigChanged] = configChange
-	this.RegistHandler(msg.MsgId_BetReq, &msg.BetReq{}, betReq)
+	this.RegistHandler(protocol.MsgId_BetReq, &protocol.BetReq{}, betReq)
 
 	//this.EventHandler[room.EventRoomClose] = roomClose
-	//room.RegistMsg(msg.MsgId_BetAck, &msg.BetAck{})
-	//room.RegistMsg(msg.MsgId_FolksGameInitAck, &msg.FolksGameInitAck{})
-	//room.RegistMsg(msg.MsgId_UserBetAck, &msg.UserBetAck{})
-	//room.RegistMsg(msg.MsgId_OpenBetAck, &msg.OpenBetAck{})
-	//room.RegistMsg(msg.MsgId_CloseBetAck, &msg.CloseBetAck{})
+	//room.RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
+	//room.RegistMsg(protocol.MsgId_FolksGameInitAck, &protocol.FolksGameInitAck{})
+	//room.RegistMsg(protocol.MsgId_UserBetAck, &protocol.UserBetAck{})
+	//room.RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
+	//room.RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
 
 	room.Call(table.Start)
 }
@@ -153,8 +153,8 @@ func (this *folksGame) Init(config *model.RoomInfo) {
 //}
 
 // 用户上线
-func (this *folksGame) UserOnline(sess *room.Session, user *model.User, coin int64) {
-	table := this.Tables[0]
+func (this *gameHall) UserOnline(sess *room.Session, user *model.User, coin int64) {
+	table := this.tables[0]
 
 	role := &Role{
 		User:   user,
@@ -166,7 +166,7 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User, coin int
 	sess.Role = role
 
 	// 发送登录游戏信息
-	sess.UnsafeSend(&msg.LoginRoomAck{
+	sess.UnsafeSend(&protocol.LoginRoomAck{
 		Room: room.RoomId,
 		Kind: room.KindId,
 		Tab:  table.Id,
@@ -176,7 +176,7 @@ func (this *folksGame) UserOnline(sess *room.Session, user *model.User, coin int
 }
 
 // 用户下线
-func (this *folksGame) UserOffline(sess *room.Session) {
+func (this *gameHall) UserOffline(sess *room.Session) {
 	if data, ok := sess.Role.(*Role); ok && data != nil {
 		data.Online = false
 
@@ -184,7 +184,7 @@ func (this *folksGame) UserOffline(sess *room.Session) {
 }
 
 // 用户重新连接
-func (this *folksGame) UserReline(oldSess *room.Session, newSess *room.Session) {
+func (this *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 	if data, ok := oldSess.Role.(*Role); ok && data != nil {
 		oldSess.Role = nil
 		data.Online = true
@@ -230,14 +230,4 @@ func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
 		}
 	}
 	return
-}
-
-// 去掉数组结尾的0
-func TrimEndZero(a []int64) []int64 {
-	for i := len(a); i > 0; i-- {
-		if a[i-1] > 0 {
-			return a[:i]
-		}
-	}
-	return a
 }
