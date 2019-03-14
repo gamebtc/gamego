@@ -97,7 +97,7 @@ func (this *SbaoDealer)GetPokers(table *Table)([]byte,[]int32) {
 	odds := sbaoPk(a)
 
 	// 系统必须赢
-	if table.round.Real && MustWin() {
+	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
 			a[0] = byte(this.Int31n(6) + 1)
 			a[1] = byte(this.Int31n(6) + 1)

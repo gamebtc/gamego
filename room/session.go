@@ -21,6 +21,32 @@ const (
 	SESS_CLOSE    = 100 // 是否断开
 )
 
+type Roler interface {
+	GetWinBet()(win int64,bet int64)
+}
+
+type Sender interface {
+	Send(interface{}) bool
+	SendRaw([]byte) bool
+	SendError(int32, int32, string, string)
+}
+
+type robotSender struct{}
+func (s *robotSender) Send(interface{})bool{
+	return true
+}
+
+func (s *robotSender) SendRaw([]byte)bool{
+	return true
+}
+
+func (s *robotSender) SendError( int32,  int32,  string,  string){
+}
+
+var(
+	RobotSender = &robotSender{}
+)
+
 // 会话是一个单独玩家的上下文，在连入后到退出前的整个生命周期内存在
 type Session struct {
 	AgentId  int64            // 连接唯一ID
@@ -28,7 +54,7 @@ type Session struct {
 	Ip       model.IP         // IP地址
 	Online   bool             // 是否在线(只有在线才处理接收到的消息)
 	Disposed bool             // 是否已销毁(被强制退出)
-	Role     interface{}      // 游戏角色数据
+	Role     Roler            // 游戏角色数据
 	Created  time.Time        // TCP链接建立时间
 	Flag     int32            // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
 	sendChan chan interface{} // 发送出去的数据
@@ -37,11 +63,11 @@ type Session struct {
 }
 
 // 不安全的发送，被发送的消息在另外一个线程编码，使用此方法，需保证被发送的对象线程安全
-func (sess *Session) UnsafeSend(data interface{}) bool {
+func (sess *Session) UnsafeSend(val interface{}) bool {
 	select {
 	case <-sess.stopSend:
 		return false
-	case sess.sendChan <- data:
+	case sess.sendChan <- val:
 		return true
 	//default:
 	//	log.WithFields(log.Fields{"user": sess.UserId, "ip": sess.Ip}).Warning("pending full")
@@ -49,9 +75,13 @@ func (sess *Session) UnsafeSend(data interface{}) bool {
 	}
 }
 
+func(sess *Session) SendRaw(val []byte) bool{
+       return sess.UnsafeSend(val)
+}
+
 func (sess *Session) Send(val interface{}) bool {
-	if data, err := coder.Encode(val); err == nil {
-		return sess.UnsafeSend(data)
+	if val, err := Coder.Encode(val); err == nil {
+		return sess.UnsafeSend(val)
 	}
 	return false
 }
@@ -86,7 +116,7 @@ func (sess *Session) sendLoop(stream msg.GameStream) {
 			case []byte:
 				data = val
 			default:
-				if buf, err := coder.Encode(val); err == nil {
+				if buf, err := Coder.Encode(val); err == nil {
 					data = buf
 				}
 			}
@@ -120,8 +150,8 @@ func (sess *Session) recvLoop(stream msg.GameStream) {
 				if len(data) < msg.HeadLen {
 					return
 				}
-				id, arg, e := coder.Decode(data)
-				log.Debugf("coder:%v,%v,%v,%v", coder.Name(), id, arg, e)
+				id, arg, e := Coder.Decode(data)
+				log.Debugf("Coder:%v,%v,%v,%v", Coder.Name(), id, arg, e)
 				if e != nil || sess.Call(id, arg) == false {
 					return
 				}
@@ -147,14 +177,14 @@ func (sess *Session) Close() {
 	}
 }
 
-func(sess *Session)LockRoom(uid int32) (*model.User, error) {
-	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId)
+func(sess *Session)LockRoom(uid int32, win int64, bet int64) (*model.User, error) {
+	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId, win, bet)
 }
 
-func(sess *Session)UnlockRoom() bool {
+func(sess *Session)UnlockRoom(win int64, bet int64) bool {
 	if sess.Disposed == false && sess.UserId != 0{
 		sess.Disposed = true
-		if db.Driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId) {
+		if db.Driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId,win, bet) {
 			return true
 		}
 	}

@@ -6,19 +6,24 @@ import (
 	"math/rand"
 	"time"
 
+	"local.com/abc/game/db"
 	"local.com/abc/game/model"
 	"local.com/abc/game/msg"
 	"local.com/abc/game/room"
 )
 
 var (
-	newDriver   func()GameDriver
-	betItem     int     // 可投注的项
-	taxRate     []int64 // 税率千分比
-	gameName    string  // 游戏名称
-	schedule    []Plan
-	mustWinRate int32   // 必赢概率百分比
-	mustWinRand *rand.Rand
+	newDriver    func()GameDriver
+	betItemCount int     // 可投注的项
+	betItems     []int32 // 可投注的项
+	robotBetRate []int32 // 机器人投注的概率
+	robotSumRate int32   // 机器人投注项的概率总和
+	badBet       []byte  // 不相容的投注项
+	taxRate      []int64 // 税率千分比
+	gameName     string  // 游戏名称
+	schedule     []Plan
+	mustWinRate  int32   // 必赢概率百分比
+	mustWinRand  *rand.Rand
 )
 
 const second = 1000 * time.Millisecond
@@ -31,9 +36,14 @@ func newRand()*rand.Rand{
 	return rand.New(rand.NewSource(int64(seed)))
 }
 
-func MustWin()bool {
-	r := mustWinRand.Int31n(100)
-	return mustWinRate > r
+func robetRandBetItem() int32 {
+	r := rand.Int31n(robotSumRate)
+	for i, v := range robotBetRate {
+		if v > r {
+			return int32(i)
+		}
+	}
+	return 0
 }
 
 // 百人游戏(龙虎/红黑/百家乐/色子)
@@ -66,31 +76,56 @@ func (this *folksGame) Init(config *model.RoomInfo) {
 		schedule = bjlSchedule
 		newDriver = NewBjlDealer
 		gameName = "百家乐"
-		betItem = 5
+		betItemCount = 5
 		taxRate = []int64{0, 50, 50, 50, 50}
+		robotBetRate = []int32{89, 90, 7, 2, 2}
+		badBet = []byte{1, 0}
+		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
+		//betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100, 1000 * 100, 5000 * 100, 10000 * 100}
 	case model.GameKind_HHDZ:
 		schedule = rbdzSchedule
 		newDriver = NewRbdzDealer
 		gameName = "红黑大战"
-		betItem = 3
+		betItemCount = 3
 		taxRate = []int64{50, 50, 50}
+		robotBetRate = []int32{92, 92, 8}
+		badBet = []byte{1, 0}
+		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_LHDZ:
 		schedule = lhdzSchedule
 		newDriver = NewLhdzDealer
 		gameName = "龙虎大战"
-		betItem = 3
+		betItemCount = 3
 		taxRate = []int64{50, 50, 50}
+		robotBetRate = []int32{92, 92, 8}
+		badBet = []byte{1, 0}
+		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_SBAO:
 		schedule = sbaoSchedule
 		newDriver = NewSbaoDealer
 		gameName = "骰宝"
-		betItem = 31
+		betItemCount = 31
 		taxRate = []int64{
 			50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
 			50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
 			50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
 		}
+		robotBetRate = []int32{
+			200, 200, 200, 200, 20, 20, 20, 20, 20, 20,
+			1, 1, 1, 1, 1, 1, 1, 3, 5, 6,
+			7, 8, 9, 9, 9, 9, 8, 7, 6, 5, 3,
+		}
+		badBet = []byte{1, 0, 3, 2}
+		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	}
+
+	robotSumRate = robotBetRate[0]
+	for i := 1; i < len(robotBetRate); i++ {
+		robotSumRate += robotBetRate[i]
+		robotBetRate[i] = robotSumRate
+	}
+
+	db.Driver.ClearRobot(config.Id)
 
 	table := NewTable()
 	this.Tables = append(this.Tables, table)
@@ -179,7 +214,7 @@ func roomClose(event *room.GameEvent) {
 
 // 预算输赢(prize:扣税前总返奖，tax:总税收，bet:总下注)
 func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
-	for i := 0; i < betItem; i++ {
+	for i := 0; i < betItemCount; i++ {
 		// 下注金额大于0
 		if b := group[i]; b > 0 {
 			bet += b

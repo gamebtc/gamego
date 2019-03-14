@@ -6,11 +6,12 @@ import(
 	"local.com/abc/game/msg"
 )
 
-//玩家类型(0:用户；1:测试；2:管理；10:机器人)
+//玩家类型(0:用户；1:代理；10:测试；11:管理；12:机器人)
 const JobPlayer = 0
-const JobTest = 1
-const JobManager = 2
-const JobRobot = 10
+const JobAgent = 1
+const JobTest = 10
+const JobManager = 11
+const JobRobot = 12
 
 type UserId = msg.UserId
 type IP = msg.IP

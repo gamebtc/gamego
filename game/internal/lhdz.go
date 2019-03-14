@@ -131,7 +131,7 @@ func (this *LhdzDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
 	odds := lhdzPk(a, b)
 
 	// 系统必须赢
-	if table.round.Real && MustWin() {
+	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
 			offset += 1
 			if offset >= len(this.Poker)/2 {

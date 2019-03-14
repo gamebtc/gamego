@@ -3,9 +3,9 @@
 package mongodb
 
 import (
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo/options"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
 	"local.com/abc/game/msg"
@@ -178,7 +178,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 }
 
 // 锁定用户到指定房间
-func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int32) (*model.User, error) {
+func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int32, win int64, bet int64) (*model.User, error) {
 	query := bson.D{
 		{"_id", userId},
 		{"agent", agent},
@@ -205,7 +205,8 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	replace := !oldLock.Log2.IsZero()
 	if replace {
 		// 旧的连接设置为强制退出
-		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", oldLock.Log2}}, bson.D{{"$set", bson.D{{"state", int32(2)}}}, upNow})
+		up1 := bson.D{{"$set", bson.D{{"state", int32(2)}, {"win", win}, {"bet", bet}}}, upNow}
+		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", oldLock.Log2}, {"state", int32(0)}}, up1)
 	}
 
 	user := new(model.User)
@@ -215,11 +216,12 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	// 写登录房间日志
 	newLock := bson.D{
 		{"_id", newId},
-		{"win", zeroInt32},
+		{"user", user.Id},
+		{"win", zeroInt64},
+		{"bet", zeroInt64},
 		{"state", zeroInt32},
 		{"kind", kind},
 		{"room", roomId},
-		{"user", user.Id},
 		{"bag", user.Bag},
 		{"ip", user.LastIp},
 	}
@@ -232,7 +234,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 }
 
 // 解锁用户从指定房间
-func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
+func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32, win int64, bet int64) bool {
 	query := bson.D{
 		{"_id", userId},
 		{"room", roomId},
@@ -242,8 +244,8 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
 	if changed, err := d.locker.UpdateOne(d.ctx, query, up); err == nil {
 		if changed != nil && changed.MatchedCount == 1 {
 			// 更新对应的日志记录
-			up1 := bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow}
-			d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}}, up1)
+			up1 := bson.D{{"$set", bson.D{{"state", int32(1)}, {"win", win}, {"bet", bet}}}, upNow}
+			d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}, {"state", int32(0)}}, up1)
 			// 删除玩家锁
 			d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
 			return true

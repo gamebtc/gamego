@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/db"
-	//"local.com/abc/game/model"
+	"local.com/abc/game/model"
 	"local.com/abc/game/msg"
 	"local.com/abc/game/room"
 )
@@ -48,7 +48,8 @@ type Table struct {
 	Roles  []*Role     //所有真实游戏玩家
 	Robot  []*Role     //所有机器人
 	Richer []*msg.User //富豪
-	round  *GameRound
+	round  *GameRound  //1局
+	roundFlow int      //
 
 	timer     *time.Timer
 	planIndex int
@@ -64,6 +65,11 @@ func NewTable() *Table {
 	return t
 }
 
+func(table *Table)MustWin()bool {
+	// round.BetGroup != nil; 有真人下注
+	return (table.round.BetGroup != nil) && (mustWinRate > mustWinRand.Int31n(100))
+}
+
 // 增加真实的玩家
 func (table *Table) AddRole(role *Role) {
 	table.Roles = append(table.Roles, role)
@@ -73,20 +79,20 @@ func (table *Table) AddRole(role *Role) {
 		State: table.State,
 		Sum:   table.round.Group,
 		Log:   table.Log,
+		Rich:  table.Richer,
 	}
 	if bill := role.bill; bill != nil {
 		ack.Bet = bill.Group
 	}
-	ack.Rich = table.Richer
 	role.Send(ack)
 }
 
 // 查找1位赌神和5位富豪
-func  (table *Table) FindRicher() {
+func  (table *Table) FindRicher()[]int32 {
 	roleCount := len(table.Roles) + len(table.Robot)
 	if roleCount == 0 {
 		table.Richer = []*msg.User{}
-		return
+		return nil
 	}
 
 	roles := make([]*Role, roleCount)
@@ -106,55 +112,65 @@ func  (table *Table) FindRicher() {
 	rich := roles[0]
 	for i := 1; i < roleCount; i++ {
 		b := roles[i]
-		if rich.TotalWin < b.TotalWin {
+		if rich.LastWinCount < b.LastWinCount || (rich.LastWinCount == b.LastWinCount && rich.LastBetSum < b.LastBetSum){
 			roles[i] = rich
 			rich = b
 			richIndex = i
 		}
 	}
 	richer := []*msg.User{rich.GetMsgUser()}
-	roles = append(roles[0:richIndex], roles[richIndex+1:]...)
+	log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
+
+	roles = append(roles[:richIndex], roles[richIndex+1:]...)
 	roleCount--
 
-	// 查找5位富豪
+	// 查找5位富豪(以最近20局的下注金额排序,下注金额一样就以身上的钱排序)
 	for c := 0; c < 5 && c < roleCount; c++ {
 		rich := roles[c]
 		for i := c + 1; i < roleCount; i++ {
 			b := roles[i]
-			if rich.Coin < b.Coin {
+			if rich.LastBetSum < b.LastBetSum || (rich.LastBetSum == b.LastBetSum && rich.Coin < b.Coin) {
 				// 交换位置
 				roles[i] = rich
 				rich = b
 			}
 		}
+		log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
 		richer = append(richer, rich.GetMsgUser())
 	}
 	table.Richer = richer
+
+	richerId := make([]int32, len(richer))
+	for i, r := range richer {
+		richerId[i] = r.Id
+	}
+	return richerId
 }
 
 func (table *Table) NewGameRound() {
 	id := room.NewGameRoundId()
-	g := make([]int64, 2*betItem)
 	round := &GameRound{
 		Id:        id,
 		Start:     room.Now(),
 		Room:      room.RoomId,
 		Tab:       table.Id,
-		Group:     g[0:betItem],
-		UserGroup: g[betItem:],
+		Group:     make([]int64, betItemCount),
 	}
 
 	for _, role := range table.Roles {
 		role.Reset()
 	}
-	table.FindRicher()
+	for _, role := range table.Robot {
+		role.Reset()
+	}
 
+    round.Rich = table.FindRicher()
 	table.round = round
+	table.roundFlow = 0
 }
 
 func (table *Table) Init(){
 }
-
 
 func (table *Table) Start() {
 	table.timer = time.NewTimer(time.Microsecond)
@@ -177,8 +193,21 @@ func (table *Table) Update() {
 
 // 返回系统输赢
 func (table *Table)CheckWin(odds []int32) int64 {
-	prize, _, bet := Balance(table.round.UserGroup, odds)
-	return bet - prize
+	if round := table.round; round != nil && round.BetGroup != nil {
+		prize, _, bet := Balance(round.BetGroup, odds)
+		return bet - prize
+	}
+	return 0
+}
+
+func(table *Table)SendToAll(val interface{}) {
+	if len(table.Roles) > 0 {
+		if val, err := room.Coder.Encode(val); err != nil {
+			for _, role := range table.Roles {
+				role.SendRaw(val)
+			}
+		}
+	}
 }
 
 // 投注
@@ -197,38 +226,72 @@ func betReq(m *room.NetMessage) {
 		return
 	}
 	log.Debugf("add bet: %v", req)
-	role.AddBet(*req)
+
+	ack := &msg.BetAck{
+		Sn:   req.Sn,
+		Item: req.Item,
+	}
+	if err := role.AddBet(*req); err != nil {
+		role.SendError(int32(msg.MsgId_BetReq), 1000, err.Error(), "")
+	} else {
+		ack.Bet = req.Bet
+	}
+	ack.Coin = role.Coin
+	role.Send(ack)
 }
+
+func(table *Table) unloadRobot() {
+	// 删除钱不足或者赢钱多的机器人
+	var ids []int32
+	for i := 0; i < len(table.Robot); {
+		role := table.Robot[i]
+		if role.Coin < room.Config.PlayMin ||
+			role.TotalRound > rand.Int31n(100)+10 ||
+			role.TotalWin-role.TotalLost > 10000*100 {
+			ids = append(ids, role.Id)
+			table.Robot = append(table.Robot[:i], table.Robot[i+1:]...)
+		} else {
+			i++
+		}
+	}
+	if len(ids) > 0 {
+		db.Driver.UnloadRobot(room.RoomId, ids)
+	}
+}
+
 
 func(table *Table) loadRobot(count int32) {
 	if count < 0 {
 		// 退出部分机器人
 	} else if count > 0 {
-
 		// 增加机器人
 		robots := db.Driver.LoadRobot(room.RoomId, count)
-		for _,user:=range robots{
+		for _, user := range robots {
+			user.Job = model.JobRobot
 			robot := &Role{
-				Sender: roleSender,
-				User: user,
+				Sender: room.RobotSender,
+				User:   user,
 			}
+			coin := rand.Int63n(200*room.Config.PlayMin) + (2 * room.Config.PlayMin)
 			robot.table = table
 			robot.Online = true
+			robot.Coin = coin
 			robot.Reset()
-			table.Robot = append(table.Robot,robot)
+			table.Robot = append(table.Robot, robot)
+			log.Debugf("add robot: %#v, coin:%v", user, coin)
 		}
 	}
 }
 
-// 准备
-func gameReady(table *Table) {
-	// 加载机器人
+// 读取机器人配置
+func(table *Table) robotConfig()int32{
 	robotConf := room.Config.Robot
 	end := len(robotConf) / 6
 	now := time.Now()
 	minute := int32(now.Hour()*60 + now.Minute())
-	for i := 0; i < end; i++ {
-		if minute <= robotConf[i] && minute > robotConf[i+1] {
+	for count := 0; count < end; count++ {
+		i := 6 * count
+		if minute >= robotConf[i] && minute < robotConf[i+1] {
 			min := robotConf[i+2]  //最小人数
 			max := robotConf[i+3]  //最大人数
 			base := robotConf[i+4] //基础人数
@@ -241,11 +304,19 @@ func gameReady(table *Table) {
 			} else if count > max {
 				count = max
 			}
-			table.loadRobot(int32(len(table.Robot)) - count)
-			break
+			return count
 		}
 	}
+	return -1
+}
 
+// 准备
+func gameReady(table *Table) {
+	table.unloadRobot()
+	count := table.robotConfig()
+	if count >= 0 {
+		table.loadRobot(count - int32(len(table.Robot)))
+	}
 	table.State = 1
 	table.CurId += 1
 	log.Debugf("%v准备:%v", gameName, table.CurId)
@@ -263,17 +334,30 @@ func gameOpen (table *Table){
 
 func gamePlay(table *Table) {
 	table.Play(table)
+	// TODO: 需要优化机器人的投注项选择
 	for _, role := range table.Robot {
-		if role.Id%5 == rand.Int31n(5) {
+		if rand.Int31n(4) == 1 {
+			betIndex := rand.Intn(len(betItems))
 			bet := msg.BetReq{
-				Item: rand.Int31n(int32(betItem)),
-				Coin: 100 + rand.Int31n(100)*100,
+				Item: robetRandBetItem(),
+				Bet:  betItems[betIndex],
 			}
-			if role.RobotCanBet(bet.Item) {
-				role.AddBet(bet)
-				//log.Debugf("机器人下注:%v,%v", bet, r)
+			for addCount := rand.Intn(3); addCount >= 0; addCount-- {
+				if role.RobotCanBet(bet.Item, bet.Bet) {
+					role.AddBet(bet)
+					//log.Debugf("R%v下注:%v_%v,%v", role.Id, bet.Item, bet.Bet/100, role.Coin/100)
+				}
 			}
 		}
+	}
+
+	l := len(table.round.Flow)
+	if l > table.roundFlow {
+		// 发送这段时间其他玩家的下注数据
+		table.SendToAll(&msg.UserBetAck{
+			Bet: table.round.Flow[table.roundFlow:l],
+		})
+		table.roundFlow = l
 	}
 }
 
@@ -297,4 +381,5 @@ func gameDeal(table *Table) {
 	round.End = room.Now()
 	room.SaveLog(round)
 
+	log.Debugf("总下注:%v", round.Group)
 }

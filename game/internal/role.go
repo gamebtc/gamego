@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 
@@ -9,30 +10,27 @@ import (
 	"local.com/abc/game/room"
 )
 
-
-type Sender interface {
-    Send(val interface{})bool
-}
-
-type RoleSender struct{}
-func (s *RoleSender)  Send(val interface{})bool{
-	return true
-}
-
-var(
-	roleSender = &RoleSender{}
-)
+const lastBillCount  = 20
 
 // 每个玩家的游戏数据
 type Role struct {
-	*model.User            // 玩家信息
-	Sender                 // 发送消息
-	Online   bool          // 是否在线
-	TotalWin int64         // 进入之后的赢钱总数
-	Coin     int64         // 当前房间使用的币
-	table    *Table        // 桌子ID
-	bill     *msg.GameBill // 输赢情况
-	flowSn   int64         // 最后的写分序号，返回时用于验证
+	*model.User // 玩家信息
+	room.Sender      // 发送消息
+	Online bool // 是否在线
+
+	Coin   int64         // 当前房间使用的币
+	table  *Table        // 桌子ID
+	bill   *msg.GameBill // 输赢情况
+	flowSn int64         // 最后的写分序号，返回时用于验证
+
+	TotalWin     int64                // 进入之后的赢钱金额
+	TotalLost    int64                // 进入之后的输钱金额
+	TotalBet     int64                // 进入之后的下注金额
+	TotalRound   int32                // 有下注的总局数
+	LastBet      [lastBillCount]int64 // 最后20局的下注金额
+	LastWin      [lastBillCount]byte  // 最后20局的输赢金额
+	LastBetSum   int64
+	LastWinCount byte
 }
 
 func (role *Role)GetMsgUser() *msg.User {
@@ -45,17 +43,26 @@ func (role *Role)GetMsgUser() *msg.User {
 	}
 }
 
-func(role *Role)IsRobot()bool {
-	return role.User.Job == 10
+func(role *Role)GetWinBet()(int64,int64) {
+	return role.TotalWin - role.TotalLost, role.TotalBet
+}
+
+func(role *Role)IsRobot() bool {
+	return role.User.Job == model.JobRobot
+}
+
+func(role *Role)IsPlayer() bool {
+	return role.User.Job == model.JobPlayer
 }
 
 // 检查投注项位置
-func (role *Role) RobotCanBet(item int32) bool {
-	if role.bill != nil {
-		for k, v := range role.bill.Group {
-			if k != int(item) && v > int64(0) {
-				return false
-			}
+func (role *Role) RobotCanBet(item int32, bet int32) bool {
+	if int64(bet) > role.Coin || role.Coin < room.Config.PlayMin {
+		return false
+	}
+	if role.bill != nil && item < int32(len(badBet)) {
+		if role.bill.Group[badBet[item]] > 0 {
+			return false
 		}
 	}
 	return true
@@ -65,25 +72,36 @@ func (role *Role) Reset() {
 	role.bill = nil
 }
 
+// 存在指定的下注金额
+func ExistsBetItem(bet int32)bool {
+	return (bet >= betItems[0]) && (bet <= betItems[len(betItems)-1]) && (bet%100 == 0)
+}
+
 // 投注
-func (role *Role) AddBet(bet msg.BetReq) bool {
+func (role *Role) AddBet(req msg.BetReq)(error) {
 	// 检查投注项
-	i := bet.Item
-	if i >= int32(betItem) {
-		log.Debugf("投注项错误:%v,%v", i, betItem)
-		return false
+	i := req.Item
+	bet := int64(req.Bet)
+	if i >= int32(betItemCount){
+		return errors.New(fmt.Sprintf("错误的投注项:%v", i))
 	}
+
+	if !ExistsBetItem(req.Bet) {
+		return errors.New(fmt.Sprintf("错误的投注金额:%v|%v", i, bet))
+	}
+
 	// 检查金币
-	coin := int64(bet.Coin)
-	if coin <= 0 || coin > role.Coin {
-		log.Debugf("金币不足:%v,%v", role.Coin, coin)
-		return false
+	if  bet <= 0 || bet > role.Coin {
+		return errors.New(fmt.Sprintf("余额不足%v金币，请您充值！", bet))
+	}
+
+	if role.Coin < room.Config.PlayMin {
+		return errors.New(fmt.Sprintf("余额%v金币以上才可以下注，请您充值！", room.Config.PlayMin))
 	}
 
 	round := role.table.round
 	if round == nil || role.table.State != 2 {
-		log.Debugf("下游已停止:%v,%v", role.Coin, coin)
-		return false
+		return errors.New("本局游戏已停止下注，请您稍后再试！")
 	}
 
 	bill := role.bill
@@ -91,7 +109,7 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 		bill = &msg.GameBill{
 			Uid:   role.Id,
 			Coin:  role.Coin,
-			Group: make([]int64, betItem),
+			Group: make([]int64, betItemCount),
 			Job:   role.Job,
 		}
 		role.bill = bill
@@ -99,19 +117,21 @@ func (role *Role) AddBet(bet msg.BetReq) bool {
 		round.Bill = append(round.Bill, bill)
 	}
 
-	round.Flow = append(round.Flow, role.Id, i, bet.Coin)
-	round.Group[i] += coin
+	round.Flow = append(round.Flow, role.Id, i, req.Bet)
+	round.Group[i] += bet
 
-	role.Coin -= coin
-	bill.Group[i] += coin
-	bill.Bet += coin
+	role.Coin -= bet
+	bill.Group[i] += bet
+	bill.Bet += bet
 	// 有真实玩家下注
-	if !role.IsRobot(){
-		round.Real = true
-		round.UserGroup[i] += coin
-		log.Debugf("玩家下注:%v,%v", role.Id, bet)
+	if role.IsPlayer() {
+		if round.BetGroup == nil {
+			round.BetGroup = make([]int64, betItemCount)
+		}
+		round.BetGroup[i] += bet
 	}
-	return true
+	log.Debugf("%v下注:%v_%v", role.Id, i,bet/100)
+	return nil
 }
 
 // 结算,欧赔方式计算,赔率放大100倍
@@ -135,14 +155,36 @@ func (role *Role) Balance() *model.CoinFlow {
 	role.Coin += prize
 	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bet
-	if addCoin > 0 {
+
+	i := role.TotalRound %lastBillCount
+	role.LastBetSum += bet - role.LastBet[i]
+	role.LastBet[i] = bet
+
+	if role.LastWin[i] == 1 {
+		role.LastWinCount--
+	}
+	if addCoin >= 0 {
 		role.TotalWin += addCoin
+		role.LastWin[i] = 1
+		role.LastWinCount++
+	}else{
+		role.TotalLost-=addCoin
+		role.LastWin[i] = 0
 	}
 
-	bill.Win = addCoin
 	bill.Tax = tax
-	round.Tax += tax
-	round.Win -= addCoin
+	bill.Win = addCoin
+
+	role.TotalRound++
+
+	if role.IsRobot(){
+		return nil
+	}
+
+	if role.IsPlayer() {
+		round.Tax += tax
+		round.Win -= addCoin
+	}
 
 	ulog := &msg.FolksUserLog{
 		Tab:   role.table.Id,

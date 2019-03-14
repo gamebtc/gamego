@@ -18,7 +18,7 @@ type LoginLog struct {
 	Kind  int32           `bson:"kind"`
 	Room  int32           `bson:"room"`
 	User  int32           `bson:"user"`
-	Coin  CoinBag         `bson:"coin"`
+	Bag   CoinBag         `bson:"bag"`
 	Udid  string          `bson:"udid"`
 	Dev   *msg.DeviceInfo `bson:"dev"`
 	Env   *msg.Envirnment `bson:"env"`

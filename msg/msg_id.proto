@@ -4,7 +4,8 @@ package msg;
 
 message MsgId{
 	enum Code{
-	    Control               = 0;   // 控制消息
+		None                  = 0;   // 无
+	    Control               = 1;   // 控制消息
         HandshakeReq          = 2;   // 握手
         HandshakeAck          = 3;   // 握手返回
 		VerCheckReq           = 4;   // 游戏版本检查

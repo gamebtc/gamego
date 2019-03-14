@@ -31,13 +31,13 @@ var (
 
 var (
 	signal *util.AppSignal
-	coder  msg.Coder
+	Coder  msg.Coder
 )
 
 func RegistMsg(id msg.MsgId_Code, arg interface{}) {
 	t := reflect.TypeOf(arg)
-	if _, ok := coder.GetMsgId(t); ok {
+	if _, ok := Coder.GetMsgId(t); ok {
 		log.Fatalf("message %v is already registered", t)
 	}
-	coder.SetMsgId(t, int32(id))
+	Coder.SetMsgId(t, int32(id))
 }

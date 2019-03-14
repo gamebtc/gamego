@@ -66,10 +66,8 @@ message FolksGameRound {
 	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
 	// 富豪(第1个位置为赌神后面5个为富豪ID)
 	repeated int32 rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
-	// 是否有真实玩家下注
-	bool real = 15 [(gogoproto.jsontag) = 'z', (gogoproto.moretags) = 'bson:"z" msg:"z"'];
 	// 真实玩家下注分组
-	repeated int64 userGroup = 16 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	repeated int64 betGroup = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
 }
 
 //// 投注信息()
@@ -99,20 +97,26 @@ message FolksGameInitAck {
 
 // 请求下注(红黑/龙虎/百家乐/色宝)
 message BetReq{
+	// 序列号
+	int32 sn = 1 [(gogoproto.jsontag) = 'sn',(gogoproto.moretags) = 'bson:"sn" msg:"sn"'];
 	// 投注项,根据游戏定义
-	int32 item = 1 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
-	// 投注金额
-	int32 coin = 2 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+	int32 item = 2 [(gogoproto.jsontag) = 'i',(gogoproto.moretags) = 'bson:"i" msg:"i"'];
+	// 投注金币
+	int32 bet = 3 [(gogoproto.jsontag) = 'bet',(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
 }
 
 // 下注返回(红黑/龙虎/百家乐/色宝)
 message BetAck{
+	// 序列号
+	int32 sn = 1 [(gogoproto.jsontag) = 'sn', (gogoproto.moretags) = 'bson:"sn" msg:"sn"'];
 	// 投注项,根据游戏定义
-	int32 item = 1 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
-	// 投注金额
-	int32 coin = 2 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+	int32 item = 2 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
+	// 投注金币
+	int32 bet = 3 [(gogoproto.jsontag) = 'bet', (gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	// 剩余金币
+	int64 coin = 4 [(gogoproto.jsontag) = 'coin', (gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
 	// 我的投注情况
-	repeated int64 bet = 3 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	//repeated int64 group = 4 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
 }
 
 // 玩家下注信息

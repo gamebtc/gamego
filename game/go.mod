@@ -1,7 +1,9 @@
 module game
 
 require (
-	github.com/sirupsen/logrus v1.3.0
+	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/golang/snappy v0.0.1 // indirect
+	github.com/sirupsen/logrus v1.4.0
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0
 	local.com/abc/game/msg v0.0.0

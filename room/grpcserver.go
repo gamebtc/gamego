@@ -56,7 +56,7 @@ func (s *grpcServer) newSession(stream msg.GameStream, user *msg.UserContext) er
 	// cleanup work
 	defer func() {
 		// 连接断开事件
-		if sess.UserId!=0 {
+		if sess.UserId != 0 {
 			Call(func() { userOffline(sess) })
 		}
 		sess.Close()

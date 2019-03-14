@@ -6,9 +6,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
 	"local.com/abc/game/msg"
@@ -32,7 +33,7 @@ type Retval struct {
 func NewGameDriver(conf *msg.DatabaseConfig)(d *driver, err error) {
 	defer util.PrintPanicStack()
 	var client *mongo.Client
-	if client, err = mongo.NewClientWithOptions(conf.Url); err != nil {
+	if client, err = mongo.NewClient(options.Client().ApplyURI(conf.Url)); err != nil {
 		log.Fatal(err)
 		return
 	}

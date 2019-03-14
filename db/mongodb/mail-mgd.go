@@ -4,8 +4,8 @@ package mongodb
 
 //
 //import (
-//	"github.com/mongodb/mongo-go-driver/bson"
-//	mgo "github.com/mongodb/mongo-go-driver/mongo"
+//	"go.mongodb.org/mongo-driver/bson"
+//	mgo "go.mongodb.org/mongo-driver/mongo"
 //)
 //
 //const (

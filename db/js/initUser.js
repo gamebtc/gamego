@@ -24,7 +24,7 @@ const f = function (id) {
             gc1: zeroLong,//游戏金币
             gc2: zeroLong //银行金币
         },
-        tag: [empty,empty],//标签
+        tag: {},           //标签
         init: zeroLong,    //创建时间
         up: zeroLong,      //更新时间
         ver: zero

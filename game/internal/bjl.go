@@ -95,9 +95,13 @@ func (this *BjlDealer) Deal(table *Table) {
 	for _, role := range table.Roles {
 		if flow := role.Balance(); flow != nil {
 			room.WriteCoin(flow)
-			if !role.IsRobot() {
-				log.Debugf("结算:%v", flow)
-			}
+			log.Debugf("结算:%v", flow)
+		}
+	}
+	for _, role := range table.Robot {
+		if flow := role.Balance(); flow != nil {
+			//room.WriteCoin(flow)
+			//log.Debugf("结算:%v", flow)
 		}
 	}
 }
@@ -166,7 +170,7 @@ func (this *BjlDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
 	odds := bjlPk(a, b)
 
 	// 系统必须赢
-	if table.round.Real && MustWin() {
+	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
 			offset += 1
 			if offset >= len(this.Poker)/2 {

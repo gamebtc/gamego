@@ -11,7 +11,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"local.com/abc/game/model"
-	. "local.com/abc/game/msg"
+	"local.com/abc/game/msg"
 )
 
 // 房间配置
@@ -23,17 +23,17 @@ var(
 )
 
 type AppConfig struct {
-	Consul   ConsulConfig   `yaml:"consul"`
-	Tcp      TcpConfig      `yaml:"tcp"`
-	Udp      UdpConfig      `yaml:"udp"`
-	Kcp      KcpConfig      `yaml:"kcp"`
-	Grpc     GrpcConfig     `yaml:"grpc"`
-	Pprof    string         `yaml:"pprof"`
-	LogLevel string         `yaml:"logLevel"`
-	LogFile  string         `yaml:"logFile"`
-	Database DatabaseConfig `yaml:"database"`
-	Room     RoomConfig     `yaml:"room"` //房间配置
-	Codec    string         `yaml:"codec"`
+	Consul   msg.ConsulConfig   `yaml:"consul"`
+	Tcp      msg.TcpConfig      `yaml:"tcp"`
+	Udp      msg.UdpConfig      `yaml:"udp"`
+	Kcp      msg.KcpConfig      `yaml:"kcp"`
+	Grpc     msg.GrpcConfig     `yaml:"grpc"`
+	Pprof    string             `yaml:"pprof"`
+	LogLevel string             `yaml:"logLevel"`
+	LogFile  string             `yaml:"logFile"`
+	Database msg.DatabaseConfig `yaml:"database"`
+	Room     msg.RoomConfig     `yaml:"room"` //房间配置
+	Codec    string             `yaml:"codec"`
 }
 
 func InitConfig(path string) *AppConfig {
@@ -49,7 +49,7 @@ func InitConfig(path string) *AppConfig {
 		log.SetLevel(lv)
 	}
 
-	coder = GetCoder(cfg.Codec)
+	Coder = msg.GetCoder(cfg.Codec)
 
 	if cfg.Pprof != "" {
 		go http.ListenAndServe(cfg.Pprof, nil)

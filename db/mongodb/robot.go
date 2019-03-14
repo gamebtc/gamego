@@ -1,10 +1,9 @@
 package mongodb
 
 import (
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo/options"
-
 	//log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
 	//"local.com/abc/game/msg"
@@ -40,7 +39,11 @@ func (d *driver) UnloadRobot(room int32, ids[]int32) {
 		{"_id", bson.D{{"$in", ids}}},
 		{"room", room},
 	}
-	d.robot.UpdateMany(d.ctx, query, robotZeroRoom)
+	up := bson.D{
+		{"$set", robotZeroRoom},
+		lastTime,
+	}
+	d.robot.UpdateMany(d.ctx, query, up)
 }
 
 // 清理机器人
@@ -48,5 +51,5 @@ func (d* driver) ClearRobot(room int32) {
 	query := bson.D{
 		{"room", room},
 	}
-	d.robot.UpdateMany(d.ctx, query, robotZeroRoom)
+	d.robot.UpdateMany(d.ctx, query, bson.D{ {"$set", robotZeroRoom}})
 }

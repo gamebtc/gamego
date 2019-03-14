@@ -3,7 +3,7 @@
 package mongodb
 
 import (
-	"github.com/mongodb/mongo-go-driver/bson"
+	"go.mongodb.org/mongo-driver/bson"
 
 	"local.com/abc/game/model"
 	"local.com/abc/game/msg"

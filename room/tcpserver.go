@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/xtaci/kcp-go"
 
-	. "local.com/abc/game/msg"
+	"local.com/abc/game/msg"
 )
 
 var (
@@ -39,9 +39,9 @@ func tcpServer(config *AppConfig) {
 	defer lis.Close()
 
 	// 注册服务器地址
-	ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	msg.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
 	defer func(){
-		ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+		msg.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
 	// loop accepting
@@ -81,9 +81,9 @@ func udpServer(config *AppConfig) {
 	}
 
 	// 注册服务器地址
-	ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	msg.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
 	defer func(){
-		ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+		msg.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
 	// loop accepting
@@ -132,7 +132,7 @@ func newSession(conn net.Conn) {
 		return
 	}
 
-	agent, uid, ip := GetUserHead(head[:])
+	agent, uid, ip := msg.GetUserHead(head[:])
 	if agent == 0 || uid == 0 {
 		return
 	}
@@ -172,7 +172,7 @@ func checkError(err error) {
 
 type NetStream struct {
 	conn net.Conn
-	head [HeadLen]byte
+	head [msg.HeadLen]byte
 }
 
 func (stream *NetStream) Send(d []byte) error {
@@ -186,16 +186,16 @@ func (stream *NetStream) Send(d []byte) error {
 func (stream *NetStream) Recv() ([]byte, error) {
 	head := stream.head[:]
 	n, err := io.ReadFull(stream.conn, head)
-	if err != nil || n != HeadLen {
+	if err != nil || n != msg.HeadLen {
 		return nil, err
 	}
-	size := int(GetHeadLen(head))
-	payload := make([]byte, HeadLen+size)
-	n, err = io.ReadFull(stream.conn, payload[HeadLen:])
+	size := int(msg.GetHeadLen(head))
+	payload := make([]byte, msg.HeadLen+size)
+	n, err = io.ReadFull(stream.conn, payload[msg.HeadLen:])
 	if err != nil || n != size {
 		return nil, err
 	}
-	copy(payload[:HeadLen], head)
+	copy(payload[:msg.HeadLen], head)
 	return payload, nil
 }
 
