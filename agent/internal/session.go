@@ -44,7 +44,6 @@ type Session struct {
 	Flag    int32     // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
 	Created time.Time // TCP链接建立时间
 
-	gameChan   chan struct{}   //
 	gameStream GameStream      // 后端房间服数据流
 	services   [8]GameClient   // 服务连接
 	conn       net.Conn        // 底层网络连接
@@ -171,11 +170,10 @@ func (sess *Session) Close() {
 }
 
 func (sess *Session) closeRoom() {
-	if c := sess.gameChan; c != nil {
-		close(c)
+	if c := sess.gameStream; c != nil {
+		c.Close()
 		sess.RoomId = 0
 		sess.gameStream = nil
-		sess.gameChan = nil
 	}
 }
 
@@ -223,14 +221,11 @@ func (sess *Session) route(data []byte) (ret interface{}, err error) {
 	return
 }
 
-func (sess *Session) readFromGame(roomId int32, gameChan chan struct{}, stream GameStream) {
+func (sess *Session) readFromGame(roomId int32, stream GameStream) {
 	defer stream.Close()
 	for sess.Flag < SESS_CLOSE {
 		if bin, err := stream.Recv(); err == nil {
 			select {
-			// 游戏服务器断开
-			case <-gameChan:
-				return
 			case <-sess.dieChan:
 				return
 			default:
@@ -309,14 +304,12 @@ func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (int
 		if id := GetHeadId(data); id == int32(MsgId_LoginRoomAck) {
 			ack := LoginRoomAck{}
 			if e = sess.Unmarshal(data[HeadLen:], &ack); e == nil && ack.Code == 0 {
-				newChan := make(chan struct{})
-				if oldChan := sess.gameChan; oldChan != nil {
-					close(oldChan)
+				if oldStream := sess.gameStream; oldStream != nil {
+					oldStream.Close()
 				}
-				sess.gameChan = newChan
 				sess.gameStream = stream
 				sess.RoomId = roomId
-				go sess.readFromGame(roomId, newChan, stream)
+				go sess.readFromGame(roomId, stream)
 			}
 		}
 		return data, e

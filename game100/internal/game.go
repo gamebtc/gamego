@@ -157,11 +157,11 @@ func (this *gameHall) UserOnline(sess *room.Session, user *model.User, coin int6
 	table := this.tables[0]
 
 	role := &Role{
-		User:   user,
-		Coin:   coin,
-		table:  table,
-		Online: true,
-		Sender: sess,
+		User:    user,
+		Coin:    coin,
+		table:   table,
+		Online:  true,
+		Session: sess,
 	}
 	sess.Role = role
 
@@ -177,9 +177,12 @@ func (this *gameHall) UserOnline(sess *room.Session, user *model.User, coin int6
 
 // 用户下线
 func (this *gameHall) UserOffline(sess *room.Session) {
-	if data, ok := sess.Role.(*Role); ok && data != nil {
-		data.Online = false
-
+	if role, ok := sess.Role.(*Role); ok && role != nil {
+		role.Online = false
+		if role.bill == nil{
+			this.RemoveUser(sess)
+			sess.UnlockRoom()
+		}
 	}
 }
 

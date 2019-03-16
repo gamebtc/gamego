@@ -3,7 +3,6 @@ package protocol
 import (
 	"context"
 	"encoding/binary"
-
 	"google.golang.org/grpc/metadata"
 )
 

@@ -141,8 +141,6 @@ func newSession(conn net.Conn) {
 		AgentId:  agent,
 		Ip:       ip,
 		Created:  time.Now(),
-		sendChan: make(chan interface{}, 512),
-		stopSend: make(chan struct{}),
 	}
 
 	log.Infof("connection agent:%v, user:%v, Ip:%v", agent, uid, ip)

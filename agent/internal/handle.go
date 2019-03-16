@@ -120,7 +120,7 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	if sess.RoomId != 0 {
 		sess.closeRoom()
 	}
-	if ret, err := loginRoom2(sess, roomId, date); err == nil {
+	if ret, err := loginRoom(sess, roomId, date); err == nil {
 		return ret, err
 	} else {
 		return &LoginRoomAck{
@@ -131,27 +131,27 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	}
 }
 
-//
-func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
-	// 连接到已选定游戏房间服务器
-	conn := roomServicePool.GetService(roomId)
-	if conn == nil {
-		log.Debugf("cannot get room:%v", roomId)
-		return nil, errors.New("cannot get room:" + strconv.Itoa(int(roomId)))
-	}
-	// 开启到游戏服的流
-	cli := NewGameClient(conn)
-	if s, err := cli.Send(sess.callCtx); err != nil {
-		log.Warnf("room error %v: %s", roomId, err.Error())
-		return nil, errors.New("cannot connect room:" + strconv.Itoa(int(roomId)))
-	} else {
-		stream := &GrpcStream{ClientStream: s}
-		return sess.loginRoom(roomId, v, stream)
-	}
-}
+////
+//func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
+//	// 连接到已选定游戏房间服务器
+//	conn := roomServicePool.GetService(roomId)
+//	if conn == nil {
+//		log.Debugf("cannot get room:%v", roomId)
+//		return nil, errors.New("cannot get room:" + strconv.Itoa(int(roomId)))
+//	}
+//	// 开启到游戏服的流
+//	cli := NewGameClient(conn)
+//	if s, err := cli.Send(sess.callCtx); err != nil {
+//		log.Warnf("room error %v: %s", roomId, err.Error())
+//		return nil, errors.New("cannot connect room:" + strconv.Itoa(int(roomId)))
+//	} else {
+//		stream := &GrpcStream{ClientStream: s}
+//		return sess.loginRoom(roomId, v, stream)
+//	}
+//}
 
 //
-func loginRoom2(sess *Session, roomId int32, v []byte) (interface{}, error) {
+func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
 	// 连接到已选定游戏房间服务器
 	addr := rpcServicePool.GetValue(strconv.Itoa(int(roomId)))
 	if addr == nil {

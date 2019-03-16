@@ -119,7 +119,7 @@ func  (table *Table) FindRicher()[]int32 {
 		}
 	}
 	richer := []*protocol.User{rich.GetMsgUser()}
-	log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
+	//log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
 
 	roles = append(roles[:richIndex], roles[richIndex+1:]...)
 	roleCount--
@@ -135,7 +135,7 @@ func  (table *Table) FindRicher()[]int32 {
 				rich = b
 			}
 		}
-		log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
+		//log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
 		richer = append(richer, rich.GetMsgUser())
 	}
 	table.Richer = richer
@@ -155,13 +155,6 @@ func (table *Table) NewGameRound() {
 		Room:      room.RoomId,
 		Tab:       table.Id,
 		Group:     make([]int64, betItemCount),
-	}
-
-	for _, role := range table.Roles {
-		role.Reset()
-	}
-	for _, role := range table.Robot {
-		role.Reset()
 	}
 
     round.Rich = table.FindRicher()
@@ -240,25 +233,6 @@ func betReq(m *room.NetMessage) {
 	role.Send(ack)
 }
 
-func(table *Table) unloadRobot() {
-	// 删除钱不足或者赢钱多的机器人
-	var ids []int32
-	for i := 0; i < len(table.Robot); {
-		role := table.Robot[i]
-		if role.Coin < room.Config.PlayMin ||
-			role.TotalRound > rand.Int31n(100)+10 ||
-			role.TotalWin-role.TotalLost > 10000*100 {
-			ids = append(ids, role.Id)
-			table.Robot = append(table.Robot[:i], table.Robot[i+1:]...)
-		} else {
-			i++
-		}
-	}
-	if len(ids) > 0 {
-		db.Driver.UnloadRobot(room.RoomId, ids)
-	}
-}
-
 
 func(table *Table) loadRobot(count int32) {
 	if count < 0 {
@@ -269,7 +243,11 @@ func(table *Table) loadRobot(count int32) {
 		for _, user := range robots {
 			user.Job = model.JobRobot
 			robot := &Role{
-				Sender: room.RobotSender,
+				Session: &room.Session{
+					AgentId:  0,
+					Ip:       user.Ip,
+					Created:  time.Now(),
+				},
 				User:   user,
 			}
 			coin := rand.Int63n(200*room.Config.PlayMin) + (2 * room.Config.PlayMin)
@@ -278,7 +256,7 @@ func(table *Table) loadRobot(count int32) {
 			robot.Coin = coin
 			robot.Reset()
 			table.Robot = append(table.Robot, robot)
-			log.Debugf("add robot: %#v, coin:%v", user, coin)
+			//log.Debugf("add robot: %#v, coin:%v", user, coin)
 		}
 	}
 }
@@ -312,11 +290,41 @@ func(table *Table) robotConfig()int32{
 
 // 准备
 func gameReady(table *Table) {
-	table.unloadRobot()
+	// 删除已断线的玩家
+	for i := 0; i < len(table.Roles); {
+		role := table.Roles[i]
+		role.Reset()
+		if role.Online == false {
+			table.Roles = append(table.Roles[:i], table.Roles[i+1:]...)
+			role.UnlockRoom()
+		} else {
+			i++
+		}
+	}
+
+	// 删除钱不足或者赢钱多的机器人
+	var ids []int32
+	for i := 0; i < len(table.Robot); {
+		role := table.Robot[i]
+		role.Reset()
+		if role.Coin < room.Config.PlayMin ||
+			role.TotalRound > rand.Int31n(100)+10 ||
+			role.TotalWin > 10000*100 {
+			ids = append(ids, role.Id)
+			table.Robot = append(table.Robot[:i], table.Robot[i+1:]...)
+		} else {
+			i++
+		}
+	}
+	if len(ids) > 0 {
+		db.Driver.UnloadRobot(room.RoomId, ids)
+	}
+
 	count := table.robotConfig()
 	if count >= 0 {
 		table.loadRobot(count - int32(len(table.Robot)))
 	}
+
 	table.State = 1
 	table.CurId += 1
 	log.Debugf("%v准备:%v", gameName, table.CurId)

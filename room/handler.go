@@ -17,11 +17,11 @@ func userOnline(sess *Session, uid int32) {
 		return
 	}
 	// 锁定玩家
-	win, bet := int64(0), int64(0)
+	win, bet, round := int64(0), int64(0), int32(0)
 	if oldSess != nil && oldSess.Role != nil {
-		win, bet = oldSess.Role.GetWinBet()
+		win, bet, round = sess.TotalWin, sess.TotalBet, sess.TotalRound
 	}
-	user, err := sess.LockRoom(uid, win, bet)
+	user, err := sess.LockRoom(uid, win, bet, round)
 	if err != nil {
 		// 发送错误消息
 		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, err.Error())
@@ -66,13 +66,6 @@ func userOnline(sess *Session, uid int32) {
 // 主线程调用，玩家下线
 func userOffline(sess *Session) {
 	log.Debugf("userOffline:%v", sess)
-	defer func() {
-		win, bet := int64(0), int64(0)
-		if sess.Role != nil {
-			win, bet = sess.Role.GetWinBet()
-		}
-		sess.UnlockRoom(win, bet)
-	}()
 	sess.Online = false
 	roomer.UserOffline(sess)
 }

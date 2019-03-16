@@ -14,19 +14,15 @@ const lastBillCount  = 20
 
 // 每个玩家的游戏数据
 type Role struct {
-	*model.User // 玩家信息
-	room.Sender      // 发送消息
-	Online bool // 是否在线
+	*model.User    // 玩家信息
+	*room.Session  // 发送消息
+	Online bool    // 是否在线
 
 	Coin   int64         // 当前房间使用的币
 	table  *Table        // 桌子ID
 	bill   *protocol.GameBill // 输赢情况
 	flowSn int64         // 最后的写分序号，返回时用于验证
 
-	TotalWin     int64                // 进入之后的赢钱金额
-	TotalLost    int64                // 进入之后的输钱金额
-	TotalBet     int64                // 进入之后的下注金额
-	TotalRound   int32                // 有下注的总局数
 	LastBet      [lastBillCount]int64 // 最后20局的下注金额
 	LastWin      [lastBillCount]byte  // 最后20局的输赢金额
 	LastBetSum   int64
@@ -43,9 +39,7 @@ func (role *Role)GetMsgUser() *protocol.User {
 	}
 }
 
-func(role *Role)GetWinBet()(int64,int64) {
-	return role.TotalWin - role.TotalLost, role.TotalBet
-}
+
 
 func(role *Role)IsRobot() bool {
 	return role.User.Job == model.JobRobot
@@ -164,18 +158,16 @@ func (role *Role) Balance() *model.CoinFlow {
 		role.LastWinCount--
 	}
 	if addCoin >= 0 {
-		role.TotalWin += addCoin
 		role.LastWin[i] = 1
 		role.LastWinCount++
 	}else{
-		role.TotalLost-=addCoin
 		role.LastWin[i] = 0
 	}
 
+	role.AddWinBet(addCoin, bet)
+
 	bill.Tax = tax
 	bill.Win = addCoin
-
-	role.TotalRound++
 
 	if role.IsRobot(){
 		return nil
@@ -205,7 +197,7 @@ func (role *Role) Balance() *model.CoinFlow {
 		Room:   room.RoomId,
 		Kind:   room.KindId,
 		Type:   1,
-		Note:   round.Note + fmt.Sprintf("%v", ulog.Group),
+		Note:   round.Note,
 		Att:    ulog,
 	}
 	return flow

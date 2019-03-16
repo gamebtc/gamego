@@ -49,16 +49,12 @@ func (s *grpcServer) newSession(stream protocol.GameStream, user *protocol.UserC
 		AgentId:  user.AgentId,
 		Ip:       user.Ip,
 		Created:  time.Now(),
-		sendChan: make(chan interface{}, 512),
-		stopSend: make(chan struct{}),
 	}
 
 	// cleanup work
 	defer func() {
 		// 连接断开事件
-		if sess.UserId != 0 {
-			Call(func() { userOffline(sess) })
-		}
+		Call(func() { userOffline(sess) })
 		sess.Close()
 		log.Infof("connection closed user:%v, Ip:%v", user.UserId, user.Ip)
 	}()

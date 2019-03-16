@@ -9,6 +9,7 @@ var (
 	ErrorDuplicateLogin       = errors.New("重复登录")
 	ErrorUndefined            = errors.New("未定义的协议")
 	ErrorSign                 = errors.New("签名错误")
+	ErrorLoginExpired         = errors.New("登录已过期")
 	ErrorUnmarshal            = errors.New("消息解码错误")
 	ErrorMarshal              = errors.New("消息编码错误")
 	ErrorDataTooShort         = errors.New("protobuf data too short")

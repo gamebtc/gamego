@@ -3,9 +3,8 @@ package internal
 import (
 	"google.golang.org/grpc"
 	"io"
-	"net"
-
 	. "local.com/abc/game/protocol"
+	"net"
 )
 
 type GrpcStream struct {

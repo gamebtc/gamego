@@ -8,7 +8,7 @@ type CoinFlow struct {
 	Coin   int64       `json:"c" bson:"c" msg:"c"`                                  //游戏币变化后的金额
 	Expect int64       `json:"e,omitempty" bson:"e,omitempty" msg:"e,omitempty"`    //期望值
 	Tax    int64       `json:"x,omitempty" bson:"x,omitempty" msg:"x,omitempty"`    //税收
-	Kind   int32       `json:"-,omitempty" bson:"-,omitempty" msg:"-,omitempty"`    //所在游戏
+	Kind   int32       `json:"-" bson:"-" msg:"-"`                                  //所在游戏
 	Room   int32       `json:"r,omitempty" bson:"r,omitempty" msg:"r,omitempty"`    //所在房间ID
 	Type   int32       `json:"t,omitempty" bson:"t,omitempty" msg:"t,omitempty"`    //原因
 	State  int32       `json:"s" bson:"s" msg:"s"`                                  //状态
