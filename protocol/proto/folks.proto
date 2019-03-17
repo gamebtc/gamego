@@ -4,8 +4,8 @@ option go_package = "folks";
 package protocol;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-// 富豪玩家信息
-message Richer {
+// 玩家信息
+message Player {
 	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"']; 			// 玩家ID
 	int32 icon = 2 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"']; 		// 玩家头像
 	int32 vip = 3 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"']; 		    // VIP等级
@@ -58,11 +58,11 @@ message GameRound {
 	// 桌子ID
 	int32 tab = 5 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
 	// 所有玩家下注汇总
-	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
 	// 下注情况(protocol.Bet三个字段顺序压入)
 	repeated int32 flow = 7 [(gogoproto.jsontag) = 'f', (gogoproto.moretags) = 'bson:"f" msg:"f"'];
-	// 玩家投注分组
-	repeated int64 group = 8 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+	// 所有玩家投注分组
+	repeated int64 allBet = 8 [(gogoproto.jsontag) = 'a', (gogoproto.moretags) = 'bson:"a" msg:"a"'];
 	// 发牌情况
 	bytes poker = 9 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
 	// 赔付情况
@@ -76,7 +76,9 @@ message GameRound {
 	// 富豪(第1个位置为赌神后面5个为富豪ID)
 	repeated int32 rich = 14 [(gogoproto.jsontag) = 'h,omitempty', (gogoproto.moretags) = 'bson:"h,omitempty" msg:"h,omitempty"'];
 	// 真实玩家下注分组
-	repeated int64 betGroup = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
+	repeated int64 userBet = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
+	// 庄家ID，0为系统
+	int32 bank = 16 [(gogoproto.jsontag) = 'b,omitempty', (gogoproto.moretags) = 'bson:"b,omitempty" msg:"b,omitempty"'];
 }
 
 message GameInitAck {
@@ -85,13 +87,15 @@ message GameInitAck {
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated Richer rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Player rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 各个区域的投注情况
 	repeated int64 sum = 4 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
 	// 我的投注情况
 	repeated int64 bet = 5 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
 	// 最近的发牌的日志
 	bytes log = 6 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
+	// 庄家
+	Player bank = 7 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
 }
 
 // 请求下注(红黑/龙虎/百家乐/色宝)
@@ -131,7 +135,9 @@ message OpenBetAck {
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated Richer rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Player rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	// 庄家
+	Player bank = 4 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
 }
 
 // 关闭下注

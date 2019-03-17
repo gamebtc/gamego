@@ -29,8 +29,8 @@ type Role struct {
 	LastWinCount byte
 }
 
-func (role *Role)GetRicher() *folks.Richer {
-	return &folks.Richer{
+func (role *Role)GetRicher() *folks.Player {
+	return &folks.Player{
 		Id:    role.Id,
 		Icon:  role.Icon,
 		Vip:   role.Vip,
@@ -119,17 +119,17 @@ func (role *Role) AddBet(req folks.BetReq)(error) {
 	}
 
 	round.Flow = append(round.Flow, role.Id, i, req.Bet)
-	round.Group[i] += bet
+	round.AllBet[i] += bet
 
 	role.Coin -= bet
 	bill.Group[i] += bet
 	bill.Bet += bet
 	// 有真实玩家下注
 	if role.IsPlayer() {
-		if round.BetGroup == nil {
-			round.BetGroup = make([]int64, betItemCount)
+		if round.UserBet == nil {
+			round.UserBet = make([]int64, betItemCount)
 		}
-		round.BetGroup[i] += bet
+		round.UserBet[i] += bet
 		log.Debugf("%v下注:%v_%v", role.Id, i, bet/100)
 	}
 	return nil
