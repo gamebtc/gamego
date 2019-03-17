@@ -9,6 +9,7 @@ import (
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
 	"local.com/abc/game/protocol"
+	"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/room"
 )
 
@@ -47,7 +48,7 @@ type Table struct {
 	State  int32       //0:暂停;1:洗牌;2:下注;3:结算
 	Roles  []*Role     //所有真实游戏玩家
 	Robot  []*Role     //所有机器人
-	Richer []*protocol.User //富豪
+	Richer []*folks.User //富豪
 	round  *GameRound  //1局
 	roundFlow int      //
 
@@ -74,7 +75,7 @@ func(table *Table)MustWin()bool {
 func (table *Table) AddRole(role *Role) {
 	table.Roles = append(table.Roles, role)
 	// 真实玩家
-	ack := &protocol.FolksGameInitAck{
+	ack := &folks.FolksGameInitAck{
 		Id:    table.round.Id,
 		State: table.State,
 		Sum:   table.round.Group,
@@ -91,7 +92,7 @@ func (table *Table) AddRole(role *Role) {
 func  (table *Table) FindRicher()[]int32 {
 	roleCount := len(table.Roles) + len(table.Robot)
 	if roleCount == 0 {
-		table.Richer = []*protocol.User{}
+		table.Richer = []*folks.User{}
 		return nil
 	}
 
@@ -118,7 +119,7 @@ func  (table *Table) FindRicher()[]int32 {
 			richIndex = i
 		}
 	}
-	richer := []*protocol.User{rich.GetMsgUser()}
+	richer := []*folks.User{rich.GetMsgUser()}
 	//log.Debugf("richer: %v, win:%v, bet:%v, coin:%v", rich.Id,rich.LastWinCount, rich.LastBetSum, rich.Coin)
 
 	roles = append(roles[:richIndex], roles[richIndex+1:]...)
@@ -213,14 +214,14 @@ func betReq(m *room.NetMessage) {
 		return
 	}
 	//获取参数
-	req, ok := m.Arg.(*protocol.BetReq)
+	req, ok := m.Arg.(*folks.BetReq)
 	if ok == false || req == nil {
 		log.Debugf("betReq: is nil")
 		return
 	}
 	log.Debugf("add bet: %#v", req)
 
-	ack := &protocol.BetAck{
+	ack := &folks.BetAck{
 		Sn:   req.Sn,
 		Item: req.Item,
 	}
@@ -346,7 +347,7 @@ func gamePlay(table *Table) {
 	for _, role := range table.Robot {
 		if rand.Int31n(4) == 1 {
 			betIndex := rand.Intn(len(betItems))
-			bet := protocol.BetReq{
+			bet := folks.BetReq{
 				Item: robetRandBetItem(),
 				Bet:  betItems[betIndex],
 			}
@@ -362,7 +363,7 @@ func gamePlay(table *Table) {
 	l := len(table.round.Flow)
 	if l > table.roundFlow {
 		// 发送这段时间其他玩家的下注数据
-		table.SendToAll(&protocol.UserBetAck{
+		table.SendToAll(&folks.UserBetAck{
 			Bet: table.round.Flow[table.roundFlow:l],
 		})
 		table.roundFlow = l

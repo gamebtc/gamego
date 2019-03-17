@@ -9,6 +9,7 @@ import (
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
 	"local.com/abc/game/protocol"
+	"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/room"
 )
 
@@ -27,7 +28,7 @@ var (
 )
 
 const second = 1000 * time.Millisecond
-type GameRound = protocol.FolksGameRound
+type GameRound = folks.FolksGameRound
 
 func newRand()*rand.Rand{
 	bin := make([]byte, 8)
@@ -133,7 +134,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 
 	this.DefaultRoomer.Init(config)
 	this.EventHandler[room.EventConfigChanged] = configChange
-	this.RegistHandler(protocol.MsgId_BetReq, &protocol.BetReq{}, betReq)
+	this.RegistHandler(protocol.MsgId_BetReq, &folks.BetReq{}, betReq)
 
 	//this.EventHandler[room.EventRoomClose] = roomClose
 	//room.RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
@@ -141,6 +142,12 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 	//room.RegistMsg(protocol.MsgId_UserBetAck, &protocol.UserBetAck{})
 	//room.RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
 	//room.RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
+
+	room.RegistMsg(protocol.MsgId_UserBetAck, &folks.UserBetAck{})
+	room.RegistMsg(protocol.MsgId_OpenBetAck, &folks.OpenBetAck{})
+	room.RegistMsg(protocol.MsgId_CloseBetAck, &folks.CloseBetAck{})
+	room.RegistMsg(protocol.MsgId_FolksGameInitAck, &folks.FolksGameInitAck{})
+	room.RegistMsg(protocol.MsgId_BetAck, &folks.BetAck{})
 
 	room.Call(table.Start)
 }
@@ -197,12 +204,14 @@ func (this *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 
 // 房间配置更改
 func configChange(event *room.GameEvent) {
-	args := event.Arg.(*model.RoomInfo)
+	arg := event.Arg.(*model.RoomInfo)
 
-	args.Pause = 0
-	mustWinRate = args.WinRate
-	//oldSess := args[0]
-	//newSess := args[1]
+	arg.Pause = 0
+	mustWinRate = arg.WinRate
+
+	room.Config = *arg
+	//oldSess := arg[0]
+	//newSess := arg[1]
 	//oldSess.Role.Role = nil
 	//newSess.Role.Role = nil
 

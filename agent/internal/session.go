@@ -32,6 +32,14 @@ var (
 	slowOpNano   int64
 )
 
+var (
+	closeBin = &GameFrame{Data:make([]byte, HeadLen)}
+)
+
+func init(){
+	SetHead(closeBin.Data, int32(MsgId_Control))
+}
+
 type Session struct {
 	Id      int64     // 连接唯一ID
 	Ip      uint32    // IP地址
@@ -154,8 +162,6 @@ func (sess *Session) Start() {
 	sess.mainLoop()
 }
 
-var closeBin = make([]byte, HeadLen)
-
 // 线程安全关闭
 func (sess *Session) Close() {
 	if atomic.CompareAndSwapInt32(&sess.dieOnce, 0, 1) {
@@ -163,7 +169,7 @@ func (sess *Session) Close() {
 		// 通知服务器退出
 		if sess.UserId != 0 {
 			if server := sess.getServer(0); server != nil {
-				server.Call(sess.callCtx, &GameFrame{Data: closeBin})
+				server.Call(sess.callCtx, closeBin)
 			}
 		}
 	}

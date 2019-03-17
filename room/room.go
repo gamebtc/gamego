@@ -77,11 +77,6 @@ func (r *DefaultRoomer) Init(info *model.RoomInfo) {
 
 	RegistMsg(protocol.MsgId_ErrorInfo, &protocol.ErrorInfo{})
 	RegistMsg(protocol.MsgId_LoginRoomAck, &protocol.LoginRoomAck{})
-	RegistMsg(protocol.MsgId_UserBetAck, &protocol.UserBetAck{})
-	RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
-	RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
-	RegistMsg(protocol.MsgId_FolksGameInitAck, &protocol.FolksGameInitAck{})
-	RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
 }
 
 func (r *DefaultRoomer) GetUser(id int32) *Session {

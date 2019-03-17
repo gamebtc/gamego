@@ -1,8 +1,17 @@
 syntax = "proto3";
 
+option go_package = "folks";
 package protocol;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "game.proto";
+
+// 别的玩家信息
+message User {
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"']; 			// 玩家ID
+	int32 icon = 2 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"']; 		// 玩家头像
+	int32 vip = 3 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"']; 		    // VIP等级
+	int64 coin = 4 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"']; 		// 玩家带的分
+	string name = 5 [(gogoproto.moretags) = 'bson:"name" msg:"name"']; 	    // 玩家名称
+}
 
 // (龙虎/红黑/百家乐/骰宝)用户日志
 message FolksUserLog {

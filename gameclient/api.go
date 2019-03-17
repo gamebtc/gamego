@@ -14,6 +14,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	. "local.com/abc/game/protocol"
+	"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/util"
 )
 
@@ -39,9 +40,9 @@ func Run(config *AppConfig) {
 	registMsg(MsgId_UserLoginReq, &LoginReq{}, nil)
 	registMsg(MsgId_LoginRoomReq, &LoginRoomReq{}, nil)
 	registMsg(MsgId_LoginRoomAck, &LoginRoomAck{}, loginRoom)
-	registMsg(MsgId_BetReq, &BetReq{}, nil)
+	registMsg(MsgId_BetReq, &folks.BetReq{}, nil)
 
-	registMsg(MsgId_BetAck, &BetAck{}, betAck)
+	registMsg(MsgId_BetAck, &folks.BetAck{}, betAck)
 	registMsg(MsgId_HandshakeAck, &Handshake{}, handshake)
 	registMsg(MsgId_UserLoginFailAck, &LoginFailAck{}, loginFail)
 	registMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{}, loginSuccess)
@@ -54,7 +55,7 @@ func Run(config *AppConfig) {
 	registMsg(MsgId_HeartBeatAck, &HeartBeatAck{}, heartBeat)
 
 
-	registMsg(MsgId_FolksGameInitAck, &FolksGameInitAck{}, folksGameInit)
+	registMsg(MsgId_FolksGameInitAck, &folks.FolksGameInitAck{}, folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
 	//handlers[MsgId_UserLoginReq] = userLoginHandler
@@ -69,7 +70,7 @@ func Run(config *AppConfig) {
 }
 
 func folksGameInit(sess *Session, arg interface{}) {
-	if arg, ok := arg.(*FolksGameInitAck); ok && arg != nil {
+	if arg, ok := arg.(*folks.FolksGameInitAck); ok && arg != nil {
 		log.Debugf("folksGameInitAck:%#v", arg)
 	}
 }
@@ -93,7 +94,7 @@ func heartBeat(sess *Session, arg interface{}) {
 }
 
 func betAck(sess *Session, arg interface{}) {
-	if arg, ok := arg.(*BetAck); ok && arg != nil {
+	if arg, ok := arg.(*folks.BetAck); ok && arg != nil {
 		log.Debugf("betAck:%#v", arg)
 	}
 }

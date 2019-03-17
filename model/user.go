@@ -66,11 +66,11 @@ type UserLocker struct {
 	Id    UserId    `bson:"_id"`   //唯一ID
 	Agent int64     `bson:"agent"` //前端代理号
 	Ip    IP        `bson:"ip"`    //登录IP
-	Log1  ObjectId  `bson:"log1"`  //登录大厅日志ID
-	Log2  ObjectId  `bson:"log2"`  //登录房间日志ID
 	Kind  int32     `bson:"kind"`  //所在游戏
 	Room  int32     `bson:"room"`  //所在房间ID
 	Tab   int32     `bson:"tab"`   //所在桌子ID
 	Init  time.Time `bson:"init"`  //创建时间
 	Up    time.Time `bson:"up"`    //更新时间
+	Log1  ObjectId  `bson:"log1"`  //登录大厅日志ID
+	Log2  ObjectId  `bson:"log2"`  //登录房间日志ID
 }

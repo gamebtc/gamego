@@ -126,7 +126,6 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 				{"state", 2},
 				{"kind", lock.Kind},
 				{"room", lock.Room},
-				{"room", lock.Room},
 			}}}
 			query[0].Value = lock.Log1 //bson.D{{"_id", lock.Log1}
 			d.loginLog.UpdateOne(d.ctx, query, set)
@@ -254,12 +253,12 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32, win int
 	}
 	up := bson.D{{"$set", bson.D{{"kind", zeroInt32}, {"room", zeroInt32}}}, upNow}
 	lock := new(model.UserLocker)
-	if  err := d.locker.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(lock); err == nil {
+	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(lock); err == nil {
 		if lock.Log2.IsZero() == false {
 			// 更新对应的日志记录
-			up1 := bson.D{{"$set", bson.D{{"state", int32(1)}, {"win", win}, {"bet", bet}, {"round",round}}}, upNow}
+			up1 := bson.D{{"$set", bson.D{{"state", int32(1)}, {"win", win}, {"bet", bet}, {"round", round}}}, upNow}
 			_, err = d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}, {"state", int32(0)}}, up1)
-			log.Debugf("UnlockUserRoom:%v,err:%v", lock.Log2, err)
+			//log.Debugf("UnlockUserRoom:%v,err:%v", lock.Log2, err)
 
 			// 删除玩家锁
 			d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
