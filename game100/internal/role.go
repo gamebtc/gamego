@@ -29,8 +29,8 @@ type Role struct {
 	LastWinCount byte
 }
 
-func (role *Role)GetMsgUser() *folks.User {
-	return &folks.User{
+func (role *Role)GetRicher() *folks.Richer {
+	return &folks.Richer{
 		Id:    role.Id,
 		Icon:  role.Icon,
 		Vip:   role.Vip,
@@ -38,8 +38,6 @@ func (role *Role)GetMsgUser() *folks.User {
 		Coin:  role.Coin,
 	}
 }
-
-
 
 func(role *Role)IsRobot() bool {
 	return role.User.Job == model.JobRobot
@@ -73,11 +71,17 @@ func ExistsBetItem(bet int32)bool {
 
 // 投注
 func (role *Role) AddBet(req folks.BetReq)(error) {
+    // 检查游戏状态
+	round := role.table.round
+	if round == nil || role.table.State != 2 {
+		return errors.New("本局游戏已停止下注，请您稍后再试！")
+	}
+
 	// 检查投注项
 	i := req.Item
 	bet := int64(req.Bet)
-	if i >= int32(betItemCount){
-		return errors.New(fmt.Sprintf("错误的投注项:%v", i))
+	if i >= int32(betItemCount) || bet <= 0 {
+		return errors.New(fmt.Sprintf("错误的投注项:%v,%v", i, bet))
 	}
 
 	if !ExistsBetItem(req.Bet) {
@@ -85,17 +89,20 @@ func (role *Role) AddBet(req folks.BetReq)(error) {
 	}
 
 	// 检查金币
-	if  bet <= 0 || bet > role.Coin {
-		return errors.New(fmt.Sprintf("余额不足%v金币，请您充值！", bet))
+	need := bet
+	if multipleLost > 1 {
+		totalBet := int64(0)
+		if role.bill != nil {
+			totalBet = role.bill.Bet
+		}
+		need = multipleLost*(totalBet+bet) - totalBet
+	}
+	if need > role.Coin {
+		return errors.New(fmt.Sprintf("余额不足%v金币，请您充值！", need))
 	}
 
 	if role.Coin < room.Config.PlayMin {
 		return errors.New(fmt.Sprintf("余额%v金币以上才可以下注，请您充值！", room.Config.PlayMin))
-	}
-
-	round := role.table.round
-	if round == nil || role.table.State != 2 {
-		return errors.New("本局游戏已停止下注，请您稍后再试！")
 	}
 
 	bill := role.bill
@@ -123,7 +130,7 @@ func (role *Role) AddBet(req folks.BetReq)(error) {
 			round.BetGroup = make([]int64, betItemCount)
 		}
 		round.BetGroup[i] += bet
-		log.Debugf("%v下注:%v_%v", role.Id, i,bet/100)
+		log.Debugf("%v下注:%v_%v", role.Id, i, bet/100)
 	}
 	return nil
 }
@@ -178,7 +185,7 @@ func (role *Role) Balance() *model.CoinFlow {
 		round.Win -= addCoin
 	}
 
-	ulog := &folks.FolksUserLog{
+	ulog := &folks.UserLog{
 		Tab:   role.table.Id,
 		Bet:   bet,
 		Group: room.TrimEndZero(bill.Group),

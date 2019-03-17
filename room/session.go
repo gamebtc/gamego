@@ -60,10 +60,6 @@ func (sess *Session) UnsafeSend(val interface{}) bool {
 	}
 }
 
-func(sess *Session) SendRaw(val []byte) bool{
-       return sess.UnsafeSend(val)
-}
-
 func (sess *Session) Send(val interface{}) bool {
 	if sess.sendChan == nil {
 		return true

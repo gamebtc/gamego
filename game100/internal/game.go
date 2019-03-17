@@ -25,10 +25,11 @@ var (
 	schedule     []Plan
 	mustWinRate  int32   // 必赢概率百分比
 	mustWinRand  *rand.Rand
+	multipleLost int64 = 1 // 最多输的倍数
 )
 
 const second = 1000 * time.Millisecond
-type GameRound = folks.FolksGameRound
+type GameRound = folks.GameRound
 
 func newRand()*rand.Rand{
 	bin := make([]byte, 8)
@@ -83,6 +84,16 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		badBet = []byte{1, 0}
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 		//betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100, 1000 * 100, 5000 * 100, 10000 * 100}
+	case model.GameKind_BRNN:
+		schedule = bjlSchedule
+		newDriver = NewBjlDealer
+		gameName = "百人牛牛"
+		betItemCount = 4
+		taxRate = []int64{50, 50, 50, 50}
+		robotBetRate = []int32{100, 100, 100, 100}
+		badBet = []byte{1, 0, 3, 2}
+		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
+		multipleLost = 10
 	case model.GameKind_HHDZ:
 		schedule = rbdzSchedule
 		newDriver = NewRbdzDealer
@@ -134,7 +145,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 
 	this.DefaultRoomer.Init(config)
 	this.EventHandler[room.EventConfigChanged] = configChange
-	this.RegistHandler(protocol.MsgId_BetReq, &folks.BetReq{}, betReq)
+	this.RegistHandler(protocol.MsgId_FolksBetReq, &folks.BetReq{}, betReq)
 
 	//this.EventHandler[room.EventRoomClose] = roomClose
 	//room.RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
@@ -143,11 +154,11 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 	//room.RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
 	//room.RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
 
-	room.RegistMsg(protocol.MsgId_UserBetAck, &folks.UserBetAck{})
-	room.RegistMsg(protocol.MsgId_OpenBetAck, &folks.OpenBetAck{})
-	room.RegistMsg(protocol.MsgId_CloseBetAck, &folks.CloseBetAck{})
-	room.RegistMsg(protocol.MsgId_FolksGameInitAck, &folks.FolksGameInitAck{})
-	room.RegistMsg(protocol.MsgId_BetAck, &folks.BetAck{})
+	room.RegistMsg(protocol.MsgId_FolksUserBetAck, &folks.UserBetAck{})
+	room.RegistMsg(protocol.MsgId_FolksOpenBetAck, &folks.OpenBetAck{})
+	room.RegistMsg(protocol.MsgId_FolksCloseBetAck, &folks.CloseBetAck{})
+	room.RegistMsg(protocol.MsgId_FolksGameInitAck, &folks.GameInitAck{})
+	room.RegistMsg(protocol.MsgId_FolksBetAck, &folks.BetAck{})
 
 	room.Call(table.Start)
 }
@@ -231,7 +242,7 @@ func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
 		if b := group[i]; b > 0 {
 			bet += b
 			//有钱回收,包含输1半
-			if odd := int64(odds[i]); odd > lostRadix {
+			if odd := int64(odds[i]); odd != lostRadix {
 				w := b * odd / radix
 				if w > b {
 					// 赢钱了收税，税率按千分比配置，需除以1000

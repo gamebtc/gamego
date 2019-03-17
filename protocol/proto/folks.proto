@@ -4,8 +4,8 @@ option go_package = "folks";
 package protocol;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-// 别的玩家信息
-message User {
+// 富豪玩家信息
+message Richer {
 	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"']; 			// 玩家ID
 	int32 icon = 2 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"']; 		// 玩家头像
 	int32 vip = 3 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"']; 		    // VIP等级
@@ -14,7 +14,7 @@ message User {
 }
 
 // (龙虎/红黑/百家乐/骰宝)用户日志
-message FolksUserLog {
+message UserLog {
 	// 关联的游戏日志ID
 	int64 log = 1 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
 	// 桌子ID
@@ -46,7 +46,7 @@ message GameBill {
 }
 
 // 百人游戏日志(龙虎/红黑/百家乐/骰宝)
-message FolksGameRound {
+message GameRound {
 	// 游戏ID
 	int64 id = 1 [(gogoproto.jsontag) = '_id', (gogoproto.moretags) = 'bson:"_id" msg:"_id"'];
 	// 游戏开始时间
@@ -79,23 +79,13 @@ message FolksGameRound {
 	repeated int64 betGroup = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
 }
 
-//// 投注信息()
-//message Bet {
-//	// 玩家ID
-//	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
-//	// 投注项,根据游戏定义
-//	int32 item = 2 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
-//	// 投注金额
-//	int32 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
-//}
-
-message FolksGameInitAck {
+message GameInitAck {
 	// 当前游戏ID
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Richer rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 各个区域的投注情况
 	repeated int64 sum = 4 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
 	// 我的投注情况
@@ -141,31 +131,29 @@ message OpenBetAck {
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated User rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Richer rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+}
+
+// 关闭下注
+message CloseBetAck {
+	// 多人游戏开奖结果
+	GameResult r = 1 [(gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	// 我的输赢情况
+	int64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
+	// 我的金币数
+	int64 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
 }
 
 // 开奖结果(红黑/龙虎/百家乐/色宝)
-message FolksGameResult{
+message GameResult{
 	// 当前游戏ID
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
-	// A的牌
-	bytes a = 2 [(gogoproto.moretags) = 'bson:"a" msg:"a"'];
-	// B的牌
-	bytes b = 3 [(gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	// 发牌情况
+	bytes poker = 2 [(gogoproto.moretags) = 'bson:"p" msg:"p"'];
 	// 各个区域的赔付情况
 	repeated int32 odd = 4 [(gogoproto.moretags) = 'bson:"odd" msg:"odd"'];
 	// 各个区域的投注情况
 	repeated int64 bet = 5 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
 	// 富豪玩家的输赢
 	repeated int64 rich = 6 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
-}
-
-// 关闭下注
-message CloseBetAck {
-	// 多人游戏开奖结果
-	FolksGameResult r = 1 [(gogoproto.moretags) = 'bson:"r" msg:"r"'];
-	// 我的输赢情况
-	int64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
-	// 我的金币数
-	int64 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
 }

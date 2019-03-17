@@ -55,7 +55,8 @@ func Run(config *AppConfig) {
 	registMsg(MsgId_HeartBeatAck, &HeartBeatAck{}, heartBeat)
 
 
-	registMsg(MsgId_FolksGameInitAck, &folks.FolksGameInitAck{}, folksGameInit)
+	registMsg(MsgId_FolksGameInitAck, &folks.GameInitAck{}, folksGameInit)
+	registMsg(MsgId_FolksCloseBetAck, &folks.CloseBetAck{}, folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
 	//handlers[MsgId_UserLoginReq] = userLoginHandler
@@ -70,7 +71,7 @@ func Run(config *AppConfig) {
 }
 
 func folksGameInit(sess *Session, arg interface{}) {
-	if arg, ok := arg.(*folks.FolksGameInitAck); ok && arg != nil {
+	if arg, ok := arg.(*folks.GameInitAck); ok && arg != nil {
 		log.Debugf("folksGameInitAck:%#v", arg)
 	}
 }

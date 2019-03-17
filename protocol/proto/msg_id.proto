@@ -93,15 +93,15 @@ message MsgId{
 
         // 8192以上是游戏请求
         GameMessageHeadSplit  = 8192;
-        ReadyGameReq          = 8193; // 准备游戏
-        ReadyGameAck          = 8194; // 准备游戏
-
-		BetReq                = 8201; // 下注
-		BetAck                = 8202; // 下注返回
+		// 百人游戏(百家乐/龙虎/红黑/色宝/百人牛)
+		FolksReadyGameReq     = 8193; // 准备游戏
+		FolksReadyGameAck     = 8194; // 准备游戏
+		FolksBetReq           = 8201; // 下注
+		FolksBetAck           = 8202; // 下注返回
 		FolksGameInitAck      = 8203; // 初始化游戏
-		UserBetAck            = 8204; // 用户下注
-		OpenBetAck            = 8205; // 开启下注
-		CloseBetAck           = 8206; // 关闭下注
+		FolksUserBetAck       = 8204; // 用户下注
+		FolksOpenBetAck       = 8205; // 开启下注
+		FolksCloseBetAck      = 8206; // 关闭下注
 	}
 }
 
