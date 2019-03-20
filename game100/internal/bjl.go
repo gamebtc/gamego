@@ -40,20 +40,23 @@ func NewBjlDealer() GameDriver {
 	return d
 }
 
+// 等待
+func(this *BjlDealer) Wait(table *Table){
+
+}
+
 // 准备游戏, 状态1
 func(this *BjlDealer)Ready(table *Table){
 
 }
+
 // 开始下注, 状态1
 func(this *BjlDealer)Open(table *Table){
 
 }
+
 // 游戏中
 func(this *BjlDealer)Play(table *Table){
-
-}
-// 停止下注
-func(this *BjlDealer)Stop(table *Table){
 
 }
 

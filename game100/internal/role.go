@@ -73,7 +73,7 @@ func ExistsBetItem(bet int32)bool {
 func (role *Role) AddBet(req folks.BetReq)(error) {
     // 检查游戏状态
 	round := role.table.round
-	if round == nil || role.table.State != 2 {
+	if round == nil || role.table.State != GameStatePlaying {
 		return errors.New("本局游戏已停止下注，请您稍后再试！")
 	}
 

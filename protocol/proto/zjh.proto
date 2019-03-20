@@ -111,6 +111,8 @@ message GameRound {
 
 // 看牌
 message ActionLookReq{
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }
 
 message ActionLookAck{
@@ -119,6 +121,8 @@ message ActionLookAck{
 
 // 弃牌
 message ActionDiscardReq{
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }
 
 message ActionDiscardAck{
@@ -159,6 +163,8 @@ message ActionAllinAck{
 
 // 离开
 message ActionLeaveReq{
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }
 
 message ActionLeaveAck{

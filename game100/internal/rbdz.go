@@ -40,20 +40,23 @@ func NewRbdzDealer() GameDriver {
 	return d
 }
 
+// 等待
+func(this *RbdzDealer) Wait(table *Table){
+
+}
+
 // 准备游戏, 状态1
 func(this *RbdzDealer)Ready(table *Table){
 
 }
+
 // 开始下注, 状态1
 func(this *RbdzDealer)Open(table *Table){
 
 }
+
 // 游戏中
 func(this *RbdzDealer)Play(table *Table){
-
-}
-// 停止下注
-func(this *RbdzDealer)Stop(table *Table){
 
 }
 

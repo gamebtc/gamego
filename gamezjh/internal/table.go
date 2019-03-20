@@ -1,28 +1,25 @@
 package internal
 
 import (
-	"time"
-
 	log "github.com/sirupsen/logrus"
 	//"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/protocol/zjh"
 	"local.com/abc/game/room"
 )
 
-//type GameDriver interface {
-//	// 准备游戏, 状态1
-//	Ready(table *Table)
-//	// 开始下注, 状态2
-//	Open(table *Table)
-//    // 游戏中, 状态2
-//    Play(table *Table)
-//	// 停止下注, 状态3
-//	Stop(table *Table)
-//	// 发牌结算, 状态4
-//	Deal(table *Table)
-//}
-
 const chairCount = 5
+
+type GameState int32
+const(
+	// 等待玩家进入
+	GameStateWait GameState = 0
+	// 准备游戏
+	GameStateReady GameState = 1
+	// 游戏中
+	GameStatePlaying GameState = 2
+	// 结算
+	GameStateDeal GameState = 3
+)
 
 // 开始下注：下注时间12秒
 // 停止下注：发牌开：2秒
@@ -31,11 +28,11 @@ const chairCount = 5
 type Table struct {
 	Id        int32             // 桌子ID
 	CurId     int32             // 当前局的ID
-	State     int32             // 0:等待玩家进入;1:等待玩家同意;2:游戏中;3:结算
+	State     GameState         // 0:等待玩家进入;1:准备游戏;2:游戏中;3:结算
 	Roles     [chairCount]*Role // 所有游戏玩家,按位置
 	Player    []*Role           // 游戏中的玩家
 	round     *GameRound        // 1局
-	continued int               // 持续秒数
+	continued int32             // 持续秒数
 }
 
 func NewTable() *Table {
@@ -57,7 +54,7 @@ func (table *Table) AddRole(role *Role) bool {
 			// 真实玩家
 			ack := &zjh.GameInitAck{
 				Id:    table.round.Id,
-				State: table.State,
+				State: int32(table.State),
 				//Sum:   table.round.Group,
 			}
 			//if bill := role.bill; bill != nil {
@@ -115,42 +112,41 @@ func (table *Table) Init(){
 
 func (table *Table) Start() {
 	table.continued = 1
-	gameReady(table)
+	table.State = GameStateWait
 }
 
 func (table *Table) Update() {
 	table.continued--
 	switch table.State {
-	case 0:
-		if table.continued == 0 {
-			table.continued = 10
-			gameOpen(table)
-		}
-	case 2:
-		if table.continued == 0 {
-			table.continued = 1
-			gameStop(table)
-		} else {
-			gamePlay(table)
-		}
-	case 3:
-		if table.continued == 0 {
-			table.continued = 2
-			gameDeal(table)
-		}
-	case 4:
+	case GameStateWait:
 		if room.Config.Pause == 0 {
-			if table.continued == 0 {
+			if table.continued <= 0 {
 				table.continued = 1
 				gameReady(table)
 			}
 		} else {
-			// 暂停
 			table.continued++
-			log.Debugf("Pause: %v", time.Now())
+		}
+	case GameStateReady:
+		if table.continued <= 0 {
+			table.continued = 12
+			gameOpen(table)
+		}
+	case GameStatePlaying:
+		if table.continued != 0 {
+			gamePlay(table)
+		} else {
+			table.continued = 5
+			gameDeal(table)
+		}
+	case GameStateDeal:
+		if table.continued <= 0 {
+			table.continued = 5
+			gameWait(table)
 		}
 	}
 }
+
 
 // 发送消息给所有在线玩家
 func(table *Table)SendToAll(val interface{}) {
@@ -163,9 +159,15 @@ func(table *Table)SendToAll(val interface{}) {
 	}
 }
 
+// 等待
+func gameWait (table *Table) {
+	table.State = GameStateWait
+	log.Debugf("停止下注:%v", table.CurId)
+}
+
 // 准备
 func gameReady(table *Table) {
-	table.State = 1
+	table.State = GameStateReady
 	table.CurId += 1
 	log.Debugf("%v准备:%v", gameName, table.CurId)
 	table.NewGameRound()
@@ -174,29 +176,22 @@ func gameReady(table *Table) {
 // 开始
 func gameOpen (table *Table){
 	// 发送开始下注消息给所有玩家
-	table.State = 2
+	table.State = GameStatePlaying
 	log.Debugf("开始下注:%v", table.CurId)
-
 }
 
 func gamePlay(table *Table) {
+
 }
 
-// 停止下注
-func gameStop (table *Table) {
-	table.State = 3
-	log.Debugf("停止下注:%v", table.CurId)
-}
 
 // 发牌结算
 func gameDeal(table *Table) {
-	table.State = 4
+	table.State = GameStateDeal
 	log.Debugf("发牌结算:%v", table.CurId)
 	// 发牌结算
-
 
 	round := table.round
 	round.End = room.Now()
 	room.SaveLog(round)
-
 }

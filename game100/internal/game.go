@@ -60,7 +60,7 @@ func (this *gameHall) Update() {
 	if room.Config.Close > 0 {
 		canClose := true
 		for _, v := range this.tables {
-			if v.State != 4 {
+			if v.State != GameStateWait {
 				canClose = false
 				break
 			}

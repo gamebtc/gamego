@@ -55,20 +55,23 @@ func NewLhdzDealer() GameDriver {
 	return d
 }
 
+// 等待
+func(this *LhdzDealer) Wait(table *Table){
+
+}
+
 // 准备游戏, 状态1
 func(this *LhdzDealer)Ready(table *Table){
 
 }
+
 // 开始下注, 状态1
 func(this *LhdzDealer)Open(table *Table){
 
 }
+
 // 游戏中
 func(this *LhdzDealer)Play(table *Table){
-
-}
-// 停止下注
-func(this *LhdzDealer)Stop(table *Table){
 
 }
 

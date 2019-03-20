@@ -109,16 +109,18 @@ message GameInitAck {
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
 	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
+	// 本状态剩余时间
+	int32 time = 3 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated Player rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Player rich = 4 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 各个区域的投注情况
-	repeated int64 sum = 4 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
+	repeated int64 sum = 5 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
 	// 我的投注情况
-	repeated int64 bet = 5 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	repeated int64 bet = 6 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
 	// 最近的发牌的日志
-	bytes log = 6 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
+	bytes log = 7 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
 	// 庄家
-	Player bank = 7 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
+	Player bank = 8 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
 }
 
 // 请求下注(红黑/龙虎/百家乐/色宝)
@@ -147,18 +149,22 @@ message BetAck{
 
 // 玩家下注信息
 message UserBetAck{
+	// 剩余下注时间
+	int32 time = 1 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
 	// 每三个项表示一条记录Bet(依次为玩家ID，投注项，投注金额）
-	repeated int32 bet = 1[(gogoproto.moretags) = 'bson:"item" msg:"item"'];
+	repeated int32 bet = 2 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
 }
 
 // 开放下注
 message OpenBetAck {
 	// 当前游戏ID
 	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 剩余下注时间
+	int32 time = 2 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated Player rich = 2 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Player rich = 3 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 庄家
-	Player bank = 3 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
+	Player bank = 4 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
 }
 
 // 开放下注
@@ -192,7 +198,11 @@ message GameDealAck {
 }
 
 message LeaveReq{
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }
 
 message LeaveAck {
+	// 玩家ID
+	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 }

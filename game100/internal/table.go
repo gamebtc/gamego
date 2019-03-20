@@ -14,16 +14,24 @@ import (
 
 const RicherCount = 6
 
+type GameState int32
+const(
+	GameStateWait GameState = 0
+	GameStateReady GameState = 1
+	GameStatePlaying GameState = 2
+	GameStateDeal GameState = 3
+)
+
 type GameDriver interface {
+	// 游戏等待, 状态0
+	Wait(table *Table)
 	// 准备游戏, 状态1
 	Ready(table *Table)
 	// 开始下注, 状态2
 	Open(table *Table)
     // 游戏中, 状态2
     Play(table *Table)
-	// 停止下注, 状态3
-	Stop(table *Table)
-	// 发牌结算, 状态4
+	// 发牌结算, 状态3
 	Deal(table *Table)
 }
 
@@ -33,17 +41,17 @@ type GameDriver interface {
 // 游戏桌子
 type Table struct {
 	GameDriver
-	Id        int32           // 桌子ID
-	CurId     int64           // 当前局的ID
-	LastId    int64           // 最后的局ID
-	Log       []byte          // 最后60局的发牌情况
-	State     int32           // 0:暂停;1:准备;2:开始下注;3:停止下注;4:结算
-	Roles     []*Role         // 所有真实游戏玩家
-	Robot     []*Role         // 所有机器人
-	Richer    []*Role 		  // 富豪
-	round     *GameRound      // 1局
-	roundFlow int             // 下注流索引
-	continued int             // 持续秒数
+	Id        int32      // 桌子ID
+	CurId     int64      // 当前局的ID
+	LastId    int64      // 最后的局ID
+	Log       []byte     // 最后60局的发牌情况
+	State     GameState  // 0:等待;1:准备;2:下注中;3:结算
+	Roles     []*Role    // 所有真实游戏玩家
+	Robot     []*Role    // 所有机器人
+	Richer    []*Role    // 富豪
+	round     *GameRound // 1局
+	roundFlow int        // 下注流索引
+	continued int32      // 持续秒数
 }
 
 func NewTable() *Table {
@@ -74,11 +82,14 @@ func (table *Table) AddRole(role *Role) {
 	table.Roles = append(table.Roles, role)
 	// 真实玩家
 	ack := &folks.GameInitAck{
-		Id:    table.round.Id,
-		State: table.State,
-		Sum:   table.round.Group,
+		State: int32(table.State),
+		Time:  table.continued,
 		Log:   table.Log,
 		Rich:  table.GetRichPlayer(),
+	}
+	if round := table.round; round != nil {
+		ack.Id = round.Id
+		ack.Sum = round.Group
 	}
 	if bill := role.bill; bill != nil {
 		ack.Bet = bill.Group
@@ -145,6 +156,10 @@ func  (table *Table) FindRicher()[]int32 {
 }
 
 func (table *Table) NewGameRound() {
+	count := table.robotConfig()
+	if count >= 0 {
+		table.loadRobot(count - int32(len(table.Robot)))
+	}
 	id := room.NewGameRoundId()
 	round := &GameRound{
 		Id:        id,
@@ -164,39 +179,37 @@ func (table *Table) Init(){
 
 func (table *Table) Start() {
 	table.continued = 1
-	gameReady(table)
+	table.State = GameStateWait
 }
 
 func (table *Table) Update() {
 	table.continued--
 	switch table.State {
-	case 1:
-		if table.continued == 0 {
-			table.continued = 10
-			gameOpen(table)
-		}
-	case 2:
-		if table.continued == 0 {
-			table.continued = 1
-			gameStop(table)
-		} else {
-			gamePlay(table)
-		}
-	case 3:
-		if table.continued == 0 {
-			table.continued = 2
-			gameDeal(table)
-		}
-	case 4:
+	case GameStateWait:
 		if room.Config.Pause == 0 {
-			if table.continued == 0 {
+			if table.continued <= 0 {
 				table.continued = 1
 				gameReady(table)
 			}
 		} else {
-			// 暂停
 			table.continued++
-			log.Debugf("Pause: %v", time.Now())
+		}
+	case GameStateReady:
+		if table.continued <= 0 {
+			table.continued = 12
+			gameOpen(table)
+		}
+	case GameStatePlaying:
+		if table.continued != 0 {
+			gamePlay(table)
+		} else {
+			table.continued = 5
+			gameDeal(table)
+		}
+	case GameStateDeal:
+		if table.continued <= 0 {
+			table.continued = 5
+			gameWait(table)
 		}
 	}
 }
@@ -305,8 +318,7 @@ func(table *Table) robotConfig()int32{
 	return -1
 }
 
-// 准备
-func gameReady(table *Table) {
+func (table *Table)ClearOffline(){
 	// 删除已断线的玩家
 	for i := 0; i < len(table.Roles); {
 		role := table.Roles[i]
@@ -318,7 +330,6 @@ func gameReady(table *Table) {
 			i++
 		}
 	}
-
 	// 删除钱不足或者赢钱多的机器人
 	var ids []int32
 	for i := 0; i < len(table.Robot); {
@@ -336,13 +347,18 @@ func gameReady(table *Table) {
 	if len(ids) > 0 {
 		db.Driver.UnloadRobot(room.RoomId, ids)
 	}
+}
 
-	count := table.robotConfig()
-	if count >= 0 {
-		table.loadRobot(count - int32(len(table.Robot)))
-	}
+// 等待
+func gameWait(table *Table) {
+	table.State = GameStateWait
+	log.Debugf("%v等待:%v", gameName, table.CurId)
+	table.Wait(table)
+}
 
-	table.State = 1
+// 准备
+func gameReady(table *Table) {
+	table.State = GameStateReady
 	table.CurId += 1
 	log.Debugf("%v准备:%v", gameName, table.CurId)
 	table.NewGameRound()
@@ -352,12 +368,13 @@ func gameReady(table *Table) {
 // 开始
 func gameOpen (table *Table){
 	// 发送开始下注消息给所有玩家
-	table.State = 2
+	table.State = GameStatePlaying
 	log.Debugf("开始下注:%v", table.CurId)
 	table.Open(table)
 
 	table.SendToAll(&folks.OpenBetAck{
 		Id: table.CurId,
+		Time:  table.continued,
 		Rich: table.GetRichPlayer(),
 	})
 }
@@ -385,25 +402,17 @@ func gamePlay(table *Table) {
 	if l > table.roundFlow {
 		// 发送这段时间其他玩家的下注数据
 		table.SendToAll(&folks.UserBetAck{
+			Time:  table.continued,
 			Bet: table.round.Flow[table.roundFlow:l],
 		})
 		table.roundFlow = l
 	}
 }
 
-// 停止下注
-func gameStop (table *Table) {
-	table.State = 3
-	log.Debugf("停止下注:%v", table.CurId)
-	table.Stop(table)
-	table.SendToAll(&folks.StopBetAck{
-		Id: table.CurId,
-	})
-}
 
 // 发牌结算
 func gameDeal(table *Table) {
-	table.State = 4
+	table.State = GameStateDeal
 	log.Debugf("发牌结算:%v", table.CurId)
 	// 发牌结算
 	table.Deal(table)
@@ -451,4 +460,6 @@ func gameDeal(table *Table) {
 		}
 	}
 	log.Debugf("总下注:%v", round.Group)
+	// 清理离线玩家
+	table.ClearOffline()
 }
