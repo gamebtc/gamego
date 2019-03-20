@@ -34,10 +34,10 @@ var (
 	Coder  protocol.Coder
 )
 
-func RegistMsg(id protocol.MsgId_Code, arg interface{}) {
+func RegistMsg(id int32, arg interface{}) {
 	t := reflect.TypeOf(arg)
 	if _, ok := Coder.GetMsgId(t); ok {
 		log.Fatalf("message %v is already registered", t)
 	}
-	Coder.SetMsgId(t, int32(id))
+	Coder.SetMsgId(t, id)
 }

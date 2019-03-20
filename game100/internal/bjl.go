@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"time"
-
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
@@ -36,34 +34,10 @@ type BjlDealer struct {
 	Offset int    //牌的位置
 }
 
-var(
-	// 执行步骤
-	bjlSchedule = []Plan{
-		{f: gameReady, d: second},
-		{f: gameOpen, d: time.Microsecond},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gameStop, d: second},
-		{f: gameDeal, d: 2 * second},
-	}
-)
-
 func NewBjlDealer() GameDriver {
 	d := &BjlDealer{
 	}
 	return d
-}
-
-func(this *BjlDealer) Schedule()[]Plan{
-	return bjlSchedule
 }
 
 // 准备游戏, 状态1

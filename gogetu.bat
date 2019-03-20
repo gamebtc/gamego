@@ -14,6 +14,8 @@ cd ../room
 go get -u
 cd ../game100
 go get -u
+cd ../gamezjh
+go get -u
 cd ../gameclient
 go get -u
 cd ../grpcserver

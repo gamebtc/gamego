@@ -40,7 +40,7 @@ func tcpServer(config *AppConfig) {
 
 	// 注册服务器地址
 	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
-	defer func(){
+	defer func() {
 		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
@@ -50,7 +50,7 @@ func tcpServer(config *AppConfig) {
 		case <-signal.Die():
 			return
 		default:
-			lis.SetDeadline( time.Now().Add(10* time.Second))
+			lis.SetDeadline(time.Now().Add(10 * time.Second))
 			if conn, err := lis.AcceptTCP(); err == nil {
 				atomic.LoadInt32(&connectCount)
 				// set socket read buffer
@@ -82,7 +82,7 @@ func udpServer(config *AppConfig) {
 
 	// 注册服务器地址
 	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
-	defer func(){
+	defer func() {
 		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
 	}()
 
@@ -92,8 +92,8 @@ func udpServer(config *AppConfig) {
 		case <-signal.Die():
 			return
 		default:
-			lis.SetDeadline( time.Now().Add(10* time.Second))
-			if conn, err := lis.AcceptKCP(); err==nil {
+			lis.SetDeadline(time.Now().Add(10 * time.Second))
+			if conn, err := lis.AcceptKCP(); err == nil {
 				atomic.LoadInt32(&connectCount)
 				// set kcp parameters
 				conn.SetWindowSize(config.Kcp.Sndwnd, config.Kcp.Rcvwnd)

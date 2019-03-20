@@ -37,26 +37,26 @@ func Run(config *AppConfig) {
 	coder = GetCoder(config.Codec)
 	jsonCoder = GetCoder("json") //jsonIter
 
-	registMsg(MsgId_UserLoginReq, &LoginReq{}, nil)
-	registMsg(MsgId_LoginRoomReq, &LoginRoomReq{}, nil)
-	registMsg(MsgId_LoginRoomAck, &LoginRoomAck{}, loginRoom)
-	registMsg(MsgId_BetReq, &folks.BetReq{}, nil)
+	registMsg(int32(MsgId_UserLoginReq), &LoginReq{}, nil)
+	registMsg(int32(MsgId_LoginRoomReq), &LoginRoomReq{}, nil)
+	registMsg(int32(MsgId_LoginRoomAck), &LoginRoomAck{}, loginRoom)
+	registMsg(int32(folks.MsgId_BetReq), &folks.BetReq{}, nil)
 
-	registMsg(MsgId_BetAck, &folks.BetAck{}, betAck)
-	registMsg(MsgId_HandshakeAck, &Handshake{}, handshake)
-	registMsg(MsgId_UserLoginFailAck, &LoginFailAck{}, loginFail)
-	registMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{}, loginSuccess)
-	registMsg(MsgId_ErrorInfo, &ErrorInfo{}, showErrorInfo)
+	registMsg(int32(folks.MsgId_BetAck), &folks.BetAck{}, betAck)
+	registMsg(int32(MsgId_HandshakeAck), &Handshake{}, handshake)
+	registMsg(int32(MsgId_UserLoginFailAck), &LoginFailAck{}, loginFail)
+	registMsg(int32(MsgId_UserLoginSuccessAck), &LoginSuccessAck{}, loginSuccess)
+	registMsg(int32(MsgId_ErrorInfo), &ErrorInfo{}, showErrorInfo)
 
-	registMsg(MsgId_VerCheckReq, &VerCheckReq{}, nil)
-	registMsg(MsgId_VerCheckAck, &VerCheckAck{}, verCheck)
+	registMsg(int32(MsgId_VerCheckReq), &VerCheckReq{}, nil)
+	registMsg(int32(MsgId_VerCheckAck), &VerCheckAck{}, verCheck)
 
-	registMsg(MsgId_HeartBeatReq, &HeartBeatReq{}, nil)
-	registMsg(MsgId_HeartBeatAck, &HeartBeatAck{}, heartBeat)
+	registMsg(int32(MsgId_HeartBeatReq), &HeartBeatReq{}, nil)
+	registMsg(int32(MsgId_HeartBeatAck), &HeartBeatAck{}, heartBeat)
 
 
-	registMsg(MsgId_FolksGameInitAck, &folks.GameInitAck{}, folksGameInit)
-	registMsg(MsgId_FolksCloseBetAck, &folks.CloseBetAck{}, folksGameInit)
+	registMsg(int32(folks.MsgId_GameInitAck), &folks.GameInitAck{}, folksGameInit)
+	registMsg(int32(folks.MsgId_CloseBetAck), &folks.CloseBetAck{}, folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
 	//handlers[MsgId_UserLoginReq] = userLoginHandler
@@ -220,13 +220,13 @@ func jsonDecode(id int32, buf []byte) (msg interface{}, err error) {
 	return
 }
 
-func registMsg(id MsgId_Code, msg interface{}, h func(*Session, interface{})) {
+func registMsg(id int32, msg interface{}, h func(*Session, interface{})) {
 	t := reflect.TypeOf(msg)
 	if _, ok := coder.GetMsgId(t); ok {
 		log.Fatalf("message %v is already registered", t)
 	}
-	coder.SetHandler(t, int32(id), nil)
-	jsonCoder.SetHandler(t, int32(id), nil)
+	coder.SetHandler(t, id, nil)
+	jsonCoder.SetHandler(t, id, nil)
 	if h != nil {
 		handlers[id] = h
 	}

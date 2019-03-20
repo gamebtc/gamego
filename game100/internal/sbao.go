@@ -1,10 +1,8 @@
 package internal
 
 import (
-	"math/rand"
-	"time"
-
 	log "github.com/sirupsen/logrus"
+	"math/rand"
 
 	"local.com/abc/game/room"
 )
@@ -15,35 +13,11 @@ type SbaoDealer struct {
 	offset int32
 }
 
-var(
-	// 执行步骤
-	sbaoSchedule = []Plan{
-		{f: gameReady, d: second},
-		{f: gameOpen, d: time.Microsecond},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gameStop, d: second},
-		{f: gameDeal, d: 2*second},
-	}
-)
-
 func NewSbaoDealer() GameDriver {
 	d := &SbaoDealer{
-		Rand: newRand(),
+		Rand: room.NewRand(),
 	}
 	return d
-}
-
-func(this *SbaoDealer) Schedule()[]Plan{
-	return sbaoSchedule
 }
 
 // 准备游戏, 状态1
@@ -86,7 +60,7 @@ func (this *SbaoDealer) Deal(table *Table) {
 func (this *SbaoDealer)GetPokers(table *Table)([]byte,[]int32) {
 	if this.offset > 32 {
 		this.offset = 0
-		this.Rand = newRand()
+		this.Rand = room.NewRand()
 	}
 	this.offset++
 	a := []byte{

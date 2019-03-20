@@ -50,9 +50,16 @@ func userOnline(sess *Session, uid int32) {
 		oldSess.Close()
 	} else {
 		// 检查房间配置
+		if Config.Lock > 0{
+			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "房间已锁定")
+			sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "房间已锁定", "")
+			sess.Close()
+			return
+		}
+
+		// 检查所带金币
 		coin := user.Bag[CoinKey]
 		if coin < Config.DoorMin || coin > Config.DoorMax {
-			// 所带金币不符合要求发送错误消息
 			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "金币不足")
 			sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "金币不足", "")
 			sess.Close()

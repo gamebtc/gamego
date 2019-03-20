@@ -16,7 +16,7 @@ func (d *driver) LockRoomServer(room *protocol.RoomConfig) (obj *model.RoomInfo,
 		{"key", bson.D{{"$in", []string{"", room.Key}}}},
 	}
 	up := bson.D{
-		{"$set", bson.D{{"key", room.Key}, {"addr", room.Addr}}},
+		{"$set", bson.D{{"key", room.Key}, {"addr", room.Addr}, {"pause", int32(0)}, {"close", int32(0)}, {"lock", int32(0)}}},
 		{"$inc", bson.D{{"ver", int32(1)}}},
 		upNow,
 	}

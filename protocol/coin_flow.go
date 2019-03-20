@@ -15,3 +15,11 @@ type CoinFlow struct {
 	Note   string      `json:"n,omitempty" bson:"n,omitempty" msg:"n,omitempty"`    //备注
 	Att    interface{} `json:"at,omitempty" bson:"at,omitempty" msg:"at,omitempty"` //附件
 }
+
+// 用户行为
+type UserAction struct {
+	Start  int64	`json:"s" bson:"s" msg:"s"`		//开始时间
+	Uid    int32	`json:"u" bson:"u" msg:"u"`		//用户ID
+	Type   int32    `json:"t" bson:"t" msg:"t"` 	//类型
+	Arg    interface{} `json:"a,omitempty" bson:"a,omitempty" msg:"a,omitempty"` //参数
+}

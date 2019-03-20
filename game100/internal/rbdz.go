@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"time"
-
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
@@ -33,24 +31,6 @@ type RbdzDealer struct {
 }
 
 var(
-	// 执行步骤
-	rbdzSchedule = []Plan{
-		{f: gameReady, d: second},
-		{f: gameOpen, d: time.Microsecond},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gameStop, d: second},
-		{f: gameDeal, d: 2*second},
-	}
-
 	dealer = model.NewGoldenFlowerDealer(true)
 )
 
@@ -60,9 +40,6 @@ func NewRbdzDealer() GameDriver {
 	return d
 }
 
-func(this *RbdzDealer) Schedule()[]Plan{
-	return rbdzSchedule
-}
 // 准备游戏, 状态1
 func(this *RbdzDealer)Ready(table *Table){
 

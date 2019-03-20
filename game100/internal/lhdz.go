@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"time"
-
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
@@ -51,34 +49,10 @@ type LhdzDealer struct {
 	Offset int    //牌的位置
 }
 
-var(
-	// 执行步骤
-	lhdzSchedule = []Plan{
-		{f: gameReady, d: second},
-		{f: gameOpen, d: time.Microsecond},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gamePlay, d: second},
-		{f: gameStop, d: second},
-		{f: gameDeal, d: 2 * second},
-	}
-)
-
 func NewLhdzDealer() GameDriver {
 	d := &LhdzDealer{
 	}
 	return d
-}
-
-func(this *LhdzDealer) Schedule()[]Plan{
-	return lhdzSchedule
 }
 
 // 准备游戏, 状态1

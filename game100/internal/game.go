@@ -1,8 +1,6 @@
 package internal
 
 import (
-	crand "crypto/rand"
-	"encoding/binary"
 	"math/rand"
 	"time"
 
@@ -22,7 +20,6 @@ var (
 	badBet       []byte  // 不相容的投注项
 	taxRate      []int64 // 税率千分比
 	gameName     string  // 游戏名称
-	schedule     []Plan
 	mustWinRate  int32   // 必赢概率百分比
 	mustWinRand  *rand.Rand
 	multipleLost int64 = 1 // 最多输的倍数
@@ -30,13 +27,6 @@ var (
 
 const second = 1000 * time.Millisecond
 type GameRound = folks.GameRound
-
-func newRand()*rand.Rand{
-	bin := make([]byte, 8)
-	crand.Read(bin)
-	seed := binary.LittleEndian.Uint64(bin)
-	return rand.New(rand.NewSource(int64(seed)))
-}
 
 func robetRandBetItem() int32 {
 	r := rand.Int31n(robotSumRate)
@@ -66,16 +56,28 @@ func (this *gameHall) Update() {
 	for _, v := range this.tables {
 		v.Update()
 	}
+
+	if room.Config.Close > 0 {
+		canClose := true
+		for _, v := range this.tables {
+			if v.State != 4 {
+				canClose = false
+				break
+			}
+		}
+		if canClose {
+			room.Close()
+		}
+	}
 }
 
 func (this *gameHall) Init(config *model.RoomInfo) {
 	this.config = config
 	mustWinRate = config.WinRate
-	mustWinRand = newRand()
+	mustWinRand = room.NewRand()
 
 	switch config.Kind {
 	case model.GameKind_BJL:
-		schedule = bjlSchedule
 		newDriver = NewBjlDealer
 		gameName = "百家乐"
 		betItemCount = 5
@@ -85,7 +87,6 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 		//betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100, 1000 * 100, 5000 * 100, 10000 * 100}
 	case model.GameKind_BRNN:
-		schedule = bjlSchedule
 		newDriver = NewBjlDealer
 		gameName = "百人牛牛"
 		betItemCount = 4
@@ -95,7 +96,6 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 		multipleLost = 10
 	case model.GameKind_HHDZ:
-		schedule = rbdzSchedule
 		newDriver = NewRbdzDealer
 		gameName = "红黑大战"
 		betItemCount = 3
@@ -104,7 +104,6 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		badBet = []byte{1, 0}
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_LHDZ:
-		schedule = lhdzSchedule
 		newDriver = NewLhdzDealer
 		gameName = "龙虎大战"
 		betItemCount = 3
@@ -113,7 +112,6 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		badBet = []byte{1, 0}
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_SBAO:
-		schedule = sbaoSchedule
 		newDriver = NewSbaoDealer
 		gameName = "骰宝"
 		betItemCount = 31
@@ -145,7 +143,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 
 	this.DefaultRoomer.Init(config)
 	this.EventHandler[room.EventConfigChanged] = configChange
-	this.RegistHandler(protocol.MsgId_FolksBetReq, &folks.BetReq{}, betReq)
+	this.RegistHandler(int32(folks.Folks_BetReq), &folks.BetReq{}, betReq)
 
 	//this.EventHandler[room.EventRoomClose] = roomClose
 	//room.RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
@@ -154,11 +152,11 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 	//room.RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
 	//room.RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
 
-	room.RegistMsg(protocol.MsgId_FolksUserBetAck, &folks.UserBetAck{})
-	room.RegistMsg(protocol.MsgId_FolksOpenBetAck, &folks.OpenBetAck{})
-	room.RegistMsg(protocol.MsgId_FolksCloseBetAck, &folks.CloseBetAck{})
-	room.RegistMsg(protocol.MsgId_FolksGameInitAck, &folks.GameInitAck{})
-	room.RegistMsg(protocol.MsgId_FolksBetAck, &folks.BetAck{})
+	room.RegistMsg(int32(folks.Folks_UserBetAck), &folks.UserBetAck{})
+	room.RegistMsg(int32(folks.Folks_OpenBetAck), &folks.OpenBetAck{})
+	room.RegistMsg(int32(folks.Folks_StopBetAck), &folks.StopBetAck{})
+	room.RegistMsg(int32(folks.Folks_GameInitAck), &folks.GameInitAck{})
+	room.RegistMsg(int32(folks.Folks_BetAck), &folks.BetAck{})
 
 	room.Call(table.Start)
 }
@@ -217,9 +215,12 @@ func (this *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 func configChange(event *room.GameEvent) {
 	arg := event.Arg.(*model.RoomInfo)
 
-	arg.Pause = 0
+	// 房间关闭
+	if arg.Close > 0 {
+		arg.Pause = arg.Close
+		arg.Lock = arg.Close
+	}
 	mustWinRate = arg.WinRate
-
 	room.Config = *arg
 	//oldSess := arg[0]
 	//newSess := arg[1]

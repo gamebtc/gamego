@@ -6,6 +6,6 @@ require (
 	github.com/sirupsen/logrus v1.4.0
 	github.com/stretchr/testify v1.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a // indirect
-	golang.org/x/sys v0.0.0-20190316082340-a2f829d7f35f // indirect
+	golang.org/x/sys v0.0.0-20190318195719-6c81ef8f67ca // indirect
 	golang.org/x/text v0.3.0
 )

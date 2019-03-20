@@ -119,7 +119,7 @@ func (role *Role) AddBet(req folks.BetReq)(error) {
 	}
 
 	round.Flow = append(round.Flow, role.Id, i, req.Bet)
-	round.AllBet[i] += bet
+	round.Group[i] += bet
 
 	role.Coin -= bet
 	bill.Group[i] += bet

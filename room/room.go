@@ -1,8 +1,11 @@
 package room
 
 import (
+	crand "crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"math"
+	"math/rand"
 	"net"
 	"strconv"
 	"time"
@@ -65,18 +68,18 @@ type DefaultRoomer struct {
 	Users          map[int32]*Session                // 在线玩家
 }
 
-func (r *DefaultRoomer) RegistHandler(id protocol.MsgId_Code, arg interface{}, f func(*NetMessage)) {
+func (r *DefaultRoomer) RegistHandler(id int32, arg interface{}, f func(*NetMessage)) {
 	if f != nil {
 		r.MessageHandler[id] = f
 	}
-	RegistMsg(id, arg)
+	RegistMsg(int32(id), arg)
 }
 
 func (r *DefaultRoomer) Init(info *model.RoomInfo) {
 	r.Users = make(map[int32]*Session, info.Cap*2)
 
-	RegistMsg(protocol.MsgId_ErrorInfo, &protocol.ErrorInfo{})
-	RegistMsg(protocol.MsgId_LoginRoomAck, &protocol.LoginRoomAck{})
+	RegistMsg(int32(protocol.MsgId_ErrorInfo), &protocol.ErrorInfo{})
+	RegistMsg(int32(protocol.MsgId_LoginRoomAck), &protocol.LoginRoomAck{})
 }
 
 func (r *DefaultRoomer) GetUser(id int32) *Session {
@@ -215,7 +218,7 @@ func mainLoop() {
 	defer ticker.Stop()
 	
 	go func(ver int32){
-		t := time.Tick(time.Minute)
+		t := time.Tick(30*time.Second)
 		for {
 			select {
 			case <- t:
@@ -254,6 +257,9 @@ func roomConfigCheck(ver int32) int32{
 
 // 关闭房间
 func Close() {
+	if signal.Close(){
+
+	}
 }
 
 // 游戏
@@ -312,4 +318,11 @@ func SaveLog(log interface{}) error {
 
 func Now() int64 {
 	return time.Now().Unix()
+}
+
+func NewRand()*rand.Rand{
+	bin := make([]byte, 8)
+	crand.Read(bin)
+	seed := binary.LittleEndian.Uint64(bin)
+	return rand.New(rand.NewSource(int64(seed)))
 }

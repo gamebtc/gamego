@@ -69,6 +69,9 @@ message MsgId{
 		LoginRoomAck          = 202; // 连接房间返回
 		SendRoomFail          = 204; // 消息发送到房间失败，需要客户端重新连接房间
 
+		ExitRoomReq           = 205; // 请求退出房间
+		ExitRoomAck           = 206; // 请求退出房间
+
 		// 1024=1个服务段，共8个服务段
 		//OtherMessageHeadSplit  = 1024; // 每个服务占用1024个协议，共支持8个服务
 
@@ -93,15 +96,8 @@ message MsgId{
 
         // 8192以上是游戏请求
         GameMessageHeadSplit  = 8192;
-		// 百人游戏(百家乐/龙虎/红黑/色宝/百人牛)
-		FolksReadyGameReq     = 8193; // 准备游戏
-		FolksReadyGameAck     = 8194; // 准备游戏
-		FolksBetReq           = 8201; // 下注
-		FolksBetAck           = 8202; // 下注返回
-		FolksGameInitAck      = 8203; // 初始化游戏
-		FolksUserBetAck       = 8204; // 用户下注
-		FolksOpenBetAck       = 8205; // 开启下注
-		FolksCloseBetAck      = 8206; // 关闭下注
+		// 百人游戏(百家乐/龙虎/红黑/色宝/百人牛)8193-8299
+		// 8300-8399(炸金花)
 	}
 }
 
