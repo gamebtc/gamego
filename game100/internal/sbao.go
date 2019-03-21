@@ -10,34 +10,13 @@ import (
 // 骰宝
 type SbaoDealer struct {
 	*rand.Rand
-	offset int32
 }
 
-func NewSbaoDealer() GameDriver {
+func NewSbaoDealer() Dealer {
 	d := &SbaoDealer{
 		Rand: room.NewRand(),
 	}
 	return d
-}
-
-// 等待
-func(this *SbaoDealer) Wait(table *Table){
-
-}
-
-// 准备游戏, 状态1
-func(this *SbaoDealer)Ready(table *Table){
-
-}
-
-// 开始下注, 状态1
-func(this *SbaoDealer)Open(table *Table){
-
-}
-
-// 游戏中
-func(this *SbaoDealer)Play(table *Table){
-
 }
 
 func (this *SbaoDealer) Deal(table *Table) {
@@ -61,11 +40,10 @@ func (this *SbaoDealer) Deal(table *Table) {
 }
 
 func (this *SbaoDealer)GetPokers(table *Table)([]byte,[]int32) {
-	if this.offset > 32 {
-		this.offset = 0
+	if gameRand.Int31n(23) == 0 {
 		this.Rand = room.NewRand()
 	}
-	this.offset++
+
 	a := []byte{
 		byte(this.Int31n(6) + 1),
 		byte(this.Int31n(6) + 1),

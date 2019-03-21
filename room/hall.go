@@ -7,6 +7,7 @@ import (
 	"math"
 	"math/rand"
 	"net"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -33,95 +34,76 @@ type GameEvent struct {
 	Arg interface{} // 参数
 }
 
-// 房间接口
-type Roomer interface {
-	// 初始化房间
-	Init(*model.RoomInfo)
-	// 获取玩家信息
-	GetUser(int32) *Session
-	// 设置玩家信息
-	AddUser(sess *Session)
-	// 删除玩家信息
-	RemoveUser(sess *Session) bool
+// 大厅接口
+type Haller interface {
+	// Start
+	Start()
 	// 玩家上线
 	UserOnline(sess *Session, user *model.User, coin int64)
 	// 玩家下线
 	UserOffline(sess *Session)
 	// 玩家重新上线
 	UserReline(oldSess *Session, newSess *Session)
-	// 处理消息
-	Exec(interface{})
 	// 帧更新
 	Update()
 }
 
 // 房间,桌子管理器
 var (
-	roomer      Roomer           // 房间消息处理器
-	messageChan chan interface{} // 消息队列消息
-	logName     string
+	logName         string
+	hall            Haller                            // 房间消息处理器
+	messageChan     chan interface{}                  // 消息队列消息
+	messageHandlers [math.MaxUint16]func(*NetMessage) // 消息处理器
+	eventHandlers   [math.MaxUint16]func(*GameEvent)  // 事件处理器
+	sessions        map[int32]*Session                // 所有玩家
+	signal 			*util.AppSignal
+	coder  			protocol.Coder
 )
 
-type DefaultRoomer struct {
-	MessageHandler [math.MaxUint16]func(*NetMessage) // 消息处理器
-	EventHandler   [math.MaxUint16]func(*GameEvent)  // 事件处理器
-	Users          map[int32]*Session                // 在线玩家
+func Encode(v interface{}) ([]byte, error){
+	return coder.Encode(v)
 }
 
-func (r *DefaultRoomer) RegistHandler(id int32, arg interface{}, f func(*NetMessage)) {
+func RegistMsg(id int32, arg interface{}) {
+	t := reflect.TypeOf(arg)
+	if _, ok := coder.GetMsgId(t); ok {
+		log.Fatalf("message %v is already registered", t)
+	}
+	coder.SetMsgId(t, id)
+}
+
+func RegistHandler(id int32, arg interface{}, f func(*NetMessage)) {
 	if f != nil {
-		r.MessageHandler[id] = f
+		messageHandlers[id] = f
 	}
 	RegistMsg(int32(id), arg)
 }
 
-func (r *DefaultRoomer) Init(info *model.RoomInfo) {
-	r.Users = make(map[int32]*Session, info.Cap*2)
-
-	RegistMsg(int32(protocol.MsgId_ErrorInfo), &protocol.ErrorInfo{})
-	RegistMsg(int32(protocol.MsgId_LoginRoomAck), &protocol.LoginRoomAck{})
+func RegistEvent(id int32, f func(*GameEvent)){
+	eventHandlers[id] = f
 }
 
-func (r *DefaultRoomer) GetUser(id int32) *Session {
-	if s, ok := r.Users[id]; ok {
+func GetUser(id int32) *Session {
+	if s, ok := sessions[id]; ok {
 		return s
 	}
 	return nil
 }
 
-func (r *DefaultRoomer) AddUser(sess *Session) {
-	r.Users[sess.UserId] = sess
+func AddUser(sess *Session) {
+	sessions[sess.UserId] = sess
 }
 
-func(r *DefaultRoomer) RemoveUser(sess *Session) bool{
+func RemoveUser(sess *Session) bool{
 	uid := sess.UserId
-	if s, ok := r.Users[uid]; ok && s == sess{
-		delete(r.Users, uid)
+	if s, ok := sessions[uid]; ok && s == sess{
+		delete(sessions, uid)
 		return true
 	}
 	return false
 }
 
-func (r *DefaultRoomer) Exec(m interface{}) {
-	switch m := m.(type) {
-	case *NetMessage:
-		if f := r.MessageHandler[m.Id]; f != nil {
-			if m.UserId != 0 && m.Disposed == false {
-				f(m)
-			}
-		}
-	case *GameEvent:
-		if f := r.EventHandler[m.Id]; f != nil {
-			f(m)
-		}
-	case *Timer:
-		m.Exec()
-	case func():
-		m()
-	}
-}
-
-func Start(configName string, r Roomer) {
+func Start(configName string, r Haller) {
 	defer util.PrintPanicStack()
 	// open profiling
 	config := InitConfig(configName)
@@ -139,6 +121,12 @@ func Start(configName string, r Roomer) {
 		}
 		go mainLoop()
 	})
+}
+
+// 关闭房间
+func Close() {
+	if signal.Close(){
+	}
 }
 
 func startGrpc(config *AppConfig) {
@@ -159,7 +147,8 @@ func startGrpc(config *AppConfig) {
 	go gs.Serve(lis)
 }
 
-func Init(config *AppConfig, r Roomer) error {
+func Init(config *AppConfig, r Haller) error {
+	hall = r
 	if d, err := db.CreateDriver(&config.Database); err != nil {
 		return err
 	} else {
@@ -178,19 +167,17 @@ func Init(config *AppConfig, r Roomer) error {
 	RoomId = roomInfo.Id
 	KindId = roomInfo.Kind
 	CoinKey = roomInfo.CoinKey
+	logName = "play" + CoinKey + "_" + strconv.Itoa(int(KindId))
+
+	// 加载房间
+	sessions = make(map[int32]*Session, roomInfo.Cap*2)
+	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
+
+	RegistMsg(int32(protocol.MsgId_ErrorInfo), &protocol.ErrorInfo{})
+	RegistMsg(int32(protocol.MsgId_LoginRoomAck), &protocol.LoginRoomAck{})
 
 	log.Infof("room:%#v", roomInfo)
-	logName = "play" + CoinKey + "_" + strconv.Itoa(int(KindId))
-	// 加载房间
-	//d.Users = make(map[int32]*Session, roomInfo.Cap*2)
-	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
-	roomer = r
 	return nil
-}
-
-//
-func regConsulRoom(config *AppConfig) {
-
 }
 
 func AfterCall(d time.Duration, f func()) *Timer {
@@ -209,39 +196,22 @@ func Send(m interface{}) {
 	messageChan <- m
 }
 
-//
-func mainLoop() {
-	// 帧更新周期
-	roomer.Init(&Config)
-	period := time.Duration(Config.Period) * time.Millisecond
-	ticker := time.NewTicker(period)
-	defer ticker.Stop()
-	
-	go func(ver int32){
-		t := time.Tick(30*time.Second)
-		for {
-			select {
-			case <- t:
-				ver = roomConfigCheck(ver)
-			case <-signal.Die():
-				return
+func exec(m interface{}) {
+	switch m := m.(type) {
+	case *NetMessage:
+		if f := messageHandlers[m.Id]; f != nil {
+			if m.UserId != 0 && m.Disposed == false {
+				f(m)
 			}
 		}
-	}(Config.Ver)
-
-	for {
-		select {
-		case m, ok := <-messageChan:
-			if ok {
-				roomer.Exec(m)
-			} else {
-				return
-			}
-		case <-ticker.C: // 帧更新
-			roomer.Update()
-		case <-signal.Die():
-			return
+	case *GameEvent:
+		if f := eventHandlers[m.Id]; f != nil {
+			f(m)
 		}
+	case *Timer:
+		m.Exec()
+	case func():
+		m()
 	}
 }
 
@@ -255,21 +225,46 @@ func roomConfigCheck(ver int32) int32{
 	return ver
 }
 
-// 关闭房间
-func Close() {
-	if signal.Close(){
-
+func startRoomConfigCheck(ver int32){
+	t := time.Tick(30*time.Second)
+	for {
+		select {
+		case <- t:
+			ver = roomConfigCheck(ver)
+		case <-signal.Die():
+			return
+		}
 	}
 }
 
-// 游戏
-type Gamer interface {
-	Process(*Session, *protocol.GameFrame)
+//
+func mainLoop() {
+	// 帧更新周期
+	hall.Start()
+	period := time.Duration(Config.Period) * time.Millisecond
+	ticker := time.NewTicker(period)
+	defer ticker.Stop()
+	
+	go startRoomConfigCheck(Config.Ver)
+
+	for {
+		select {
+		case m, ok := <-messageChan:
+			if ok {
+				exec(m)
+			} else {
+				return
+			}
+		case <-ticker.C: // 帧更新
+			hall.Update()
+		case <-signal.Die():
+			return
+		}
+	}
 }
 
 var startSn int64 //起始值
 var countSn int64 //SN缓存数
-
 func NewSn(count uint16) (sn int64) {
 	allot := int64(count)
 	if countSn >= allot {

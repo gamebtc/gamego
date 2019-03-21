@@ -2,7 +2,8 @@ package internal
 
 import (
 	"math/rand"
-	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
@@ -12,7 +13,8 @@ import (
 )
 
 var (
-	newDriver    func()GameDriver
+	gameRand     *rand.Rand
+	newDealer    func()Dealer
 	betItemCount int     // 可投注的项
 	betItems     []int32 // 可投注的项
 	robotBetRate []int32 // 机器人投注的概率
@@ -21,11 +23,13 @@ var (
 	taxRate      []int64 // 税率千分比
 	gameName     string  // 游戏名称
 	mustWinRate  int32   // 必赢概率百分比
-	mustWinRand  *rand.Rand
-	multipleLost int64 = 1 // 最多输的倍数
+
+	// 最多输的倍数，百人牛为10，其它为1
+	multipleLost int64 = 1
+	// 大厅
+	hall = &gameHall{ tables: make([]*Table, 0, 1) }
 )
 
-const second = 1000 * time.Millisecond
 type GameRound = folks.GameRound
 
 func robetRandBetItem() int32 {
@@ -40,26 +44,21 @@ func robetRandBetItem() int32 {
 
 // 百人游戏(龙虎/红黑/百家乐/色子)
 type gameHall struct {
-	config *model.RoomInfo
-	room.DefaultRoomer
 	tables []*Table
 }
 
-func NewGame() room.Roomer {
-	g := &gameHall{
-		tables: make([]*Table, 0, 1),
-	}
-	return g
+func NewGame() room.Haller {
+	return hall
 }
 
-func (this *gameHall) Update() {
-	for _, v := range this.tables {
+func (hall *gameHall) Update() {
+	for _, v := range hall.tables {
 		v.Update()
 	}
 
 	if room.Config.Close > 0 {
 		canClose := true
-		for _, v := range this.tables {
+		for _, v := range hall.tables {
 			if v.State != GameStateWait {
 				canClose = false
 				break
@@ -71,14 +70,13 @@ func (this *gameHall) Update() {
 	}
 }
 
-func (this *gameHall) Init(config *model.RoomInfo) {
-	this.config = config
-	mustWinRate = config.WinRate
-	mustWinRand = room.NewRand()
+func (hall *gameHall) Start() {
+	gameRand = room.NewRand()
+	mustWinRate = room.Config.WinRate
 
-	switch config.Kind {
+	switch room.KindId {
 	case model.GameKind_BJL:
-		newDriver = NewBjlDealer
+		newDealer = NewBjlDealer
 		gameName = "百家乐"
 		betItemCount = 5
 		taxRate = []int64{0, 50, 50, 50, 50}
@@ -87,7 +85,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 		//betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100, 1000 * 100, 5000 * 100, 10000 * 100}
 	case model.GameKind_BRNN:
-		newDriver = NewBjlDealer
+		newDealer = NewBjlDealer
 		gameName = "百人牛牛"
 		betItemCount = 4
 		taxRate = []int64{50, 50, 50, 50}
@@ -96,7 +94,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 		multipleLost = 10
 	case model.GameKind_HHDZ:
-		newDriver = NewRbdzDealer
+		newDealer = NewRbdzDealer
 		gameName = "红黑大战"
 		betItemCount = 3
 		taxRate = []int64{50, 50, 50}
@@ -104,7 +102,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		badBet = []byte{1, 0}
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_LHDZ:
-		newDriver = NewLhdzDealer
+		newDealer = NewLhdzDealer
 		gameName = "龙虎大战"
 		betItemCount = 3
 		taxRate = []int64{50, 50, 50}
@@ -112,7 +110,7 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		badBet = []byte{1, 0}
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	case model.GameKind_SBAO:
-		newDriver = NewSbaoDealer
+		newDealer = NewSbaoDealer
 		gameName = "骰宝"
 		betItemCount = 31
 		taxRate = []int64{
@@ -129,48 +127,37 @@ func (this *gameHall) Init(config *model.RoomInfo) {
 		betItems = []int32{1 * 100, 10 * 100, 50 * 100, 100 * 100, 500 * 100}
 	}
 
+	// 预算概率
 	robotSumRate = robotBetRate[0]
 	for i := 1; i < len(robotBetRate); i++ {
 		robotSumRate += robotBetRate[i]
 		robotBetRate[i] = robotSumRate
 	}
 
-	db.Driver.ClearRobot(config.Id)
-
-	table := NewTable()
-	this.tables = append(this.tables, table)
-	table.Init()
-
-	this.DefaultRoomer.Init(config)
-	this.EventHandler[room.EventConfigChanged] = configChange
-	this.RegistHandler(int32(folks.Folks_BetReq), &folks.BetReq{}, betReq)
-
-	//this.EventHandler[room.EventRoomClose] = roomClose
-	//room.RegistMsg(protocol.MsgId_BetAck, &protocol.BetAck{})
-	//room.RegistMsg(protocol.MsgId_FolksGameInitAck, &protocol.FolksGameInitAck{})
-	//room.RegistMsg(protocol.MsgId_UserBetAck, &protocol.UserBetAck{})
-	//room.RegistMsg(protocol.MsgId_OpenBetAck, &protocol.OpenBetAck{})
-	//room.RegistMsg(protocol.MsgId_CloseBetAck, &protocol.CloseBetAck{})
-
+	// 清理机器人
+	db.Driver.ClearRobot(room.RoomId)
+	// 注册消息和事件
 	room.RegistMsg(int32(folks.Folks_UserBetAck), &folks.UserBetAck{})
 	room.RegistMsg(int32(folks.Folks_OpenBetAck), &folks.OpenBetAck{})
 	room.RegistMsg(int32(folks.Folks_StopBetAck), &folks.StopBetAck{})
 	room.RegistMsg(int32(folks.Folks_GameInitAck), &folks.GameInitAck{})
 	room.RegistMsg(int32(folks.Folks_BetAck), &folks.BetAck{})
 
+	room.RegistEvent(room.EventConfigChanged, configChange)
+	room.RegistHandler(int32(folks.Folks_BetReq), &folks.BetReq{}, betReq)
+
+	// 创建桌子
+	table := NewTable()
+	table.Id = 1
+	hall.tables = append(hall.tables, table)
+	table.Init()
 	room.Call(table.Start)
 }
 
-//// 创建游戏角色
-//func NewGameData(r *model.User) *Role {
-//	data := new(Role)
-//	data.Id, data.Name, data.Coin, data.Job = r.Id, r.Name, r.Coin, r.Job
-//	return data
-//}
-
 // 用户上线
-func (this *gameHall) UserOnline(sess *room.Session, user *model.User, coin int64) {
-	table := this.tables[0]
+func (hall *gameHall) UserOnline(sess *room.Session, user *model.User, coin int64) {
+	// 分配桌子
+	table := hall.tables[0]
 
 	role := &Role{
 		User:    user,
@@ -188,26 +175,25 @@ func (this *gameHall) UserOnline(sess *room.Session, user *model.User, coin int6
 		Tab:  table.Id,
 	})
 	table.AddRole(role)
-	// 发送游戏内容
 }
 
 // 用户下线
-func (this *gameHall) UserOffline(sess *room.Session) {
+func (hall *gameHall) UserOffline(sess *room.Session) {
 	if role, ok := sess.Role.(*Role); ok && role != nil {
 		role.Online = false
 		if role.bill == nil{
-			this.RemoveUser(sess)
+			room.RemoveUser(sess)
 			sess.UnlockRoom()
 		}
 	}
 }
 
 // 用户重新连接
-func (this *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
-	if data, ok := oldSess.Role.(*Role); ok && data != nil {
+func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
+	if role, ok := oldSess.Role.(*Role); ok && role != nil {
 		oldSess.Role = nil
-		data.Online = true
-		newSess.Role = data
+		role.Online = true
+		newSess.Role = role
 	}
 }
 
@@ -254,4 +240,34 @@ func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
 		}
 	}
 	return
+}
+
+// 投注
+func betReq(m *room.NetMessage) {
+	log.Debugf("betReq:%v", m)
+
+	role, ok := m.Session.Role.(*Role)
+	if ok == false || role == nil {
+		log.Debugf("betReq: role is nil")
+		return
+	}
+	//获取参数
+	req, ok := m.Arg.(*folks.BetReq)
+	if ok == false || req == nil {
+		log.Debugf("betReq: is nil")
+		return
+	}
+	log.Debugf("add bet: %#v", req)
+
+	ack := &folks.BetAck{
+		Sn:   req.Sn,
+		Item: req.Item,
+	}
+	if err := role.AddBet(*req); err != nil {
+		role.SendError(int32(folks.Folks_BetReq), 1000, err.Error(), "")
+	} else {
+		ack.Bet = req.Bet
+	}
+	ack.Coin = role.Coin
+	role.Send(ack)
 }

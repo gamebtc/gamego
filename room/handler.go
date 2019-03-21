@@ -12,7 +12,7 @@ import (
 func userOnline(sess *Session, uid int32) {
 	log.Debugf("userOnline:%v", sess)
 	// 登录检查
-	oldSess := roomer.GetUser(uid)
+	oldSess := GetUser(uid)
 	if oldSess == sess {
 		return
 	}
@@ -31,7 +31,6 @@ func userOnline(sess *Session, uid int32) {
 	}
 	if user == nil {
 		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败2", sess.AgentId, uid, KindId, RoomId)
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v", sess.AgentId, uid, KindId, RoomId)
 		sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "登录失败2", "")
 		sess.Close()
 		return
@@ -39,13 +38,11 @@ func userOnline(sess *Session, uid int32) {
 
 	sess.UserId = uid
 	if oldSess != nil {
-		sess.Online = true
 		sess.Role = oldSess.Role
-		oldSess.Online = false
 		oldSess.Disposed = true
 		oldSess.UserId = 0
-		roomer.AddUser(sess)
-		roomer.UserReline(oldSess, sess)
+		AddUser(sess)
+		hall.UserReline(oldSess, sess)
 		// 发送错误消息,顶掉玩家
 		oldSess.Close()
 	} else {
@@ -65,15 +62,14 @@ func userOnline(sess *Session, uid int32) {
 			sess.Close()
 			return
 		}
-		roomer.AddUser(sess)
-		roomer.UserOnline(sess, user, coin)
+		AddUser(sess)
+		hall.UserOnline(sess, user, coin)
 	}
 }
 
 // 主线程调用，玩家下线
 func userOffline(sess *Session) {
 	log.Debugf("userOffline:%v", sess)
-	sess.Online = false
-	roomer.UserOffline(sess)
+	hall.UserOffline(sess)
 }
 

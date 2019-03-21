@@ -49,31 +49,13 @@ type LhdzDealer struct {
 	Offset int    //牌的位置
 }
 
-func NewLhdzDealer() GameDriver {
+func NewLhdzDealer() Dealer {
 	d := &LhdzDealer{
 	}
 	return d
 }
 
-// 等待
-func(this *LhdzDealer) Wait(table *Table){
 
-}
-
-// 准备游戏, 状态1
-func(this *LhdzDealer)Ready(table *Table){
-
-}
-
-// 开始下注, 状态1
-func(this *LhdzDealer)Open(table *Table){
-
-}
-
-// 游戏中
-func(this *LhdzDealer)Play(table *Table){
-
-}
 
 func (this *LhdzDealer) Deal(table *Table) {
 	a, b, odds := this.GetPokers(table)

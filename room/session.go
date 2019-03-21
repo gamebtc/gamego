@@ -26,7 +26,6 @@ type Session struct {
 	AgentId    int64       // 连接唯一ID
 	UserId     int32       // 玩家ID
 	Ip         model.IP    // IP地址
-	Online     bool        // 是否在线(只有在线才处理接收到的消息)
 	Disposed   bool        // 是否已销毁(被强制退出)
 	Role       interface{} // 游戏角色数据
 	Created    time.Time   // 建立时间
@@ -64,7 +63,7 @@ func (sess *Session) Send(val interface{}) bool {
 	if sess.sendChan == nil {
 		return true
 	}
-	if val, err := Coder.Encode(val); err == nil {
+	if val, err := coder.Encode(val); err == nil {
 		return sess.UnsafeSend(val)
 	}
 	return false
@@ -102,7 +101,7 @@ func (sess *Session) sendLoop(stream protocol.GameStream) {
 			case []byte:
 				data = val
 			default:
-				if buf, err := Coder.Encode(val); err == nil {
+				if buf, err := coder.Encode(val); err == nil {
 					data = buf
 				}
 			}
@@ -137,8 +136,8 @@ func (sess *Session) recvLoop(stream protocol.GameStream) {
 				if len(data) < protocol.HeadLen {
 					return
 				}
-				id, arg, e := Coder.Decode(data)
-				log.Debugf("Coder:%v,%v,%v,%v", Coder.Name(), id, arg, e)
+				id, arg, e := coder.Decode(data)
+				log.Debugf("coder:%v,%v,%v,%v", coder.Name(), id, arg, e)
 				if e != nil || sess.Call(id, arg) == false {
 					return
 				}

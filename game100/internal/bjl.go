@@ -34,30 +34,10 @@ type BjlDealer struct {
 	Offset int    //牌的位置
 }
 
-func NewBjlDealer() GameDriver {
+func NewBjlDealer() Dealer {
 	d := &BjlDealer{
 	}
 	return d
-}
-
-// 等待
-func(this *BjlDealer) Wait(table *Table){
-
-}
-
-// 准备游戏, 状态1
-func(this *BjlDealer)Ready(table *Table){
-
-}
-
-// 开始下注, 状态1
-func(this *BjlDealer)Open(table *Table){
-
-}
-
-// 游戏中
-func(this *BjlDealer)Play(table *Table){
-
 }
 
 func (this *BjlDealer) Deal(table *Table) {
@@ -88,7 +68,7 @@ func getBjlPoint(a []byte)byte {
 }
 
 // 是否补牌
-func(this *BjlDealer)RepairCard(a, b []byte, offset int) int {
+func(this *BjlDealer) RepairCard(a, b []byte, offset int) int {
 	count := 0
 	pa := getBjlPoint(a)
 	pb := getBjlPoint(b)
@@ -132,7 +112,7 @@ func(this *BjlDealer)RepairCard(a, b []byte, offset int) int {
 	return count
 }
 
-func (this *BjlDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
+func (this *BjlDealer) GetPokers(table *Table)([]byte,[]byte,[]int32) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {

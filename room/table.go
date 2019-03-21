@@ -1,7 +1,6 @@
 package room
 
 
-
 // 去掉数组结尾的0
 func TrimEndZero(a []int64) []int64 {
 	for i := len(a) - 1; i >= 0; i-- {
@@ -55,9 +54,9 @@ func TrimEndZero(a []int64) []int64 {
 //	isClose        bool               //
 //	closeSig       chan bool          //
 //	Game           GameDriver              // 当前游戏
-//	Users          map[int32]*Session // 在线用户
-//	EventHandler   func(*GameEvent)   // 事件处理器
-//	MessageHandler func(*NetMessage)  // 消息处理器
+//	sessions          map[int32]*Session // 在线用户
+//	eventHandlers   func(*GameEvent)   // 事件处理器
+//	messageHandlers func(*NetMessage)  // 消息处理器
 //	sync           bool               // 是否同步
 //	messageChan    chan interface{}   // 消息队列消息
 //}
@@ -92,9 +91,9 @@ func TrimEndZero(a []int64) []int64 {
 //			case m := <-this.messageChan:
 //				switch m := m.(type) {
 //				case *NetMessage:
-//					this.MessageHandler(m)
+//					this.messageHandlers(m)
 //				case *GameEvent: // 事件消息
-//					this.EventHandler(m)
+//					this.eventHandlers(m)
 //				case *Timer:
 //					m.Exec()
 //				}
@@ -117,7 +116,7 @@ func TrimEndZero(a []int64) []int64 {
 //		if this.sync == false {
 //			this.messageChan <- m
 //		} else {
-//			this.MessageHandler(m)
+//			this.messageHandlers(m)
 //		}
 //	}
 //}

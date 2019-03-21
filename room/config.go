@@ -49,7 +49,7 @@ func InitConfig(path string) *AppConfig {
 		log.SetLevel(lv)
 	}
 
-	Coder = protocol.GetCoder(cfg.Codec)
+	coder = protocol.GetCoder(cfg.Codec)
 
 	if cfg.Pprof != "" {
 		go http.ListenAndServe(cfg.Pprof, nil)

@@ -34,31 +34,12 @@ var(
 	dealer = model.NewGoldenFlowerDealer(true)
 )
 
-func NewRbdzDealer() GameDriver {
+func NewRbdzDealer() Dealer {
 	d := &RbdzDealer{
 	}
 	return d
 }
 
-// 等待
-func(this *RbdzDealer) Wait(table *Table){
-
-}
-
-// 准备游戏, 状态1
-func(this *RbdzDealer)Ready(table *Table){
-
-}
-
-// 开始下注, 状态1
-func(this *RbdzDealer)Open(table *Table){
-
-}
-
-// 游戏中
-func(this *RbdzDealer)Play(table *Table){
-
-}
 
 func (this *RbdzDealer) Deal(table *Table) {
 	a, b, odds := this.GetPokers(table)
