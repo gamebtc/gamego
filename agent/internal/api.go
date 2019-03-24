@@ -41,12 +41,14 @@ func Run(config *conf.AppConfig) {
 	registMsg(MsgId_UserLoginFailAck, &LoginFailAck{})
 	registMsg(MsgId_LoginRoomAck, &LoginRoomAck{})
 	registMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{})
+	registMsg(MsgId_ExitRoomAck, &ExitRoomAck{})
 
 	handlers[MsgId_HandshakeReq] = handshakeHandler
 	handlers[MsgId_UserLoginReq] = userLoginHandler
 	handlers[MsgId_VerCheckReq] = verCheckHandler
 	//handlers[MsgId_HeartBeatReq] = heartBeatHandler
 	handlers[MsgId_LoginRoomReq] = loginRoomHandler
+	handlers[MsgId_ExitRoomReq] = exitRoomHandler
 	//handlers[MsgId_ConnectRoomReq] = connectRoomHandler
 
 	//user := &Handshake{}

@@ -351,15 +351,11 @@ func (table *Table) sendDealResult() {
 func (table *Table) balance() {
 	// 结算真人
 	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			log.Debugf("结算:%v", flow)
-		}
+		role.Balance()
 	}
 	// 结算机器人
 	for _, role := range table.Robots {
-		if flow := role.Balance(); flow != nil {
-		}
+		role.Balance()
 	}
 }
 

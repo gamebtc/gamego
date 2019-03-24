@@ -24,7 +24,7 @@ func (z *CoinFlow) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "sn":
+		case "i":
 			z.Sn, err = dc.ReadInt64()
 			if err != nil {
 				return
@@ -74,8 +74,8 @@ func (z *CoinFlow) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "at":
-			z.Att, err = dc.ReadIntf()
+		case "b":
+			z.Sub, err = dc.ReadIntf()
 			if err != nil {
 				return
 			}
@@ -92,8 +92,8 @@ func (z *CoinFlow) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *CoinFlow) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 11
-	// write "sn"
-	err = en.Append(0x8b, 0xa2, 0x73, 0x6e)
+	// write "i"
+	err = en.Append(0x8b, 0xa1, 0x69)
 	if err != nil {
 		return err
 	}
@@ -182,12 +182,12 @@ func (z *CoinFlow) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "at"
-	err = en.Append(0xa2, 0x61, 0x74)
+	// write "b"
+	err = en.Append(0xa1, 0x62)
 	if err != nil {
 		return err
 	}
-	err = en.WriteIntf(z.Att)
+	err = en.WriteIntf(z.Sub)
 	if err != nil {
 		return
 	}
@@ -198,8 +198,8 @@ func (z *CoinFlow) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *CoinFlow) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 11
-	// string "sn"
-	o = append(o, 0x8b, 0xa2, 0x73, 0x6e)
+	// string "i"
+	o = append(o, 0x8b, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Sn)
 	// string "u"
 	o = append(o, 0xa1, 0x75)
@@ -228,9 +228,9 @@ func (z *CoinFlow) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "n"
 	o = append(o, 0xa1, 0x6e)
 	o = msgp.AppendString(o, z.Note)
-	// string "at"
-	o = append(o, 0xa2, 0x61, 0x74)
-	o, err = msgp.AppendIntf(o, z.Att)
+	// string "b"
+	o = append(o, 0xa1, 0x62)
+	o, err = msgp.AppendIntf(o, z.Sub)
 	if err != nil {
 		return
 	}
@@ -253,7 +253,7 @@ func (z *CoinFlow) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "sn":
+		case "i":
 			z.Sn, bts, err = msgp.ReadInt64Bytes(bts)
 			if err != nil {
 				return
@@ -303,8 +303,8 @@ func (z *CoinFlow) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "at":
-			z.Att, bts, err = msgp.ReadIntfBytes(bts)
+		case "b":
+			z.Sub, bts, err = msgp.ReadIntfBytes(bts)
 			if err != nil {
 				return
 			}
@@ -321,7 +321,7 @@ func (z *CoinFlow) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *CoinFlow) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.StringPrefixSize + len(z.Note) + 3 + msgp.GuessSize(z.Att)
+	s = 1 + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.StringPrefixSize + len(z.Note) + 2 + msgp.GuessSize(z.Sub)
 	return
 }
 

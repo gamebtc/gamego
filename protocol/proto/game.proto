@@ -53,3 +53,14 @@ message SendRoomFail {
 	int32 kind = 3 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"']; 		// 所在游戏分类
 	int32 room = 4 [(gogoproto.moretags) = 'bson:"room" msg:"room"']; 		// 当前所在游戏房间
 }
+
+// 请求退出房间
+message ExitRoomReq {
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"']; // 房间ID
+}
+
+// 请求退出房间
+message ExitRoomAck {
+	int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"']; 		// 错误代码
+	string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"']; 		// 错误消息
+}

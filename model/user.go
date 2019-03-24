@@ -58,10 +58,10 @@ type User struct {
 	Init   time.Time `bson:"init"`   //创建时间
 	Up     time.Time `bson:"up"`     //更新时间
 	Ver    int64     `bson:"ver"`    //币的版本
-	Bag    CoinBag   `bson:"-"`      //玩家的钱包
+	Bag    CoinBag   `bson:"-"`      //玩家的背包
 	Coin   int64     `bson:"-"`      //携带金币
 	Online bool      `bson:"-"`      //是否在线
-	FlowSn int64     `bson:"-"`      //最后的写分序号，返回时用于验证
+	FlowSn int64     `bson:"-"`      //最后的写分序号,返回时用于验证
 }
 
 // 在线玩家锁定信息

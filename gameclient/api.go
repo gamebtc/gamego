@@ -42,6 +42,9 @@ func Run(config *AppConfig) {
 	registMsg(int32(MsgId_LoginRoomAck), &LoginRoomAck{}, loginRoom)
 	registMsg(int32(folks.Folks_BetReq), &folks.BetReq{}, nil)
 
+	registMsg(int32(MsgId_ExitRoomReq), &ExitRoomReq{}, nil)
+	registMsg(int32(MsgId_ExitRoomAck), &ExitRoomAck{}, exitRoom)
+
 	registMsg(int32(folks.Folks_BetAck), &folks.BetAck{}, betAck)
 	registMsg(int32(MsgId_HandshakeAck), &Handshake{}, handshake)
 	registMsg(int32(MsgId_UserLoginFailAck), &LoginFailAck{}, loginFail)
@@ -85,6 +88,13 @@ func loginRoom(sess *Session, arg interface{}) {
 	if arg, ok := arg.(*LoginRoomAck); ok && arg != nil {
 		sess.roomId = arg.Room
 		log.Debugf("loginRoom:%#v", arg)
+	}
+}
+
+func exitRoom(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*ExitRoomAck); ok && arg != nil {
+		sess.roomId = 0
+		log.Debugf("exitRoom:%#v", arg)
 	}
 }
 

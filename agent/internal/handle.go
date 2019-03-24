@@ -132,6 +132,27 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	return ret, err
 }
 
+// 断开房间连接
+func exitRoomHandler(sess *Session, date []byte) (interface{}, error) {
+	//req := ExitRoomReq{}
+	//if err := sess.Unmarshal(date[HeadLen:], &req); err != nil {
+	//	return nil, err
+	//}
+	//roomId := int32(req.Id)
+	if sess.RoomId == 0 {
+		return &ExitRoomAck{
+			Code: 1010,
+			Msg:  "房间号错误",
+		}, nil
+	}
+
+	sess.closeRoom()
+	return &ExitRoomAck{
+		Code: 0,
+		Msg:  "success",
+	}, nil
+}
+
 ////
 //func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
 //	// 连接到已选定游戏房间服务器

@@ -134,8 +134,6 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 			set := bson.D{{"$set", bson.D{
 				{"up", t},
 				{"state", 2},
-				{"kind", lock.Kind},
-				{"room", lock.Room},
 			}}}
 			query[0].Value = lock.Log1 //bson.D{{"_id", lock.Log1}
 			d.loginLog.UpdateOne(d.ctx, query, set)
@@ -146,8 +144,6 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 	newLock[0].Key = "_id"
 	newLock = append(newLock,
 		bson.E{Key: "state", Value: zero32},
-		bson.E{Key: "kind", Value: lock.Kind},
-		bson.E{Key: "room", Value: lock.Room},
 		bson.E{Key: "uid", Value: uid},
 		bson.E{Key: "udid", Value: req.Udid},
 		bson.E{Key: "env", Value: req.Env},

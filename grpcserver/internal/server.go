@@ -29,7 +29,6 @@ func init(){
 	//city.Reload("ipipfree.ipdb")
 }
 
-
 // server is used to implement protocol.GameService.
 type Server struct {
 	ServerBase

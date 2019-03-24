@@ -132,11 +132,11 @@ func (role *Role) AddBet(req folks.BetReq) error {
 const radix = 100
 const lostRadix = 0
 
-func (role *Role) Balance() *model.CoinFlow {
+func (role *Role) Balance() {
 	bill := role.bill
 	round := role.table.round
 	if bill == nil || bill.Bet <= 0 || round == nil {
-		return nil //没有投注
+		return //没有投注
 	}
 
 	prize, tax, bet := Balance(bill.Group, round.Odds)
@@ -149,11 +149,11 @@ func (role *Role) Balance() *model.CoinFlow {
 	role.Coin += prize
 	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bet
+	role.AddWinBet(addCoin, bet)
 
 	i := role.TotalRound % lastBillCount
 	role.LastBetSum += bet - role.LastBet[i]
 	role.LastBet[i] = bet
-
 	if role.LastWin[i] == 1 {
 		role.LastWinCount--
 	}
@@ -164,13 +164,11 @@ func (role *Role) Balance() *model.CoinFlow {
 		role.LastWin[i] = 0
 	}
 
-	role.AddWinBet(addCoin, bet)
-
 	bill.Tax = tax
 	bill.Win = addCoin
 
 	if role.IsRobot() {
-		return nil
+		return
 	}
 
 	if role.IsPlayer() {
@@ -178,16 +176,15 @@ func (role *Role) Balance() *model.CoinFlow {
 		round.Win -= addCoin
 	}
 
-	ulog := &folks.UserLog{
+	// 写分
+	role.FlowSn = room.NewSn(1)
+	sub := &folks.UserLog{
 		Tab:   role.table.Id,
 		Bet:   bet,
 		Group: room.TrimEndZero(bill.Group),
 		Log:   round.Id,
 		Poker: round.Poker,
 	}
-
-	// 写分
-	role.FlowSn = room.NewSn(1)
 	flow := &model.CoinFlow{
 		Sn:     role.FlowSn,
 		Uid:    role.Id,
@@ -198,7 +195,8 @@ func (role *Role) Balance() *model.CoinFlow {
 		Kind:   room.KindId,
 		Type:   1,
 		Note:   round.Note,
-		Att:    ulog,
+		Sub:    sub,
 	}
-	return flow
+	room.WriteCoin(flow)
+	log.Debugf("结算:%v", flow)
 }
