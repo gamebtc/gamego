@@ -18,8 +18,8 @@ var (
 
 // 分配新的玩家ID和数据库时间
 type userIdN struct {
-	N int32     `bson:"n"`
-	T time.Time `bson:"up"`
+	Id model.UserId `bson:"n"`
+	Up time.Time    `bson:"up"`
 }
 
 func (d *driver) NewToken() int64 {
@@ -36,6 +36,6 @@ func (d *driver) GetRobot(room int32, count int32) []*model.User {
 }
 
 // 机器人退出
-func (d *driver) ExitRobot(room int32, users []int32) {
+func (d *driver) ExitRobot(room int32, users []model.UserId) {
 
 }

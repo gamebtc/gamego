@@ -15,8 +15,8 @@ var (
 	die chan struct{}
 )
 
-const zeroInt32 = int32(0)
-const zeroInt64 = int64(0)
+const zero32 = int32(0)
+const zero64 = int64(0)
 
 type cacher interface {
 	Renew() error
@@ -36,6 +36,7 @@ type driver struct {
 	roomLog  Collection
 	account  Collection
 	user     Collection
+	bag      Collection
 	locker   Collection
 	userId   Collection
 	gameConf Collection
@@ -69,6 +70,7 @@ func (d *driver) Init(db *Database) {
 	d.account = d.GetColl(CollAccount)
 	d.robot = d.GetColl(CollRobot)
 	d.user = d.GetColl(CollUser)
+	d.bag = d.GetColl(CollBag)
 	d.locker = d.GetColl(CollUserLocker)
 	d.userId = d.GetColl(CollUserId)
 	d.gameConf = d.GetColl(CollGameConf)

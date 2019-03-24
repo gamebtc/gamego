@@ -56,7 +56,7 @@ func (s *grpcServer) newSession(stream protocol.GameStream, user *protocol.UserC
 		// 连接断开事件
 		Call(func() { userOffline(sess) })
 		sess.Close()
-		log.Infof("connection closed user:%v, Ip:%v", user.UserId, user.Ip)
+		log.Infof("connection closed user:%v, Ip0:%v", user.UserId, user.Ip)
 	}()
 
 	// 连接事件

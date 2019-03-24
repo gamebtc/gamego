@@ -6,7 +6,9 @@ db.createCollection("conf");
 db.createCollection("execErr");
 db.createCollection("execLog");
 db.createCollection("hint");
+db.createCollection("robot");
 db.createCollection("user");
+db.createCollection("bag");
 db.createCollection("userId");
 db.createCollection("userLocker");
 db.createCollection("loginLog");
@@ -77,13 +79,15 @@ db.chanConf.createIndex(
 );
 
 db.loginLog.createIndex(
-    { "user": 1}
+    { "uid": 1}
 );
 
 db.account.remove({});
 db.user.remove({});
+db.bag.remove({});
 db.userLocker.remove({});
 db.loginLog.remove({});
 db.execErr.remove({});
 db.execLog.remove({});
 db.lastLogin.remove({});
+db.roomLog.remove({});

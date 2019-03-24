@@ -191,7 +191,7 @@ func (sess *Session) destroy() {
 	//})
 }
 
-func (sess *Session) SetUser(uid int32) {
+func (sess *Session) SetUser(uid UserId) {
 	sess.UserId = uid
 	sess.callCtx = NewServerHead(sess.Id, uid, sess.Ip)
 }

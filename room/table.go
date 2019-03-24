@@ -1,5 +1,8 @@
 package room
 
+import (
+	"time"
+)
 
 // 去掉数组结尾的0
 func TrimEndZero(a []int64) []int64 {
@@ -11,112 +14,28 @@ func TrimEndZero(a []int64) []int64 {
 	return a
 }
 
-//// 桌子和游戏绑定
-//type Tabler interface {
-//	Update()                    // 更新
-//
-//	Offline(*Session) bool		// 玩家断线
-//
-//	Entry(*NetMessage) bool   // 玩家进入
-//	Exit(*NetMessage) bool    // 玩家退出
-//	Reentry(*NetMessage) bool // 玩家重新连接
-//
-//	CoinIn(*NetMessage) bool  // 加钱到游戏
-//	CoinOut(*NetMessage) bool // 从游戏中转出钱
-//
-//	GetTableID() int32    //桌子号码
-//	GetUserCount() int32  //玩家总人数
-//
-//	//GameStart() bool    	//游戏开始
-//	//GameEnd(int64) bool 	//游戏结束
-//	//GetGameTime() uint32  //游戏时间
-//	//GetGameStatus() int32 //获取游戏状态
-//	//SetGameStatus(int32)  //设置游戏状态
-//
-//	GetTableStatus() uint32 //获取桌子状态
-//	SetTableStatus(uint32)  //设置桌子状态
-//
-//	AfterFunc(int32, func()) *Timer //设置定时器
-//	StopFunc(*Timer)                //停止定时器
-//
-//	Start() bool
-//	Close()                  // 关闭
-//
-//
-//	PutMessage()
-//}
-//
-//// 桌子
-//type Table struct {
-//	Id             int32              // 桌子唯一ID
-//	Status         int32              // 桌子状态
-//	Seat           []int32            // 座位
-//	isClose        bool               //
-//	closeSig       chan bool          //
-//	Game           GameDriver              // 当前游戏
-//	sessions          map[int32]*Session // 在线用户
-//	eventHandlers   func(*GameEvent)   // 事件处理器
-//	messageHandlers func(*NetMessage)  // 消息处理器
-//	sync           bool               // 是否同步
-//	messageChan    chan interface{}   // 消息队列消息
-//}
-//
-//func (this *Table) AfterFunc(ms int32, f func()) *Timer {
-//	t := &Timer{
-//		f:  f,
-//	}
-//	t.t = time.AfterFunc(time.Duration(ms)*time.Millisecond, func() {
-//		this.messageChan <- t
-//	})
-//	return t
-//}
-//
-//func NewTable()(t *Table, err error){
-//	t=&Table{
-//
-//	}
-//	return
-//}
-//
-//func (this *Table) Start(sync bool) {
-//	this.sync = sync
-//	// 异步处理
-//	if sync == false {
-//		this.messageChan = make(chan interface{}, 10000)
-//		for {
-//			select {
-//			case <-this.closeSig:
-//				this.isClose = true
-//				return
-//			case m := <-this.messageChan:
-//				switch m := m.(type) {
-//				case *NetMessage:
-//					this.messageHandlers(m)
-//				case *GameEvent: // 事件消息
-//					this.eventHandlers(m)
-//				case *Timer:
-//					m.Exec()
-//				}
-//			}
-//		}
-//	} else {
-//		// 同步处理，全部消息转发到房间线程
-//		this.messageChan = messageChan
-//	}
-//}
-//
-//func (this *Table) Close(){
-//
-//}
-//
-//
-//// 路由消息
-//func (this *Table) RouteMsg(m *NetMessage) {
-//	if m.Session.Online {
-//		if this.sync == false {
-//			this.messageChan <- m
-//		} else {
-//			this.messageHandlers(m)
-//		}
-//	}
-//}
+// 计划的机器人数量
+func PlanRobotCount(roleCount int32) int32 {
+	robotConf := Config.Robot
+	end := len(robotConf) / 6
+	now := time.Now()
+	minute := int32(now.Hour()*60 + now.Minute())
+	for count := 0; count < end; count++ {
+		i := 6 * count
+		if minute >= robotConf[i] && minute < robotConf[i+1] {
+			min := robotConf[i+2]  //最小人数
+			max := robotConf[i+3]  //最大人数
+			base := robotConf[i+4] //基础人数
+			rate := robotConf[i+5] //真实玩家的百分比人数
+			//真人数量
+			count := base + roleCount*rate/100
+			if count < min {
+				count = min
+			} else if count > max {
+				count = max
+			}
+			return count
+		}
+	}
+	return -1
+}

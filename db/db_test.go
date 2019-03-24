@@ -220,7 +220,7 @@ func TestLoadUser(t *testing.T) {
 
 	d := getTestDrive(t)
 
-	if u1, err := d.GetUser(3313004); err != nil {
+	if u1, err := d.LoadUser(3313004,1); err != nil {
 		t.Fatal(err)
 	} else {
 		t.Logf("user:%v", u1)
@@ -228,7 +228,7 @@ func TestLoadUser(t *testing.T) {
 
 	//user := &model.User{}
 	//user.Id = 3313004
-	//user.Ip = 3313004
+	//user.Ip0 = 3313004
 	//
 	//if err := d.LoadUser(user); err != nil {
 	//	t.Fatal(err)

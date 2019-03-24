@@ -39,7 +39,7 @@ type Haller interface {
 	// Start
 	Start()
 	// 玩家上线
-	UserOnline(sess *Session, user *model.User, coin int64)
+	UserOnline(sess *Session, user *model.User)
 	// 玩家下线
 	UserOffline(sess *Session)
 	// 玩家重新上线
@@ -55,7 +55,7 @@ var (
 	messageChan     chan interface{}                  // 消息队列消息
 	messageHandlers [math.MaxUint16]func(*NetMessage) // 消息处理器
 	eventHandlers   [math.MaxUint16]func(*GameEvent)  // 事件处理器
-	sessions        map[int32]*Session                // 所有玩家
+	sessions        map[model.UserId]*Session         // 所有玩家
 	signal 			*util.AppSignal
 	coder  			protocol.Coder
 )
@@ -83,7 +83,7 @@ func RegistEvent(id int32, f func(*GameEvent)){
 	eventHandlers[id] = f
 }
 
-func GetUser(id int32) *Session {
+func GetUser(id model.UserId) *Session {
 	if s, ok := sessions[id]; ok {
 		return s
 	}
@@ -170,7 +170,7 @@ func Init(config *AppConfig, r Haller) error {
 	logName = "play" + CoinKey + "_" + strconv.Itoa(int(KindId))
 
 	// 加载房间
-	sessions = make(map[int32]*Session, roomInfo.Cap*2)
+	sessions = make(map[model.UserId]*Session, roomInfo.Cap*2)
 	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
 
 	RegistMsg(int32(protocol.MsgId_ErrorInfo), &protocol.ErrorInfo{})

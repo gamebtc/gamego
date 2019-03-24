@@ -89,7 +89,7 @@ message LoginReq {
     string name = 2 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 用户名或UID
     string pwd = 3 [(gogoproto.moretags) = 'bson:"pwd" msg:"pwd"'];             // 密码
     string udid = 4 [(gogoproto.moretags) = 'bson:"udid" msg:"udid"'];          // 机器码
-    int32 user = 5 [(gogoproto.moretags) = 'bson:"user" msg:"user"'];           // 玩家ID
+    int32 uid = 5 [(gogoproto.moretags) = 'bson:"uid" msg:"uid"'];              // 玩家ID
     int32 time = 6 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];           // 登录时间
     DeviceInfo dev = 7 [(gogoproto.moretags) = 'bson:"dev" msg:"dev"'];         // 设备信息
     Envirnment env = 8 [(gogoproto.moretags) = 'bson:"env" msg:"env"'];         // 应用信息

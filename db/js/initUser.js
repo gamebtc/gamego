@@ -16,17 +16,12 @@ const f = function (id) {
         act: empty,       //关联的账号
         pack: zero,       //所属包ID
         chan: zero,       //所属渠道ID
-        ip: zeroLong,     //创建时的IP
+        ip0: zeroLong,    //创建时的IP
         last:zeroLong,    //最后登录时间
-        lastIp:zeroLong,  //最后登录IP
-        bag: {            //玩家钱包
-            v: zero,      //代币版本号
-            gc1: zeroLong,//游戏金币
-            gc2: zeroLong //银行金币
-        },
-        tag: {},           //标签
-        init: zeroLong,    //创建时间
-        up: zeroLong,      //更新时间
+        ip:zeroLong,      //最后登录IP
+        tag: {},          //标签
+        init: zeroLong,   //创建时间
+        up: zeroLong,     //更新时间
         ver: zero
     };
 };

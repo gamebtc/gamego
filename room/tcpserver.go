@@ -138,12 +138,12 @@ func newSession(conn net.Conn) {
 	}
 
 	sess := &Session{
-		AgentId:  agent,
 		Ip:       ip,
 		Created:  time.Now(),
+		AgentId:  agent,
 	}
 
-	log.Infof("connection agent:%v, user:%v, Ip:%v", agent, uid, ip)
+	log.Infof("connection agent:%v, user:%v, Ip0:%v", agent, uid, ip)
 	// cleanup work
 	defer func() {
 		// 连接断开事件
@@ -151,7 +151,7 @@ func newSession(conn net.Conn) {
 			Call(func() { userOffline(sess) })
 		}
 		sess.Close()
-		log.Infof("connection closed user:%v, Ip:%v", uid, ip)
+		log.Infof("connection closed user:%v, Ip0:%v", uid, ip)
 	}()
 
 	// 连接事件

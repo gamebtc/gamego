@@ -4,13 +4,13 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/room"
 )
 
-var(
+var (
 	// 百家乐点数映射表
 	bjlPoint = [64]byte{}
 )
+
 func init() {
 	bjlPoint[model.AA], bjlPoint[model.BA], bjlPoint[model.CA], bjlPoint[model.DA] = 1, 1, 1, 1
 	bjlPoint[model.A2], bjlPoint[model.B2], bjlPoint[model.C2], bjlPoint[model.D2] = 2, 2, 2, 2
@@ -35,8 +35,7 @@ type BjlDealer struct {
 }
 
 func NewBjlDealer() Dealer {
-	d := &BjlDealer{
-	}
+	d := &BjlDealer{}
 	return d
 }
 
@@ -48,27 +47,14 @@ func (this *BjlDealer) Deal(table *Table) {
 	round.Poker = []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
 	round.Note = note
 	log.Debugf("发牌:%v,%v", note, odds)
-
-	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			log.Debugf("结算:%v", flow)
-		}
-	}
-	for _, role := range table.Robot {
-		if flow := role.Balance(); flow != nil {
-			//room.WriteCoin(flow)
-			//log.Debugf("结算:%v", flow)
-		}
-	}
 }
 
-func getBjlPoint(a []byte)byte {
+func getBjlPoint(a []byte) byte {
 	return (bjlPoint[a[0]] + bjlPoint[a[1]] + bjlPoint[a[2]]) % 10
 }
 
 // 是否补牌
-func(this *BjlDealer) RepairCard(a, b []byte, offset int) int {
+func (this *BjlDealer) RepairCard(a, b []byte, offset int) int {
 	count := 0
 	pa := getBjlPoint(a)
 	pb := getBjlPoint(b)
@@ -112,7 +98,7 @@ func(this *BjlDealer) RepairCard(a, b []byte, offset int) int {
 	return count
 }
 
-func (this *BjlDealer) GetPokers(table *Table)([]byte,[]byte,[]int32) {
+func (this *BjlDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {

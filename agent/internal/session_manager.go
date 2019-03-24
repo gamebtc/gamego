@@ -7,6 +7,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+
+	. "local.com/abc/game/protocol"
 )
 
 var (
@@ -15,12 +17,12 @@ var (
 	locker     sync.RWMutex
 	sessions   map[int64]*Session //在线用户列表，key:连接ID
 	userLocker sync.RWMutex
-	users      map[int32]*Session //已登录用户列表
+	users      map[UserId]*Session //已登录用户列表
 )
 
 func init() {
 	sessions = make(map[int64]*Session, 4000)
-	users = make(map[int32]*Session, 2000)
+	users = make(map[UserId]*Session, 2000)
 }
 
 func newSessionId() int64 {

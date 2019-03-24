@@ -53,17 +53,17 @@ func userOnline(sess *Session, uid int32) {
 			sess.Close()
 			return
 		}
-
 		// 检查所带金币
-		coin := user.Bag[CoinKey]
+		coin := user.Coin
 		if coin < Config.DoorMin || coin > Config.DoorMax {
 			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "金币不足")
 			sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "金币不足", "")
 			sess.Close()
 			return
 		}
+		user.Online = true
 		AddUser(sess)
-		hall.UserOnline(sess, user, coin)
+		hall.UserOnline(sess, user)
 	}
 }
 

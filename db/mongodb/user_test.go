@@ -11,7 +11,6 @@ import (
 	"local.com/abc/game/model"
 )
 
-
 //go test -v -run="TestMsg"
 func TestMsg(t *testing.T) {
 	val := new(model.Account)
@@ -19,12 +18,11 @@ func TestMsg(t *testing.T) {
 
 	buf := make([]byte, 0, 256)
 	b, err := bson.MarshalAppendWithRegistry(registry, buf, val)
-	if err != nil{
+	if err != nil {
 		t.Fatalf("[err%v]", err)
 	}
 	t.Logf("[b%v]", b)
 }
-
 
 type Point struct {
 	X int

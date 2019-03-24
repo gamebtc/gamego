@@ -40,9 +40,9 @@ func Run(config *AppConfig) {
 	registMsg(int32(MsgId_UserLoginReq), &LoginReq{}, nil)
 	registMsg(int32(MsgId_LoginRoomReq), &LoginRoomReq{}, nil)
 	registMsg(int32(MsgId_LoginRoomAck), &LoginRoomAck{}, loginRoom)
-	registMsg(int32(folks.MsgId_BetReq), &folks.BetReq{}, nil)
+	registMsg(int32(folks.Folks_BetReq), &folks.BetReq{}, nil)
 
-	registMsg(int32(folks.MsgId_BetAck), &folks.BetAck{}, betAck)
+	registMsg(int32(folks.Folks_BetAck), &folks.BetAck{}, betAck)
 	registMsg(int32(MsgId_HandshakeAck), &Handshake{}, handshake)
 	registMsg(int32(MsgId_UserLoginFailAck), &LoginFailAck{}, loginFail)
 	registMsg(int32(MsgId_UserLoginSuccessAck), &LoginSuccessAck{}, loginSuccess)
@@ -55,8 +55,8 @@ func Run(config *AppConfig) {
 	registMsg(int32(MsgId_HeartBeatAck), &HeartBeatAck{}, heartBeat)
 
 
-	registMsg(int32(folks.MsgId_GameInitAck), &folks.GameInitAck{}, folksGameInit)
-	registMsg(int32(folks.MsgId_CloseBetAck), &folks.CloseBetAck{}, folksGameInit)
+	registMsg(int32(folks.Folks_GameInitAck), &folks.GameInitAck{}, folksGameInit)
+	//registMsg(int32(folks.Folks_CloseBetAck), &folks.CloseBetAck{}, folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
 	//handlers[MsgId_UserLoginReq] = userLoginHandler

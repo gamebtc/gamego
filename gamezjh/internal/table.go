@@ -10,15 +10,14 @@ import (
 const chairCount = 5
 
 type GameState int32
-const(
-	// 等待玩家进入
-	GameStateWait GameState = 0
+
+const (
 	// 准备游戏
-	GameStateReady GameState = 1
+	GameStateReady GameState = 0
 	// 游戏中
-	GameStatePlaying GameState = 2
+	GameStatePlaying GameState = 1
 	// 结算
-	GameStateDeal GameState = 3
+	GameStateDeal GameState = 2
 )
 
 // 开始下注：下注时间12秒
@@ -26,73 +25,99 @@ const(
 // 结算：    2秒
 // 游戏桌子
 type Table struct {
-	Id     int32             // 桌子ID
-	CurId  int32             // 当前局的ID
-	State  GameState         // 0:等待玩家进入;1:准备游戏;2:游戏中;3:结算
-	Roles  [chairCount]*Role // 所有游戏玩家,按位置
-	Player []*Role           // 游戏中的玩家
-	round  *GameRound        // 1局
-	delay  int32             // 持续秒数
+	Id        int32             // 桌子ID
+	CurId     int32             // 当前局的ID
+	State     GameState         // 0:准备游戏;1:游戏中;2:结算
+	RoleCount int32             // 玩家数量
+	Roles     [chairCount]*Role // 所有游戏玩家,按位置
+	round     *GameRound        // 1局
+	delay     int32             // 持续秒数
 }
 
 func NewTable() *Table {
-	t := &Table{
-	}
+	t := &Table{}
 	return t
 }
 
-func(table *Table)MustWin()bool {
-	return  mustWinRate > gameRand.Int31n(100)
+func (table *Table) MustWin() bool {
+	return room.Config.WinRate > gameRand.Int31n(1000)
 }
 
-// 增加真实的玩家
-func (table *Table) AddRole(role *Role) bool {
-	for i := int32(0); i < chairCount; i++ {
-		if table.Roles[i] == nil {
-			role.Chair = i
-			table.Roles[i] = role
-			// 真实玩家
-			ack := &zjh.GameInitAck{
-				Id:    table.round.Id,
-				State: int32(table.State),
-				//Sum:   table.round.Group,
+// 增加玩家
+func (table *Table) addRole(role *Role) bool {
+	for i, v := range table.Roles {
+		if v == nil {
+			role.player = &zjh.Player{
+				Id:    role.Id,
+				Icon:  role.Icon,
+				Vip:   role.Vip,
+				Name:  role.Name,
+				Coin:  role.Coin,
+				State: zjh.Player_None,
 			}
-			//if bill := role.bill; bill != nil {
-			//	ack.Bet = bill.Group
-			//}
-			role.Send(ack)
-
+			role.table = table
+			role.player.Chair = int32(i + 1)
+			table.Roles[i] = role
+			table.RoleCount++
+			// 真实玩家
+			if !role.IsRobot() {
+				table.sendGameInit(role)
+			}
 			return true
 		}
 	}
 	return false
 }
 
-func (table *Table) RoleCount() int {
-	i := 0
-	for _, role := range table.Roles {
-		if role != nil {
-			i++
+// 所有机器人退出
+func (table *Table) freeRobots() {
+	for i, role := range table.Roles {
+		if role != nil && role.IsRobot() {
+			table.RoleCount++
+			table.Roles[i] = nil
+			role.player = nil
+			role.table = nil
+			role.bill = nil
 		}
 	}
-	return i
 }
 
-func (table *Table) newGameRound(i int) {
-	players := make([]*Role, 0, i)
+// 初始化场景
+func (table *Table) sendGameInit(role *Role) {
+	if !role.IsRobot() {
+		ack := &zjh.GameInitAck{
+			State:  int32(table.State),
+			Player: nil,
+			Poker:  nil,
+		}
+		if round := table.round; round != nil {
+			ack.Id = table.round.Id
+			ack.Ring = table.round.Ring
+		}
+		if bill := role.bill; bill != nil {
+			//ack.Ring = bill.
+		}
+		role.Send(ack)
+	}
+}
+
+func (table *Table) newGameRound() {
+	i := table.RoleCount
+	players := make([]*zjh.Player, 0, i)
 	bills := make([]*zjh.GameBill, 0, i)
 	// 随机首家
-	first := gameRand.Intn(i)
+	first := gameRand.Int31n(i)
 	for i := first; i < chairCount+first; i++ {
 		if role := table.Roles[i%chairCount]; role != nil {
 			role.Reset()
-			players = append(players, role)
+			players = append(players, role.GetPlayer())
 			bills = append(bills, role.bill)
 		}
 	}
-	table.Player = players
 	id := room.NewGameRoundId()
 	round := &GameRound{
+		firstChair: first,
+		players:    players,
 		GameRound: zjh.GameRound{
 			Id:    id,
 			Start: room.Now(),
@@ -104,111 +129,98 @@ func (table *Table) newGameRound(i int) {
 	table.round = round
 }
 
-func (table *Table) Init(){
+func (table *Table) Init() {
 
-}
-
-// 尝试释放桌子
-func (table *Table) TryFree() bool {
-	if table.State > GameStateReady {
-		return false
-	}
-	for _, role := range table.Roles {
-		if role != nil {
-			return false
-		}
-	}
-	table.round = nil
-	table.Player = nil
-	table.delay = 1
-	table.State = GameStateWait
-	return true
 }
 
 func (table *Table) Start() {
-	table.delay = 1
-	table.State = GameStateWait
+	table.gameReady()
 }
 
 func (table *Table) Update() {
 	table.delay--
 	switch table.State {
-	case GameStateWait:
-		if room.Config.Pause == 0 {
-			if table.delay <= 0 {
-				table.delay = 1
-				gameReady(table)
-			}
-		} else {
-			table.delay++
-		}
 	case GameStateReady:
-		if table.delay <= 0 {
-			table.delay = 12
-			gameOpen(table)
+		if room.Config.Pause != 0 {
+			table.delay++
+			return
 		}
+		table.gameWait()
 	case GameStatePlaying:
-		if table.delay != 0 {
-			gamePlay(table)
+		if table.delay > 0 {
+			table.gamePlay()
 		} else {
-			table.delay = 5
-			gameDeal(table)
+			table.gameDeal()
 		}
 	case GameStateDeal:
 		if table.delay <= 0 {
-			table.delay = 5
-			gameWait(table)
+			table.gameReady()
 		}
 	}
 }
 
 // 发送消息给所有在线玩家
-func(table *Table)SendToAll(val interface{}) {
-	if len(table.Roles) > 0 {
-		if val, err := room.Encode(val); err != nil {
-			for _, role := range table.Roles {
+func (table *Table) SendToAll(val interface{}) {
+	if val, err := room.Encode(val); err != nil {
+		for _, role := range table.Roles {
+			if role != nil {
 				role.UnsafeSend(val)
 			}
 		}
 	}
 }
 
-// 等待
-func gameWait (table *Table) {
-	table.State = GameStateWait
-	log.Debugf("等待玩家:%v", table.CurId)
+// 检查是否有真实玩家
+func (table *Table) ExistsRealPlayer()bool {
+	for _, role := range table.Roles {
+		if role.IsRobot() == false {
+			return true
+		}
+	}
+	return false
 }
 
 // 准备
-func gameReady(table *Table) {
-	i := table.RoleCount()
-	if i >= 2 {
-		table.State = GameStateReady
-		table.CurId += 1
-		log.Debugf("%v准备:%v", gameName, table.CurId)
-		table.newGameRound(i)
-	} else {
-		table.delay = 1
-		gameWait(table)
+func (table *Table)gameReady() {
+	table.delay = 2
+	table.State = GameStateReady
+	table.CurId += 1
+	log.Debugf("%v准备:%v", table.Id, table.CurId)
+}
+
+func (table *Table)gameWait() {
+	if table.ExistsRealPlayer(){
+		// 有2个人可以开始
+		if table.RoleCount >= 2 {
+			table.gameOpen()
+		} else {
+			table.delay = 2
+			log.Debugf("%v等待玩家:%v", table.Id, table.CurId)
+		}
+	}else{
+		// 没有真人机器人退出
+		table.freeRobots()
 	}
 }
 
 // 开始
-func gameOpen (table *Table){
+func (table *Table)gameOpen() {
 	// 发送开始下注消息给所有玩家
+	table.delay = 15
 	table.State = GameStatePlaying
-	log.Debugf("开始下注:%v", table.CurId)
+	table.newGameRound()
+	log.Debugf("%v开始下注:%v", table.Id, table.CurId)
 }
 
-func gamePlay(table *Table) {
+func (table *Table)gamePlay() {
 
 }
 
-
-// 发牌结算
-func gameDeal(table *Table) {
+// 结算
+func (table *Table)gameDeal() {
+	table.delay = 5
 	table.State = GameStateDeal
-	log.Debugf("发牌结算:%v", table.CurId)
+	log.Debugf("%v发牌结算:%v", table.Id, table.CurId)
 	// 发牌结算
 
 	round := table.round

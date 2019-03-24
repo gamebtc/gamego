@@ -30,7 +30,7 @@ type Account struct {
 	Users []UserId  `bson:"users"` //账号下关联的玩家ID
 	Pack  int32     `bson:"pack"`  //所属包
 	Chan  int32     `bson:"chan"`  //所属渠道
-	Ip    IP        `bson:"ip"`    //创建时的IP
+	Ip0   IP        `bson:"ip0"`   //创建时的IP
 	Udid  string    `bson:"udid"`  //创建时的机器码
 	Tag   TagType   `bson:"tag"`   //标签
 	Init  time.Time `bson:"init"`  //创建时间
@@ -51,14 +51,17 @@ type User struct {
 	Act    AccountId `bson:"act"`    //关联的账号
 	Pack   int32     `bson:"pack"`   //包ID
 	Chan   int32     `bson:"chan"`   //渠道ID
-	Ip     IP        `bson:"ip"`     //创建时的IP
+	Ip0    IP        `bson:"ip0"`    //创建时的IP
 	Last   time.Time `bson:"last"`   //最后登录时间
-	LastIp IP        `bson:"lastIp"` //最后登录时间
-	Bag    CoinBag   `bson:"bag"`    //玩家的钱包
+	Ip     IP        `bson:"ip"`     //最后登录时间
 	Tag    TagType   `bson:"tag"`    //标签
 	Init   time.Time `bson:"init"`   //创建时间
 	Up     time.Time `bson:"up"`     //更新时间
 	Ver    int64     `bson:"ver"`    //币的版本
+	Bag    CoinBag   `bson:"-"`      //玩家的钱包
+	Coin   int64     `bson:"-"`      //携带金币
+	Online bool      `bson:"-"`      //是否在线
+	FlowSn int64     `bson:"-"`      //最后的写分序号，返回时用于验证
 }
 
 // 在线玩家锁定信息

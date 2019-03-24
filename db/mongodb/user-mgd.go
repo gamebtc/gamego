@@ -1,12 +1,13 @@
-// +build !mgo
-
 package mongodb
 
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"local.com/abc/game/model"
@@ -22,20 +23,6 @@ var (
 	upsert = options.FindOneAndUpdate().SetUpsert(true)
 )
 
-// 获取账号
-var accountSelect = bson.D{{"env", zeroInt32}, {"dev", zeroInt32}}
-
-func (d *driver) GetAccount(app int32, t int32, name string) (acc *model.Account, err error) {
-	query := bson.D{
-		{"app", app},
-		{"type", t},
-		{"name", name},
-	}
-	acc = new(model.Account)
-	err = d.account.FindOne(d.ctx, query).Decode(acc)
-	return
-}
-
 // 创建账号
 func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err error) {
 	if _, err = d.account.InsertOne(d.ctx, acc); err == nil {
@@ -47,70 +34,93 @@ func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err 
 	return
 }
 
-func (d *driver) GetUser(id int32) (user *model.User, err error) {
-	user = new(model.User)
-	err = d.user.FindOne(d.ctx, bson.D{{"_id", id}}).Decode(user)
+// 获取账号
+var accountSelect = options.FindOne().SetProjection(bson.D{{"env", false}, {"dev", false}})
+
+func (d *driver) GetAccount(app int32, t int32, name string) (acc *model.Account, err error) {
+	query := bson.D{
+		{"app", app},
+		{"type", t},
+		{"name", name},
+	}
+	acc = new(model.Account)
+	err = d.account.FindOne(d.ctx, query, accountSelect).Decode(acc)
 	return
 }
 
-var lastTime = bson.E{Key: "$currentDate", Value: bson.D{{"up", true}, {"last", true}}}
-
-func (d *driver) LoadUser(user *model.User) error {
-	up := bson.D{{"$set", bson.D{{"lastIp", user.LastIp}}}, lastTime}
-	query := bson.D{{"_id", user.Id}}
-	return d.user.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(user)
-}
-
+var zeroT = bson.D{{"t", zero32}}
 var add100TChange = bson.D{{"$inc", bson.D{{"t", int32(100)}}}, upNow}
-var zeroT = bson.D{{"t", zeroInt32}}
-
-func (d *driver) newUserId() *userIdN {
-	i := new(userIdN)
-	d.userId.FindOneAndUpdate(d.ctx, zeroT, add100TChange, retnew).Decode(i)
-	return i
-}
 
 // 创建账号
-func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error) {
-	i := d.newUserId()
-	id := i.N
+func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (e error) {
+	// 获取账号ID和时间
+	i := userIdN{}
+	d.userId.FindOneAndUpdate(d.ctx, zeroT, add100TChange, retnew).Decode(&i)
+
+	id := i.Id
 	if id == 0 {
-		err = ErrorNoUserID
+		e = ErrorNoUserID
 		return
 	}
 	// 加入玩家表
 	user.Id = id
-	user.Init = i.T
-	user.Up = i.T
-	user.Last = i.T
-	if _, err = d.user.InsertOne(d.ctx, user); err == nil {
-		// 更新账号的Users
-		query := bson.D{{"_id", user.Act}}
-		up := bson.D{{"$push", bson.D{{"users", id}}}, upNow}
-		_, err = d.account.UpdateOne(d.ctx, query, up)
+	user.Init = i.Up
+	user.Up = i.Up
+	user.Last = i.Up
+	f := func(sc mongo.SessionContext) (err error) {
+		if _, err = d.user.InsertOne(d.ctx, user); err == nil {
+			// 创建背包
+			query := bson.D{{"_id", id}}
+			up := bson.D{{"$set", user.Bag}, upNow}
+			if _, err = d.bag.UpdateOne(d.ctx, query, up, upsert2); err == nil {
+				// 更新账号的Users
+				query = bson.D{{"_id", user.Act}}
+				up = bson.D{{"$push", bson.D{{"users", id}}}, upNow}
+				if _, err = d.account.UpdateOne(d.ctx, query, up); err == nil {
+					return sc.CommitTransaction(sc)
+				}
+			}
+		}
+		sc.AbortTransaction(sc)
+		return
 	}
-	log.Debugf("CreateUser:%v,err%v",user, err)
+	e = d.Client().UseSessionWithOptions(d.ctx, sessionOp, f)
+	log.Debugf("CreateUser:%v,err%v", user, e)
+	return
+}
+
+var lastTime = bson.E{Key: "$currentDate", Value: bson.D{{"up", true}, {"last", true}}}
+var bagOp = options.FindOne().SetProjection(bson.D{{"_id", false}, {"up", false}})
+
+func (d *driver) LoadUser(uid model.UserId, ip model.IP) (user *model.User, err error) {
+	up := bson.D{{"$set", bson.D{{"ip", ip}}}, lastTime}
+	query := bson.D{{"_id", uid}}
+	user = &model.User{}
+	if err = d.user.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(user); err == nil {
+		bag := model.CoinBag{}
+		d.bag.FindOne(d.ctx, query, bagOp).Decode(&bag)
+		user.Bag = bag
+	}
 	return
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zeroInt32}, {"room", zeroInt32}, {"table", zeroInt32}}
+var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}, {"table", zero32}}
 var maxRoom = bson.E{Key: "$max", Value: zeroRoom}
 
-func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
-	t := user.Last
+func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Time, req *protocol.LoginReq) (*model.UserLocker, error) {
 	newId := model.NewObjectId()
 	newLock := bson.D{
 		{"log1", newId},
 		{"agent", agent},
-		{"ip", user.LastIp},
+		{"ip", ip},
 		{"init", t},
 		{"up", t},
 	}
 
 	up := bson.D{{"$set", newLock}, maxRoom}
 
-	query := bson.D{{"_id", user.Id}}
+	query := bson.D{{"_id", uid}}
 	lock := new(model.UserLocker)
 	replace := false
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, upsert).Decode(lock); err != nil {
@@ -135,22 +145,21 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	//写登录日志
 	newLock[0].Key = "_id"
 	newLock = append(newLock,
-		bson.E{Key: "state", Value: zeroInt32},
+		bson.E{Key: "state", Value: zero32},
 		bson.E{Key: "kind", Value: lock.Kind},
 		bson.E{Key: "room", Value: lock.Room},
-		bson.E{Key: "user", Value: user.Id},
-		bson.E{Key: "bag", Value: user.Bag},
+		bson.E{Key: "uid", Value: uid},
 		bson.E{Key: "udid", Value: req.Udid},
 		bson.E{Key: "env", Value: req.Env},
 		bson.E{Key: "dev", Value: req.Dev})
 
-	if replace{
-		newLock = append(newLock, bson.E{Key: "f", Value:lock.Log1})
+	if replace {
+		newLock = append(newLock, bson.E{Key: "f", Value: lock.Log1})
 	}
 
 	d.loginLog.InsertOne(d.ctx, newLock)
 
-	lock.Ip = user.LastIp
+	lock.Ip = ip
 	lock.Log1 = newId
 	lock.Up = t
 	lock.Init = t
@@ -159,13 +168,13 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 }
 
 // 解锁玩家登录
-func (d *driver) UnlockUser(agent int64, userId int32) bool {
+func (d *driver) UnlockUser(agent int64, uid model.UserId) bool {
 	query := bson.D{
-		{"_id", userId},
+		{"_id", uid},
 		{"agent", agent},
 	}
 	// 先将当前连接ID更新为0
-	up := bson.D{{"$set", bson.D{{"agent", zeroInt64}}}, upNow}
+	up := bson.D{{"$set", bson.D{{"agent", zero64}}}, upNow}
 	lock := new(model.UserLocker)
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(lock); err == nil {
 		// 更新对应的日志记录
@@ -173,7 +182,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 			up = bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow}
 			d.loginLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log1}}, up)
 			// 删除玩家锁
-			d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
+			d.locker.DeleteOne(d.ctx, bson.D{{"_id", uid}, {"agent", zero64}, {"room", zero32}})
 		}
 		return true
 	}
@@ -181,11 +190,11 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 }
 
 // 锁定用户到指定房间
-func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int32, win int64, bet int64, round int32) (*model.User, error) {
+func (d *driver) LockUserRoom(agent int64, uid model.UserId, kind int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error) {
 	query := bson.D{
-		{"_id", userId},
+		{"_id", uid},
 		{"agent", agent},
-		{"room", bson.D{{"$in", []int32{zeroInt32, roomId}}}},
+		{"room", bson.D{{"$in", []int32{zero32, roomId}}}},
 	}
 	newId := model.NewObjectId()
 	up := bson.D{{"$set", bson.D{{"log2", newId}, {"kind", kind}, {"room", roomId}}}, upNow}
@@ -199,7 +208,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 				}
 			}
 
-			if lock.Id != userId || lock.Agent != agent {
+			if lock.Id != uid || lock.Agent != agent {
 				// 登录已过期
 				return nil, protocol.ErrorLoginExpired
 			} else if lock.Room != roomId {
@@ -218,22 +227,30 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}, {"state", int32(0)}}, up1)
 	}
 
+	query = query[:1]
 	user := new(model.User)
-	if err := d.user.FindOne(d.ctx, query[:1]).Decode(user); err != nil {
+	if err := d.user.FindOne(d.ctx, query).Decode(user); err != nil {
 		return nil, err
 	}
+
+	bagDealOp := options.FindOne().SetProjection(bson.D{{"_id", false}, {coinKey, true}})
+	bag := model.CoinBag{}
+	if err := d.bag.FindOne(d.ctx, query, bagDealOp).Decode(&bag); err == nil {
+		user.Coin = bag[coinKey]
+	}
+
 	// 写登录房间日志
 	newLock := bson.D{
 		{"_id", newId},
-		{"user", user.Id},
-		{"win", zeroInt64},
-		{"bet", zeroInt64},
-		{"round", zeroInt32},
-		{"state", zeroInt32},
+		{"uid", user.Id},
+		{"win", zero64},
+		{"bet", zero64},
+		{"round", zero32},
+		{"state", zero32},
 		{"kind", kind},
 		{"room", roomId},
-		{"bag", user.Bag},
-		{"ip", user.LastIp},
+		{coinKey, user.Coin},
+		{"ip", user.Ip},
 		{"init", lock.Up},
 		{"up", lock.Up},
 	}
@@ -246,12 +263,12 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 }
 
 // 解锁用户从指定房间
-func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32, win int64, bet int64, round int32) bool {
+func (d *driver) UnlockUserRoom(agent int64, uid model.UserId, roomId int32, win int64, bet int64, round int32) bool {
 	query := bson.D{
-		{"_id", userId},
+		{"_id", uid},
 		{"room", roomId},
 	}
-	up := bson.D{{"$set", bson.D{{"kind", zeroInt32}, {"room", zeroInt32}}}, upNow}
+	up := bson.D{{"$set", bson.D{{"kind", zero32}, {"room", zero32}}}, upNow}
 	lock := new(model.UserLocker)
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(lock); err == nil {
 		if lock.Log2.IsZero() == false {
@@ -261,7 +278,7 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32, win int
 			//log.Debugf("UnlockUserRoom:%v,err:%v", lock.Log2, err)
 
 			// 删除玩家锁
-			d.locker.DeleteOne(d.ctx, bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
+			d.locker.DeleteOne(d.ctx, bson.D{{"_id", uid}, {"agent", zero64}, {"room", zero32}})
 			return true
 		}
 	}
@@ -273,7 +290,7 @@ func (d *driver) FindUserIdByAccount(account string) int32 {
 	var res struct {
 		Id int32 `bson:"_id"`
 	}
-	d.user.FindOne(d.ctx, bson.D{{"user", account}}).Decode(&res)
+	d.user.FindOne(d.ctx, bson.D{{"act", account}}).Decode(&res)
 	return res.Id
 }
 
@@ -288,9 +305,9 @@ func (d *driver) UserLogin(req *protocol.LoginReq) (*protocol.LoginSuccessAck, e
 }
 
 // 获取agentId
-func (d *driver) CheckUserAgent(userId int32, agent int64) bool {
+func (d *driver) CheckUserAgent(uid model.UserId, agent int64) bool {
 	query := bson.D{
-		{"_id", userId},
+		{"_id", uid},
 		{"agent", agent},
 	}
 	if changed, err := d.locker.UpdateOne(d.ctx, query, bson.D{upNow}); err == nil {

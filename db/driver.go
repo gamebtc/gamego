@@ -7,10 +7,9 @@ import (
 	"local.com/abc/game/protocol"
 )
 
-var(
+var (
 	Driver GameDriver
 )
-
 
 type GameDriver interface {
 	// 获取包配置
@@ -34,29 +33,29 @@ type GameDriver interface {
 	// 创建用户
 	CreateUser(*model.User, *protocol.LoginReq) error
 	// 锁定用户
-	LockUser(int64, *model.User, *protocol.LoginReq) (*model.UserLocker, error)
+	LockUser(agent int64, uid model.UserId, ip model.IP, t time.Time, req *protocol.LoginReq) (*model.UserLocker, error)
 	// 解锁用户
-	UnlockUser(agent int64, userId int32) bool
+	UnlockUser(agent int64, uid model.UserId) bool
 	// 创建新的ID
 	NewId() (id model.ObjectId, e error)
 	// 获取数据库时间
 	Now() time.Time
-	// 获取用户
-	GetUser(id int32) (user *model.User, err error)
+	//// 获取用户
+	//GetUser(uid model.UserId) (user *model.User, err error)
 	// 加载用户
-	LoadUser(*model.User) error
+	LoadUser(uid model.UserId, ip model.IP) (user *model.User, err error)
 
-    // 加载机器人
-    LoadRobot(room int32, count int32)[]*model.User
+	// 加载机器人
+	LoadRobot(room int32, count int32) []*model.User
 	// 卸载机器人
-	UnloadRobot(room int32, ids[]int32)
+	UnloadRobot(room int32, ids []int32)
 	// 清理机器人
 	ClearRobot(room int32)
 
 	// 锁定用户到指定房间
-	LockUserRoom(agent int64, userId int32, kind int32, roomId int32, win int64, bet int64, round int32) (*model.User, error)
+	LockUserRoom(agent int64, uid model.UserId, kind int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error)
 	// 解锁用户从指定房间
-	UnlockUserRoom(agent int64, userId int32, roomId int32, win int64, bet int64, round int32) bool
+	UnlockUserRoom(agent int64, uid model.UserId, roomId int32, win int64, bet int64, round int32) bool
 	// 更新agentId
 	CheckUserAgent(id int32, agent int64) bool
 
@@ -89,6 +88,7 @@ type GameDriver interface {
 
 	// 获取机器人
 	GetRobot(room int32, count int32) []*model.User
+
 	// 机器人退出
-	ExitRobot(room int32, users []int32)
+	ExitRobot(room int32, users []model.UserId)
 }

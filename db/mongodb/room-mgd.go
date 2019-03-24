@@ -1,5 +1,3 @@
-// +build !mgo
-
 package mongodb
 
 import (

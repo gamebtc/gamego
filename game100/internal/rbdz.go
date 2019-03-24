@@ -4,7 +4,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/room"
 )
 
 // 红黑大战
@@ -30,16 +29,14 @@ type RbdzDealer struct {
 	Offset int    //牌的位置
 }
 
-var(
+var (
 	dealer = model.NewGoldenFlowerDealer(true)
 )
 
 func NewRbdzDealer() Dealer {
-	d := &RbdzDealer{
-	}
+	d := &RbdzDealer{}
 	return d
 }
-
 
 func (this *RbdzDealer) Deal(table *Table) {
 	a, b, odds := this.GetPokers(table)
@@ -49,18 +46,9 @@ func (this *RbdzDealer) Deal(table *Table) {
 	round.Poker = []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
 	round.Note = note
 	log.Debugf("发牌:%v,%v", note, odds)
-
-	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			if !role.IsRobot()  {
-				log.Debugf("结算:%v", flow)
-			}
-		}
-	}
 }
 
-func (this *RbdzDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
+func (this *RbdzDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {

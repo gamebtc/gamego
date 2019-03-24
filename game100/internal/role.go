@@ -3,6 +3,7 @@ package internal
 import (
 	"errors"
 	"fmt"
+
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
@@ -10,18 +11,15 @@ import (
 	"local.com/abc/game/room"
 )
 
-const lastBillCount  = 20
+const lastBillCount = 20
 
-// 每个玩家的游戏数据
+// 每个角色的游戏数据
 type Role struct {
-	*model.User    // 玩家信息
-	*room.Session  // 发送消息
-	Online bool    // 是否在线
-
-	Coin   int64         // 当前房间使用的币
-	table  *Table        // 桌子ID
+	model.User             // 玩家信息
+	*room.Session          // 发送消息
+	table  *Table          // 桌子ID
 	bill   *folks.GameBill // 输赢情况
-	flowSn int64         // 最后的写分序号，返回时用于验证
+	player *folks.Player   // 玩家信息
 
 	LastBet      [lastBillCount]int64 // 最后20局的下注金额
 	LastWin      [lastBillCount]byte  // 最后20局的输赢金额
@@ -29,21 +27,16 @@ type Role struct {
 	LastWinCount byte
 }
 
-func (role *Role)GetRicher() *folks.Player {
-	return &folks.Player{
-		Id:    role.Id,
-		Icon:  role.Icon,
-		Vip:   role.Vip,
-		Name:  role.Name,
-		Coin:  role.Coin,
-	}
+func (role *Role) GetPlayer() *folks.Player {
+	role.player.Coin = role.Coin
+	return role.player
 }
 
-func(role *Role)IsRobot() bool {
+func (role *Role) IsRobot() bool {
 	return role.User.Job == model.JobRobot
 }
 
-func(role *Role)IsPlayer() bool {
+func (role *Role) IsPlayer() bool {
 	return role.User.Job == model.JobPlayer
 }
 
@@ -65,13 +58,13 @@ func (role *Role) Reset() {
 }
 
 // 存在指定的下注金额
-func ExistsBetItem(bet int32)bool {
+func ExistsBetItem(bet int32) bool {
 	return (bet >= betItems[0]) && (bet <= betItems[len(betItems)-1]) && (bet%100 == 0)
 }
 
 // 投注
-func (role *Role) AddBet(req folks.BetReq)(error) {
-    // 检查游戏状态
+func (role *Role) AddBet(req folks.BetReq) error {
+	// 检查游戏状态
 	round := role.table.round
 	if round == nil || role.table.State != GameStatePlaying {
 		return errors.New("本局游戏已停止下注，请您稍后再试！")
@@ -111,7 +104,7 @@ func (role *Role) AddBet(req folks.BetReq)(error) {
 			Uid:   role.Id,
 			Coin:  role.Coin,
 			Group: make([]int64, betItemCount),
-			Job:   role.Job,
+			Job:   role.User.Job,
 		}
 		role.bill = bill
 		// 首次投注
@@ -157,7 +150,7 @@ func (role *Role) Balance() *model.CoinFlow {
 	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bet
 
-	i := role.TotalRound %lastBillCount
+	i := role.TotalRound % lastBillCount
 	role.LastBetSum += bet - role.LastBet[i]
 	role.LastBet[i] = bet
 
@@ -167,7 +160,7 @@ func (role *Role) Balance() *model.CoinFlow {
 	if addCoin >= 0 {
 		role.LastWin[i] = 1
 		role.LastWinCount++
-	}else{
+	} else {
 		role.LastWin[i] = 0
 	}
 
@@ -176,7 +169,7 @@ func (role *Role) Balance() *model.CoinFlow {
 	bill.Tax = tax
 	bill.Win = addCoin
 
-	if role.IsRobot(){
+	if role.IsRobot() {
 		return nil
 	}
 
@@ -194,9 +187,9 @@ func (role *Role) Balance() *model.CoinFlow {
 	}
 
 	// 写分
-	role.flowSn = room.NewSn(1)
+	role.FlowSn = room.NewSn(1)
 	flow := &model.CoinFlow{
-		Sn:     role.flowSn,
+		Sn:     role.FlowSn,
 		Uid:    role.Id,
 		Add:    addCoin,
 		Tax:    tax,

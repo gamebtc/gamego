@@ -87,7 +87,7 @@ func Login(ctx context.Context, in interface{}) interface{} {
 		acc.Pwd = req.Pwd
 		acc.Pack = req.Env.Pack
 		acc.Chan = chanConf.Id
-		acc.Ip = ip
+		acc.Ip0 = ip
 		acc.Udid = req.Udid
 		acc.Users = make([]int32, 0, 1)
 		acc.Init = now
@@ -107,16 +107,16 @@ func Login(ctx context.Context, in interface{}) interface{} {
 		// 创建玩家
 		bag := appConf.GetInitCoin()
 		user = &model.User{
-			App:    req.Env.Id,
-			Act:    acc.Id,
-			Pack:   req.Env.Pack,
-			Chan:   acc.Chan,
-			Ip:     ip,
-			Last:   now,
-			LastIp: ip,
-			Bag:    bag,
-			Init:   now,
-			Up:     now,
+			App:  req.Env.Id,
+			Act:  acc.Id,
+			Pack: req.Env.Pack,
+			Chan: acc.Chan,
+			Ip0:  ip,
+			Last: now,
+			Ip:   ip,
+			Bag:  bag,
+			Init: now,
+			Up:   now,
 		}
 		user.Name = getRandName()
 		if err = driver.CreateUser(user, req); err == nil {
@@ -127,11 +127,7 @@ func Login(ctx context.Context, in interface{}) interface{} {
 		if uid == 0 {
 			uid = acc.Users[0]
 		}
-		user = &model.User{
-			LastIp: ip,
-		}
-		user.Id = uid
-		err = driver.LoadUser(user)
+		user, err = driver.LoadUser(uid, ip)
 		log.Debugf("login%#v, err:%v", user, err)
 	}
 
@@ -142,7 +138,7 @@ func Login(ctx context.Context, in interface{}) interface{} {
 
 	// 锁定账号
 	var lock *model.UserLocker
-	if lock, err = driver.LockUser(agent, user, req); err != nil {
+	if lock, err = driver.LockUser(agent, user.Id, user.Ip, now, req); err != nil {
 		// 锁定玩家失败，请重试
 		return loginFailAck(10009, err)
 	}

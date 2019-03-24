@@ -28,13 +28,14 @@ func (d *driver) LoadRobot(room int32, count int32)[]*model.User {
 		if err != nil || user.Id == 0 {
 			return users
 		}
+		user.Job = model.JobRobot
 		users = append(users, user)
 	}
 	return users
 }
 
 // 卸载机器人
-func (d *driver) UnloadRobot(room int32, ids[]int32) {
+func (d *driver) UnloadRobot(room int32, ids[]model.UserId) {
 	query := bson.D{
 		{"_id", bson.D{{"$in", ids}}},
 		{"room", room},

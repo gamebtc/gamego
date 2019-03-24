@@ -1361,8 +1361,8 @@ func (z *LoginReq) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "user":
-			z.User, err = dc.ReadInt32()
+		case "uid":
+			z.Uid, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -1452,12 +1452,12 @@ func (z *LoginReq) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "user"
-	err = en.Append(0xa4, 0x75, 0x73, 0x65, 0x72)
+	// write "uid"
+	err = en.Append(0xa3, 0x75, 0x69, 0x64)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.User)
+	err = en.WriteInt32(z.Uid)
 	if err != nil {
 		return
 	}
@@ -1521,9 +1521,9 @@ func (z *LoginReq) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "udid"
 	o = append(o, 0xa4, 0x75, 0x64, 0x69, 0x64)
 	o = msgp.AppendString(o, z.Udid)
-	// string "user"
-	o = append(o, 0xa4, 0x75, 0x73, 0x65, 0x72)
-	o = msgp.AppendInt32(o, z.User)
+	// string "uid"
+	o = append(o, 0xa3, 0x75, 0x69, 0x64)
+	o = msgp.AppendInt32(o, z.Uid)
 	// string "time"
 	o = append(o, 0xa4, 0x74, 0x69, 0x6d, 0x65)
 	o = msgp.AppendInt32(o, z.Time)
@@ -1586,8 +1586,8 @@ func (z *LoginReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "user":
-			z.User, bts, err = msgp.ReadInt32Bytes(bts)
+		case "uid":
+			z.Uid, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -1641,7 +1641,7 @@ func (z *LoginReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *LoginReq) Msgsize() (s int) {
-	s = 1 + 5 + msgp.Int32Size + 5 + msgp.StringPrefixSize + len(z.Name) + 4 + msgp.StringPrefixSize + len(z.Pwd) + 5 + msgp.StringPrefixSize + len(z.Udid) + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 4
+	s = 1 + 5 + msgp.Int32Size + 5 + msgp.StringPrefixSize + len(z.Name) + 4 + msgp.StringPrefixSize + len(z.Pwd) + 5 + msgp.StringPrefixSize + len(z.Udid) + 4 + msgp.Int32Size + 5 + msgp.Int32Size + 4
 	if z.Dev == nil {
 		s += msgp.NilSize
 	} else {

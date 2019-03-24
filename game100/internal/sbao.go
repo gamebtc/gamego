@@ -1,8 +1,9 @@
 package internal
 
 import (
-	log "github.com/sirupsen/logrus"
 	"math/rand"
+
+	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/room"
 )
@@ -28,18 +29,9 @@ func (this *SbaoDealer) Deal(table *Table) {
 	round.Poker = a
 	round.Note = note
 	log.Debugf("开牌:%v,%v", note, odds)
-
-	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			if !role.IsRobot() {
-				log.Debugf("结算:%v", flow)
-			}
-		}
-	}
 }
 
-func (this *SbaoDealer)GetPokers(table *Table)([]byte,[]int32) {
+func (this *SbaoDealer) GetPokers(table *Table) ([]byte, []int32) {
 	if gameRand.Int31n(23) == 0 {
 		this.Rand = room.NewRand()
 	}
@@ -150,7 +142,7 @@ func sbaoPk(a []byte) (i []int32) {
 		i[8] = c*radix + radix
 	}
 	if c := findPoint(a, 6); c > 0 {
-		i[9] = c*radix+ radix
+		i[9] = c*radix + radix
 	}
 
 	//豹子全围(1:24),大小单双通吃
@@ -181,33 +173,33 @@ func sbaoPk(a []byte) (i []int32) {
 
 	//和
 	switch sum {
-	case 4:  //和4(1:50)
+	case 4: //和4(1:50)
 		i[17] = 50*radix + radix
-	case 5:  //和5(1:18)
+	case 5: //和5(1:18)
 		i[18] = 18*radix + radix
-	case 6:  //和6(1:14)
+	case 6: //和6(1:14)
 		i[19] = 14*radix + radix
-	case 7:  //和7(1:12)
+	case 7: //和7(1:12)
 		i[20] = 12*radix + radix
-	case 8:  //和8(1:8)
+	case 8: //和8(1:8)
 		i[21] = 8*radix + radix
-	case 9:  //和9(1:6)
+	case 9: //和9(1:6)
 		i[22] = 6*radix + radix
-	case 10:  //和10(1:6)
+	case 10: //和10(1:6)
 		i[23] = 6*radix + radix
-	case 11:  //和11(1:6)
+	case 11: //和11(1:6)
 		i[24] = 6*radix + radix
-	case 12:  //和12(1:6)
+	case 12: //和12(1:6)
 		i[25] = 6*radix + radix
-	case 13:  //和13(1:8)
+	case 13: //和13(1:8)
 		i[26] = 8*radix + radix
-	case 14:  //和14(1:12)
+	case 14: //和14(1:12)
 		i[27] = 12*radix + radix
-	case 15:  //和15(1:14)
+	case 15: //和15(1:14)
 		i[28] = 14*radix + radix
-	case 16:  //和16(1:18)
+	case 16: //和16(1:18)
 		i[29] = 18*radix + radix
-	case 17:  //和17(1:50)
+	case 17: //和17(1:50)
 		i[30] = 50*radix + radix
 	}
 	return

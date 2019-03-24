@@ -1,5 +1,3 @@
-// +build !mgo
-
 package mongodb
 
 import (
@@ -13,37 +11,29 @@ import (
 	"local.com/abc/game/model"
 )
 
-type Bag struct {
-	Bag model.CoinBag `bson:"bag"` //玩家的钱包
-}
-
 var errorEmptySn = errors.New("sn is empty")
 var errorLookRoom = errors.New("lock room fail")
 var sessionOp = options.Session()
 
-const bagPrefix = "bag."
-
-var bagDealOp = options.FindOneAndUpdate().SetReturnDocument(options.After).SetProjection(bson.D{{"_id", false}, {"bag", true}})
-
 func (d *driver) deal(coinKey string, flow *model.CoinFlow, safe bool) error {
 	f := func(sc mongo.SessionContext) (err error) {
-		filed := bagPrefix + coinKey
 		collName := coinKey + "_" + strconv.Itoa(int(flow.Kind))
 		logDeal := d.GetColl(collName)
 		if err = sc.StartTransaction(); err == nil {
 			add := flow.Add
 			var query bson.D
 			if safe && add < 0 {
-				query = bson.D{{"_id", flow.Uid}, {filed, bson.D{{"$gte", -add}}}}
+				query = bson.D{{"_id", flow.Uid}, {coinKey, bson.D{{"$gte", -add}}}}
 			} else {
 				query = bson.D{{"_id", flow.Uid}}
 			}
-			up := bson.D{{"$inc", bson.D{{"bag.v", int64(1)}, {filed, flow.Add}}}}
-			sr := d.user.FindOneAndUpdate(sc, query, up, bagDealOp)
+			up := bson.D{{"$inc", bson.D{{"ver", int64(1)}, {coinKey, flow.Add}}}, upNow}
+			bagDealOp := options.FindOneAndUpdate().SetReturnDocument(options.After).SetProjection(bson.D{{"_id", false}, {coinKey, true}})
+			sr := d.bag.FindOneAndUpdate(sc, query, up, bagDealOp)
 			if err = sr.Err(); err == nil {
-				b := Bag{}
-				if err = sr.Decode(&b); err == nil && b.Bag != nil {
-					if coin, ok := b.Bag[coinKey]; ok {
+				bag := model.CoinBag{}
+				if err = sr.Decode(&bag); err == nil {
+					if coin, ok := bag[coinKey]; ok {
 						flow.Coin = coin
 						var ir *mongo.InsertOneResult
 						if ir, err = logDeal.InsertOne(sc, flow); err == nil && ir.InsertedID != nil {
@@ -88,7 +78,7 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 			// 锁定玩家到大厅房间1，房间1代表钱包转账中
 			if lockRoom {
 				var ur *mongo.UpdateResult
-				ur, err = d.locker.UpdateOne(sc, bson.D{{"_id", uid}, {"room", zeroInt32}}, bson.D{{"$set", bson.D{{"room", int32(1)}}}})
+				ur, err = d.locker.UpdateOne(sc, bson.D{{"_id", uid}, {"room", zero32}}, bson.D{{"$set", bson.D{{"room", int32(1)}}}})
 				if err != nil || ur == nil || ur.ModifiedCount != 1 {
 					sc.AbortTransaction(sc)
 					if err == nil {
@@ -97,16 +87,16 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 					return
 				}
 			}
-			fromFiled := bagPrefix + from
-			toFiled := bagPrefix + to
-			up := bson.D{{"$inc", bson.D{{"bag.v", int64(1)}, {fromFiled, -add}, {toFiled, add}}}}
-			query := bson.D{{"_id", uid}, {fromFiled, bson.D{{"$gte", add}}}}
-			sr := d.user.FindOneAndUpdate(sc, query, up, bagDealOp)
+
+			query := bson.D{{"_id", uid}, {from, bson.D{{"$gte", add}}}}
+			up := bson.D{{"$inc", bson.D{{"ver", int64(1)}, {from, -add}, {to, add}}}, upNow}
+			bagDealOp := options.FindOneAndUpdate().SetReturnDocument(options.After).SetProjection(bson.D{{"_id", false}, {from, true}, {to, true}})
+			sr := d.bag.FindOneAndUpdate(sc, query, up, bagDealOp)
 			if err = sr.Err(); err == nil {
-				b := Bag{}
-				if err = sr.Decode(&b); err == nil && b.Bag != nil {
-					fromCoin, ok2 := b.Bag[from]
-					toCoin, ok := b.Bag[to]
+				bag := model.CoinBag{}
+				if err = sr.Decode(&bag); err == nil {
+					fromCoin, ok2 := bag[from]
+					toCoin, ok := bag[to]
 					if ok && ok2 {
 						flow.Add = -add
 						flow.Coin = fromCoin
@@ -119,7 +109,7 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 								if lockRoom {
 									// 解锁
 									var ur *mongo.UpdateResult
-									ur, err = d.locker.UpdateOne(sc, bson.D{{"_id", uid}, {"room", int32(1)}}, bson.D{{"$set", bson.D{{"room", zeroInt32}}}})
+									ur, err = d.locker.UpdateOne(sc, bson.D{{"_id", uid}, {"room", int32(1)}}, bson.D{{"$set", bson.D{{"room", zero32}}}})
 									if err != nil || ur == nil || ur.ModifiedCount != 1 {
 										sc.AbortTransaction(sc)
 										if err == nil {

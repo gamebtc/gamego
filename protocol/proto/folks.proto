@@ -63,7 +63,7 @@ message GameBill {
 	// 输赢情况
 	sint64 win = 5 [(gogoproto.jsontag) = 'w,omitempty', (gogoproto.moretags) = 'bson:"w,omitempty" msg:"w,omitempty"'];
 	// 税收
-	int64 tax = 6 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
+	int64 tax = 6 [(gogoproto.jsontag) = 'x,omitempty', (gogoproto.moretags) = 'bson:"x,omitempty" msg:"x,omitempty"'];
 	// 玩家类型
 	int32 job = 7 [(gogoproto.jsontag) = 'j,omitempty', (gogoproto.moretags) = 'bson:"j,omitempty" msg:"j,omitempty"'];
 }
@@ -80,8 +80,8 @@ message GameRound {
 	int32 room = 4 [(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
 	// 桌子ID
 	int32 tab = 5 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
-	// 所有玩家下注汇总
-	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
+	// 所有玩家下注汇总(b.u有建立索引，不要更改名称)
+	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
 	// 下注情况(protocol.Bet三个字段顺序压入)
 	repeated int32 flow = 7 [(gogoproto.jsontag) = 'f', (gogoproto.moretags) = 'bson:"f" msg:"f"'];
 	// 所有玩家投注分组
@@ -101,7 +101,7 @@ message GameRound {
 	// 真实玩家下注分组
 	repeated int64 userBet = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
 	// 庄家ID，0为系统
-	int32 bank = 16 [(gogoproto.jsontag) = 'b,omitempty', (gogoproto.moretags) = 'bson:"b,omitempty" msg:"b,omitempty"'];
+	int32 bank = 16 [(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"k,omitempty" msg:"k,omitempty"'];
 }
 
 message GameInitAck {

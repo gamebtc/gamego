@@ -28,12 +28,12 @@ type AppConfig struct {
 	Udp      protocol.UdpConfig      `yaml:"udp"`
 	Kcp      protocol.KcpConfig      `yaml:"kcp"`
 	Grpc     protocol.GrpcConfig     `yaml:"grpc"`
-	Pprof    string             `yaml:"pprof"`
-	LogLevel string             `yaml:"logLevel"`
-	LogFile  string             `yaml:"logFile"`
 	Database protocol.DatabaseConfig `yaml:"database"`
 	Room     protocol.RoomConfig     `yaml:"room"` //房间配置
-	Codec    string             `yaml:"codec"`
+	Codec    string                  `yaml:"codec"`
+	Pprof    string                  `yaml:"pprof"`
+	LogLevel string                  `yaml:"logLevel"`
+	LogFile  string                  `yaml:"logFile"`
 }
 
 func InitConfig(path string) *AppConfig {

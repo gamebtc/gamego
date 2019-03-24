@@ -17,7 +17,7 @@ var (
 )
 
 // 获取账号
-var accountSelect = bson.D{{"env", zeroInt32}, {"dev", zeroInt32}}
+var accountSelect = bson.D{{"env", zero32}, {"dev", zero32}}
 
 func (d *driver) GetAccount(app int32, t int32, name string) (acc *model.Account, err error) {
 	query := bson.D{
@@ -50,7 +50,7 @@ func (d *driver) GetUser(id int32) (user *model.User, err error) {
 func (d *driver) LoadUser(user *model.User) error {
 	change := mgo.Change{
 		Update: bson.D{
-			{"$set", bson.D{{"lastIp", user.LastIp}}},
+			{"$set", bson.D{{"ip", user.Ip}}},
 			{"$currentDate", bson.D{{"up", true}, {"lastTime", true}}},
 		},
 		ReturnNew: true,
@@ -70,7 +70,7 @@ var add100TChange = mgo.Change{
 	Update:    bson.D{{"$inc", bson.D{{"t", int32(100)}}}, upNow},
 	ReturnNew: true,
 }
-var zeroT = bson.D{{Name: "t", Value: zeroInt32}}
+var zeroT = bson.D{{Name: "t", Value: zero32}}
 
 func (d *driver) newUserId() *userIdN {
 	i := new(userIdN)
@@ -81,16 +81,16 @@ func (d *driver) newUserId() *userIdN {
 // 创建账号
 func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error) {
 	i := d.newUserId()
-	id := i.N
+	id := i.Id
 	if id == 0 {
 		err = ErrorNoUserID
 		return
 	}
 	// 加入玩家表
 	user.Id = id
-	user.Init = i.T
-	user.Up = i.T
-	user.Last = i.T
+	user.Init = i.Up
+	user.Up = i.Up
+	user.Last = i.Up
 	if err = d.user.Insert(user); err == nil {
 		// 更新账号的Users
 		d.account.UpsertId(user.Act, bson.D{{"$push", bson.D{{"users", id}}}, upNow})
@@ -99,7 +99,7 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zeroInt32}, {"room", zeroInt32}, {"table", zeroInt32}}
+var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}, {"table", zero32}}
 var maxRoom = bson.DocElem{Name: "$max", Value: zeroRoom}
 
 func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
@@ -108,7 +108,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	newLock := bson.D{
 		{"log1", newId},
 		{"agent", agent},
-		{"ip", user.LastIp},
+		{"ip", user.Ip},
 		{"init", t},
 		{"up", t},
 	}
@@ -132,10 +132,10 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	}
 	// 写登录日志
 	newLock = append(newLock,
-		bson.DocElem{"state", zeroInt32},
+		bson.DocElem{"state", zero32},
 		bson.DocElem{"kind", lock.Kind},
 		bson.DocElem{"room", lock.Room},
-		bson.DocElem{"user", user.Id},
+		bson.DocElem{"uid", user.Id},
 		bson.DocElem{"bag", user.Bag},
 		bson.DocElem{"udid", req.Udid},
 		bson.DocElem{"env", req.Env},
@@ -144,7 +144,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	newLock[0].Name = "_id"
 	d.loginLog.Insert(newLock)
 
-	lock.Ip = user.LastIp
+	lock.Ip = user.Ip
 	lock.Log1 = newId
 	lock.Up = t
 	lock.Init = t
@@ -160,7 +160,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 	}
 	// 先将当前连接ID更新为0
 	change := mgo.Change{
-		Update:    bson.D{{"$set", bson.D{{"agent", zeroInt64}}}, upNow},
+		Update:    bson.D{{"$set", bson.D{{"agent", zero64}}}, upNow},
 		ReturnNew: true,
 	}
 	newLock := new(model.UserLocker)
@@ -169,7 +169,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 			// 更新对应的日志记录
 			d.loginLog.UpdateId(newLock.Log1, bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow})
 			// 删除玩家在线记录
-			d.locker.Remove(bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
+			d.locker.Remove(bson.D{{"_id", userId}, {"agent", zero64}, {"room", zero32}})
 			return true
 		}
 	}
@@ -212,13 +212,13 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	//写登录房间日志
 	newLock := bson.D{
 		{"_id", newId},
-		{"win", zeroInt32},
-		{"state", zeroInt32},
+		{"win", zero32},
+		{"state", zero32},
 		{"kind", kind},
 		{"room", roomId},
-		{"user", user.Id},
+		{"uid", user.Id},
 		{"bag", user.Bag},
-		{"ip", user.LastIp},
+		{"ip", user.Ip},
 	}
 	d.roomLog.Insert(newLock)
 
@@ -233,7 +233,7 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
 		{"room", roomId},
 	}
 	change := mgo.Change{
-		Update:    bson.D{{"$set", bson.D{{"kind", zeroInt32}, {"room", zeroInt32}}}, upNow},
+		Update:    bson.D{{"$set", bson.D{{"kind", zero32}, {"room", zero32}}}, upNow},
 		ReturnNew: false,
 	}
 	lock := new(model.UserLocker)
@@ -242,7 +242,7 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
 			// 更新对应的日志记录
 			d.roomLog.UpdateId(lock.Log2, bson.D{{"$set", bson.D{{"state", int32(1)}}}, upNow})
 			// 删除玩家在线记录
-			d.locker.Remove(bson.D{{"_id", userId}, {"agent", zeroInt64}, {"room", zeroInt32}})
+			d.locker.Remove(bson.D{{"_id", userId}, {"agent", zero64}, {"room", zero32}})
 			return true
 		}
 	}
@@ -254,7 +254,7 @@ func (d *driver) FindUserIdByAccount(account string) int32 {
 	var res struct {
 		Id int32 `bson:"_id"`
 	}
-	d.user.Find(bson.D{{"user", account}}).One(&res)
+	d.user.Find(bson.D{{"act", account}}).One(&res)
 	return res.Id
 }
 

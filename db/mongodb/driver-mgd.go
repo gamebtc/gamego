@@ -1,5 +1,3 @@
-// +build !mgo
-
 package mongodb
 
 import (
@@ -114,9 +112,10 @@ func (d *driver) GetChanConf(code string)*model.ChanInfo{
 }
 
 // 获取新的ID
+var emptyMap = bson.D{}
 func (d *driver) NewId()(id model.ObjectId, err error) {
 	var r *mongo.InsertOneResult
-	if r, err = d.id.InsertOne(d.ctx, nil); err == nil {
+	if r, err = d.id.InsertOne(d.ctx, emptyMap); err == nil {
 		id, _ = r.InsertedID.(model.ObjectId)
 	}
 	return

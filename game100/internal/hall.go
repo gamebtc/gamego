@@ -22,7 +22,6 @@ var (
 	badBet       []byte  // 不相容的投注项
 	taxRate      []int64 // 税率千分比
 	gameName     string  // 游戏名称
-	mustWinRate  int32   // 必赢概率百分比
 
 	// 最多输的倍数，百人牛为10，其它为1
 	multipleLost int64 = 1
@@ -32,7 +31,7 @@ var (
 
 type GameRound = folks.GameRound
 
-func robetRandBetItem() int32 {
+func robotRandBetItem() int32 {
 	r := rand.Int31n(robotSumRate)
 	for i, v := range robotBetRate {
 		if v > r {
@@ -59,7 +58,7 @@ func (hall *gameHall) Update() {
 	if room.Config.Close > 0 {
 		canClose := true
 		for _, v := range hall.tables {
-			if v.State != GameStateWait {
+			if v.State != GameStateReady {
 				canClose = false
 				break
 			}
@@ -72,8 +71,6 @@ func (hall *gameHall) Update() {
 
 func (hall *gameHall) Start() {
 	gameRand = room.NewRand()
-	mustWinRate = room.Config.WinRate
-
 	switch room.KindId {
 	case model.GameKind_BJL:
 		newDealer = NewBjlDealer
@@ -155,18 +152,15 @@ func (hall *gameHall) Start() {
 }
 
 // 用户上线
-func (hall *gameHall) UserOnline(sess *room.Session, user *model.User, coin int64) {
+func (hall *gameHall) UserOnline(sess *room.Session, user *model.User) {
 	// 分配桌子
 	table := hall.tables[0]
-
 	role := &Role{
-		User:    user,
-		Coin:    coin,
-		table:   table,
-		Online:  true,
+		User:    *user,
 		Session: sess,
 	}
 	sess.Role = role
+	role.Online = true
 
 	// 发送登录游戏信息
 	sess.UnsafeSend(&protocol.LoginRoomAck{
@@ -174,7 +168,20 @@ func (hall *gameHall) UserOnline(sess *room.Session, user *model.User, coin int6
 		Kind: room.KindId,
 		Tab:  table.Id,
 	})
-	table.AddRole(role)
+	table.addRole(role)
+	table.sendGameInit(role)
+}
+
+// 用户重新连接
+func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
+	if role, ok := oldSess.Role.(*Role); ok && role != nil {
+		oldSess.Role = nil
+		role.Online = true
+		newSess.Role = role
+		if table := role.table; table != nil {
+			table.sendGameInit(role)
+		}
+	}
 }
 
 // 用户下线
@@ -188,15 +195,6 @@ func (hall *gameHall) UserOffline(sess *room.Session) {
 	}
 }
 
-// 用户重新连接
-func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
-	if role, ok := oldSess.Role.(*Role); ok && role != nil {
-		oldSess.Role = nil
-		role.Online = true
-		newSess.Role = role
-	}
-}
-
 // 房间配置更改
 func configChange(event *room.GameEvent) {
 	arg := event.Arg.(*model.RoomInfo)
@@ -206,14 +204,11 @@ func configChange(event *room.GameEvent) {
 		arg.Pause = arg.Close
 		arg.Lock = arg.Close
 	}
-	mustWinRate = arg.WinRate
 	room.Config = *arg
 	//oldSess := arg[0]
 	//newSess := arg[1]
 	//oldSess.Role.Role = nil
 	//newSess.Role.Role = nil
-
-	//
 }
 
 // 房间关闭通知
@@ -257,7 +252,6 @@ func betReq(m *room.NetMessage) {
 		log.Debugf("betReq: is nil")
 		return
 	}
-	log.Debugf("add bet: %#v", req)
 
 	ack := &folks.BetAck{
 		Sn:   req.Sn,
@@ -265,8 +259,10 @@ func betReq(m *room.NetMessage) {
 	}
 	if err := role.AddBet(*req); err != nil {
 		role.SendError(int32(folks.Folks_BetReq), 1000, err.Error(), "")
+		log.Debugf("add bet error: %v", err)
 	} else {
 		ack.Bet = req.Bet
+		log.Debugf("add bet success: %v", ack)
 	}
 	ack.Coin = role.Coin
 	role.Send(ack)

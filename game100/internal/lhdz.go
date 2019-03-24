@@ -4,7 +4,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"local.com/abc/game/model"
-	"local.com/abc/game/room"
 )
 
 // 龙虎大战
@@ -50,12 +49,9 @@ type LhdzDealer struct {
 }
 
 func NewLhdzDealer() Dealer {
-	d := &LhdzDealer{
-	}
+	d := &LhdzDealer{}
 	return d
 }
-
-
 
 func (this *LhdzDealer) Deal(table *Table) {
 	a, b, odds := this.GetPokers(table)
@@ -65,17 +61,9 @@ func (this *LhdzDealer) Deal(table *Table) {
 	round.Poker = []byte{a[0], b[0]}
 	round.Note = note
 	log.Debugf("发牌:%v,%v", note, odds)
-	for _, role := range table.Roles {
-		if flow := role.Balance(); flow != nil {
-			room.WriteCoin(flow)
-			if !role.IsRobot() {
-				log.Debugf("结算:%v", flow)
-			}
-		}
-	}
 }
 
-func (this *LhdzDealer)GetPokers(table *Table)([]byte,[]byte,[]int32) {
+func (this *LhdzDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {

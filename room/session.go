@@ -23,16 +23,16 @@ const (
 
 // 会话是一个单独玩家的上下文，在连入后到退出前的整个生命周期内存在
 type Session struct {
-	AgentId    int64       // 连接唯一ID
-	UserId     int32       // 玩家ID
-	Ip         model.IP    // IP地址
-	Disposed   bool        // 是否已销毁(被强制退出)
-	Role       interface{} // 游戏角色数据
-	Created    time.Time   // 建立时间
-	Flag       int32       // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
-	TotalWin   int64       // 进入之后的赢钱金额
-	TotalBet   int64       // 进入之后的下注金额
-	TotalRound int32       // 有下注的总局数
+	AgentId    int64        // 连接唯一ID
+	UserId     model.UserId // 玩家ID
+	Ip         model.IP     // IP地址
+	Disposed   bool         // 是否已销毁(被强制退出)
+	Role       interface{}  // 游戏角色数据
+	Created    time.Time    // 建立时间
+	Flag       int32        // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
+	TotalWin   int64        // 进入之后的赢钱金额
+	TotalBet   int64        // 进入之后的下注金额
+	TotalRound int32        // 有下注的总局数
 
 	sendChan chan interface{} // 发送出去的数据
 	stopSend chan struct{}    // 发送停止信号
@@ -165,8 +165,8 @@ func (sess *Session) Close() {
 	}
 }
 
-func(sess *Session)LockRoom(uid int32, win int64, bet int64, round int32) (*model.User, error) {
-	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId, win, bet, round)
+func(sess *Session)LockRoom(uid model.UserId, win int64, bet int64, round int32) (*model.User, error) {
+	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId, CoinKey, win, bet, round)
 }
 
 func(sess *Session)UnlockRoom() bool {
