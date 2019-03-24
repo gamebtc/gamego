@@ -31,20 +31,22 @@ func (d *driver) GetRoom(roomId int32, ver int32) (obj *model.RoomInfo, err erro
 }
 
 func (d *driver) GetAllRoom(query interface{}) (all []*model.RoomInfo, err error) {
+	cur, err := d.roomCache.Find(d.ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(d.ctx)
 	all = make([]*model.RoomInfo, 100)
-	if cur, err := d.roomCache.Find(d.ctx, query); err == nil {
-		defer cur.Close(d.ctx)
-		for cur.Next(d.ctx) {
-			a := new(model.RoomInfo)
-			if err := cur.Decode(a); err == nil {
-				all = append(all, a)
-			}
+	for cur.Next(d.ctx) {
+		a := new(model.RoomInfo)
+		if e := cur.Decode(a); e == nil {
+			all = append(all, a)
 		}
 	}
 	return
 }
 
-func (d *driver) SaveLog(collName string, value interface{}) (err error) {
-	_, err = d.GetColl(collName).InsertOne(d.ctx, value)
-	return
+func (d *driver) SaveLog(collName string, value interface{}) error {
+	_, err := d.GetColl(collName).InsertOne(d.ctx, value)
+	return err
 }

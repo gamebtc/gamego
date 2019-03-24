@@ -120,15 +120,16 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	if sess.RoomId != 0 {
 		sess.closeRoom()
 	}
-	if ret, err := loginRoom(sess, roomId, date); err == nil {
-		return ret, err
-	} else {
+
+	ret, err := loginRoom(sess, roomId, date)
+	if err != nil {
 		return &LoginRoomAck{
 			Room: roomId,
 			Code: 1009,
 			Msg:  err.Error(),
 		}, nil
 	}
+	return ret, err
 }
 
 ////
@@ -174,9 +175,8 @@ func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
 	head := NewUserHead(sess.Id, sess.UserId, sess.Ip)
 	if _, err := conn.Write(head); err != nil {
 		return nil, err
-	} else {
-		// 发送登录消息
-		stream := &NetStream{conn: conn}
-		return sess.loginRoom(roomId, v, stream)
 	}
+	// 发送登录消息
+	stream := &NetStream{conn: conn}
+	return sess.loginRoom(roomId, v, stream)
 }

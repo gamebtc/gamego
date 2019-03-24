@@ -31,13 +31,17 @@ type AppConfig struct {
 
 func InitConfig(path string)(*AppConfig) {
 	cfg := &AppConfig{}
-	if data, err := ioutil.ReadFile(path); err != nil {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
 		log.Fatal("app config file not exists:%v", err)
-	} else {
-		if err = yaml.Unmarshal(data, cfg); err != nil {
-			log.Fatal("app config file error:%v", err)
-		}
+		return nil
 	}
+
+	if err = yaml.Unmarshal(data, cfg); err != nil {
+		log.Fatal("app config file error:%v", err)
+		return nil
+	}
+
 	if lv, err := log.ParseLevel(cfg.LogLevel); err == nil {
 		log.SetLevel(lv)
 	}

@@ -47,18 +47,16 @@ func NewGameDriver(conf *protocol.DatabaseConfig)(d *driver, err error) {
 	return
 }
 
-func (d *driver) Exec(args []interface{}, result interface{})*model.ExecError{
+func (d *driver) Exec(args []interface{}, result interface{})*model.ExecError {
 	r := ExecResult{}
-	if e := d.Exec2(args, r); e == nil {
-		if r.Ok == 1 {
-			bson.Unmarshal(([]byte)(r.Result.Data), result)
-			return nil
-		} else {
-			return &model.ExecError{Code: r.Result.Code, Msg: r.Result.Msg}
-		}
-	} else {
+	if e := d.Exec2(args, r); e != nil {
 		return &model.ExecError{Code: 9999, Msg: e.Error()}
 	}
+	if r.Ok != 1 {
+		return &model.ExecError{Code: r.Result.Code, Msg: r.Result.Msg}
+	}
+	bson.Unmarshal(([]byte)(r.Result.Data), result)
+	return nil
 }
 
 func (d *driver) Exec2(args []interface{}, result interface{})error {
@@ -68,16 +66,14 @@ func (d *driver) Exec2(args []interface{}, result interface{})error {
 		{"nolock", true},
 	}
 	reader := d.Database.RunCommand(d.ctx, cmd)
-	if e := reader.Err(); e == nil {
-		if raw, e := reader.DecodeBytes(); e != nil {
-			return e
-		} else {
-			return bson.Unmarshal(([]byte)(raw), result)
-		}
-	} else {
+	if e := reader.Err(); e != nil {
 		return e
 	}
-	return nil
+	raw, e := reader.DecodeBytes()
+	if e != nil {
+		return e
+	}
+	return bson.Unmarshal(([]byte)(raw), result)
 }
 
 //获取IP配置
@@ -85,17 +81,20 @@ func (d *driver) GetIpInfo(ip model.IP)*model.IpInfo {
 	info := new(model.IpInfo)
 	filter := bson.D{{"_id", ip}}
 	for i := 0; i < 4; i++ {
-		if err := d.ip.FindOne(d.ctx, filter).Decode(info); err == nil {
+		err := d.ip.FindOne(d.ctx, filter).Decode(info)
+		if err == nil {
 			return info
-		} else if err == mongo.ErrNoDocuments {
+		}
+		if err == mongo.ErrNoDocuments {
 			now := time.Now()
 			info.Id = ip
 			info.Init = now
 			info.Up = now
-			if _, err := d.ip.InsertOne(d.ctx, info); err == nil {
+			_, err = d.ip.InsertOne(d.ctx, info)
+			if err == nil {
 				return info
 			}
-		}else{
+		} else {
 			return nil
 		}
 	}

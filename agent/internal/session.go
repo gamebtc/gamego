@@ -141,18 +141,19 @@ func(sess *Session) write(data []byte) bool {
 }
 
 func (sess *Session) processData(data []byte) {
-	if result, err := sess.route(data); err == nil {
-		if result != nil {
-			if sess.send(result) == false {
-				sess.Flag = SESS_CLOSE
-			}
-		}
-	} else {
+	result, err := sess.route(data)
+	if err != nil {
 		// 发送严重错误，然后关闭客户端
 		id := GetHeadId(data)
 		sess.send(&FatalInfo{ReqId: id, Code: 1001, Msg: "严重错误", Key: err.Error()})
 		sess.Flag = SESS_CLOSE
 		log.Warnf("user:%v,api:%v,addr:%v,err:%v", sess.UserId, id, sess.Addr, err.Error())
+		return
+	}
+	if result != nil {
+		if sess.send(result) == false {
+			sess.Flag = SESS_CLOSE
+		}
 	}
 }
 
@@ -284,16 +285,15 @@ func (sess *Session) getServer(sid byte) GameClient {
 func (sess *Session) callServer(id int32, data []byte) (interface{}, error) {
 	sid := byte((id & 8191) >> 10)
 	server := sess.getServer(sid)
-	if server != nil {
-		if f, e := server.Call(sess.callCtx, &GameFrame{Data: data}); e == nil {
-			return f.Data, nil
-		} else {
-			return makeError(id, 1001, "调用失败，请您稍后重试！", e.Error()), nil
-		}
-	} else {
+	if server == nil {
 		return makeError(id, 1001, "服务器繁忙，请您稍后重试！", ""), nil
 	}
-	return nil, nil
+
+	f, e := server.Call(sess.callCtx, &GameFrame{Data: data})
+	if e != nil {
+		return makeError(id, 1001, "调用失败，请您稍后重试！", e.Error()), nil
+	}
+	return f.Data, nil
 }
 
 func (sess *Session) getContext() context.Context {
@@ -306,20 +306,23 @@ func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (int
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", e.Error()), nil
 	}
 	data, e := stream.Recv()
-	if e == nil && len(data) >= HeadLen {
-		if id := GetHeadId(data); id == int32(MsgId_LoginRoomAck) {
-			ack := LoginRoomAck{}
-			if e = sess.Unmarshal(data[HeadLen:], &ack); e == nil && ack.Code == 0 {
-				if oldStream := sess.gameStream; oldStream != nil {
-					oldStream.Close()
-				}
-				sess.gameStream = stream
-				sess.RoomId = roomId
-				go sess.readFromGame(roomId, stream)
-			}
-		}
-		return data, e
-	} else {
+	if e != nil{
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", e.Error()), nil
 	}
+	if len(data) < HeadLen {
+		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", "接收数据长度错误"), nil
+	}
+
+	if id := GetHeadId(data); id == int32(MsgId_LoginRoomAck) {
+		ack := LoginRoomAck{}
+		if e = sess.Unmarshal(data[HeadLen:], &ack); e == nil && ack.Code == 0 {
+			if oldStream := sess.gameStream; oldStream != nil {
+				oldStream.Close()
+			}
+			sess.gameStream = stream
+			sess.RoomId = roomId
+			go sess.readFromGame(roomId, stream)
+		}
+	}
+	return data, e
 }

@@ -15,37 +15,42 @@ import (
 type changeEvent struct {
 	//ID                interface{} `bson:"_id"`
 	//OperationType     string      `bson:"operationType"`
-	Document          bson.Raw    `bson:"fullDocument,omitempty"`
+	Document bson.Raw `bson:"fullDocument,omitempty"`
 	//Ns                evNamespace `bson:"ns"`
 	//DocumentKey       bson.M      `bson:"documentKey"`
 	//UpdateDescription updateDesc  `bson:"updateDescription,omitempty"`
 }
 
-func(c *AppCache) Watch() error {
-	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
+func (c *AppCache) Watch() error {
+	op := options.ChangeStream().SetFullDocument(options.UpdateLookup)
 	ctx := context.Background()
 	stream, err := c.Collection.Watch(ctx, nil, op)
-	if err == nil {
-		if err = c.Renew(); err == nil {
-			go func(s *mongo.ChangeStream) {
-				t := time.Tick(time.Second)
-				for c.watchLoop(ctx, s, op) {
-					s = nil
-					select {
-					case <-die:
-						return
-					case <-t:
-					}
-				}
-			}(stream)
-		} else {
-			stream.Close(ctx)
-		}
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+
+	if err = c.Renew(); err != nil {
+		stream.Close(ctx)
+		return err
+	}
+	go func(s *mongo.ChangeStream) {
+		t := time.Tick(time.Second)
+		for c.watchLoop(ctx, s, op) {
+			if s != nil {
+				s.Close(ctx)
+				s = nil
+			}
+			select {
+			case <-die:
+				return
+			case <-t:
+			}
+		}
+	}(stream)
+	return nil
 }
 
-func(c *AppCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions)bool {
+func (c *AppCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
@@ -78,48 +83,54 @@ func(c *AppCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *
 	return true
 }
 
-func(c *AppCache) Renew() error {
+func (c *AppCache) Renew() error {
 	var all []*model.AppInfo
 	ctx := context.Background()
 	stream, err := c.Find(ctx, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
-	if err == nil && stream != nil {
-		defer stream.Close(ctx)
-		for stream.Next(ctx) {
-			doc := new(model.AppInfo)
-			if err = stream.Decode(doc); err == nil {
-				all = append(all, doc)
-			}
-		}
-		c.Append(all)
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+	defer stream.Close(ctx)
+	for stream.Next(ctx) {
+		doc := new(model.AppInfo)
+		if err := stream.Decode(doc); err == nil {
+			all = append(all, doc)
+		}
+	}
+	c.Append(all)
+	return nil
 }
 
-func(c *PackCache) Watch() error {
-	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
+func (c *PackCache) Watch() error {
+	op := options.ChangeStream().SetFullDocument(options.UpdateLookup)
 	ctx := context.Background()
 	stream, err := c.Collection.Watch(ctx, nil, op)
-	if err == nil {
-		if err = c.Renew(); err == nil {
-			go func(s *mongo.ChangeStream) {
-				t := time.Tick(time.Second)
-				for c.watchLoop(ctx, s, op) {
-					s = nil
-					select {
-					case <-die:
-						return
-					case <-t:
-					}
-				}
-			}(stream)
-		} else {
-			stream.Close(ctx)
-		}
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+
+	if err = c.Renew(); err != nil {
+		stream.Close(ctx)
+		return err
+	}
+	go func(s *mongo.ChangeStream) {
+		t := time.Tick(time.Second)
+		for c.watchLoop(ctx, s, op) {
+			if s != nil {
+				s.Close(ctx)
+				s = nil
+			}
+			select {
+			case <-die:
+				return
+			case <-t:
+			}
+		}
+	}(stream)
+	return nil
 }
 
-func(c *PackCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+func (c *PackCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
@@ -152,48 +163,54 @@ func(c *PackCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 	return true
 }
 
-func(c *PackCache) Renew() error {
+func (c *PackCache) Renew() error {
 	var all []*model.PackInfo
 	ctx := context.Background()
-	stream, err := c.Find(nil, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
-	if err == nil && stream != nil {
-		defer stream.Close(ctx)
-		for stream.Next(ctx) {
-			doc := new(model.PackInfo)
-			if err = stream.Decode(doc); err == nil {
-				all = append(all, doc)
-			}
-		}
-		c.Append(all)
+	stream, err := c.Find(ctx, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+	defer stream.Close(ctx)
+	for stream.Next(ctx) {
+		doc := new(model.PackInfo)
+		if err := stream.Decode(doc); err == nil {
+			all = append(all, doc)
+		}
+	}
+	c.Append(all)
+	return nil
 }
 
-func(c *ChanCache) Watch() error {
-	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
+func (c *ChanCache) Watch() error {
+	op := options.ChangeStream().SetFullDocument(options.UpdateLookup)
 	ctx := context.Background()
 	stream, err := c.Collection.Watch(ctx, nil, op)
-	if err == nil {
-		if err = c.Renew(); err == nil {
-			go func(s *mongo.ChangeStream) {
-				t := time.Tick(time.Second)
-				for c.watchLoop(ctx, s, op) {
-					s = nil
-					select {
-					case <-die:
-						return
-					case <-t:
-					}
-				}
-			}(stream)
-		} else {
-			stream.Close(ctx)
-		}
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+
+	if err = c.Renew(); err != nil {
+		stream.Close(ctx)
+		return err
+	}
+	go func(s *mongo.ChangeStream) {
+		t := time.Tick(time.Second)
+		for c.watchLoop(ctx, s, op) {
+			if s != nil {
+				s.Close(ctx)
+				s = nil
+			}
+			select {
+			case <-die:
+				return
+			case <-t:
+			}
+		}
+	}(stream)
+	return nil
 }
 
-func(c *ChanCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+func (c *ChanCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
@@ -226,49 +243,55 @@ func(c *ChanCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 	return true
 }
 
-func(c *ChanCache) Renew() error {
+func (c *ChanCache) Renew() error {
 	var all []*model.ChanInfo
 	ctx := context.Background()
-	stream, err := c.Find(nil, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
-	if err == nil && stream != nil {
-		defer stream.Close(ctx)
-		for stream.Next(ctx) {
-			doc := new(model.ChanInfo)
-			if err = stream.Decode(doc); err == nil {
-				all = append(all, doc)
-			}
-		}
-		c.Append(all)
+	stream, err := c.Find(ctx, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+	defer stream.Close(ctx)
+	for stream.Next(ctx) {
+		doc := new(model.ChanInfo)
+		if err := stream.Decode(doc); err == nil {
+			all = append(all, doc)
+		}
+	}
+	c.Append(all)
+	return nil
 }
 
 // HintCache
-func(c *HintCache) Watch() error {
-	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
+func (c *HintCache) Watch() error {
+	op := options.ChangeStream().SetFullDocument(options.UpdateLookup)
 	ctx := context.Background()
 	stream, err := c.Collection.Watch(ctx, nil, op)
-	if err == nil {
-		if err = c.Renew(); err == nil {
-			go func(s *mongo.ChangeStream) {
-				t := time.Tick(time.Second)
-				for c.watchLoop(ctx, s, op) {
-					s = nil
-					select {
-					case <-die:
-						return
-					case <-t:
-					}
-				}
-			}(stream)
-		} else {
-			stream.Close(ctx)
-		}
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+
+	if err = c.Renew(); err != nil {
+		stream.Close(ctx)
+		return err
+	}
+	go func(s *mongo.ChangeStream) {
+		t := time.Tick(time.Second)
+		for c.watchLoop(ctx, s, op) {
+			if s != nil {
+				s.Close(ctx)
+				s = nil
+			}
+			select {
+			case <-die:
+				return
+			case <-t:
+			}
+		}
+	}(stream)
+	return nil
 }
 
-func(c *HintCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+func (c *HintCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
@@ -301,48 +324,54 @@ func(c *HintCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 	return true
 }
 
-func(c *HintCache) Renew() error {
+func (c *HintCache) Renew() error {
 	var all []*model.HintInfo
 	ctx := context.Background()
-	stream, err := c.Find(nil, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
-	if err == nil && stream != nil {
-		defer stream.Close(ctx)
-		for stream.Next(ctx) {
-			doc := new(model.HintInfo)
-			if err = stream.Decode(doc); err == nil {
-				all = append(all, doc)
-			}
-		}
-		c.Append(all)
+	stream, err := c.Find(ctx, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+	defer stream.Close(ctx)
+	for stream.Next(ctx) {
+		doc := new(model.HintInfo)
+		if err := stream.Decode(doc); err == nil {
+			all = append(all, doc)
+		}
+	}
+	c.Append(all)
+	return nil
 }
 
-func(c *RoomCache) Watch() error {
-	op := options.ChangeStream().SetFullDocument(options.UpdateLookup) //.SetMaxAwaitTime(time.Minute)
+func (c *RoomCache) Watch() error {
+	op := options.ChangeStream().SetFullDocument(options.UpdateLookup)
 	ctx := context.Background()
 	stream, err := c.Collection.Watch(ctx, nil, op)
-	if err == nil {
-		if err = c.Renew(); err == nil {
-			go func(s *mongo.ChangeStream) {
-				t := time.Tick(time.Second)
-				for c.watchLoop(ctx, s, op) {
-					s = nil
-					select {
-					case <-die:
-						return
-					case <-t:
-					}
-				}
-			}(stream)
-		} else {
-			stream.Close(ctx)
-		}
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+
+	if err = c.Renew(); err != nil {
+		stream.Close(ctx)
+		return err
+	}
+	go func(s *mongo.ChangeStream) {
+		t := time.Tick(time.Second)
+		for c.watchLoop(ctx, s, op) {
+			if s != nil {
+				s.Close(ctx)
+				s = nil
+			}
+			select {
+			case <-die:
+				return
+			case <-t:
+			}
+		}
+	}(stream)
+	return nil
 }
 
-func(c *RoomCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
+func (c *RoomCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
 	doc := changeEvent{}
 	var err error
@@ -375,19 +404,20 @@ func(c *RoomCache)watchLoop(ctx context.Context, stream *mongo.ChangeStream, op 
 	return true
 }
 
-func(c *RoomCache) Renew() error {
+func (c *RoomCache) Renew() error {
 	var all []*model.RoomInfo
 	ctx := context.Background()
-	stream, err := c.Find(nil, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
-	if err == nil && stream != nil {
-		defer stream.Close(ctx)
-		for stream.Next(ctx) {
-			doc := new(model.RoomInfo)
-			if err = stream.Decode(doc); err == nil {
-				all = append(all, doc)
-			}
-		}
-		c.Append(all)
+	stream, err := c.Find(ctx, bson.D{{"ver", bson.D{{"$gt", c.ver}}}})
+	if err != nil || stream == nil {
+		return err
 	}
-	return err
+	defer stream.Close(ctx)
+	for stream.Next(ctx) {
+		doc := new(model.RoomInfo)
+		if err := stream.Decode(doc); err == nil {
+			all = append(all, doc)
+		}
+	}
+	c.Append(all)
+	return nil
 }

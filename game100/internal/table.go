@@ -390,17 +390,18 @@ func (table *Table) gameOpen() {
 func (table *Table) gamePlay() {
 	// TODO: 需要优化机器人的投注项选择
 	for _, role := range table.Robots {
-		if rand.Int31n(4) == 1 {
-			betIndex := rand.Intn(len(betItems))
-			bet := folks.BetReq{
-				Item: robotRandBetItem(),
-				Bet:  betItems[betIndex],
-			}
-			for addCount := rand.Intn(3); addCount >= 0; addCount-- {
-				if role.RobotCanBet(bet.Item, bet.Bet) {
-					role.AddBet(bet)
-					//log.Debugf("R%v下注:%v_%v,%v", role.Id, bet.Item, bet.Bet/100, role.Coin/100)
-				}
+		if rand.Int31n(4) != 1 {
+			continue
+		}
+		betIndex := rand.Intn(len(betItems))
+		bet := folks.BetReq{
+			Item: robotRandBetItem(),
+			Bet:  betItems[betIndex],
+		}
+		for addCount := rand.Intn(3); addCount >= 0; addCount-- {
+			if role.RobotCanBet(bet.Item, bet.Bet) {
+				role.AddBet(bet)
+				//log.Debugf("R%v下注:%v_%v,%v", role.Id, bet.Item, bet.Bet/100, role.Coin/100)
 			}
 		}
 	}
