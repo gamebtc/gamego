@@ -1524,7 +1524,7 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "_id":
+		case "i":
 			z.Id, err = dc.ReadInt64()
 			if err != nil {
 				return
@@ -1700,8 +1700,8 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 16
-	// write "_id"
-	err = en.Append(0xde, 0x0, 0x10, 0xa3, 0x5f, 0x69, 0x64)
+	// write "i"
+	err = en.Append(0xde, 0x0, 0x10, 0xa1, 0x69)
 	if err != nil {
 		return err
 	}
@@ -1894,8 +1894,8 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 16
-	// string "_id"
-	o = append(o, 0xde, 0x0, 0x10, 0xa3, 0x5f, 0x69, 0x64)
+	// string "i"
+	o = append(o, 0xde, 0x0, 0x10, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Id)
 	// string "s"
 	o = append(o, 0xa1, 0x73)
@@ -1986,7 +1986,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "_id":
+		case "i":
 			z.Id, bts, err = msgp.ReadInt64Bytes(bts)
 			if err != nil {
 				return
@@ -2162,7 +2162,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameRound) Msgsize() (s int) {
-	s = 3 + 4 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.ArrayHeaderSize
+	s = 3 + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.ArrayHeaderSize
 	for zawn := range z.Bill {
 		if z.Bill[zawn] == nil {
 			s += msgp.NilSize
@@ -3062,220 +3062,5 @@ func (z *UserBetAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *UserBetAck) Msgsize() (s int) {
 	s = 1 + 5 + msgp.Int32Size + 5 + msgp.ArrayHeaderSize + (len(z.Bet) * (msgp.Int32Size))
-	return
-}
-
-// DecodeMsg implements msgp.Decodable
-func (z *UserLog) DecodeMsg(dc *msgp.Reader) (err error) {
-	var field []byte
-	_ = field
-	var zknt uint32
-	zknt, err = dc.ReadMapHeader()
-	if err != nil {
-		return
-	}
-	for zknt > 0 {
-		zknt--
-		field, err = dc.ReadMapKeyPtr()
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "l":
-			z.Log, err = dc.ReadInt64()
-			if err != nil {
-				return
-			}
-		case "t":
-			z.Tab, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
-		case "b":
-			z.Bet, err = dc.ReadInt64()
-			if err != nil {
-				return
-			}
-		case "p":
-			z.Poker, err = dc.ReadBytes(z.Poker)
-			if err != nil {
-				return
-			}
-		case "g":
-			var zxye uint32
-			zxye, err = dc.ReadArrayHeader()
-			if err != nil {
-				return
-			}
-			if cap(z.Group) >= int(zxye) {
-				z.Group = (z.Group)[:zxye]
-			} else {
-				z.Group = make([]int64, zxye)
-			}
-			for zarz := range z.Group {
-				z.Group[zarz], err = dc.ReadInt64()
-				if err != nil {
-					return
-				}
-			}
-		default:
-			err = dc.Skip()
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// EncodeMsg implements msgp.Encodable
-func (z *UserLog) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 5
-	// write "l"
-	err = en.Append(0x85, 0xa1, 0x6c)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt64(z.Log)
-	if err != nil {
-		return
-	}
-	// write "t"
-	err = en.Append(0xa1, 0x74)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt32(z.Tab)
-	if err != nil {
-		return
-	}
-	// write "b"
-	err = en.Append(0xa1, 0x62)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt64(z.Bet)
-	if err != nil {
-		return
-	}
-	// write "p"
-	err = en.Append(0xa1, 0x70)
-	if err != nil {
-		return err
-	}
-	err = en.WriteBytes(z.Poker)
-	if err != nil {
-		return
-	}
-	// write "g"
-	err = en.Append(0xa1, 0x67)
-	if err != nil {
-		return err
-	}
-	err = en.WriteArrayHeader(uint32(len(z.Group)))
-	if err != nil {
-		return
-	}
-	for zarz := range z.Group {
-		err = en.WriteInt64(z.Group[zarz])
-		if err != nil {
-			return
-		}
-	}
-	return
-}
-
-// MarshalMsg implements msgp.Marshaler
-func (z *UserLog) MarshalMsg(b []byte) (o []byte, err error) {
-	o = msgp.Require(b, z.Msgsize())
-	// map header, size 5
-	// string "l"
-	o = append(o, 0x85, 0xa1, 0x6c)
-	o = msgp.AppendInt64(o, z.Log)
-	// string "t"
-	o = append(o, 0xa1, 0x74)
-	o = msgp.AppendInt32(o, z.Tab)
-	// string "b"
-	o = append(o, 0xa1, 0x62)
-	o = msgp.AppendInt64(o, z.Bet)
-	// string "p"
-	o = append(o, 0xa1, 0x70)
-	o = msgp.AppendBytes(o, z.Poker)
-	// string "g"
-	o = append(o, 0xa1, 0x67)
-	o = msgp.AppendArrayHeader(o, uint32(len(z.Group)))
-	for zarz := range z.Group {
-		o = msgp.AppendInt64(o, z.Group[zarz])
-	}
-	return
-}
-
-// UnmarshalMsg implements msgp.Unmarshaler
-func (z *UserLog) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var field []byte
-	_ = field
-	var zucw uint32
-	zucw, bts, err = msgp.ReadMapHeaderBytes(bts)
-	if err != nil {
-		return
-	}
-	for zucw > 0 {
-		zucw--
-		field, bts, err = msgp.ReadMapKeyZC(bts)
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "l":
-			z.Log, bts, err = msgp.ReadInt64Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "t":
-			z.Tab, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "b":
-			z.Bet, bts, err = msgp.ReadInt64Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "p":
-			z.Poker, bts, err = msgp.ReadBytesBytes(bts, z.Poker)
-			if err != nil {
-				return
-			}
-		case "g":
-			var zlsx uint32
-			zlsx, bts, err = msgp.ReadArrayHeaderBytes(bts)
-			if err != nil {
-				return
-			}
-			if cap(z.Group) >= int(zlsx) {
-				z.Group = (z.Group)[:zlsx]
-			} else {
-				z.Group = make([]int64, zlsx)
-			}
-			for zarz := range z.Group {
-				z.Group[zarz], bts, err = msgp.ReadInt64Bytes(bts)
-				if err != nil {
-					return
-				}
-			}
-		default:
-			bts, err = msgp.Skip(bts)
-			if err != nil {
-				return
-			}
-		}
-	}
-	o = bts
-	return
-}
-
-// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *UserLog) Msgsize() (s int) {
-	s = 1 + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int64Size + 2 + msgp.BytesPrefixSize + len(z.Poker) + 2 + msgp.ArrayHeaderSize + (len(z.Group) * (msgp.Int64Size))
 	return
 }

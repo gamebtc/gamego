@@ -33,11 +33,11 @@ var (
 )
 
 var (
-	closeBin = &GameFrame{Data:make([]byte, HeadLen)}
+	userOffline = &GameFrame{Data: make([]byte, HeadLen)}
 )
 
 func init(){
-	SetHead(closeBin.Data, int32(MsgId_Control))
+	SetHead(userOffline.Data, int32(MsgId_UserOffline))
 }
 
 type Session struct {
@@ -170,7 +170,7 @@ func (sess *Session) Close() {
 		// 通知服务器退出
 		if sess.UserId != 0 {
 			if server := sess.getServer(0); server != nil {
-				server.Call(sess.callCtx, closeBin)
+				server.Call(sess.callCtx, userOffline)
 			}
 		}
 	}
@@ -201,8 +201,14 @@ func (sess *Session) SetUser(uid UserId) {
 func (sess *Session) route(data []byte) (ret interface{}, err error) {
 	start := time.Now()
 	id := GetHeadId(data)
+	if id < int32(MsgId_UserMessageHeadSplit) {
+		// 内部协议，用户不能调用
+		err = ErrorUndefined
+		return
+	}
+
 	// 需要登录才能调用的协议
-	if id >= int32(MsgId_UserMessageHeadSplit) && sess.Flag != SESS_LOGINED {
+	if id >= int32(MsgId_UserLoginMessageSplit) && sess.Flag != SESS_LOGINED{
 		err = ErrorUnauthorized
 		return
 	}

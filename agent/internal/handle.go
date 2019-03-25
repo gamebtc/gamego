@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bytes"
+	"crypto/md5"
 	"errors"
 	"net"
 	"strconv"
@@ -26,7 +27,8 @@ func heartBeatHandler(sess *Session, data []byte) (interface{}, error) {
 	return ack, nil
 }
 
-const checkVerSign = true
+// 是否启用版本检查
+var checkVerSign = false
 // 版本检查
 func verCheckHandler(sess *Session, data []byte) (interface{}, error) {
 	if checkVerSign && (sess.Flag != SESS_INIT) {
@@ -50,12 +52,12 @@ func verCheckHandler(sess *Session, data []byte) (interface{}, error) {
 	buffer.WriteString(arg.Env.Refer)
 	buffer.WriteString(arg.Env.Other)
 
-	//sign := md5.Sum(buffer.Bytes())
-	////校验签名
-	//if checkVerSign && (sign[0] == 234) { //应该应该为!=0
-	//	log.Debugf("verCheck:Id:%v, has:%v", sess.Id, sign)
-	//	return nil, ErrorSign
-	//}
+	sign := md5.Sum(buffer.Bytes())
+	//校验签名
+	if checkVerSign && (sign[0] != 0) { //应该应该为!=0
+		log.Debugf("verCheck:Id:%v, has:%v", sess.Id, sign)
+		return nil, ErrorSign
+	}
 
 	//转发到服务器处理
 	ret, err := sess.callServer(int32(MsgId_VerCheckReq), data)

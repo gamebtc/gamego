@@ -56,11 +56,11 @@ var (
 	messageHandlers [math.MaxUint16]func(*NetMessage) // 消息处理器
 	eventHandlers   [math.MaxUint16]func(*GameEvent)  // 事件处理器
 	sessions        map[model.UserId]*Session         // 所有玩家
-	signal 			*util.AppSignal
-	coder  			protocol.Coder
+	signal          *util.AppSignal
+	coder           protocol.Coder
 )
 
-func Encode(v interface{}) ([]byte, error){
+func Encode(v interface{}) ([]byte, error) {
 	return coder.Encode(v)
 }
 
@@ -79,7 +79,7 @@ func RegistHandler(id int32, arg interface{}, f func(*NetMessage)) {
 	RegistMsg(int32(id), arg)
 }
 
-func RegistEvent(id int32, f func(*GameEvent)){
+func RegistEvent(id int32, f func(*GameEvent)) {
 	eventHandlers[id] = f
 }
 
@@ -94,9 +94,9 @@ func AddUser(sess *Session) {
 	sessions[sess.UserId] = sess
 }
 
-func RemoveUser(sess *Session) bool{
+func RemoveUser(sess *Session) bool {
 	uid := sess.UserId
-	if s, ok := sessions[uid]; ok && s == sess{
+	if s, ok := sessions[uid]; ok && s == sess {
 		delete(sessions, uid)
 		return true
 	}
@@ -125,7 +125,7 @@ func Start(configName string, r Haller) {
 
 // 关闭房间
 func Close() {
-	if signal.Close(){
+	if signal.Close() {
 	}
 }
 
@@ -215,7 +215,7 @@ func exec(m interface{}) {
 	}
 }
 
-func roomConfigCheck(ver int32) int32{
+func roomConfigCheck(ver int32) int32 {
 	defer util.PrintPanicStack()
 	newConf, err := db.Driver.GetRoom(RoomId, ver)
 	if err == nil && newConf != nil && newConf.Id == RoomId {
@@ -225,11 +225,11 @@ func roomConfigCheck(ver int32) int32{
 	return ver
 }
 
-func startRoomConfigCheck(ver int32){
-	t := time.Tick(30*time.Second)
+func startRoomConfigCheck(ver int32) {
+	t := time.Tick(30 * time.Second)
 	for {
 		select {
-		case <- t:
+		case <-t:
 			ver = roomConfigCheck(ver)
 		case <-signal.Die():
 			return
@@ -244,7 +244,7 @@ func mainLoop() {
 	period := time.Duration(Config.Period) * time.Millisecond
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
-	
+
 	go startRoomConfigCheck(Config.Ver)
 
 	for {
@@ -263,27 +263,25 @@ func mainLoop() {
 	}
 }
 
-var startSn int64 //起始值
-var countSn int64 //SN缓存数
-func NewSn(count uint16) (sn int64) {
-	allot := int64(count)
-	if countSn >= allot {
-		sn = startSn
-		startSn += allot
-		countSn -= allot
-	} else if newStart := db.Driver.NewSN(KindId, math.MaxUint16); newStart > 0 {
-		// 需要重新分配
+var startKindSn int64 //起始值,包括
+var endKindSn int64   //结束值,不包括
+func NewKindSn() (sn int64) {
+	const roundAllot = math.MaxUint16 + 1
+	if startKindSn < endKindSn {
+		sn = startKindSn
+		startKindSn++
+	} else if newStart := db.Driver.NewSN(KindId, roundAllot); newStart > 0 {
 		sn = newStart
-		startSn = newStart + allot
-		countSn = math.MaxUint16 - allot
+		startKindSn = newStart + 1
+		endKindSn = newStart + roundAllot
 	}
 	return
 }
 
-var startRoundId int64 //起始值
+var startRoundId int64 //起始值,包括
 var endRoundId int64   //结束值,不包括
-const roundAllot = 4   //1024*math.MaxUint16
 func NewGameRoundId() (sn int64) {
+	const roundAllot = 1024
 	if startRoundId < endRoundId {
 		sn = startRoundId
 		startRoundId++
@@ -298,10 +296,10 @@ func NewGameRoundId() (sn int64) {
 // 同步写分
 func WriteCoin(flow *model.CoinFlow) error {
 	if flow.Sn == 0 {
-		flow.Sn = NewSn(1)
+		flow.Sn = NewKindSn()
 		for flow.Sn == 0 {
 			time.Sleep(time.Second)
-			flow.Sn = NewSn(1)
+			flow.Sn = NewKindSn()
 		}
 	}
 	return db.Driver.BagDeal(CoinKey, flow)
@@ -315,7 +313,7 @@ func Now() int64 {
 	return time.Now().Unix()
 }
 
-func NewRand()*rand.Rand{
+func NewRand() *rand.Rand {
 	bin := make([]byte, 8)
 	crand.Read(bin)
 	seed := binary.LittleEndian.Uint64(bin)

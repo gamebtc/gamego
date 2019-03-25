@@ -2213,7 +2213,7 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "_id":
+		case "i":
 			z.Id, err = dc.ReadInt64()
 			if err != nil {
 				return
@@ -2314,8 +2314,8 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 13
-	// write "_id"
-	err = en.Append(0x8d, 0xa3, 0x5f, 0x69, 0x64)
+	// write "i"
+	err = en.Append(0x8d, 0xa1, 0x69)
 	if err != nil {
 		return err
 	}
@@ -2451,8 +2451,8 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 13
-	// string "_id"
-	o = append(o, 0x8d, 0xa3, 0x5f, 0x69, 0x64)
+	// string "i"
+	o = append(o, 0x8d, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Id)
 	// string "s"
 	o = append(o, 0xa1, 0x73)
@@ -2519,7 +2519,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "_id":
+		case "i":
 			z.Id, bts, err = msgp.ReadInt64Bytes(bts)
 			if err != nil {
 				return
@@ -2620,7 +2620,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameRound) Msgsize() (s int) {
-	s = 1 + 4 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.ArrayHeaderSize
+	s = 1 + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 2 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.ArrayHeaderSize
 	for zzdc := range z.Bill {
 		if z.Bill[zzdc] == nil {
 			s += msgp.NilSize
@@ -2889,6 +2889,11 @@ func (z *Player) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "down":
+			z.Down, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
 		default:
 			err = dc.Skip()
 			if err != nil {
@@ -2901,9 +2906,9 @@ func (z *Player) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *Player) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 9
+	// map header, size 10
 	// write "id"
-	err = en.Append(0x89, 0xa2, 0x69, 0x64)
+	err = en.Append(0x8a, 0xa2, 0x69, 0x64)
 	if err != nil {
 		return err
 	}
@@ -2983,15 +2988,24 @@ func (z *Player) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
+	// write "down"
+	err = en.Append(0xa4, 0x64, 0x6f, 0x77, 0x6e)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.Down)
+	if err != nil {
+		return
+	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *Player) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 9
+	// map header, size 10
 	// string "id"
-	o = append(o, 0x89, 0xa2, 0x69, 0x64)
+	o = append(o, 0x8a, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
 	// string "icon"
 	o = append(o, 0xa4, 0x69, 0x63, 0x6f, 0x6e)
@@ -3017,6 +3031,9 @@ func (z *Player) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "look"
 	o = append(o, 0xa4, 0x6c, 0x6f, 0x6f, 0x6b)
 	o = msgp.AppendBool(o, z.Look)
+	// string "down"
+	o = append(o, 0xa4, 0x64, 0x6f, 0x77, 0x6e)
+	o = msgp.AppendInt32(o, z.Down)
 	return
 }
 
@@ -3085,6 +3102,11 @@ func (z *Player) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "down":
+			z.Down, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
 		default:
 			bts, err = msgp.Skip(bts)
 			if err != nil {
@@ -3098,7 +3120,7 @@ func (z *Player) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *Player) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.Int32Size + 6 + msgp.Int32Size + 5 + msgp.Int64Size + 4 + msgp.Int64Size + 5 + msgp.StringPrefixSize + len(z.Name) + 6 + msgp.Int32Size + 5 + msgp.BoolSize
+	s = 1 + 3 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.Int32Size + 6 + msgp.Int32Size + 5 + msgp.Int64Size + 4 + msgp.Int64Size + 5 + msgp.StringPrefixSize + len(z.Name) + 6 + msgp.Int32Size + 5 + msgp.BoolSize + 5 + msgp.Int32Size
 	return
 }
 

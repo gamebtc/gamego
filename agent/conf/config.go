@@ -27,6 +27,7 @@ type AppConfig struct {
 	SameIp       uint32       `yaml:"sameIp"`
 	Seed         int32        `yaml:"seed"`
 	Codec        string       `yaml:"codec"`
+	VerSign 	 bool         `yaml:"verSign"`
 }
 
 func InitConfig(path string)(*AppConfig) {

@@ -144,7 +144,7 @@ func (table *Table) findRicher() []model.UserId {
 	roles = append(roles[:richIndex], roles[richIndex+1:]...)
 	roleCount--
 
-	// 查找5位富豪(以最近20局的下注金额排序,下注金额一样就以身上的钱排序)
+	// 查找5位富豪(以最近20局的下注金币排序,下注金币一样就以身上的钱排序)
 	for c := 0; c < (RicherCount-1) && c < roleCount; c++ {
 		rich := roles[c]
 		for i := c + 1; i < roleCount; i++ {

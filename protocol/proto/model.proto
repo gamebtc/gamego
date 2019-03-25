@@ -4,8 +4,8 @@ package protocol;
 
 // game definition
 service Game {
-    rpc Send(stream GameFrame) returns (stream GameFrame);       // 异步调用
-    rpc Call(GameFrame) returns (GameFrame);                       // 同步调用
+    rpc Send (stream GameFrame) returns (stream GameFrame); // 异步调用
+    rpc Call (GameFrame) returns (GameFrame);               // 同步调用
 }
 
 message GameFrame {

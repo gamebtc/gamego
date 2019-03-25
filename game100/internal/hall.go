@@ -220,7 +220,7 @@ func roomClose(event *room.GameEvent) {
 // 预算输赢(prize:扣税前总返奖，tax:总税收，bet:总下注)
 func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
 	for i := 0; i < betItemCount; i++ {
-		// 下注金额大于0
+		// 下注金币大于0
 		if b := group[i]; b > 0 {
 			bet += b
 			//有钱回收,包含输1半

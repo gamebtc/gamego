@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 	"net/http"
 	_ "net/http/pprof"
@@ -41,18 +42,19 @@ func (s *Server) Init(config *AppConfig) (err error) {
 	s.Coder = coder
 	s.SetSlowOp(int64(config.SlowOp))
 
-	s.RegistHandler(MsgId_Control, nil, Control)
-
 	s.RegistMsg(MsgId_ErrorInfo, &ErrorInfo{})
 
-	s.RegistHandler(MsgId_VerCheckReq, &VerCheckReq{}, VerCheck)
+	s.RegistHandler(MsgId_UserOffline, nil, userOffline)
+	s.RegistHandler(MsgId_AllocAgentId, nil, allocAgentId)
+
+	s.RegistHandler(MsgId_VerCheckReq, &VerCheckReq{}, verCheck)
 	s.RegistMsg(MsgId_VerCheckAck, &VerCheckAck{})
 
-	s.RegistHandler(MsgId_UserLoginReq, &LoginReq{}, Login)
+	s.RegistHandler(MsgId_UserLoginReq, &LoginReq{}, userLogin)
 	s.RegistMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{})
 	s.RegistMsg(MsgId_UserLoginFailAck, &LoginFailAck{})
 
-	s.RegistHandler(MsgId_HeartBeatReq, &HeartBeatReq{}, HeartBeat)
+	s.RegistHandler(MsgId_HeartBeatReq, &HeartBeatReq{}, heartBeat)
 	s.RegistMsg(MsgId_HeartBeatAck, &HeartBeatAck{})
 
 	if driver, err = db.CreateDriver(&config.Database); err != nil {
@@ -72,10 +74,9 @@ func (s *Server) Call(ctx context.Context, req *GameFrame) (res *GameFrame, err 
 	if err != nil {
 		return
 	}
-
 	user := ParseUserContext(ctx)
 	// 检查登录
-	if id >= int32(MsgId_UserMessageHeadSplit) {
+	if id >= int32(MsgId_UserLoginMessageSplit) {
 		// 登录已过期
 		if (user.UserId == 0) || (!driver.CheckUserAgent(user.UserId, user.AgentId)) {
 			var buf []byte
@@ -116,6 +117,8 @@ func (s *Server) Call(ctx context.Context, req *GameFrame) (res *GameFrame, err 
 			res = r
 		case GameFrame:
 			res = &r
+		case []byte:
+			res = &GameFrame{Data: r}
 		case error:
 			err = r
 		default:
@@ -136,17 +139,8 @@ func (s *Server) Call(ctx context.Context, req *GameFrame) (res *GameFrame, err 
 	return
 }
 
-func Control(ctx context.Context, in interface{}) interface{} {
-	raw := in.([]byte)
-	log.Debugf("Control%#v", raw)
-	user := ctx.(*UserContext)
-	// 用户断开连接消息
-	driver.UnlockUser(user.AgentId, user.UserId)
-	return nil
-}
-
 // 版本检查
-func VerCheck(ctx context.Context, in interface{}) interface{} {
+func verCheck(ctx context.Context, in interface{}) interface{} {
 	arg := in.(*VerCheckReq)
 	pack := driver.GetPackConf(arg.Env.Pack)
 	if pack == nil {
@@ -188,9 +182,30 @@ func VerCheck(ctx context.Context, in interface{}) interface{} {
 	}
 }
 
-func HeartBeat(ctx context.Context, in interface{}) interface{} {
+func heartBeat(ctx context.Context, in interface{}) interface{} {
 	arg := in.(*HeartBeatReq)
 	user := ParseUserContext(ctx)
 	log.Debugf("heartBeat:uid%v, id:%v", user.UserId, arg.Id)
 	return &HeartBeatAck{Id: arg.Id}
+}
+
+//
+func userOffline(ctx context.Context, in interface{}) interface{} {
+	raw := in.([]byte)
+	log.Debugf("Control%#v", raw)
+	user := ctx.(*UserContext)
+	// 用户断开连接消息
+	driver.UnlockUser(user.AgentId, user.UserId)
+	return nil
+}
+
+// 为代理服务器分配连接ID
+func allocAgentId(ctx context.Context, in interface{})interface{} {
+	raw := in.([]byte)
+	count := binary.BigEndian.Uint32(raw[HeadLen:])
+	start := driver.NewSN("aid", int64(count))
+
+	r := &GameFrame{Data: make([]byte, 8)}
+	binary.BigEndian.PutUint64(r.Data, uint64(start))
+	return r
 }

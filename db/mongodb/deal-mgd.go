@@ -38,13 +38,14 @@ func (d *driver) deal(coinKey string, flow *model.CoinFlow, safe bool) error {
 			return err
 		}
 
-		flow.Coin = bag[coinKey]
+		tmpNew := flow.New
+		flow.New = bag[coinKey]
 		var ir *mongo.InsertOneResult
 		ir, err = logDeal.InsertOne(sc, flow)
 		if err != nil || ir.InsertedID == nil {
 			sc.AbortTransaction(sc)
 			//交易号重复，记录插入错误
-			flow.Coin = flow.Expect
+			flow.New = tmpNew
 			d.GetColl(collName+"_rpt").InsertOne(sc, flow)
 			return err
 		}
@@ -102,7 +103,8 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 
 		fromCoin, toCoin := bag[from], bag[to]
 		flow.Add = -add
-		flow.Coin = fromCoin
+		flow.New = fromCoin
+		flow.Old = fromCoin + add
 		var ir1 *mongo.InsertOneResult
 		ir1, err = logFrom.InsertOne(sc, flow)
 		if err != nil || ir1.InsertedID == nil {
@@ -111,7 +113,8 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 		}
 
 		flow.Add = add
-		flow.Coin = toCoin
+		flow.New = toCoin
+		flow.Old = toCoin - add
 		var ir2 *mongo.InsertOneResult
 		ir2, err = logTo.InsertOne(sc, flow)
 		if err != nil || ir2.InsertedID == nil {

@@ -3,7 +3,6 @@ package internal
 import (
 	"net"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -12,8 +11,6 @@ import (
 )
 
 var (
-	agentHead  int64
-	sessionId  uint32
 	locker     sync.RWMutex
 	sessions   map[int64]*Session //在线用户列表，key:连接ID
 	userLocker sync.RWMutex
@@ -25,29 +22,22 @@ func init() {
 	users = make(map[UserId]*Session, 2000)
 }
 
-func newSessionId() int64 {
-	id := atomic.AddUint32(&sessionId, 1)
-	for id == 0 {
-		id = atomic.AddUint32(&sessionId, 1)
-	}
-	return agentHead + int64(id)
-}
-
 // create a new session object for the connection
 func newSession(ip uint32, addr string, conn net.Conn) {
+	id := newAgentId()
+	for id < 0 {
+		id = newAgentId()
+	}
 	signal.Add(1)
 	defer signal.Add(-1)
 	s := &Session{
-		Id:       newSessionId(),
+		Id:       id,
 		Ip:       ip,
 		Addr:     addr,
 		Created:  time.Now(),
 		Coder:    coder,
 		conn:     conn,
 		dieChan:  make(chan struct{}),
-	}
-	for addSession(s) == false {
-		s.Id = newSessionId()
 	}
 	defer delSession(s)
 	s.Start()

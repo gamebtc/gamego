@@ -30,8 +30,8 @@ type Session struct {
 	Role       interface{}  // 游戏角色数据
 	Created    time.Time    // 建立时间
 	Flag       int32        // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
-	TotalWin   int64        // 进入之后的赢钱金额
-	TotalBet   int64        // 进入之后的下注金额
+	TotalWin   int64        // 进入之后的赢钱金币
+	TotalBet   int64        // 进入之后的下注金币
 	TotalRound int32        // 有下注的总局数
 
 	sendChan chan interface{} // 发送出去的数据

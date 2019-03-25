@@ -36,23 +36,9 @@ message Player {
 	string name = 5 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];
 }
 
-// (龙虎/红黑/百家乐/骰宝)用户日志
-message UserLog {
-	// 关联的游戏日志ID
-	int64 log = 1 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
-	// 桌子ID
-	int32 tab = 2 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
-	// 投注总金额
-	int64 bet = 3 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
-	// 开牌情况
-	bytes poker = 4 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
-	// 玩家投注分组(0:龙赢,1:虎赢,2:和)
-	repeated int64 group = 5 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
-}
-
 // 用户日志(龙虎/红黑/百家乐/骰宝)
 message GameBill {
-	// 玩家ID
+	// 玩家ID(u有建立索引，不要更改名称)
 	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 	// 开始游戏时带的钱
 	int64 coin = 2 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
@@ -70,9 +56,9 @@ message GameBill {
 
 // 百人游戏日志(龙虎/红黑/百家乐/骰宝)
 message GameRound {
-	// 游戏ID
-	int64 id = 1 [(gogoproto.jsontag) = '_id', (gogoproto.moretags) = 'bson:"_id" msg:"_id"'];
-	// 游戏开始时间
+	// 游戏ID(i有建立索引，不要更改名称)
+	int64 id = 1 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
+	// 游戏开始时间(s有建立索引，不要更改名称)
 	int64 start = 2 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
 	// 游戏结束时间
 	int64 end = 3 [(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
@@ -151,7 +137,7 @@ message BetAck{
 message UserBetAck{
 	// 剩余下注时间
 	int32 time = 1 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
-	// 每三个项表示一条记录Bet(依次为玩家ID，投注项，投注金额）
+	// 每三个项表示一条记录Bet(依次为玩家ID，投注项，投注额）
 	repeated int32 bet = 2 [(gogoproto.moretags) = 'bson:"item" msg:"item"'];
 }
 

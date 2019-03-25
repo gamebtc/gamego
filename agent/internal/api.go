@@ -1,9 +1,11 @@
 package internal
 
 import (
+	"context"
+	"encoding/binary"
 	"math"
-	"math/rand"
 	"reflect"
+	"sync"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -19,8 +21,17 @@ var (
 	signal   *util.AppSignal
 )
 
+func registMsg(id MsgId_Code, msg interface{}) {
+	t := reflect.TypeOf(msg)
+	if _, ok := coder.GetMsgId(t); ok {
+		log.Fatalf("message %v is already registered", t)
+	}
+	coder.SetMsgId(t, int32(id))
+}
+
 func Run(config *conf.AppConfig) {
 	// listeners
+	checkVerSign = config.VerSign
 	tcpReadBuf = config.Tcp.ReadBuf
 	tcpWriteBuf = config.Tcp.WriteBuf
 	sendChanLen = config.SendChanLen
@@ -29,8 +40,6 @@ func Run(config *conf.AppConfig) {
 	writeTimeout = time.Duration(config.WriteTimeout) * time.Second
 	slowOpNano = int64(config.SlowOp) * Ms2Na
 	rpmLimit = config.RpmLimit
-	agentHead = int64(config.AgentId) << 32
-	sessionId = uint32(rand.Intn(math.MaxInt32))
 
 	coder = GetCoder(config.Codec)
 
@@ -68,10 +77,38 @@ func Run(config *conf.AppConfig) {
 	})
 }
 
-func registMsg(id MsgId_Code, msg interface{}) {
-	t := reflect.TypeOf(msg)
-	if _, ok := coder.GetMsgId(t); ok {
-		log.Fatalf("message %v is already registered", t)
+const (
+	allotAgentIdCount = math.MaxUint16 + 1
+)
+
+var (
+	startAgentId int64 //起始值,包括
+	endAgentId   int64 //结束值,不包括
+	lockAgentId  sync.Mutex
+	allocAgentId = &GameFrame{Data: make([]byte, HeadLen+4)}
+)
+
+func init() {
+	SetHead(allocAgentId.Data, int32(MsgId_AllocAgentId))
+	binary.BigEndian.PutUint32(allocAgentId.Data[HeadLen:], allotAgentIdCount)
+}
+
+func newAgentId() (id int64) {
+	lockAgentId.Lock()
+	defer lockAgentId.Unlock()
+	if startAgentId < endAgentId {
+		id = startAgentId
+		startAgentId++
+	} else if conn := rpcServicePool.GetService(0); conn != nil {
+		server := NewGameClient(conn)
+		ackFrame, err := server.Call(context.Background(), allocAgentId)
+		if err == nil && len(ackFrame.Data) >= 8 {
+			if newStart := int64(binary.BigEndian.Uint64(ackFrame.Data)); newStart > 0 {
+				id = newStart
+				startAgentId = newStart + 1
+				endAgentId = newStart + allotAgentIdCount
+			}
+		}
 	}
-	coder.SetMsgId(t, int32(id))
+	return
 }

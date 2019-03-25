@@ -2,7 +2,6 @@ package internal
 
 import (
 	log "github.com/sirupsen/logrus"
-	//"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/protocol/zjh"
 	"local.com/abc/game/room"
 )
@@ -25,13 +24,14 @@ const (
 // 结算：    2秒
 // 游戏桌子
 type Table struct {
-	Id        int32             // 桌子ID
-	CurId     int32             // 当前局的ID
-	State     GameState         // 0:准备游戏;1:游戏中;2:结算
-	RoleCount int32             // 玩家数量
-	Roles     [chairCount]*Role // 所有游戏玩家,按位置
-	round     *GameRound        // 1局
-	delay     int32             // 持续秒数
+	Id         int32             // 桌子ID
+	CurId      int32             // 当前局的ID
+	State      GameState         // 0:准备游戏;1:游戏中;2:结算
+	RoleCount  int32             // 玩家数量
+	Roles      [chairCount]*Role // 所有游戏玩家,按位置
+	round      *GameRound        // 1局
+	delay      int32             // 持续秒数
+	waitSecond int32             // 等待秒数
 }
 
 func NewTable() *Table {
@@ -171,7 +171,7 @@ func (table *Table) SendToAll(val interface{}) {
 }
 
 // 检查是否有真实玩家
-func (table *Table) ExistsRealPlayer()bool {
+func (table *Table) ExistsRealPlayer() bool {
 	for _, role := range table.Roles {
 		if role.IsRobot() == false {
 			return true
@@ -181,15 +181,17 @@ func (table *Table) ExistsRealPlayer()bool {
 }
 
 // 准备
-func (table *Table)gameReady() {
+func (table *Table) gameReady() {
 	table.delay = 2
 	table.State = GameStateReady
+	table.waitSecond = 0
 	table.CurId += 1
 	log.Debugf("%v准备:%v", table.Id, table.CurId)
 }
 
-func (table *Table)gameWait() {
-	if table.ExistsRealPlayer(){
+func (table *Table) gameWait() {
+	table.waitSecond++
+	if table.ExistsRealPlayer() {
 		// 有2个人可以开始
 		if table.RoleCount >= 2 {
 			table.gameOpen()
@@ -197,27 +199,28 @@ func (table *Table)gameWait() {
 			table.delay = 2
 			log.Debugf("%v等待玩家:%v", table.Id, table.CurId)
 		}
-	}else{
+	} else {
 		// 没有真人机器人退出
 		table.freeRobots()
 	}
 }
 
 // 开始
-func (table *Table)gameOpen() {
+func (table *Table) gameOpen() {
 	// 发送开始下注消息给所有玩家
 	table.delay = 15
 	table.State = GameStatePlaying
+	table.waitSecond = 0
 	table.newGameRound()
 	log.Debugf("%v开始下注:%v", table.Id, table.CurId)
 }
 
-func (table *Table)gamePlay() {
+func (table *Table) gamePlay() {
 
 }
 
 // 结算
-func (table *Table)gameDeal() {
+func (table *Table) gameDeal() {
 	table.delay = 5
 	table.State = GameStateDeal
 	log.Debugf("%v发牌结算:%v", table.Id, table.CurId)

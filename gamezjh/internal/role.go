@@ -43,7 +43,7 @@ func (role *Role) Reset() {
 	role.player.Bet = 0
 }
 
-// 存在指定的下注金额
+// 存在指定的下注金币
 func ExistsBetItem(bet int32) bool {
 	return (bet >= betItems[0]) && (bet <= betItems[len(betItems)-1]) && (bet%100 == 0)
 }

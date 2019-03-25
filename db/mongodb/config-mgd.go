@@ -61,10 +61,10 @@ func (d *driver) initUserId() {
 	//d.epoch = int32(doc.N)
 }
 
-// 新的序列号
+// 新的序列号,返回开始位置，大于0可用
 func (d *driver) NewSN(key interface{}, count int64) int64 {
-	up := bson.D{{"$inc", bson.D{{"n", count}}}}
 	doc := incrementKeyDoc{}
+	up := bson.D{{"$inc", bson.D{{"n", count}}}}
 	if err := d.conf.FindOneAndUpdate(d.ctx, bson.D{{"_id", key}}, up, upNew1).Decode(&doc); err != nil {
 		//log.Debugf("NewSN error:%v,%v,%v", key, count, 0)
 		return 0

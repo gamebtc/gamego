@@ -33,7 +33,7 @@ func getRandName() string {
 }
 
 // 登录
-func Login(ctx context.Context, in interface{}) interface{} {
+func userLogin(ctx context.Context, in interface{}) interface{} {
 	uctx := ctx.(*protocol.UserContext)
 	uid, agent := uctx.UserId, uctx.AgentId
 	req := in.(*protocol.LoginReq)

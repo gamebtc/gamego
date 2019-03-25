@@ -21,8 +21,8 @@ type Role struct {
 	bill   *folks.GameBill // 输赢情况
 	player *folks.Player   // 玩家信息
 
-	LastBet      [lastBillCount]int64 // 最后20局的下注金额
-	LastWin      [lastBillCount]byte  // 最后20局的输赢金额
+	LastBet      [lastBillCount]int64 // 最后20局的下注金币
+	LastWin      [lastBillCount]byte  // 最后20局的输赢金币
 	LastBetSum   int64
 	LastWinCount byte
 }
@@ -57,7 +57,7 @@ func (role *Role) Reset() {
 	role.bill = nil
 }
 
-// 存在指定的下注金额
+// 存在指定的下注额
 func ExistsBetItem(bet int32) bool {
 	return (bet >= betItems[0]) && (bet <= betItems[len(betItems)-1]) && (bet%100 == 0)
 }
@@ -78,7 +78,7 @@ func (role *Role) AddBet(req folks.BetReq) error {
 	}
 
 	if !ExistsBetItem(req.Bet) {
-		return errors.New(fmt.Sprintf("错误的投注金额:%v|%v", i, bet))
+		return errors.New(fmt.Sprintf("错误的投注额:%v|%v", i, bet))
 	}
 
 	// 检查金币
@@ -144,7 +144,7 @@ func (role *Role) Balance() {
 		log.Errorf("Balance error:uid:%v,bet1:%v,bet2:%v", role.Id, bet, bill.Bet)
 	}
 
-	// 扣税后返给玩家的钱
+	// 扣税后返给玩家的币
 	prize -= tax
 	role.Coin += prize
 	// 实际输赢要扣掉本金(用于写分)
@@ -177,26 +177,26 @@ func (role *Role) Balance() {
 	}
 
 	// 写分
-	role.FlowSn = room.NewSn(1)
-	sub := &folks.UserLog{
-		Tab:   role.table.Id,
-		Bet:   bet,
-		Group: room.TrimEndZero(bill.Group),
-		Log:   round.Id,
-		Poker: round.Poker,
-	}
+	role.FlowSn = room.NewKindSn()
 	flow := &model.CoinFlow{
-		Sn:     role.FlowSn,
-		Uid:    role.Id,
-		Add:    addCoin,
-		Tax:    tax,
-		Expect: role.Coin,
-		Room:   room.RoomId,
-		Kind:   room.KindId,
-		Type:   1,
-		Note:   round.Note,
-		Sub:    sub,
+		Sn:    role.FlowSn,
+		Uid:   role.Id,
+		Add:   addCoin,
+		New:   role.Coin,
+		Old:   role.Coin - addCoin,
+		Tax:   tax,
+		Room:  room.RoomId,
+		Kind:  room.KindId,
+		Note:  round.Note,
+		Bet:   bet,
+		LogId: round.Id,
+		Poker: round.Poker,
+		More:  room.TrimEndZero(bill.Group),
 	}
-	room.WriteCoin(flow)
+	if room.WriteCoin(flow) == nil {
+		if role.Coin != flow.New {
+			log.Warnf("金币变化:%v-%v", flow.New, role.Coin)
+		}
+	}
 	log.Debugf("结算:%v", flow)
 }

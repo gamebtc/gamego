@@ -5,72 +5,77 @@ package protocol;
 message MsgId{
 	enum Code{
 		None                  = 0;   // 无
-	    Control               = 1;   // 控制消息
-        HandshakeReq          = 2;   // 握手
-        HandshakeAck          = 3;   // 握手返回
-		VerCheckReq           = 4;   // 游戏版本检查
-		VerCheckAck           = 5;   // 游戏版本检查返回
-		RegistReq             = 7;   // 用户注册
-		RegistAck             = 8;   // 用户注册返回
-		ErrorInfo             = 9;   // 通用错误信息
-		FatalInfo             = 12;  // 严重错误信息
-        UserLoginReq          = 13;  // 登录请求
-        UserLoginSuccessAck   = 15;  // 登录成功
-        UserLoginFailAck      = 17;  // 登录失败
-        ClientErrorAck        = 19;  // 客户端错误
-		CodeLoginPwdReq       = 20;  // 获取验证码(找回密码)
-		CodeLoginPwdAck       = 21;  // 获取验证码(找回密码)
+		UserOffline           = 1;   // 用户下线
+		AllocAgentId          = 2;   // 分配代理ID
 
-        // 100以上需要登录才能调用的协议
-        UserMessageHeadSplit  = 100; // 已登录用户消息分隔
-		HeartBeatReq          = 102; // 心跳请求
-		HeartBeatAck          = 103; // 心跳应答
-		GameListReq           = 104; // 获取游戏列表
-		GameListAck           = 105; // 返回游戏列表
+		// 100以上玩家可以发送的消息
+		UserMessageHeadSplit  = 100; // 用户消息分隔
+		UserOfflineReq        = 101; // 请求断线
+        HandshakeReq          = 102; // 握手
+        HandshakeAck          = 103; // 握手返回
+		VerCheckReq           = 104; // 游戏版本检查
+		VerCheckAck           = 105; // 游戏版本检查返回
+		RegistReq             = 107; // 用户注册
+		RegistAck             = 108; // 用户注册返回
+		ErrorInfo             = 109; // 通用错误信息
+		FatalInfo             = 112; // 严重错误信息
+        UserLoginReq          = 113; // 登录请求
+        UserLoginSuccessAck   = 115; // 登录成功
+        UserLoginFailAck      = 117; // 登录失败
+        ClientErrorAck        = 119; // 客户端错误
+		CodeLoginPwdReq       = 120; // 获取验证码(找回密码)
+		CodeLoginPwdAck       = 121; // 获取验证码(找回密码)
 
-		CodeUpAccountReq      = 110; // 获取验证码(升级账号)
-		CodeUpAccountAck      = 111; // 获取验证码(升级账号)
-		UpdateAccountReq      = 112; // 升级为正式账号
-		UpdateAccountAck      = 113; // 升级为正式账号
-		CodeSetPwdReq         = 114; // 获取验证码(修改密码)
-		CodeSetPwdAck         = 115; // 获取验证码(修改密码)
-		ChangePwdReq          = 116; // 修改密码
-		ChangePwdAck          = 117; // 修改密码
+        // 200以上需要登录才能调用的协议
+        UserLoginMessageSplit = 200; // 已登录用户消息分隔
+		HeartBeatReq          = 202; // 心跳请求
+		HeartBeatAck          = 203; // 心跳应答
+		GameListReq           = 204; // 获取游戏列表
+		GameListAck           = 205; // 返回游戏列表
 
-		BagGetReq             = 120; // 获取金币信息
-		BagGetAck             = 121; // 获取金币信息
-		BagMoveReq            = 122; // 金币移动
-		BagMoveAck            = 123; // 金币移动
+		CodeUpAccountReq      = 210; // 获取验证码(升级账号)
+		CodeUpAccountAck      = 211; // 获取验证码(升级账号)
+		UpdateAccountReq      = 212; // 升级为正式账号
+		UpdateAccountAck      = 213; // 升级为正式账号
+		CodeSetPwdReq         = 214; // 获取验证码(修改密码)
+		CodeSetPwdAck         = 215; // 获取验证码(修改密码)
+		ChangePwdReq          = 216; // 修改密码
+		ChangePwdAck          = 217; // 修改密码
 
-		RepayInfoReq          = 140; // 获取兑换信息
-		RepayInfoAck          = 141; // 获取兑换信息
-		RepaySetAliReq        = 142; // 设置兑换支付宝
-		RepaySetAliAck        = 143; // 设置兑换支付宝
-		RepaySetBankReq       = 144; // 设置兑换银行卡
-		RepaySetBankAck       = 145; // 设置兑换银行卡
-		RepayListOrderReq     = 146; // 获取兑换列表
-		RepayListOrderAck     = 147; // 获取兑换列表
-		RepayNewOrderReq      = 148; // 兑换
-		RepayNewOrderAck      = 149; // 兑换
+		BagGetReq             = 220; // 获取金币信息
+		BagGetAck             = 221; // 获取金币信息
+		BagMoveReq            = 222; // 金币移动
+		BagMoveAck            = 223; // 金币移动
 
-		CustomSendReq         = 160; // 发送问题
-		CustomSendAck         = 161; // 发送问题
-		CustomRecvReq         = 162; // 接收问题
-		CustomRecvAck         = 163; // 接收问题
-		CustomCommonReq       = 164; // 常见问题
-		CustomCommonAck       = 165; // 常见问题
-		CustomNoteReq         = 166; // 大厅跑马灯
-		CustomNoteAck         = 167; // 大厅跑马灯
+		RepayInfoReq          = 240; // 获取兑换信息
+		RepayInfoAck          = 241; // 获取兑换信息
+		RepaySetAliReq        = 242; // 设置兑换支付宝
+		RepaySetAliAck        = 243; // 设置兑换支付宝
+		RepaySetBankReq       = 244; // 设置兑换银行卡
+		RepaySetBankAck       = 245; // 设置兑换银行卡
+		RepayListOrderReq     = 246; // 获取兑换列表
+		RepayListOrderAck     = 247; // 获取兑换列表
+		RepayNewOrderReq      = 248; // 兑换
+		RepayNewOrderAck      = 249; // 兑换
 
-		RankGetReq            = 170; // 获取排行榜
-		RankGetAck            = 171; // 获取排行榜
+		CustomSendReq         = 260; // 发送问题
+		CustomSendAck         = 261; // 发送问题
+		CustomRecvReq         = 262; // 接收问题
+		CustomRecvAck         = 263; // 接收问题
+		CustomCommonReq       = 264; // 常见问题
+		CustomCommonAck       = 265; // 常见问题
+		CustomNoteReq         = 266; // 大厅跑马灯
+		CustomNoteAck         = 267; // 大厅跑马灯
 
-		LoginRoomReq          = 201; // 请求连接房间
-		LoginRoomAck          = 202; // 连接房间返回
-		SendRoomFail          = 204; // 消息发送到房间失败，需要客户端重新连接房间
+		RankGetReq            = 270; // 获取排行榜
+		RankGetAck            = 271; // 获取排行榜
 
-		ExitRoomReq           = 205; // 请求退出房间
-		ExitRoomAck           = 206; // 请求退出房间
+		LoginRoomReq          = 301; // 请求连接房间
+		LoginRoomAck          = 302; // 连接房间返回
+		SendRoomFail          = 304; // 消息发送到房间失败，需要客户端重新连接房间
+
+		ExitRoomReq           = 305; // 请求退出房间
+		ExitRoomAck           = 306; // 请求退出房间
 
 		// 1024=1个服务段，共8个服务段
 		//OtherMessageHeadSplit  = 1024; // 每个服务占用1024个协议，共支持8个服务
