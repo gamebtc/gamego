@@ -160,6 +160,5 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 		Bag:   user.Bag,
 		Kind:  lock.Kind,
 		Room:  lock.Room,
-		Tab:   lock.Tab,
 	}
 }

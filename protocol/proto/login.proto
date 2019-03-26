@@ -41,16 +41,16 @@ message FatalInfo{
 
 // 设备信息
 message DeviceInfo {
-    string id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];            // 设备ID()
-    string vend = 2 [(gogoproto.moretags) = 'bson:"vend" msg:"vend"'];      // 设备制造商
-    string name = 3 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];      // 产品型号
-    string mac = 4 [(gogoproto.moretags) = 'bson:"mac" msg:"mac"'];         // 设备mac地址
-    string imei = 5 [(gogoproto.moretags) = 'bson:"imei" msg:"imei"'];      // 设备imei地址
-    string emid = 6 [(gogoproto.moretags) = 'bson:"emid" msg:"emid"'];      // 设备emid地址
-    string sn = 7 [(gogoproto.moretags) = 'bson:"sn" msg:"sn"'];            // 序列号
-    string osLang = 8 [(gogoproto.moretags) = 'bson:"osLang" msg:"osLang"'];// 操作系统语言
-    string osVer = 9 [(gogoproto.moretags) = 'bson:"osVer" msg:"osVer"'];   // 操作系统版本
-    string other = 10 [(gogoproto.moretags) = 'bson:"other" msg:"other"'];  // 设备其它信息
+    string id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];                // 设备ID()
+    string vend = 2 [(gogoproto.moretags) = 'bson:"vend" msg:"vend"'];          // 设备制造商
+    string name = 3 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 产品型号
+    string mac = 4 [(gogoproto.moretags) = 'bson:"mac" msg:"mac"'];             // 设备mac地址
+    string imei = 5 [(gogoproto.moretags) = 'bson:"imei" msg:"imei"'];          // 设备imei地址
+    string emid = 6 [(gogoproto.moretags) = 'bson:"emid" msg:"emid"'];          // 设备emid地址
+    string sn = 7 [(gogoproto.moretags) = 'bson:"sn" msg:"sn"'];                // 序列号
+    string osLang = 8 [(gogoproto.moretags) = 'bson:"osLang" msg:"osLang"'];    // 操作系统语言
+    string osVer = 9 [(gogoproto.moretags) = 'bson:"osVer" msg:"osVer"'];       // 操作系统版本
+    string other = 10 [(gogoproto.moretags) = 'bson:"other" msg:"other"'];      // 设备其它信息
 }
 
 // 应用环境信息
@@ -97,18 +97,17 @@ message LoginReq {
 
 // 用户登录成功消息
 message LoginSuccessAck{
-    int32 id = 1 [(gogoproto.moretags) = 'bson:"_id" msg:"id"'];                    // 玩家ID
-    int64 agent = 2 [(gogoproto.moretags) = 'bson:"agent" msg:"agent"'];            // 当前所在代理号
-    int32 icon = 3 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"'];               // 头像
-    int32 sex = 4 [(gogoproto.moretags) = 'bson:"sex" msg:"sex"'];                  // 性别
-    int32 vip = 5 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"'];                  // vip等级
-    string act = 6 [(gogoproto.moretags) = 'bson:"act" msg:"act"'];                 // 关联的账号
-    string name = 7 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];              // 玩家昵称
-    string phone = 8 [(gogoproto.moretags) = 'bson:"phone" msg:"phone"'];           // 手机号
-    map<string, int64> bag = 9 [(gogoproto.moretags) = 'bson:"bag" msg:"bag"'];     // 钱包
-    int32 kind = 10 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];              // 所在游戏分类
-    int32 room = 11 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];              // 当前所在游戏房间
-    int32 tab = 12 [(gogoproto.moretags) = 'bson:"tab" msg:"tab"'];                 // 当前所在游戏桌子号
+    int32 id = 1 [(gogoproto.moretags) = 'bson:"_id" msg:"id"'];                // 玩家ID
+    int64 agent = 2 [(gogoproto.moretags) = 'bson:"agent" msg:"agent"'];        // 当前所在代理号
+    int32 icon = 3 [(gogoproto.moretags) = 'bson:"icon" msg:"icon"'];           // 头像
+    int32 sex = 4 [(gogoproto.moretags) = 'bson:"sex" msg:"sex"'];              // 性别
+    int32 vip = 5 [(gogoproto.moretags) = 'bson:"vip" msg:"vip"'];              // vip等级
+    string act = 6 [(gogoproto.moretags) = 'bson:"act" msg:"act"'];             // 关联的账号
+    string name = 7 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 玩家昵称
+    string phone = 8 [(gogoproto.moretags) = 'bson:"phone" msg:"phone"'];       // 手机号
+    map<string, int64> bag = 9 [(gogoproto.moretags) = 'bson:"bag" msg:"bag"']; // 钱包
+    int32 kind = 10 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];          // 所在游戏分类
+    int32 room = 11 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];          // 当前所在游戏房间
 }
 
 // 用户登录失败消息

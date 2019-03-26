@@ -38,21 +38,10 @@ func NewRbdzDealer() Dealer {
 	return d
 }
 
-func (this *RbdzDealer) Deal(table *Table) {
-	a, b, odds := this.GetPokers(table)
-	note := model.PokerArrayString(a) + "|" + model.PokerArrayString(b)
-	round := table.round
-	round.Odds = odds
-	round.Poker = []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
-	round.Note = note
-	log.Debugf("发牌:%v,%v", note, odds)
-}
-
-func (this *RbdzDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
+func (this *RbdzDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {
-		log.Debugf("重新洗牌:%v", this.i)
 		this.Poker = model.NewPoker(1, false, true)
 		offset = 0
 	}
@@ -62,22 +51,25 @@ func (this *RbdzDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
 	odds := rbdzPk(a, b)
 
 	// 系统必须赢
+	cheat := false
 	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
+			cheat = true
 			offset += 1
 			if offset >= len(this.Poker)/2 {
-				log.Debugf("重新洗牌:%v", this.i)
 				this.Poker = model.NewPoker(1, false, true)
 				offset = 0
 			}
 			a = this.Poker[offset : offset+3]
 			b = this.Poker[offset+3 : offset+6]
 			odds = rbdzPk(a, b)
-			log.Debugf("系统无敌:%v,%v,%v", a, b, odds)
 		}
 	}
 	this.Offset = offset + 6
-	return a, b, odds
+
+	note := model.PokerArrayString(a) + "|" + model.PokerArrayString(b)
+	poker := []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
+	return poker, odds, note, cheat
 }
 
 func rbdzPk(a []byte, b []byte) (odds []int32) {

@@ -56,7 +56,7 @@ message GameBill {
 
 // 百人游戏日志(龙虎/红黑/百家乐/骰宝)
 message GameRound {
-	// 游戏ID(i有建立索引，不要更改名称)
+	// 全局唯一游戏ID(i有建立索引，不要更改名称)
 	int64 id = 1 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
 	// 游戏开始时间(s有建立索引，不要更改名称)
 	int64 start = 2 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
@@ -88,25 +88,29 @@ message GameRound {
 	repeated int64 userBet = 15 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
 	// 庄家ID，0为系统
 	int32 bank = 16 [(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"k,omitempty" msg:"k,omitempty"'];
+	// 系统必赢
+	bool cheat = 17 [(gogoproto.jsontag) = 'v,omitempty', (gogoproto.moretags) = 'bson:"v,omitempty" msg:"v,omitempty"'];
 }
 
 message GameInitAck {
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 table = 1 [(gogoproto.moretags) = 'bson:"table" msg:"table"'];
+	// 当前游戏ID
+	int32 id = 2 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
-	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
+	int32 state = 3 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 本状态剩余时间
-	int32 time = 3 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
+	int32 time = 4 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
-	repeated Player rich = 4 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated Player rich = 5 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 	// 各个区域的投注情况
-	repeated int64 sum = 5 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
+	repeated int64 sum = 6 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
 	// 我的投注情况
-	repeated int64 bet = 6 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	repeated int64 bet = 7 [(gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
 	// 最近的发牌的日志
-	bytes log = 7 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
+	bytes log = 8 [(gogoproto.moretags) = 'bson:"log" msg:"log"'];
 	// 庄家
-	Player bank = 8 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
+	Player bank = 9 [(gogoproto.jsontag) = 'bank,omitempty', (gogoproto.moretags) = 'bson:"bank,omitempty" msg:"bank,omitempty"'];
 }
 
 // 请求下注(红黑/龙虎/百家乐/色宝)
@@ -144,7 +148,7 @@ message UserBetAck{
 // 开放下注
 message OpenBetAck {
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 剩余下注时间
 	int32 time = 2 [(gogoproto.moretags) = 'bson:"time" msg:"time"'];
 	// 富豪玩家(第1个位置为赌神后面5个为富豪)
@@ -162,7 +166,7 @@ message StopBetAck {
 // 开奖结果(红黑/龙虎/百家乐/色宝)
 message GameResult{
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 发牌情况
 	bytes poker = 2 [(gogoproto.moretags) = 'bson:"p" msg:"p"'];
 	// 各个区域的赔付情况
@@ -170,7 +174,7 @@ message GameResult{
 	// 各个区域的投注情况
 	repeated int64 sum = 5 [(gogoproto.moretags) = 'bson:"sum" msg:"sum"'];
 	// 富豪玩家的输赢
-	repeated int64 rich = 6 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
+	repeated sint64 rich = 6 [(gogoproto.moretags) = 'bson:"rich" msg:"rich"'];
 }
 
 // 关闭下注
@@ -178,7 +182,7 @@ message GameDealAck {
 	// 多人游戏开奖结果
 	GameResult r = 1 [(gogoproto.moretags) = 'bson:"r" msg:"r"'];
 	// 我的输赢情况
-	int64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
+	sint64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
 	// 我的金币数
 	int64 coin = 3 [(gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
 }

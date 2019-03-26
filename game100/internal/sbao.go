@@ -20,18 +20,7 @@ func NewSbaoDealer() Dealer {
 	return d
 }
 
-func (this *SbaoDealer) Deal(table *Table) {
-	a, odds := this.GetPokers(table)
-	// 48=字符串‘0’
-	note := string([]byte{a[0] + 48, a[1] + 48, a[2] + 48})
-	round := table.round
-	round.Odds = odds
-	round.Poker = a
-	round.Note = note
-	log.Debugf("开牌:%v,%v", note, odds)
-}
-
-func (this *SbaoDealer) GetPokers(table *Table) ([]byte, []int32) {
+func (this *SbaoDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
 	if gameRand.Int31n(23) == 0 {
 		this.Rand = room.NewRand()
 	}
@@ -44,16 +33,19 @@ func (this *SbaoDealer) GetPokers(table *Table) ([]byte, []int32) {
 	odds := sbaoPk(a)
 
 	// 系统必须赢
+	cheat := false
 	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
+			cheat = true
 			a[0] = byte(this.Int31n(6) + 1)
 			a[1] = byte(this.Int31n(6) + 1)
 			a[2] = byte(this.Int31n(6) + 1)
 			odds = sbaoPk(a)
-			log.Debugf("系统无敌:%v,%v", a, odds)
 		}
 	}
-	return a, odds
+	// 48=字符串‘0’
+	note := string([]byte{a[0] + 48, a[1] + 48, a[2] + 48})
+	return a, odds, note, cheat
 }
 
 func findPoint(a []byte, b byte) int32 {

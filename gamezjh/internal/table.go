@@ -43,6 +43,14 @@ func (table *Table) MustWin() bool {
 	return room.Config.WinRate > gameRand.Int31n(1000)
 }
 
+func(table *Table)GetPlayer()[]*zjh.Player {
+	// TODO: 获取玩家信息
+	if table.round != nil {
+		return table.round.players
+	}
+	return nil
+}
+
 // 增加玩家
 func (table *Table) addRole(role *Role) bool {
 	for i, v := range table.Roles {
@@ -86,13 +94,15 @@ func (table *Table) freeRobots() {
 func (table *Table) sendGameInit(role *Role) {
 	if !role.IsRobot() {
 		ack := &zjh.GameInitAck{
+			Table:  table.Id,
+			Id:     table.CurId,
 			State:  int32(table.State),
 			Player: nil,
 			Poker:  nil,
 		}
 		if round := table.round; round != nil {
-			ack.Id = table.round.Id
 			ack.Ring = table.round.Ring
+			ack.Player = table.GetPlayer()
 		}
 		if bill := role.bill; bill != nil {
 			//ack.Ring = bill.
@@ -110,6 +120,7 @@ func (table *Table) newGameRound() {
 	for i := first; i < chairCount+first; i++ {
 		if role := table.Roles[i%chairCount]; role != nil {
 			role.Reset()
+			role.player.State = zjh.Player_Playing
 			players = append(players, role.GetPlayer())
 			bills = append(bills, role.bill)
 		}
@@ -180,6 +191,8 @@ func (table *Table) ExistsRealPlayer() bool {
 	return false
 }
 
+// 准备时间，15秒
+const readySecond = 15
 // 准备
 func (table *Table) gameReady() {
 	table.delay = 2
@@ -187,21 +200,62 @@ func (table *Table) gameReady() {
 	table.waitSecond = 0
 	table.CurId += 1
 	log.Debugf("%v准备:%v", table.Id, table.CurId)
+	// 设置玩家举手倒计时
+	for _, role := range table.Roles {
+		if role == nil {
+			continue
+		}
+		if role.player.State != zjh.Player_Read {
+			role.player.State = zjh.Player_None
+			role.player.Down = readySecond
+		}
+	}
 }
 
 func (table *Table) gameWait() {
 	table.waitSecond++
-	if table.ExistsRealPlayer() {
-		// 有2个人可以开始
-		if table.RoleCount >= 2 {
-			table.gameOpen()
-		} else {
-			table.delay = 2
-			log.Debugf("%v等待玩家:%v", table.Id, table.CurId)
+	// 真人数量
+	realCount := 0
+	// 所有人都已经准备好
+	allReady := true
+	for _, role := range table.Roles {
+		if role == nil {
+			continue
 		}
-	} else {
-		// 没有真人机器人退出
+		if role.player.State == zjh.Player_None {
+			role.player.Down--
+			if role.IsRobot() {
+				// 机器人准备时间0-4秒,不大于5秒
+				if gameRand.Int31n(4) == 0 || table.waitSecond >= 5 {
+					role.player.State = zjh.Player_Read
+				}
+			} else {
+				// TODO： 真人超时了，强制退出
+				if role.player.Down < 0 {
+					continue
+				}
+			}
+		}
+		if !role.IsRobot() {
+			realCount++
+		}
+		if role.player.State != zjh.Player_Read {
+			allReady = false
+		}
+	}
+
+	if realCount == 0 {
+		// 没有真人了机器人退出
 		table.freeRobots()
+		return
+	}
+
+	if allReady && table.RoleCount >= 2 {
+		// 所有人都已准备，有2个人就可以开始了
+		table.gameOpen()
+	} else {
+		table.delay = 2
+		log.Debugf("%v等待玩家:%v", table.Id, table.CurId)
 	}
 }
 
@@ -211,8 +265,15 @@ func (table *Table) gameOpen() {
 	table.delay = 15
 	table.State = GameStatePlaying
 	table.waitSecond = 0
-	table.newGameRound()
 	log.Debugf("%v开始下注:%v", table.Id, table.CurId)
+	table.newGameRound()
+
+	// 发送消息给玩家
+	table.SendToAll(&zjh.GameStartAck{
+		Id:   table.CurId,
+		Player: table.GetPlayer(),
+	})
+
 }
 
 func (table *Table) gamePlay() {

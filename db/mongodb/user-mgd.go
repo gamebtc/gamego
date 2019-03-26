@@ -105,7 +105,7 @@ func (d *driver) LoadUser(uid model.UserId, ip model.IP) (user *model.User, err 
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}, {"table", zero32}}
+var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}}
 var maxRoom = bson.E{Key: "$max", Value: zeroRoom}
 
 func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Time, req *protocol.LoginReq) (*model.UserLocker, error) {

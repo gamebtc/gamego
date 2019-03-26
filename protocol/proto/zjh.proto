@@ -14,8 +14,8 @@ message Zjh {
 		ActionDiscardAck = 8303;
 		ActionCompareReq = 8304;
 		ActionCompareAck = 8305;
-		ActionBetReq = 8306;
-		ActionBetAck = 8307;
+		ActionAddBetReq = 8306;
+		ActionAddBetAck = 8307;
 		ActionAllinReq = 8308;
 		ActionAllinAck = 8309;
 		ActionLeaveReq = 8310;
@@ -64,7 +64,7 @@ message Player {
 	// 是否已看牌
 	bool look = 9 [(gogoproto.moretags) = 'bson:"look" msg:"look"'];
 	// 倒计时(等待玩家命令倒计时)
-	sint32 down = 10 [(gogoproto.moretags) = 'bson:"down" msg:"down"'];
+	int32 down = 10 [(gogoproto.moretags) = 'bson:"down" msg:"down"'];
 }
 
 // 玩家结算信息
@@ -89,7 +89,7 @@ message GameBill {
 
 // 炸金花日志
 message GameRound {
-	// 游戏ID(i有建立索引，不要更改名称)
+	// 全局唯一游戏ID(i有建立索引，不要更改名称)
 	int64 id = 1 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
 	// 游戏开始时间(s有建立索引，不要更改名称)
 	int64 start = 2 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
@@ -115,6 +115,8 @@ message GameRound {
 	int64 lucky = 12 [(gogoproto.jsontag) = 'l,omitempty', (gogoproto.moretags) = 'bson:"l,omitempty" msg:"l,omitempty"'];
 	// 备注
 	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
+	// 系统必赢
+	bool cheat = 14 [(gogoproto.jsontag) = 'v,omitempty', (gogoproto.moretags) = 'bson:"v,omitempty" msg:"v,omitempty"'];
 }
 
 // 看牌
@@ -150,11 +152,11 @@ message ActionCompareAck{
 }
 
 // 下注(跟注+加注)
-message ActionBetReq{
+message ActionAddBetReq{
 	int64 coin = 1 [(gogoproto.jsontag) = 'c,omitempty', (gogoproto.moretags) = 'bson:"c,omitempty" msg:"c,omitempty"'];
 }
 
-message ActionBetAck{
+message ActionAddBetAck{
 	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 	int64 coin = 2 [(gogoproto.jsontag) = 'c,omitempty', (gogoproto.moretags) = 'bson:"c,omitempty" msg:"c,omitempty"'];
 }
@@ -169,10 +171,10 @@ message ActionAllinAck{
 	int64 coin = 2 [(gogoproto.jsontag) = 'c,omitempty', (gogoproto.moretags) = 'bson:"c,omitempty" msg:"c,omitempty"'];
 }
 
-// 离开
+// 离开/换桌
 message ActionLeaveReq{
-	// 玩家ID
-	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	// 是否继续玩(换桌)
+	bool renew = 1 [(gogoproto.jsontag) = 'n', (gogoproto.moretags) = 'bson:"n" msg:"n"'];
 }
 
 message ActionLeaveAck{
@@ -188,16 +190,20 @@ message ActionLog{
 		Discard = 2;
 		// 超时弃牌
 		Overtime = 3;
-		// 比牌
-		Compare = 4;
-		// 加注
-		Bet = 5;
+		// 比牌赢
+		CompareWin = 4;
+		// 比牌输
+		CompareLose = 5;
+		// 下注(跟注+加注)
+		AddBet = 6;
 		// 全压
-		Allin = 6;
+		Allin = 7;
 		// 自动比牌
-		AutoCompare = 7;
+		AutoCompare = 8;
+		// 换桌玩
+		Renew = 9;
 		// 离开
-		Leave = 8;
+		Leave = 10;
 	}
 	// 时间
 	int64 start = 1 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
@@ -213,23 +219,25 @@ message ActionLog{
 
 message GameInitAck {
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 table = 1 [(gogoproto.moretags) = 'bson:"table" msg:"table"'];
+	// 当前游戏ID
+	int32 id = 2 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 当前游戏状态
-	int32 state = 2 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
+	int32 state = 3 [(gogoproto.moretags) = 'bson:"state" msg:"state"'];
 	// 第几轮
-	int32 ring = 3 [(gogoproto.moretags) = 'bson:"ring" msg:"ring"'];
+	int32 ring = 4 [(gogoproto.moretags) = 'bson:"ring" msg:"ring"'];
 	// 第一个出牌的人
-	int32 first = 4 [(gogoproto.moretags) = 'bson:"first" msg:"first"'];
+	int32 first = 5 [(gogoproto.moretags) = 'bson:"first" msg:"first"'];
 	// 玩家(第1个位置为先)
-	repeated Player player = 5 [(gogoproto.moretags) = 'bson:"play" msg:"play"'];
+	repeated Player player = 6 [(gogoproto.moretags) = 'bson:"play" msg:"play"'];
 	// 我的牌,如果已看牌
-	bytes poker = 6 [(gogoproto.jsontag) = 'p,omitempty', (gogoproto.moretags) = 'bson:"p,omitempty" msg:"p,omitempty"'];
+	bytes poker = 7 [(gogoproto.jsontag) = 'p,omitempty', (gogoproto.moretags) = 'bson:"p,omitempty" msg:"p,omitempty"'];
 }
 
 // 游戏开始
 message GameStartAck {
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 玩家(第1个位置为先)
 	repeated Player player = 2 [(gogoproto.moretags) = 'bson:"play" msg:"play"'];
 }
@@ -237,7 +245,7 @@ message GameStartAck {
 // 游戏结束
 message GameEndAck {
 	// 当前游戏ID
-	int64 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];
 	// 赢钱数
 	int64 win = 2 [(gogoproto.moretags) = 'bson:"win" msg:"win"'];
 	// 赢家

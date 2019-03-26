@@ -166,7 +166,6 @@ func (hall *gameHall) UserOnline(sess *room.Session, user *model.User) {
 	sess.UnsafeSend(&protocol.LoginRoomAck{
 		Room: room.RoomId,
 		Kind: room.KindId,
-		Tab:  table.Id,
 	})
 	table.addRole(role)
 	table.sendGameInit(role)

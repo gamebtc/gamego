@@ -24,7 +24,7 @@ const (
 
 type Dealer interface {
 	// 发牌
-	Deal(table *Table)
+	Deal(table *Table)(pocker []byte, odd []int32, note string, cheat bool)
 }
 
 // 开始下注：下注时间12秒
@@ -34,8 +34,8 @@ type Dealer interface {
 type Table struct {
 	Dealer
 	Id       int32                  // 桌子ID
-	CurId    int64                  // 当前局的ID
-	LastId   int64                  // 最后的局ID
+	CurId    int32                  // 当前局的ID
+	LastId   int32                  // 最后的局ID
 	Log      []byte                 // 最后60局的发牌情况
 	State    GameState              // 0:准备;1:下注中;2:结算
 	Roles    map[model.UserId]*Role // 所有真实游戏玩家
@@ -99,13 +99,14 @@ func (table *Table) addRobot(robot *Role) {
 func (table *Table) sendGameInit(role *Role) {
 	// 真实玩家
 	ack := &folks.GameInitAck{
+		Table: table.Id,
+		Id:    table.CurId,
 		State: int32(table.State),
 		Time:  table.delay,
-		Log:   table.Log,
 		Rich:  table.GetRichPlayer(),
+		Log:   table.Log,
 	}
 	if round := table.round; round != nil {
-		ack.Id = round.Id
 		ack.Sum = round.Group
 	}
 	if bill := role.bill; bill != nil {
@@ -347,23 +348,11 @@ func (table *Table) sendDealResult() {
 	}
 }
 
-// 结算
-func (table *Table) balance() {
-	// 结算真人
-	for _, role := range table.Roles {
-		role.Balance()
-	}
-	// 结算机器人
-	for _, role := range table.Robots {
-		role.Balance()
-	}
-}
-
 // 准备
 func (table *Table) gameReady() {
 	table.delay = 5
 	table.State = GameStateReady
-	table.CurId += 1
+	table.CurId++
 	log.Debugf("%v准备:%v", gameName, table.CurId)
 }
 
@@ -419,11 +408,24 @@ func (table *Table) gameDeal() {
 	table.State = GameStateDeal
 	log.Debugf("发牌结算:%v", table.CurId)
 	// 发牌
-	table.Dealer.Deal(table)
-	// 结算
-	table.balance()
-	//
+	poker, odds, note, cheat := table.Dealer.Deal(table)
 	round := table.round
+	round.Odds = odds
+	round.Poker = poker
+	round.Note = note
+	round.Cheat = cheat
+	log.Debugf("发牌:%v,%v", note, odds)
+
+	// 结算真人
+	for _, role := range table.Roles {
+		role.Balance()
+	}
+	// 结算机器人
+	for _, role := range table.Robots {
+		role.Balance()
+	}
+
+	// 保存牌局
 	table.LastId = table.CurId
 	round.End = room.Now()
 	room.SaveLog(round)

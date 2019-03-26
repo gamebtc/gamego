@@ -39,14 +39,42 @@ func NewBjlDealer() Dealer {
 	return d
 }
 
-func (this *BjlDealer) Deal(table *Table) {
-	a, b, odds := this.GetPokers(table)
+func (this *BjlDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
+	// 检查剩余牌数量
+	offset := this.Offset
+	if offset >= len(this.Poker)/2 {
+		this.Poker = model.NewPoker(8, false, true)
+		offset = 0
+	}
+	// 闲庄先各取2张牌
+	a := []byte{this.Poker[offset], this.Poker[offset+2], 0}
+	b := []byte{this.Poker[offset+1], this.Poker[offset+3], 0}
+	count := this.repairCard(a, b, offset+4)
+	odds := bjlPk(a, b)
+
+	// 系统必须赢
+	cheat := false
+	if table.MustWin() {
+		for table.CheckWin(odds) < 0 {
+			cheat = true
+			offset += 1
+			if offset >= len(this.Poker)/2 {
+				this.Poker = model.NewPoker(8, false, true)
+				offset = 0
+			}
+			// 闲庄先各取2张牌
+			a[0], a[1], a[2] = this.Poker[offset], this.Poker[offset+2], 0
+			b[0], b[1], b[2] = this.Poker[offset+1], this.Poker[offset+3], 0
+			count = this.repairCard(a, b, offset+4)
+			odds = bjlPk(a, b)
+		}
+	}
+	this.Offset = offset + 4 + count
+
+	//
 	note := model.PokerArrayString(a) + "|" + model.PokerArrayString(b)
-	round := table.round
-	round.Odds = odds
-	round.Poker = []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
-	round.Note = note
-	log.Debugf("发牌:%v,%v", note, odds)
+	poker := []byte{a[0], a[1], a[2], b[0], b[1], b[2]}
+	return poker, odds, note, cheat
 }
 
 func getBjlPoint(a []byte) byte {
@@ -54,7 +82,7 @@ func getBjlPoint(a []byte) byte {
 }
 
 // 是否补牌
-func (this *BjlDealer) RepairCard(a, b []byte, offset int) int {
+func (this *BjlDealer) repairCard(a, b []byte, offset int) int {
 	count := 0
 	pa := getBjlPoint(a)
 	pb := getBjlPoint(b)
@@ -96,41 +124,6 @@ func (this *BjlDealer) RepairCard(a, b []byte, offset int) int {
 		}
 	}
 	return count
-}
-
-func (this *BjlDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
-	// 检查剩余牌数量
-	offset := this.Offset
-	if offset >= len(this.Poker)/2 {
-		log.Debugf("重新洗牌:%v", this.i)
-		this.Poker = model.NewPoker(8, false, true)
-		offset = 0
-	}
-	// 闲庄先各取2张牌
-	a := []byte{this.Poker[offset], this.Poker[offset+2], 0}
-	b := []byte{this.Poker[offset+1], this.Poker[offset+3], 0}
-	count := this.RepairCard(a, b, offset+4)
-	odds := bjlPk(a, b)
-
-	// 系统必须赢
-	if table.MustWin() {
-		for table.CheckWin(odds) < 0 {
-			offset += 1
-			if offset >= len(this.Poker)/2 {
-				log.Debugf("重新洗牌:%v", this.i)
-				this.Poker = model.NewPoker(8, false, true)
-				offset = 0
-			}
-			// 闲庄先各取2张牌
-			a[0], a[1], a[2] = this.Poker[offset], this.Poker[offset+2], 0
-			b[0], b[1], b[2] = this.Poker[offset+1], this.Poker[offset+3], 0
-			count = this.RepairCard(a, b, offset+4)
-			odds = bjlPk(a, b)
-			log.Debugf("系统无敌:%v,%v,%v", a, b, odds)
-		}
-	}
-	this.Offset = offset + 4 + count
-	return a, b, odds
 }
 
 func bjlPk(a []byte, b []byte) (odds []int32) {

@@ -245,16 +245,6 @@ func (z *LoginRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "tab":
-			z.Tab, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
-		case "seat":
-			z.Seat, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
 		case "code":
 			z.Code, err = dc.ReadInt32()
 			if err != nil {
@@ -277,9 +267,9 @@ func (z *LoginRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *LoginRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 6
+	// map header, size 4
 	// write "kind"
-	err = en.Append(0x86, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	err = en.Append(0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
 	if err != nil {
 		return err
 	}
@@ -293,24 +283,6 @@ func (z *LoginRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
 		return err
 	}
 	err = en.WriteInt32(z.Room)
-	if err != nil {
-		return
-	}
-	// write "tab"
-	err = en.Append(0xa3, 0x74, 0x61, 0x62)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt32(z.Tab)
-	if err != nil {
-		return
-	}
-	// write "seat"
-	err = en.Append(0xa4, 0x73, 0x65, 0x61, 0x74)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt32(z.Seat)
 	if err != nil {
 		return
 	}
@@ -338,19 +310,13 @@ func (z *LoginRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *LoginRoomAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 6
+	// map header, size 4
 	// string "kind"
-	o = append(o, 0x86, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	o = append(o, 0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
 	o = msgp.AppendInt32(o, z.Kind)
 	// string "room"
 	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
 	o = msgp.AppendInt32(o, z.Room)
-	// string "tab"
-	o = append(o, 0xa3, 0x74, 0x61, 0x62)
-	o = msgp.AppendInt32(o, z.Tab)
-	// string "seat"
-	o = append(o, 0xa4, 0x73, 0x65, 0x61, 0x74)
-	o = msgp.AppendInt32(o, z.Seat)
 	// string "code"
 	o = append(o, 0xa4, 0x63, 0x6f, 0x64, 0x65)
 	o = msgp.AppendInt32(o, z.Code)
@@ -386,16 +352,6 @@ func (z *LoginRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "tab":
-			z.Tab, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "seat":
-			z.Seat, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
 		case "code":
 			z.Code, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
@@ -419,7 +375,7 @@ func (z *LoginRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *LoginRoomAck) Msgsize() (s int) {
-	s = 1 + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Msg)
+	s = 1 + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Msg)
 	return
 }
 

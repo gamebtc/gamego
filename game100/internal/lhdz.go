@@ -1,8 +1,6 @@
 package internal
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"local.com/abc/game/model"
 )
 
@@ -53,54 +51,45 @@ func NewLhdzDealer() Dealer {
 	return d
 }
 
-func (this *LhdzDealer) Deal(table *Table) {
-	a, b, odds := this.GetPokers(table)
-	note := model.PokerArrayString(a) + "|" + model.PokerArrayString(b)
-	round := table.round
-	round.Odds = odds
-	round.Poker = []byte{a[0], b[0]}
-	round.Note = note
-	log.Debugf("发牌:%v,%v", note, odds)
-}
-
-func (this *LhdzDealer) GetPokers(table *Table) ([]byte, []byte, []int32) {
+func (this *LhdzDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
 	// 检查剩余牌数量
 	offset := this.Offset
 	if offset >= len(this.Poker)/2 {
-		log.Debugf("重新洗牌:%v", this.i)
 		this.Poker = model.NewPoker(8, false, true)
 		offset = 0
 	}
 	// 龙虎各取1张牌
-	a := this.Poker[offset : offset+1]
-	b := this.Poker[offset+1 : offset+2]
-
+	a := this.Poker[offset]
+	b := this.Poker[offset+1]
 	odds := lhdzPk(a, b)
 
 	// 系统必须赢
+	cheat := false
 	if table.MustWin() {
 		for table.CheckWin(odds) < 0 {
+			cheat = true
 			offset += 1
 			if offset >= len(this.Poker)/2 {
-				log.Debugf("重新洗牌:%v", this.i)
 				this.Poker = model.NewPoker(8, false, true)
 				offset = 0
 			}
-			a = this.Poker[offset : offset+1]
-			b = this.Poker[offset+1 : offset+2]
+			a = this.Poker[offset]
+			b = this.Poker[offset+1]
 			odds = lhdzPk(a, b)
-			log.Debugf("系统无敌:%v,%v,%v", a, b, odds)
 		}
 	}
-
 	this.Offset = offset + 2
-	return a, b, odds
+
+	//
+	note := model.PokerString(a) + "|" + model.PokerString(b)
+	poker := []byte{a, b}
+	return poker, odds, note, cheat
 }
 
-func lhdzPk(a []byte, b []byte) (odds []int32) {
+func lhdzPk(a byte, b byte) (odds []int32) {
 	// 龙虎比较大小(0:龙赢,1:虎赢,2:和)
-	pa := dtPoint[a[0]]
-	pb := dtPoint[b[0]] //b[0] & 0X0f
+	pa := dtPoint[a]
+	pb := dtPoint[b] //b[0] & 0X0f
 	if pa > pb {
 		odds = dragonWin
 	} else if pa < pb {

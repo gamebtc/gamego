@@ -99,7 +99,7 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}, {"table", zero32}}
+var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}}
 var maxRoom = bson.DocElem{Name: "$max", Value: zeroRoom}
 
 func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
