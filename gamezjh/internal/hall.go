@@ -27,13 +27,7 @@ var (
 	runTables    []*Table // 游戏中的桌子
 )
 
-type GameRound struct {
-	zjh.GameRound `bson:",inline"`           //
-	Log           []interface{} `bson:"log"` // 游戏日志
-	firstChair    int32         `bson:"-"`   // 首家位置
-	waitChair     int32         `bson:"-"`   // 等待位置
-	players       []*zjh.Player `bson:"-"`   // 游戏中的玩家
-}
+type GameRound = zjh.GameRound
 
 // 桌面对战游戏大厅(斗地主/炸金花/抢庄牛/五张/德州)
 type gameHall struct {
@@ -195,7 +189,12 @@ func (hall *gameHall) Start() {
 
 	// 注册消息和事件
 	room.RegistEvent(room.EventConfigChanged, configChange)
-	room.RegistMsg(int32(zjh.Zjh_ActionAllinAck), &zjh.ActionAllinAck{})
+	room.RegistMsg(int32(zjh.Code_CodeActionAck), &zjh.ActionAck{})
+	room.RegistMsg(int32(zjh.Code_CodeGameInitAck), &zjh.GameInitAck{})
+	room.RegistMsg(int32(zjh.Code_CodeGameStartAck), &zjh.GameStartAck{})
+	room.RegistMsg(int32(zjh.Code_CodeGameEndAck), &zjh.GameEndAck{})
+
+	room.RegistHandler(int32(zjh.Code_CodeActionReq), &zjh.ActionReq{}, action)
 
 	// 创建所有的桌子
 	tableCount := room.Config.Tab
@@ -272,3 +271,47 @@ func roomClose(event *room.GameEvent) {
 	args := event.Arg.(*model.RoomInfo)
 	args.Pause = 0
 }
+
+// 玩家动作
+func action(m *room.NetMessage) {
+	log.Debugf("action:%v", m)
+	role, ok := m.Session.Role.(*Role)
+	if ok == false || role == nil {
+		log.Debugf("action: role is nil")
+		return
+	}
+	//获取参数
+	req, ok := m.Arg.(*zjh.ActionReq)
+	if ok == false || req == nil {
+		log.Debugf("action: is nil")
+		return
+	}
+
+	if role.table == nil {
+		return
+	}
+
+	if role.table.round == nil {
+		return
+	}
+
+	switch req.Type {
+	case zjh.ActionType_ActionReady: // 准备
+	    role.Ready()
+	case zjh.ActionType_ActionLook: // 看牌
+		role.Look()
+	case zjh.ActionType_ActionDiscard: // 主动弃牌
+		role.Discard(false)
+	case zjh.ActionType_ActionOvertime: // 超时弃牌
+		role.Discard(true)
+	case zjh.ActionType_ActionCompare: // 比牌
+		role.Compare(req.Opponent)
+	case zjh.ActionType_ActionAddBet: // 下注(跟注+加注)
+		role.AddBet(req.Bet)
+	case zjh.ActionType_ActionAllin: // 全压
+		role.Allin()
+	case zjh.ActionType_ActionRenew: // 换桌玩
+		role.RenewDesk()
+	}
+}
+

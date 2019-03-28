@@ -32,8 +32,10 @@ message RoomListAck{
 
 // 用户连接房间
 message LoginRoomReq{
-	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];             // 房间ID
-	string args = 2 [(gogoproto.moretags) = 'bson:"args" msg:"args"'];      // 其它参数
+	int32 kind = 1 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];       // 游戏ID
+	int32 level = 2 [(gogoproto.moretags) = 'bson:"level" msg:"level"'];    // 房间等级
+	int32 room = 3 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
+	string args = 4 [(gogoproto.moretags) = 'bson:"args" msg:"args"'];      // 其它参数
 }
 
 // 用户连接房间

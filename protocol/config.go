@@ -8,7 +8,7 @@ type ConsulConfig struct {
 	Ttl          int      `yaml:"ttl"`
 	ServerPrefix string   `yaml:"serverPrefix"`
 	RoomPrefix   string   `yaml:"roomPrefix"`
-	Services     []int32 `yaml:"services"`
+	Services     []int32  `yaml:"services"`
 }
 
 type GrpcConfig struct {
@@ -56,8 +56,8 @@ type DatabaseConfig struct {
 
 // 房间服务配置
 type RoomConfig struct {
-	Id      int32     `yaml:"id"`      //房间唯一ID
-	Kind    int32     `yaml:"kind"`    //游戏分类
-	Key     string    `yaml:"key"`     //服务器KEY
-	Addr    string    `yaml:"addr"`    //服务器地址
+	Id   int32    `yaml:"id" bson:"_id"`    //房间唯一ID
+	Kind int32    `yaml:"kind" bson:"kind"` //游戏分类
+	Key  string   `yaml:"key" bson:"-"`     //服务器KEY
+	Addr []string `yaml:"addr" bson:"addr"` //服务器地址
 }

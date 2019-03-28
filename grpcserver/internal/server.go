@@ -209,3 +209,14 @@ func allocAgentId(ctx context.Context, in interface{})interface{} {
 	binary.BigEndian.PutUint64(r.Data, uint64(start))
 	return r
 }
+
+// 查找房间地址
+func findRoomAddr(ctx context.Context, in interface{})interface{} {
+	raw := in.([]byte)
+	count := binary.BigEndian.Uint32(raw[HeadLen:])
+	start := driver.NewSN("aid", int64(count))
+
+	r := &GameFrame{Data: make([]byte, 8)}
+	binary.BigEndian.PutUint64(r.Data, uint64(start))
+	return r
+}

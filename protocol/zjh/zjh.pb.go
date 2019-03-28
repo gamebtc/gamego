@@ -21,70 +21,100 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
-type Zjh_Code int32
+type Code int32
 
 const (
 	// 8300-8399(炸金花)
-	Zjh_None             Zjh_Code = 0
-	Zjh_ActionLookReq    Zjh_Code = 8300
-	Zjh_ActionLookAck    Zjh_Code = 8301
-	Zjh_ActionDiscardReq Zjh_Code = 8302
-	Zjh_ActionDiscardAck Zjh_Code = 8303
-	Zjh_ActionCompareReq Zjh_Code = 8304
-	Zjh_ActionCompareAck Zjh_Code = 8305
-	Zjh_ActionAddBetReq  Zjh_Code = 8306
-	Zjh_ActionAddBetAck  Zjh_Code = 8307
-	Zjh_ActionAllinReq   Zjh_Code = 8308
-	Zjh_ActionAllinAck   Zjh_Code = 8309
-	Zjh_ActionLeaveReq   Zjh_Code = 8310
-	Zjh_ActionLeaveAck   Zjh_Code = 8311
-	Zjh_GameInitAck      Zjh_Code = 8313
-	Zjh_GameStartAck     Zjh_Code = 8315
-	Zjh_GameEndAck       Zjh_Code = 8316
+	Code_CodeNone         Code = 0
+	Code_CodeActionReq    Code = 8300
+	Code_CodeActionAck    Code = 8301
+	Code_CodeGameInitAck  Code = 8303
+	Code_CodeGameStartAck Code = 8305
+	Code_CodeGameEndAck   Code = 8307
 )
 
-var Zjh_Code_name = map[int32]string{
-	0:    "None",
-	8300: "ActionLookReq",
-	8301: "ActionLookAck",
-	8302: "ActionDiscardReq",
-	8303: "ActionDiscardAck",
-	8304: "ActionCompareReq",
-	8305: "ActionCompareAck",
-	8306: "ActionAddBetReq",
-	8307: "ActionAddBetAck",
-	8308: "ActionAllinReq",
-	8309: "ActionAllinAck",
-	8310: "ActionLeaveReq",
-	8311: "ActionLeaveAck",
-	8313: "GameInitAck",
-	8315: "GameStartAck",
-	8316: "GameEndAck",
+var Code_name = map[int32]string{
+	0:    "CodeNone",
+	8300: "CodeActionReq",
+	8301: "CodeActionAck",
+	8303: "CodeGameInitAck",
+	8305: "CodeGameStartAck",
+	8307: "CodeGameEndAck",
 }
-var Zjh_Code_value = map[string]int32{
-	"None":             0,
-	"ActionLookReq":    8300,
-	"ActionLookAck":    8301,
-	"ActionDiscardReq": 8302,
-	"ActionDiscardAck": 8303,
-	"ActionCompareReq": 8304,
-	"ActionCompareAck": 8305,
-	"ActionAddBetReq":  8306,
-	"ActionAddBetAck":  8307,
-	"ActionAllinReq":   8308,
-	"ActionAllinAck":   8309,
-	"ActionLeaveReq":   8310,
-	"ActionLeaveAck":   8311,
-	"GameInitAck":      8313,
-	"GameStartAck":     8315,
-	"GameEndAck":       8316,
+var Code_value = map[string]int32{
+	"CodeNone":         0,
+	"CodeActionReq":    8300,
+	"CodeActionAck":    8301,
+	"CodeGameInitAck":  8303,
+	"CodeGameStartAck": 8305,
+	"CodeGameEndAck":   8307,
 }
 
-func (x Zjh_Code) String() string {
-	return proto.EnumName(Zjh_Code_name, int32(x))
+func (x Code) String() string {
+	return proto.EnumName(Code_name, int32(x))
 }
-func (Zjh_Code) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{0, 0}
+func (Code) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{0}
+}
+
+type ActionType int32
+
+const (
+	ActionType_ActionNone ActionType = 0
+	// 准备
+	ActionType_ActionReady ActionType = 1
+	// 看牌
+	ActionType_ActionLook ActionType = 2
+	// 主动弃牌
+	ActionType_ActionDiscard ActionType = 3
+	// 超时弃牌
+	ActionType_ActionOvertime ActionType = 4
+	// 比牌
+	ActionType_ActionCompare ActionType = 5
+	// 下注(跟注+加注)
+	ActionType_ActionAddBet ActionType = 6
+	// 全压
+	ActionType_ActionAllin ActionType = 7
+	// 自动比牌
+	ActionType_ActionAutoCompare ActionType = 8
+	// 换桌玩
+	ActionType_ActionRenew ActionType = 9
+	// 离开
+	ActionType_ActionLeave ActionType = 10
+)
+
+var ActionType_name = map[int32]string{
+	0:  "ActionNone",
+	1:  "ActionReady",
+	2:  "ActionLook",
+	3:  "ActionDiscard",
+	4:  "ActionOvertime",
+	5:  "ActionCompare",
+	6:  "ActionAddBet",
+	7:  "ActionAllin",
+	8:  "ActionAutoCompare",
+	9:  "ActionRenew",
+	10: "ActionLeave",
+}
+var ActionType_value = map[string]int32{
+	"ActionNone":        0,
+	"ActionReady":       1,
+	"ActionLook":        2,
+	"ActionDiscard":     3,
+	"ActionOvertime":    4,
+	"ActionCompare":     5,
+	"ActionAddBet":      6,
+	"ActionAllin":       7,
+	"ActionAutoCompare": 8,
+	"ActionRenew":       9,
+	"ActionLeave":       10,
+}
+
+func (x ActionType) String() string {
+	return proto.EnumName(ActionType_name, int32(x))
+}
+func (ActionType) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{1}
 }
 
 type Player_State int32
@@ -93,140 +123,48 @@ const (
 	// 没有准备
 	Player_None Player_State = 0
 	// 已准备
-	Player_Read Player_State = 1
+	Player_Ready Player_State = 1
 	// 游戏中
 	Player_Playing Player_State = 2
+	// 全押
+	Player_Allin Player_State = 3
 	// 已弃牌
-	Player_Discard Player_State = 3
+	Player_Discard Player_State = 4
 	// PK失败
-	Player_Lost Player_State = 4
+	Player_Lose Player_State = 5
 	// 赢得最终胜利
-	Player_Win Player_State = 5
+	Player_Win Player_State = 6
 	// 离开
-	Player_Leave Player_State = 6
+	Player_Leave Player_State = 7
 )
 
 var Player_State_name = map[int32]string{
 	0: "None",
-	1: "Read",
+	1: "Ready",
 	2: "Playing",
-	3: "Discard",
-	4: "Lost",
-	5: "Win",
-	6: "Leave",
+	3: "Allin",
+	4: "Discard",
+	5: "Lose",
+	6: "Win",
+	7: "Leave",
 }
 var Player_State_value = map[string]int32{
 	"None":    0,
-	"Read":    1,
+	"Ready":   1,
 	"Playing": 2,
-	"Discard": 3,
-	"Lost":    4,
-	"Win":     5,
-	"Leave":   6,
+	"Allin":   3,
+	"Discard": 4,
+	"Lose":    5,
+	"Win":     6,
+	"Leave":   7,
 }
 
 func (x Player_State) String() string {
 	return proto.EnumName(Player_State_name, int32(x))
 }
 func (Player_State) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{1, 0}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{0, 0}
 }
-
-type ActionLog_Type int32
-
-const (
-	ActionLog_None ActionLog_Type = 0
-	// 看牌
-	ActionLog_Look ActionLog_Type = 1
-	// 主动弃牌
-	ActionLog_Discard ActionLog_Type = 2
-	// 超时弃牌
-	ActionLog_Overtime ActionLog_Type = 3
-	// 比牌赢
-	ActionLog_CompareWin ActionLog_Type = 4
-	// 比牌输
-	ActionLog_CompareLose ActionLog_Type = 5
-	// 下注(跟注+加注)
-	ActionLog_AddBet ActionLog_Type = 6
-	// 全压
-	ActionLog_Allin ActionLog_Type = 7
-	// 自动比牌
-	ActionLog_AutoCompare ActionLog_Type = 8
-	// 换桌玩
-	ActionLog_Renew ActionLog_Type = 9
-	// 离开
-	ActionLog_Leave ActionLog_Type = 10
-)
-
-var ActionLog_Type_name = map[int32]string{
-	0:  "None",
-	1:  "Look",
-	2:  "Discard",
-	3:  "Overtime",
-	4:  "CompareWin",
-	5:  "CompareLose",
-	6:  "AddBet",
-	7:  "Allin",
-	8:  "AutoCompare",
-	9:  "Renew",
-	10: "Leave",
-}
-var ActionLog_Type_value = map[string]int32{
-	"None":        0,
-	"Look":        1,
-	"Discard":     2,
-	"Overtime":    3,
-	"CompareWin":  4,
-	"CompareLose": 5,
-	"AddBet":      6,
-	"Allin":       7,
-	"AutoCompare": 8,
-	"Renew":       9,
-	"Leave":       10,
-}
-
-func (x ActionLog_Type) String() string {
-	return proto.EnumName(ActionLog_Type_name, int32(x))
-}
-func (ActionLog_Type) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{16, 0}
-}
-
-type Zjh struct {
-}
-
-func (m *Zjh) Reset()         { *m = Zjh{} }
-func (m *Zjh) String() string { return proto.CompactTextString(m) }
-func (*Zjh) ProtoMessage()    {}
-func (*Zjh) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{0}
-}
-func (m *Zjh) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Zjh) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Zjh.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *Zjh) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Zjh.Merge(dst, src)
-}
-func (m *Zjh) XXX_Size() int {
-	return m.Size()
-}
-func (m *Zjh) XXX_DiscardUnknown() {
-	xxx_messageInfo_Zjh.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Zjh proto.InternalMessageInfo
 
 // 玩家信息
 type Player struct {
@@ -256,7 +194,7 @@ func (m *Player) Reset()         { *m = Player{} }
 func (m *Player) String() string { return proto.CompactTextString(m) }
 func (*Player) ProtoMessage()    {}
 func (*Player) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{1}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{0}
 }
 func (m *Player) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -371,15 +309,21 @@ type GameBill struct {
 	Win int64 `protobuf:"zigzag64,6,opt,name=win,proto3" json:"w" bson:"w" msg:"w"`
 	// 税收
 	Tax int64 `protobuf:"varint,7,opt,name=tax,proto3" json:"x,omitempty" bson:"x,omitempty" msg:"x,omitempty"`
+	// 进入彩池的税收
+	Water int64 `protobuf:"varint,8,opt,name=water,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
+	// 喜钱，从彩池单独出
+	Lucky int64 `protobuf:"varint,9,opt,name=lucky,proto3" json:"y,omitempty" bson:"y,omitempty" msg:"y,omitempty"`
 	// 和机器人之间的输赢
-	WinRobot int64 `protobuf:"zigzag64,8,opt,name=winRobot,proto3" json:"t,omitempty" bson:"t,omitempty" msg:"t,omitempty"`
+	Robot int64 `protobuf:"zigzag64,10,opt,name=robot,proto3" json:"t,omitempty" bson:"t,omitempty" msg:"t,omitempty"`
+	// PK过的玩家ID
+	Pk []int32 `protobuf:"varint,11,rep,packed,name=pk,proto3" json:"k,omitempty" bson:"-,omitempty" msg:"k,omitempty"`
 }
 
 func (m *GameBill) Reset()         { *m = GameBill{} }
 func (m *GameBill) String() string { return proto.CompactTextString(m) }
 func (*GameBill) ProtoMessage()    {}
 func (*GameBill) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{2}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{1}
 }
 func (m *GameBill) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -457,11 +401,32 @@ func (m *GameBill) GetTax() int64 {
 	return 0
 }
 
-func (m *GameBill) GetWinRobot() int64 {
+func (m *GameBill) GetWater() int64 {
 	if m != nil {
-		return m.WinRobot
+		return m.Water
 	}
 	return 0
+}
+
+func (m *GameBill) GetLucky() int64 {
+	if m != nil {
+		return m.Lucky
+	}
+	return 0
+}
+
+func (m *GameBill) GetRobot() int64 {
+	if m != nil {
+		return m.Robot
+	}
+	return 0
+}
+
+func (m *GameBill) GetPk() []int32 {
+	if m != nil {
+		return m.Pk
+	}
+	return nil
 }
 
 // 炸金花日志
@@ -478,29 +443,35 @@ type GameRound struct {
 	Tab int32 `protobuf:"varint,5,opt,name=tab,proto3" json:"t" bson:"t" msg:"t"`
 	// 所有玩家结算汇总(b.u有建立索引，不要更改名称)
 	Bill []*GameBill `protobuf:"bytes,6,rep,name=bill,proto3" json:"b" bson:"b" msg:"b"`
+	// 底注
+	Ante int64 `protobuf:"varint,7,opt,name=ante,proto3" json:"a" bson:"a" msg:"a"`
 	// 下注轮数
-	Ring int32 `protobuf:"varint,7,opt,name=ring,proto3" json:"g" bson:"g" msg:"g"`
+	Ring int32 `protobuf:"varint,8,opt,name=ring,proto3" json:"g" bson:"g" msg:"g"`
 	// 下注总金币
-	Sum int64 `protobuf:"varint,8,opt,name=sum,proto3" json:"m" bson:"m" msg:"m"`
+	Sum int64 `protobuf:"varint,9,opt,name=sum,proto3" json:"m" bson:"m" msg:"m"`
 	// 系统输赢
-	Win int64 `protobuf:"zigzag64,9,opt,name=win,proto3" json:"w" bson:"w" msg:"w"`
+	Win int64 `protobuf:"zigzag64,10,opt,name=win,proto3" json:"w" bson:"w" msg:"w"`
 	// 系统总税收
-	Tax int64 `protobuf:"varint,10,opt,name=tax,proto3" json:"x" bson:"x" msg:"x"`
+	Tax int64 `protobuf:"varint,11,opt,name=tax,proto3" json:"x" bson:"x" msg:"x"`
 	// 进入彩池的税收
-	Pool int64 `protobuf:"varint,11,opt,name=pool,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
+	Water int64 `protobuf:"varint,12,opt,name=water,proto3" json:"o" bson:"o" msg:"o"`
+	// 动作日志
+	Log []*ActionLog `protobuf:"bytes,13,rep,name=log,proto3" json:"l" bson:"l" msg:"l"`
+	// 当前池子的钱
+	Pool int64 `protobuf:"varint,14,opt,name=pool,proto3" json:"p" bson:"p" msg:"p"`
 	// 喜钱，从彩池单独出
-	Lucky int64 `protobuf:"varint,12,opt,name=lucky,proto3" json:"l,omitempty" bson:"l,omitempty" msg:"l,omitempty"`
+	Lucky int64 `protobuf:"varint,15,opt,name=lucky,proto3" json:"y,omitempty" bson:"y,omitempty" msg:"y,omitempty"`
 	// 备注
-	Note string `protobuf:"bytes,13,opt,name=note,proto3" json:"n,omitempty" bson:"n,omitempty" msg:"n,omitempty"`
+	Note string `protobuf:"bytes,16,opt,name=note,proto3" json:"n,omitempty" bson:"n,omitempty" msg:"n,omitempty"`
 	// 系统必赢
-	Cheat bool `protobuf:"varint,14,opt,name=cheat,proto3" json:"v,omitempty" bson:"v,omitempty" msg:"v,omitempty"`
+	Cheat bool `protobuf:"varint,17,opt,name=cheat,proto3" json:"v,omitempty" bson:"v,omitempty" msg:"v,omitempty"`
 }
 
 func (m *GameRound) Reset()         { *m = GameRound{} }
 func (m *GameRound) String() string { return proto.CompactTextString(m) }
 func (*GameRound) ProtoMessage()    {}
 func (*GameRound) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{3}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{2}
 }
 func (m *GameRound) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -571,6 +542,13 @@ func (m *GameRound) GetBill() []*GameBill {
 	return nil
 }
 
+func (m *GameRound) GetAnte() int64 {
+	if m != nil {
+		return m.Ante
+	}
+	return 0
+}
+
 func (m *GameRound) GetRing() int32 {
 	if m != nil {
 		return m.Ring
@@ -597,6 +575,20 @@ func (m *GameRound) GetTax() int64 {
 		return m.Tax
 	}
 	return 0
+}
+
+func (m *GameRound) GetWater() int64 {
+	if m != nil {
+		return m.Water
+	}
+	return 0
+}
+
+func (m *GameRound) GetLog() []*ActionLog {
+	if m != nil {
+		return m.Log
+	}
+	return nil
 }
 
 func (m *GameRound) GetPool() int64 {
@@ -627,24 +619,28 @@ func (m *GameRound) GetCheat() bool {
 	return false
 }
 
-// 看牌
-type ActionLookReq struct {
-	// 玩家ID
-	Uid int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
+// 打牌请求
+type ActionReq struct {
+	// 动作类型
+	Type ActionType `protobuf:"varint,1,opt,name=type,proto3,enum=zjh.ActionType" json:"t" bson:"t" msg:"t"`
+	// 下注
+	Bet int32 `protobuf:"varint,2,opt,name=bet,proto3" json:"b,omitempty" bson:"b,omitempty" msg:"b,omitempty"`
+	// 对手ID
+	Opponent int32 `protobuf:"varint,3,opt,name=opponent,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
 }
 
-func (m *ActionLookReq) Reset()         { *m = ActionLookReq{} }
-func (m *ActionLookReq) String() string { return proto.CompactTextString(m) }
-func (*ActionLookReq) ProtoMessage()    {}
-func (*ActionLookReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{4}
+func (m *ActionReq) Reset()         { *m = ActionReq{} }
+func (m *ActionReq) String() string { return proto.CompactTextString(m) }
+func (*ActionReq) ProtoMessage()    {}
+func (*ActionReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{3}
 }
-func (m *ActionLookReq) XXX_Unmarshal(b []byte) error {
+func (m *ActionReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ActionLookReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ActionReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ActionLookReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ActionReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -654,545 +650,134 @@ func (m *ActionLookReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (dst *ActionLookReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionLookReq.Merge(dst, src)
+func (dst *ActionReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActionReq.Merge(dst, src)
 }
-func (m *ActionLookReq) XXX_Size() int {
+func (m *ActionReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *ActionLookReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionLookReq.DiscardUnknown(m)
+func (m *ActionReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActionReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ActionLookReq proto.InternalMessageInfo
+var xxx_messageInfo_ActionReq proto.InternalMessageInfo
 
-func (m *ActionLookReq) GetUid() int32 {
+func (m *ActionReq) GetType() ActionType {
+	if m != nil {
+		return m.Type
+	}
+	return ActionType_ActionNone
+}
+
+func (m *ActionReq) GetBet() int32 {
+	if m != nil {
+		return m.Bet
+	}
+	return 0
+}
+
+func (m *ActionReq) GetOpponent() int32 {
+	if m != nil {
+		return m.Opponent
+	}
+	return 0
+}
+
+type ActionAck struct {
+	// 玩家ID
+	Uid int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
+	// 动作类型
+	Type ActionType `protobuf:"varint,2,opt,name=type,proto3,enum=zjh.ActionType" json:"t" bson:"t" msg:"t"`
+	// 下注
+	Bet int32 `protobuf:"varint,3,opt,name=bet,proto3" json:"b,omitempty" bson:"b,omitempty" msg:"b,omitempty"`
+	// 对手ID
+	Opponent int32 `protobuf:"varint,4,opt,name=opponent,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
+	// 牌
+	Poker []byte `protobuf:"bytes,5,opt,name=poker,proto3" json:"p,omitempty" bson:"p,omitempty" msg:"p,omitempty"`
+	// 比牌结果
+	Win bool `protobuf:"varint,6,opt,name=win,proto3" json:"w,omitempty" bson:"w,omitempty" msg:"w,omitempty"`
+	// 当前金币
+	Coin int64 `protobuf:"varint,7,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
+}
+
+func (m *ActionAck) Reset()         { *m = ActionAck{} }
+func (m *ActionAck) String() string { return proto.CompactTextString(m) }
+func (*ActionAck) ProtoMessage()    {}
+func (*ActionAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{4}
+}
+func (m *ActionAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ActionAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ActionAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (dst *ActionAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ActionAck.Merge(dst, src)
+}
+func (m *ActionAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *ActionAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_ActionAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ActionAck proto.InternalMessageInfo
+
+func (m *ActionAck) GetUid() int32 {
 	if m != nil {
 		return m.Uid
 	}
 	return 0
 }
 
-type ActionLookAck struct {
-	Poker []byte `protobuf:"bytes,1,opt,name=poker,proto3" json:"p" bson:"p" msg:"p"`
-}
-
-func (m *ActionLookAck) Reset()         { *m = ActionLookAck{} }
-func (m *ActionLookAck) String() string { return proto.CompactTextString(m) }
-func (*ActionLookAck) ProtoMessage()    {}
-func (*ActionLookAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{5}
-}
-func (m *ActionLookAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionLookAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionLookAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
+func (m *ActionAck) GetType() ActionType {
+	if m != nil {
+		return m.Type
 	}
-}
-func (dst *ActionLookAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionLookAck.Merge(dst, src)
-}
-func (m *ActionLookAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionLookAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionLookAck.DiscardUnknown(m)
+	return ActionType_ActionNone
 }
 
-var xxx_messageInfo_ActionLookAck proto.InternalMessageInfo
+func (m *ActionAck) GetBet() int32 {
+	if m != nil {
+		return m.Bet
+	}
+	return 0
+}
 
-func (m *ActionLookAck) GetPoker() []byte {
+func (m *ActionAck) GetOpponent() int32 {
+	if m != nil {
+		return m.Opponent
+	}
+	return 0
+}
+
+func (m *ActionAck) GetPoker() []byte {
 	if m != nil {
 		return m.Poker
 	}
 	return nil
 }
 
-// 弃牌
-type ActionDiscardReq struct {
-	// 玩家ID
-	Uid int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-}
-
-func (m *ActionDiscardReq) Reset()         { *m = ActionDiscardReq{} }
-func (m *ActionDiscardReq) String() string { return proto.CompactTextString(m) }
-func (*ActionDiscardReq) ProtoMessage()    {}
-func (*ActionDiscardReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{6}
-}
-func (m *ActionDiscardReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionDiscardReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionDiscardReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionDiscardReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionDiscardReq.Merge(dst, src)
-}
-func (m *ActionDiscardReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionDiscardReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionDiscardReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionDiscardReq proto.InternalMessageInfo
-
-func (m *ActionDiscardReq) GetUid() int32 {
-	if m != nil {
-		return m.Uid
-	}
-	return 0
-}
-
-type ActionDiscardAck struct {
-	Uid int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-}
-
-func (m *ActionDiscardAck) Reset()         { *m = ActionDiscardAck{} }
-func (m *ActionDiscardAck) String() string { return proto.CompactTextString(m) }
-func (*ActionDiscardAck) ProtoMessage()    {}
-func (*ActionDiscardAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{7}
-}
-func (m *ActionDiscardAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionDiscardAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionDiscardAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionDiscardAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionDiscardAck.Merge(dst, src)
-}
-func (m *ActionDiscardAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionDiscardAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionDiscardAck.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionDiscardAck proto.InternalMessageInfo
-
-func (m *ActionDiscardAck) GetUid() int32 {
-	if m != nil {
-		return m.Uid
-	}
-	return 0
-}
-
-// 比牌
-type ActionCompareReq struct {
-	// 对手ID
-	Opponent int32 `protobuf:"varint,1,opt,name=opponent,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
-}
-
-func (m *ActionCompareReq) Reset()         { *m = ActionCompareReq{} }
-func (m *ActionCompareReq) String() string { return proto.CompactTextString(m) }
-func (*ActionCompareReq) ProtoMessage()    {}
-func (*ActionCompareReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{8}
-}
-func (m *ActionCompareReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionCompareReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionCompareReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionCompareReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionCompareReq.Merge(dst, src)
-}
-func (m *ActionCompareReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionCompareReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionCompareReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionCompareReq proto.InternalMessageInfo
-
-func (m *ActionCompareReq) GetOpponent() int32 {
-	if m != nil {
-		return m.Opponent
-	}
-	return 0
-}
-
-type ActionCompareAck struct {
-	Uid      int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-	Opponent int32 `protobuf:"varint,2,opt,name=opponent,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
-	Win      bool  `protobuf:"varint,3,opt,name=win,proto3" json:"w,omitempty" bson:"w,omitempty" msg:"w,omitempty"`
-}
-
-func (m *ActionCompareAck) Reset()         { *m = ActionCompareAck{} }
-func (m *ActionCompareAck) String() string { return proto.CompactTextString(m) }
-func (*ActionCompareAck) ProtoMessage()    {}
-func (*ActionCompareAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{9}
-}
-func (m *ActionCompareAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionCompareAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionCompareAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionCompareAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionCompareAck.Merge(dst, src)
-}
-func (m *ActionCompareAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionCompareAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionCompareAck.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionCompareAck proto.InternalMessageInfo
-
-func (m *ActionCompareAck) GetUid() int32 {
-	if m != nil {
-		return m.Uid
-	}
-	return 0
-}
-
-func (m *ActionCompareAck) GetOpponent() int32 {
-	if m != nil {
-		return m.Opponent
-	}
-	return 0
-}
-
-func (m *ActionCompareAck) GetWin() bool {
+func (m *ActionAck) GetWin() bool {
 	if m != nil {
 		return m.Win
 	}
 	return false
 }
 
-// 下注(跟注+加注)
-type ActionAddBetReq struct {
-	Coin int64 `protobuf:"varint,1,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
-}
-
-func (m *ActionAddBetReq) Reset()         { *m = ActionAddBetReq{} }
-func (m *ActionAddBetReq) String() string { return proto.CompactTextString(m) }
-func (*ActionAddBetReq) ProtoMessage()    {}
-func (*ActionAddBetReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{10}
-}
-func (m *ActionAddBetReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionAddBetReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionAddBetReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionAddBetReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionAddBetReq.Merge(dst, src)
-}
-func (m *ActionAddBetReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionAddBetReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionAddBetReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionAddBetReq proto.InternalMessageInfo
-
-func (m *ActionAddBetReq) GetCoin() int64 {
+func (m *ActionAck) GetCoin() int64 {
 	if m != nil {
 		return m.Coin
-	}
-	return 0
-}
-
-type ActionAddBetAck struct {
-	Uid  int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-	Coin int64 `protobuf:"varint,2,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
-}
-
-func (m *ActionAddBetAck) Reset()         { *m = ActionAddBetAck{} }
-func (m *ActionAddBetAck) String() string { return proto.CompactTextString(m) }
-func (*ActionAddBetAck) ProtoMessage()    {}
-func (*ActionAddBetAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{11}
-}
-func (m *ActionAddBetAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionAddBetAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionAddBetAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionAddBetAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionAddBetAck.Merge(dst, src)
-}
-func (m *ActionAddBetAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionAddBetAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionAddBetAck.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionAddBetAck proto.InternalMessageInfo
-
-func (m *ActionAddBetAck) GetUid() int32 {
-	if m != nil {
-		return m.Uid
-	}
-	return 0
-}
-
-func (m *ActionAddBetAck) GetCoin() int64 {
-	if m != nil {
-		return m.Coin
-	}
-	return 0
-}
-
-// 全压
-type ActionAllinReq struct {
-	Coin int64 `protobuf:"varint,1,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
-}
-
-func (m *ActionAllinReq) Reset()         { *m = ActionAllinReq{} }
-func (m *ActionAllinReq) String() string { return proto.CompactTextString(m) }
-func (*ActionAllinReq) ProtoMessage()    {}
-func (*ActionAllinReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{12}
-}
-func (m *ActionAllinReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionAllinReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionAllinReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionAllinReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionAllinReq.Merge(dst, src)
-}
-func (m *ActionAllinReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionAllinReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionAllinReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionAllinReq proto.InternalMessageInfo
-
-func (m *ActionAllinReq) GetCoin() int64 {
-	if m != nil {
-		return m.Coin
-	}
-	return 0
-}
-
-type ActionAllinAck struct {
-	Uid  int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-	Coin int64 `protobuf:"varint,2,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
-}
-
-func (m *ActionAllinAck) Reset()         { *m = ActionAllinAck{} }
-func (m *ActionAllinAck) String() string { return proto.CompactTextString(m) }
-func (*ActionAllinAck) ProtoMessage()    {}
-func (*ActionAllinAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{13}
-}
-func (m *ActionAllinAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionAllinAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionAllinAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionAllinAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionAllinAck.Merge(dst, src)
-}
-func (m *ActionAllinAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionAllinAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionAllinAck.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionAllinAck proto.InternalMessageInfo
-
-func (m *ActionAllinAck) GetUid() int32 {
-	if m != nil {
-		return m.Uid
-	}
-	return 0
-}
-
-func (m *ActionAllinAck) GetCoin() int64 {
-	if m != nil {
-		return m.Coin
-	}
-	return 0
-}
-
-// 离开/换桌
-type ActionLeaveReq struct {
-	// 是否继续玩(换桌)
-	Renew bool `protobuf:"varint,1,opt,name=renew,proto3" json:"n" bson:"n" msg:"n"`
-}
-
-func (m *ActionLeaveReq) Reset()         { *m = ActionLeaveReq{} }
-func (m *ActionLeaveReq) String() string { return proto.CompactTextString(m) }
-func (*ActionLeaveReq) ProtoMessage()    {}
-func (*ActionLeaveReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{14}
-}
-func (m *ActionLeaveReq) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionLeaveReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionLeaveReq.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionLeaveReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionLeaveReq.Merge(dst, src)
-}
-func (m *ActionLeaveReq) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionLeaveReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionLeaveReq.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionLeaveReq proto.InternalMessageInfo
-
-func (m *ActionLeaveReq) GetRenew() bool {
-	if m != nil {
-		return m.Renew
-	}
-	return false
-}
-
-type ActionLeaveAck struct {
-	Uid int32 `protobuf:"varint,1,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
-}
-
-func (m *ActionLeaveAck) Reset()         { *m = ActionLeaveAck{} }
-func (m *ActionLeaveAck) String() string { return proto.CompactTextString(m) }
-func (*ActionLeaveAck) ProtoMessage()    {}
-func (*ActionLeaveAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{15}
-}
-func (m *ActionLeaveAck) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ActionLeaveAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ActionLeaveAck.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (dst *ActionLeaveAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ActionLeaveAck.Merge(dst, src)
-}
-func (m *ActionLeaveAck) XXX_Size() int {
-	return m.Size()
-}
-func (m *ActionLeaveAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ActionLeaveAck.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ActionLeaveAck proto.InternalMessageInfo
-
-func (m *ActionLeaveAck) GetUid() int32 {
-	if m != nil {
-		return m.Uid
 	}
 	return 0
 }
@@ -1203,18 +788,20 @@ type ActionLog struct {
 	// 玩家ID
 	Uid int32 `protobuf:"varint,2,opt,name=uid,proto3" json:"u" bson:"u" msg:"u"`
 	// 动作类型
-	Type ActionLog_Type `protobuf:"varint,3,opt,name=type,proto3,enum=zjh.ActionLog_Type" json:"t" bson:"t" msg:"t"`
-	// 金币
-	Coin int64 `protobuf:"varint,4,opt,name=coin,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
+	Type ActionType `protobuf:"varint,3,opt,name=type,proto3,enum=zjh.ActionType" json:"t" bson:"t" msg:"t"`
+	// 下注
+	Bet int32 `protobuf:"varint,4,opt,name=bet,proto3" json:"c,omitempty" bson:"c,omitempty" msg:"c,omitempty"`
 	// 对手ID
 	Opponent int32 `protobuf:"varint,5,opt,name=opponent,proto3" json:"o,omitempty" bson:"o,omitempty" msg:"o,omitempty"`
+	// 比牌结果
+	Win bool `protobuf:"varint,6,opt,name=win,proto3" json:"w,omitempty" bson:"w,omitempty" msg:"w,omitempty"`
 }
 
 func (m *ActionLog) Reset()         { *m = ActionLog{} }
 func (m *ActionLog) String() string { return proto.CompactTextString(m) }
 func (*ActionLog) ProtoMessage()    {}
 func (*ActionLog) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{16}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{5}
 }
 func (m *ActionLog) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1257,16 +844,16 @@ func (m *ActionLog) GetUid() int32 {
 	return 0
 }
 
-func (m *ActionLog) GetType() ActionLog_Type {
+func (m *ActionLog) GetType() ActionType {
 	if m != nil {
 		return m.Type
 	}
-	return ActionLog_None
+	return ActionType_ActionNone
 }
 
-func (m *ActionLog) GetCoin() int64 {
+func (m *ActionLog) GetBet() int32 {
 	if m != nil {
-		return m.Coin
+		return m.Bet
 	}
 	return 0
 }
@@ -1278,28 +865,37 @@ func (m *ActionLog) GetOpponent() int32 {
 	return 0
 }
 
+func (m *ActionLog) GetWin() bool {
+	if m != nil {
+		return m.Win
+	}
+	return false
+}
+
 type GameInitAck struct {
 	// 当前游戏ID
 	Table int32 `protobuf:"varint,1,opt,name=table,proto3" json:"table,omitempty" bson:"table" msg:"table"`
 	// 当前游戏ID
 	Id int32 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty" bson:"id" msg:"id"`
+	// 彩池的钱
+	Pool int64 `protobuf:"varint,3,opt,name=pool,proto3" json:"pool" bson:"pool" msg:"pool"`
 	// 当前游戏状态
-	State int32 `protobuf:"varint,3,opt,name=state,proto3" json:"state,omitempty" bson:"state" msg:"state"`
+	State int32 `protobuf:"varint,4,opt,name=state,proto3" json:"state,omitempty" bson:"state" msg:"state"`
 	// 第几轮
-	Ring int32 `protobuf:"varint,4,opt,name=ring,proto3" json:"ring,omitempty" bson:"ring" msg:"ring"`
+	Ring int32 `protobuf:"varint,5,opt,name=ring,proto3" json:"ring,omitempty" bson:"ring" msg:"ring"`
 	// 第一个出牌的人
-	First int32 `protobuf:"varint,5,opt,name=first,proto3" json:"first,omitempty" bson:"first" msg:"first"`
+	First int32 `protobuf:"varint,6,opt,name=first,proto3" json:"first,omitempty" bson:"first" msg:"first"`
 	// 玩家(第1个位置为先)
-	Player []*Player `protobuf:"bytes,6,rep,name=player,proto3" json:"player,omitempty" bson:"play" msg:"play"`
+	Player []*Player `protobuf:"bytes,7,rep,name=player,proto3" json:"player,omitempty" bson:"play" msg:"play"`
 	// 我的牌,如果已看牌
-	Poker []byte `protobuf:"bytes,7,opt,name=poker,proto3" json:"p,omitempty" bson:"p,omitempty" msg:"p,omitempty"`
+	Poker []byte `protobuf:"bytes,8,opt,name=poker,proto3" json:"p,omitempty" bson:"p,omitempty" msg:"p,omitempty"`
 }
 
 func (m *GameInitAck) Reset()         { *m = GameInitAck{} }
 func (m *GameInitAck) String() string { return proto.CompactTextString(m) }
 func (*GameInitAck) ProtoMessage()    {}
 func (*GameInitAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{17}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{6}
 }
 func (m *GameInitAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1342,6 +938,13 @@ func (m *GameInitAck) GetId() int32 {
 	return 0
 }
 
+func (m *GameInitAck) GetPool() int64 {
+	if m != nil {
+		return m.Pool
+	}
+	return 0
+}
+
 func (m *GameInitAck) GetState() int32 {
 	if m != nil {
 		return m.State
@@ -1380,16 +983,18 @@ func (m *GameInitAck) GetPoker() []byte {
 // 游戏开始
 type GameStartAck struct {
 	// 当前游戏ID
-	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id" msg:"id"`
+	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id" bson:"id" msg:"id"`
+	// 彩池的钱
+	Pool int64 `protobuf:"varint,2,opt,name=pool,proto3" json:"pool" bson:"pool" msg:"pool"`
 	// 玩家(第1个位置为先)
-	Player []*Player `protobuf:"bytes,2,rep,name=player,proto3" json:"player,omitempty" bson:"play" msg:"play"`
+	Player []*Player `protobuf:"bytes,3,rep,name=player,proto3" json:"play" bson:"play" msg:"play"`
 }
 
 func (m *GameStartAck) Reset()         { *m = GameStartAck{} }
 func (m *GameStartAck) String() string { return proto.CompactTextString(m) }
 func (*GameStartAck) ProtoMessage()    {}
 func (*GameStartAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{18}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{7}
 }
 func (m *GameStartAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1425,6 +1030,13 @@ func (m *GameStartAck) GetId() int32 {
 	return 0
 }
 
+func (m *GameStartAck) GetPool() int64 {
+	if m != nil {
+		return m.Pool
+	}
+	return 0
+}
+
 func (m *GameStartAck) GetPlayer() []*Player {
 	if m != nil {
 		return m.Player
@@ -1452,7 +1064,7 @@ func (m *GameEndAck) Reset()         { *m = GameEndAck{} }
 func (m *GameEndAck) String() string { return proto.CompactTextString(m) }
 func (*GameEndAck) ProtoMessage()    {}
 func (*GameEndAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_zjh_1284ae3437f8a57c, []int{19}
+	return fileDescriptor_zjh_383ac9ba43e013e7, []int{8}
 }
 func (m *GameEndAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1524,48 +1136,19 @@ func (m *GameEndAck) GetLucky() int64 {
 }
 
 func init() {
-	proto.RegisterType((*Zjh)(nil), "zjh.Zjh")
 	proto.RegisterType((*Player)(nil), "zjh.Player")
 	proto.RegisterType((*GameBill)(nil), "zjh.GameBill")
 	proto.RegisterType((*GameRound)(nil), "zjh.GameRound")
-	proto.RegisterType((*ActionLookReq)(nil), "zjh.ActionLookReq")
-	proto.RegisterType((*ActionLookAck)(nil), "zjh.ActionLookAck")
-	proto.RegisterType((*ActionDiscardReq)(nil), "zjh.ActionDiscardReq")
-	proto.RegisterType((*ActionDiscardAck)(nil), "zjh.ActionDiscardAck")
-	proto.RegisterType((*ActionCompareReq)(nil), "zjh.ActionCompareReq")
-	proto.RegisterType((*ActionCompareAck)(nil), "zjh.ActionCompareAck")
-	proto.RegisterType((*ActionAddBetReq)(nil), "zjh.ActionAddBetReq")
-	proto.RegisterType((*ActionAddBetAck)(nil), "zjh.ActionAddBetAck")
-	proto.RegisterType((*ActionAllinReq)(nil), "zjh.ActionAllinReq")
-	proto.RegisterType((*ActionAllinAck)(nil), "zjh.ActionAllinAck")
-	proto.RegisterType((*ActionLeaveReq)(nil), "zjh.ActionLeaveReq")
-	proto.RegisterType((*ActionLeaveAck)(nil), "zjh.ActionLeaveAck")
+	proto.RegisterType((*ActionReq)(nil), "zjh.ActionReq")
+	proto.RegisterType((*ActionAck)(nil), "zjh.ActionAck")
 	proto.RegisterType((*ActionLog)(nil), "zjh.ActionLog")
 	proto.RegisterType((*GameInitAck)(nil), "zjh.GameInitAck")
 	proto.RegisterType((*GameStartAck)(nil), "zjh.GameStartAck")
 	proto.RegisterType((*GameEndAck)(nil), "zjh.GameEndAck")
-	proto.RegisterEnum("zjh.Zjh_Code", Zjh_Code_name, Zjh_Code_value)
+	proto.RegisterEnum("zjh.Code", Code_name, Code_value)
+	proto.RegisterEnum("zjh.ActionType", ActionType_name, ActionType_value)
 	proto.RegisterEnum("zjh.Player_State", Player_State_name, Player_State_value)
-	proto.RegisterEnum("zjh.ActionLog_Type", ActionLog_Type_name, ActionLog_Type_value)
 }
-func (m *Zjh) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Zjh) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	return i, nil
-}
-
 func (m *Player) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1691,10 +1274,38 @@ func (m *GameBill) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Tax))
 	}
-	if m.WinRobot != 0 {
+	if m.Water != 0 {
 		dAtA[i] = 0x40
 		i++
-		i = encodeVarintZjh(dAtA, i, uint64((uint64(m.WinRobot)<<1)^uint64((m.WinRobot>>63))))
+		i = encodeVarintZjh(dAtA, i, uint64(m.Water))
+	}
+	if m.Lucky != 0 {
+		dAtA[i] = 0x48
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Lucky))
+	}
+	if m.Robot != 0 {
+		dAtA[i] = 0x50
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64((uint64(m.Robot)<<1)^uint64((m.Robot>>63))))
+	}
+	if len(m.Pk) > 0 {
+		dAtA2 := make([]byte, len(m.Pk)*10)
+		var j1 int
+		for _, num1 := range m.Pk {
+			num := uint64(num1)
+			for num >= 1<<7 {
+				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j1++
+			}
+			dAtA2[j1] = uint8(num)
+			j1++
+		}
+		dAtA[i] = 0x5a
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(j1))
+		i += copy(dAtA[i:], dAtA2[:j1])
 	}
 	return i, nil
 }
@@ -1751,44 +1362,70 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			i += n
 		}
 	}
-	if m.Ring != 0 {
+	if m.Ante != 0 {
 		dAtA[i] = 0x38
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Ante))
+	}
+	if m.Ring != 0 {
+		dAtA[i] = 0x40
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Ring))
 	}
 	if m.Sum != 0 {
-		dAtA[i] = 0x40
+		dAtA[i] = 0x48
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Sum))
 	}
 	if m.Win != 0 {
-		dAtA[i] = 0x48
+		dAtA[i] = 0x50
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
 	}
 	if m.Tax != 0 {
-		dAtA[i] = 0x50
+		dAtA[i] = 0x58
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Tax))
 	}
+	if m.Water != 0 {
+		dAtA[i] = 0x60
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Water))
+	}
+	if len(m.Log) > 0 {
+		for _, msg := range m.Log {
+			dAtA[i] = 0x6a
+			i++
+			i = encodeVarintZjh(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
 	if m.Pool != 0 {
-		dAtA[i] = 0x58
+		dAtA[i] = 0x70
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
 	}
 	if m.Lucky != 0 {
-		dAtA[i] = 0x60
+		dAtA[i] = 0x78
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Lucky))
 	}
 	if len(m.Note) > 0 {
-		dAtA[i] = 0x6a
+		dAtA[i] = 0x82
+		i++
+		dAtA[i] = 0x1
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(len(m.Note)))
 		i += copy(dAtA[i:], m.Note)
 	}
 	if m.Cheat {
-		dAtA[i] = 0x70
+		dAtA[i] = 0x88
+		i++
+		dAtA[i] = 0x1
 		i++
 		if m.Cheat {
 			dAtA[i] = 1
@@ -1800,7 +1437,7 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *ActionLookReq) Marshal() (dAtA []byte, err error) {
+func (m *ActionReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1810,7 +1447,40 @@ func (m *ActionLookReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ActionLookReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *ActionReq) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Type != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
+	}
+	if m.Bet != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
+	}
+	if m.Opponent != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
+	}
+	return i, nil
+}
+
+func (m *ActionAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ActionAck) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1820,129 +1490,29 @@ func (m *ActionLookReq) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
 	}
-	return i, nil
-}
-
-func (m *ActionLookAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
+	if m.Type != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
 	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionLookAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
+	if m.Bet != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
+	}
+	if m.Opponent != 0 {
+		dAtA[i] = 0x20
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
+	}
 	if len(m.Poker) > 0 {
-		dAtA[i] = 0xa
+		dAtA[i] = 0x2a
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
 		i += copy(dAtA[i:], m.Poker)
 	}
-	return i, nil
-}
-
-func (m *ActionDiscardReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionDiscardReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	return i, nil
-}
-
-func (m *ActionDiscardAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionDiscardAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	return i, nil
-}
-
-func (m *ActionCompareReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionCompareReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Opponent != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
-	}
-	return i, nil
-}
-
-func (m *ActionCompareAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionCompareAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	if m.Opponent != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
-	}
 	if m.Win {
-		dAtA[i] = 0x18
+		dAtA[i] = 0x30
 		i++
 		if m.Win {
 			dAtA[i] = 1
@@ -1951,158 +1521,10 @@ func (m *ActionCompareAck) MarshalTo(dAtA []byte) (int, error) {
 		}
 		i++
 	}
-	return i, nil
-}
-
-func (m *ActionAddBetReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionAddBetReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
 	if m.Coin != 0 {
-		dAtA[i] = 0x8
+		dAtA[i] = 0x38
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
-	}
-	return i, nil
-}
-
-func (m *ActionAddBetAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionAddBetAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
-	}
-	return i, nil
-}
-
-func (m *ActionAllinReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionAllinReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Coin != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
-	}
-	return i, nil
-}
-
-func (m *ActionAllinAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionAllinAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
-	}
-	return i, nil
-}
-
-func (m *ActionLeaveReq) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionLeaveReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Renew {
-		dAtA[i] = 0x8
-		i++
-		if m.Renew {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	return i, nil
-}
-
-func (m *ActionLeaveAck) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ActionLeaveAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
 	}
 	return i, nil
 }
@@ -2137,15 +1559,25 @@ func (m *ActionLog) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
 	}
-	if m.Coin != 0 {
+	if m.Bet != 0 {
 		dAtA[i] = 0x20
 		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
 	}
 	if m.Opponent != 0 {
 		dAtA[i] = 0x28
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
+	}
+	if m.Win {
+		dAtA[i] = 0x30
+		i++
+		if m.Win {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
 	}
 	return i, nil
 }
@@ -2175,24 +1607,29 @@ func (m *GameInitAck) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
 	}
-	if m.State != 0 {
+	if m.Pool != 0 {
 		dAtA[i] = 0x18
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
+	}
+	if m.State != 0 {
+		dAtA[i] = 0x20
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.State))
 	}
 	if m.Ring != 0 {
-		dAtA[i] = 0x20
+		dAtA[i] = 0x28
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Ring))
 	}
 	if m.First != 0 {
-		dAtA[i] = 0x28
+		dAtA[i] = 0x30
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.First))
 	}
 	if len(m.Player) > 0 {
 		for _, msg := range m.Player {
-			dAtA[i] = 0x32
+			dAtA[i] = 0x3a
 			i++
 			i = encodeVarintZjh(dAtA, i, uint64(msg.Size()))
 			n, err := msg.MarshalTo(dAtA[i:])
@@ -2203,7 +1640,7 @@ func (m *GameInitAck) MarshalTo(dAtA []byte) (int, error) {
 		}
 	}
 	if len(m.Poker) > 0 {
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x42
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
 		i += copy(dAtA[i:], m.Poker)
@@ -2231,9 +1668,14 @@ func (m *GameStartAck) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
 	}
+	if m.Pool != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
+	}
 	if len(m.Player) > 0 {
 		for _, msg := range m.Player {
-			dAtA[i] = 0x12
+			dAtA[i] = 0x1a
 			i++
 			i = encodeVarintZjh(dAtA, i, uint64(msg.Size()))
 			n, err := msg.MarshalTo(dAtA[i:])
@@ -2304,15 +1746,6 @@ func encodeVarintZjh(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return offset + 1
 }
-func (m *Zjh) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *Player) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2381,8 +1814,21 @@ func (m *GameBill) Size() (n int) {
 	if m.Tax != 0 {
 		n += 1 + sovZjh(uint64(m.Tax))
 	}
-	if m.WinRobot != 0 {
-		n += 1 + sozZjh(uint64(m.WinRobot))
+	if m.Water != 0 {
+		n += 1 + sovZjh(uint64(m.Water))
+	}
+	if m.Lucky != 0 {
+		n += 1 + sovZjh(uint64(m.Lucky))
+	}
+	if m.Robot != 0 {
+		n += 1 + sozZjh(uint64(m.Robot))
+	}
+	if len(m.Pk) > 0 {
+		l = 0
+		for _, e := range m.Pk {
+			l += sovZjh(uint64(e))
+		}
+		n += 1 + sovZjh(uint64(l)) + l
 	}
 	return n
 }
@@ -2414,6 +1860,9 @@ func (m *GameRound) Size() (n int) {
 			n += 1 + l + sovZjh(uint64(l))
 		}
 	}
+	if m.Ante != 0 {
+		n += 1 + sovZjh(uint64(m.Ante))
+	}
 	if m.Ring != 0 {
 		n += 1 + sovZjh(uint64(m.Ring))
 	}
@@ -2426,6 +1875,15 @@ func (m *GameRound) Size() (n int) {
 	if m.Tax != 0 {
 		n += 1 + sovZjh(uint64(m.Tax))
 	}
+	if m.Water != 0 {
+		n += 1 + sovZjh(uint64(m.Water))
+	}
+	if len(m.Log) > 0 {
+		for _, e := range m.Log {
+			l = e.Size()
+			n += 1 + l + sovZjh(uint64(l))
+		}
+	}
 	if m.Pool != 0 {
 		n += 1 + sovZjh(uint64(m.Pool))
 	}
@@ -2434,15 +1892,33 @@ func (m *GameRound) Size() (n int) {
 	}
 	l = len(m.Note)
 	if l > 0 {
-		n += 1 + l + sovZjh(uint64(l))
+		n += 2 + l + sovZjh(uint64(l))
 	}
 	if m.Cheat {
-		n += 2
+		n += 3
 	}
 	return n
 }
 
-func (m *ActionLookReq) Size() (n int) {
+func (m *ActionReq) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Type != 0 {
+		n += 1 + sovZjh(uint64(m.Type))
+	}
+	if m.Bet != 0 {
+		n += 1 + sovZjh(uint64(m.Bet))
+	}
+	if m.Opponent != 0 {
+		n += 1 + sovZjh(uint64(m.Opponent))
+	}
+	return n
+}
+
+func (m *ActionAck) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2451,150 +1927,24 @@ func (m *ActionLookReq) Size() (n int) {
 	if m.Uid != 0 {
 		n += 1 + sovZjh(uint64(m.Uid))
 	}
-	return n
-}
-
-func (m *ActionLookAck) Size() (n int) {
-	if m == nil {
-		return 0
+	if m.Type != 0 {
+		n += 1 + sovZjh(uint64(m.Type))
 	}
-	var l int
-	_ = l
+	if m.Bet != 0 {
+		n += 1 + sovZjh(uint64(m.Bet))
+	}
+	if m.Opponent != 0 {
+		n += 1 + sovZjh(uint64(m.Opponent))
+	}
 	l = len(m.Poker)
 	if l > 0 {
 		n += 1 + l + sovZjh(uint64(l))
 	}
-	return n
-}
-
-func (m *ActionDiscardReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
-	}
-	return n
-}
-
-func (m *ActionDiscardAck) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
-	}
-	return n
-}
-
-func (m *ActionCompareReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Opponent != 0 {
-		n += 1 + sovZjh(uint64(m.Opponent))
-	}
-	return n
-}
-
-func (m *ActionCompareAck) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
-	}
-	if m.Opponent != 0 {
-		n += 1 + sovZjh(uint64(m.Opponent))
-	}
 	if m.Win {
 		n += 2
 	}
-	return n
-}
-
-func (m *ActionAddBetReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
 	if m.Coin != 0 {
 		n += 1 + sovZjh(uint64(m.Coin))
-	}
-	return n
-}
-
-func (m *ActionAddBetAck) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
-	}
-	if m.Coin != 0 {
-		n += 1 + sovZjh(uint64(m.Coin))
-	}
-	return n
-}
-
-func (m *ActionAllinReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Coin != 0 {
-		n += 1 + sovZjh(uint64(m.Coin))
-	}
-	return n
-}
-
-func (m *ActionAllinAck) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
-	}
-	if m.Coin != 0 {
-		n += 1 + sovZjh(uint64(m.Coin))
-	}
-	return n
-}
-
-func (m *ActionLeaveReq) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Renew {
-		n += 2
-	}
-	return n
-}
-
-func (m *ActionLeaveAck) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Uid != 0 {
-		n += 1 + sovZjh(uint64(m.Uid))
 	}
 	return n
 }
@@ -2614,11 +1964,14 @@ func (m *ActionLog) Size() (n int) {
 	if m.Type != 0 {
 		n += 1 + sovZjh(uint64(m.Type))
 	}
-	if m.Coin != 0 {
-		n += 1 + sovZjh(uint64(m.Coin))
+	if m.Bet != 0 {
+		n += 1 + sovZjh(uint64(m.Bet))
 	}
 	if m.Opponent != 0 {
 		n += 1 + sovZjh(uint64(m.Opponent))
+	}
+	if m.Win {
+		n += 2
 	}
 	return n
 }
@@ -2634,6 +1987,9 @@ func (m *GameInitAck) Size() (n int) {
 	}
 	if m.Id != 0 {
 		n += 1 + sovZjh(uint64(m.Id))
+	}
+	if m.Pool != 0 {
+		n += 1 + sovZjh(uint64(m.Pool))
 	}
 	if m.State != 0 {
 		n += 1 + sovZjh(uint64(m.State))
@@ -2665,6 +2021,9 @@ func (m *GameStartAck) Size() (n int) {
 	_ = l
 	if m.Id != 0 {
 		n += 1 + sovZjh(uint64(m.Id))
+	}
+	if m.Pool != 0 {
+		n += 1 + sovZjh(uint64(m.Pool))
 	}
 	if len(m.Player) > 0 {
 		for _, e := range m.Player {
@@ -2715,56 +2074,6 @@ func sovZjh(x uint64) (n int) {
 }
 func sozZjh(x uint64) (n int) {
 	return sovZjh(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *Zjh) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Zjh: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Zjh: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *Player) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -3195,7 +2504,45 @@ func (m *GameBill) Unmarshal(dAtA []byte) error {
 			}
 		case 8:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WinRobot", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Water", wireType)
+			}
+			m.Water = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Water |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Lucky", wireType)
+			}
+			m.Lucky = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Lucky |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Robot", wireType)
 			}
 			var v uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3213,7 +2560,80 @@ func (m *GameBill) Unmarshal(dAtA []byte) error {
 				}
 			}
 			v = (v >> 1) ^ uint64((int64(v&1)<<63)>>63)
-			m.WinRobot = int64(v)
+			m.Robot = int64(v)
+		case 11:
+			if wireType == 0 {
+				var v int32
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowZjh
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= (int32(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Pk = append(m.Pk, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowZjh
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= (int(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthZjh
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Pk) == 0 {
+					m.Pk = make([]int32, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v int32
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowZjh
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= (int32(b) & 0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Pk = append(m.Pk, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pk", wireType)
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipZjh(dAtA[iNdEx:])
@@ -3392,6 +2812,25 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 7:
 			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ante", wireType)
+			}
+			m.Ante = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Ante |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Ring", wireType)
 			}
 			m.Ring = 0
@@ -3409,7 +2848,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 8:
+		case 9:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Sum", wireType)
 			}
@@ -3428,7 +2867,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 9:
+		case 10:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Win", wireType)
 			}
@@ -3449,7 +2888,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 			}
 			v = (v >> 1) ^ uint64((int64(v&1)<<63)>>63)
 			m.Win = int64(v)
-		case 10:
+		case 11:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Tax", wireType)
 			}
@@ -3468,7 +2907,57 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 11:
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Water", wireType)
+			}
+			m.Water = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Water |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Log", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthZjh
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Log = append(m.Log, &ActionLog{})
+			if err := m.Log[len(m.Log)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 14:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
 			}
@@ -3487,7 +2976,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 12:
+		case 15:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Lucky", wireType)
 			}
@@ -3506,7 +2995,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 13:
+		case 16:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Note", wireType)
 			}
@@ -3535,7 +3024,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 			}
 			m.Note = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 14:
+		case 17:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Cheat", wireType)
 			}
@@ -3576,7 +3065,7 @@ func (m *GameRound) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ActionLookReq) Unmarshal(dAtA []byte) error {
+func (m *ActionReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3599,17 +3088,17 @@ func (m *ActionLookReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ActionLookReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: ActionReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionLookReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ActionReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
 			}
-			m.Uid = 0
+			m.Type = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowZjh
@@ -3619,7 +3108,45 @@ func (m *ActionLookReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
+				m.Type |= (ActionType(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bet", wireType)
+			}
+			m.Bet = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Bet |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Opponent", wireType)
+			}
+			m.Opponent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Opponent |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -3645,7 +3172,7 @@ func (m *ActionLookReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ActionLookAck) Unmarshal(dAtA []byte) error {
+func (m *ActionAck) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3668,13 +3195,89 @@ func (m *ActionLookAck) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ActionLookAck: wiretype end group for non-group")
+			return fmt.Errorf("proto: ActionAck: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionLookAck: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ActionAck: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
+			}
+			m.Uid = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Uid |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= (ActionType(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bet", wireType)
+			}
+			m.Bet = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Bet |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Opponent", wireType)
+			}
+			m.Opponent = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Opponent |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Poker", wireType)
 			}
@@ -3705,302 +3308,7 @@ func (m *ActionLookAck) Unmarshal(dAtA []byte) error {
 				m.Poker = []byte{}
 			}
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionDiscardReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionDiscardReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionDiscardReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionDiscardAck) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionDiscardAck: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionDiscardAck: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionCompareReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionCompareReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionCompareReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Opponent", wireType)
-			}
-			m.Opponent = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Opponent |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionCompareAck) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionCompareAck: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionCompareAck: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Opponent", wireType)
-			}
-			m.Opponent = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Opponent |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Win", wireType)
 			}
@@ -4020,57 +3328,7 @@ func (m *ActionCompareAck) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Win = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionAddBetReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionAddBetReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionAddBetReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
 			}
@@ -4085,390 +3343,6 @@ func (m *ActionAddBetReq) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Coin |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionAddBetAck) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionAddBetAck: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionAddBetAck: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
-			}
-			m.Coin = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Coin |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionAllinReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionAllinReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionAllinReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
-			}
-			m.Coin = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Coin |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionAllinAck) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionAllinAck: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionAllinAck: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
-			}
-			m.Coin = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Coin |= (int64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionLeaveReq) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionLeaveReq: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionLeaveReq: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Renew", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Renew = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipZjh(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthZjh
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ActionLeaveAck) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowZjh
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ActionLeaveAck: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ActionLeaveAck: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Uid", wireType)
-			}
-			m.Uid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowZjh
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Uid |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -4575,16 +3449,16 @@ func (m *ActionLog) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Type |= (ActionLog_Type(b) & 0x7F) << shift
+				m.Type |= (ActionType(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Bet", wireType)
 			}
-			m.Coin = 0
+			m.Bet = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowZjh
@@ -4594,7 +3468,7 @@ func (m *ActionLog) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Coin |= (int64(b) & 0x7F) << shift
+				m.Bet |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -4618,6 +3492,26 @@ func (m *ActionLog) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Win", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Win = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipZjh(dAtA[iNdEx:])
@@ -4708,6 +3602,25 @@ func (m *GameInitAck) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
+			}
+			m.Pool = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Pool |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field State", wireType)
 			}
 			m.State = 0
@@ -4725,7 +3638,7 @@ func (m *GameInitAck) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 4:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Ring", wireType)
 			}
@@ -4744,7 +3657,7 @@ func (m *GameInitAck) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field First", wireType)
 			}
@@ -4763,7 +3676,7 @@ func (m *GameInitAck) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 6:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Player", wireType)
 			}
@@ -4794,7 +3707,7 @@ func (m *GameInitAck) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Poker", wireType)
 			}
@@ -4895,6 +3808,25 @@ func (m *GameStartAck) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pool", wireType)
+			}
+			m.Pool = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowZjh
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Pool |= (int64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Player", wireType)
 			}
@@ -5227,107 +4159,109 @@ var (
 	ErrIntOverflowZjh   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("zjh.proto", fileDescriptor_zjh_1284ae3437f8a57c) }
+func init() { proto.RegisterFile("zjh.proto", fileDescriptor_zjh_383ac9ba43e013e7) }
 
-var fileDescriptor_zjh_1284ae3437f8a57c = []byte{
-	// 1573 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0x5d, 0x6f, 0x1b, 0x45,
-	0x17, 0xce, 0x7a, 0xd7, 0x8e, 0x3d, 0x49, 0x93, 0xed, 0xb4, 0x6f, 0xb5, 0x6f, 0xf5, 0xbe, 0x71,
-	0xb4, 0x02, 0x14, 0xfa, 0x91, 0x48, 0x41, 0x02, 0x09, 0x8a, 0xea, 0xa4, 0x54, 0xa8, 0x22, 0x7c,
-	0x68, 0x82, 0x84, 0xa8, 0x04, 0xd2, 0x7a, 0x3d, 0x75, 0x36, 0xb1, 0x67, 0x96, 0xf5, 0x3a, 0x9b,
-	0xf4, 0x27, 0xc0, 0x0d, 0x48, 0x5c, 0xf2, 0x83, 0x2a, 0xae, 0x2a, 0xae, 0xb8, 0x40, 0xa6, 0x6a,
-	0x25, 0x2e, 0x22, 0x3e, 0xcd, 0x97, 0x10, 0x5c, 0xa0, 0x73, 0x66, 0xd6, 0xbb, 0xf6, 0x5a, 0x25,
-	0xa9, 0x22, 0x71, 0x77, 0xf6, 0xf8, 0x99, 0x67, 0xce, 0xcc, 0x3c, 0x73, 0xe6, 0x1c, 0x93, 0xda,
-	0xdd, 0xdd, 0x9d, 0xd5, 0x30, 0x92, 0xb1, 0xa4, 0xe6, 0xdd, 0xdd, 0x9d, 0x8b, 0x57, 0xdb, 0x41,
-	0xbc, 0xd3, 0x6f, 0xae, 0xfa, 0xb2, 0xbb, 0xd6, 0x96, 0x6d, 0xb9, 0x86, 0xbf, 0x35, 0xfb, 0x77,
-	0xf0, 0x0b, 0x3f, 0xd0, 0x52, 0x63, 0xdc, 0x2f, 0x4a, 0xc4, 0xbc, 0xbd, 0xbb, 0xe3, 0x7e, 0x5e,
-	0x22, 0xd6, 0x0d, 0xd9, 0xe2, 0xb4, 0x4a, 0xac, 0x37, 0xa4, 0xe0, 0xf6, 0x0c, 0xa5, 0xe4, 0xcc,
-	0x86, 0x1f, 0x07, 0x52, 0x6c, 0x49, 0xb9, 0xc7, 0xf8, 0x07, 0xf6, 0xb7, 0x8d, 0x71, 0xdf, 0x86,
-	0xbf, 0x67, 0x7f, 0xd7, 0xa0, 0xff, 0x21, 0xb6, 0xf2, 0xbd, 0x12, 0xf4, 0x7c, 0x2f, 0x6a, 0x01,
-	0xf4, 0xfb, 0xa2, 0x1b, 0xd0, 0x3f, 0xe4, 0xdc, 0x37, 0x64, 0x37, 0xf4, 0x22, 0x0e, 0xe8, 0x1f,
-	0x8b, 0x6e, 0x40, 0xff, 0xd4, 0xa0, 0xe7, 0xc9, 0xa2, 0x72, 0x6f, 0xb4, 0x5a, 0x9b, 0x3c, 0x06,
-	0xf0, 0xb0, 0xe0, 0x05, 0xec, 0xcf, 0x0d, 0x7a, 0x8e, 0x2c, 0x68, 0x6f, 0xa7, 0x13, 0x08, 0x80,
-	0xfe, 0x32, 0xe9, 0x04, 0xe4, 0xaf, 0x39, 0xe7, 0x16, 0xf7, 0xf6, 0x31, 0x82, 0xdf, 0x26, 0x9d,
-	0x80, 0xfc, 0xbd, 0x41, 0x6d, 0x32, 0xf7, 0xaa, 0xd7, 0xe5, 0xb7, 0x44, 0x80, 0xb3, 0xfc, 0xd1,
-	0xa0, 0x67, 0xc9, 0x3c, 0x78, 0xb6, 0x63, 0x2f, 0x42, 0xd7, 0x9f, 0x0d, 0xba, 0x48, 0x08, 0xb8,
-	0x6e, 0x0a, 0x5c, 0xe3, 0x5f, 0x0d, 0xf7, 0x9e, 0x45, 0x2a, 0x6f, 0x75, 0xbc, 0x43, 0x1e, 0xd1,
-	0x67, 0x48, 0x29, 0x68, 0x39, 0xc6, 0xb2, 0xb1, 0x52, 0xde, 0xbc, 0x30, 0x1c, 0xd4, 0x69, 0xb3,
-	0x27, 0xc5, 0x8b, 0x6e, 0xd0, 0x72, 0x97, 0xbb, 0xbd, 0x36, 0x1a, 0xac, 0x14, 0xb4, 0xe8, 0x2a,
-	0xb1, 0x02, 0x5f, 0x0a, 0xa7, 0x84, 0xc8, 0x8b, 0xc3, 0x41, 0xfd, 0x82, 0x46, 0xfa, 0x52, 0xa4,
-	0x58, 0x30, 0x19, 0xe2, 0xe8, 0x25, 0x62, 0xee, 0x07, 0xa1, 0x63, 0x22, 0xdc, 0x19, 0x0e, 0xea,
-	0xe7, 0x15, 0x7c, 0x3f, 0x08, 0x35, 0x1a, 0x2c, 0x06, 0x20, 0xba, 0x4e, 0xca, 0xfe, 0x8e, 0x17,
-	0x44, 0x8e, 0x85, 0xe8, 0xff, 0x0d, 0x07, 0x75, 0x47, 0xa1, 0xd1, 0xad, 0xf1, 0xca, 0x66, 0x0a,
-	0x0a, 0xf1, 0xf8, 0x32, 0x10, 0x4e, 0x79, 0xd9, 0x58, 0x31, 0xf3, 0xf1, 0x80, 0x37, 0x1d, 0x01,
-	0x26, 0x43, 0x1c, 0xc4, 0xd3, 0xe4, 0xb1, 0x53, 0x41, 0x78, 0x2e, 0x9e, 0x26, 0x8f, 0x35, 0x1a,
-	0x2c, 0x06, 0x20, 0xe0, 0x16, 0x5e, 0x97, 0x3b, 0xb3, 0xcb, 0xc6, 0x4a, 0x2d, 0xcf, 0x0d, 0x5e,
-	0x8d, 0x46, 0x93, 0x21, 0x8e, 0xde, 0x24, 0xe5, 0x5e, 0xec, 0xc5, 0xdc, 0xa9, 0x2e, 0x1b, 0x2b,
-	0x0b, 0xeb, 0x67, 0x57, 0x41, 0xf2, 0x6a, 0x7f, 0x57, 0xb7, 0xe1, 0x87, 0xfc, 0x92, 0x10, 0xa9,
-	0x49, 0x94, 0xcd, 0xd4, 0x68, 0x98, 0xb6, 0x23, 0xe5, 0x9e, 0x53, 0x5b, 0x36, 0x56, 0xaa, 0xf9,
-	0x69, 0xc1, 0xab, 0x47, 0xa0, 0xc9, 0x10, 0x07, 0xf8, 0x96, 0x4c, 0x84, 0x43, 0x26, 0x8f, 0x04,
-	0xbc, 0x1a, 0x8f, 0x26, 0x43, 0x9c, 0xbb, 0x4d, 0xca, 0x18, 0x4d, 0xee, 0x0a, 0x55, 0x89, 0xc5,
-	0xb8, 0xd7, 0xb2, 0x0d, 0x3a, 0x47, 0x66, 0x21, 0xe2, 0x40, 0xb4, 0xed, 0x12, 0x7c, 0xe8, 0x4b,
-	0x61, 0x9b, 0x80, 0xd9, 0x92, 0xbd, 0xd8, 0xb6, 0xe8, 0x2c, 0x31, 0xdf, 0x09, 0x84, 0x5d, 0xa6,
-	0x35, 0x52, 0x46, 0x11, 0xda, 0x15, 0xf7, 0x2b, 0x93, 0x54, 0x41, 0x5c, 0x9b, 0x41, 0xa7, 0x43,
-	0x2f, 0x13, 0xb3, 0x3f, 0x52, 0xd3, 0x7f, 0x8f, 0x06, 0x75, 0xa3, 0x3f, 0x1c, 0xd4, 0x6d, 0x15,
-	0x55, 0x5f, 0x87, 0xd4, 0x77, 0x19, 0xa0, 0xe8, 0x2d, 0x62, 0xee, 0xca, 0xa6, 0x16, 0xd4, 0x0b,
-	0x47, 0x83, 0xfa, 0xdc, 0xee, 0x15, 0xd9, 0x0d, 0x62, 0xde, 0x0d, 0xe3, 0xc3, 0xe1, 0xa0, 0xfe,
-	0x94, 0x1a, 0x96, 0x73, 0x6a, 0x82, 0xbc, 0x87, 0x01, 0x07, 0xbd, 0xaa, 0xc5, 0x60, 0xe2, 0xe9,
-	0xe2, 0xc4, 0x7e, 0x36, 0xb1, 0x9f, 0xca, 0x21, 0xd5, 0xc2, 0x65, 0xa5, 0x05, 0x2b, 0x43, 0x37,
-	0x33, 0x74, 0x33, 0x95, 0x83, 0x16, 0xc3, 0x1a, 0x29, 0x87, 0x72, 0x8f, 0x47, 0xa8, 0xb4, 0x79,
-	0x05, 0x0f, 0x33, 0x78, 0xaa, 0xe6, 0xd0, 0x65, 0x0a, 0x07, 0xec, 0x49, 0x20, 0x50, 0x69, 0x54,
-	0xc1, 0x93, 0x0c, 0x9e, 0x68, 0x78, 0xe2, 0x32, 0x40, 0xc1, 0x26, 0xc4, 0xde, 0x01, 0x2a, 0xcd,
-	0x54, 0x9b, 0x70, 0x30, 0x6d, 0x13, 0x0e, 0x0a, 0x9b, 0x70, 0x30, 0xb6, 0x09, 0xb1, 0x77, 0x40,
-	0xb7, 0x49, 0x35, 0x09, 0x04, 0x93, 0x4d, 0x19, 0xa3, 0x10, 0xa9, 0xe2, 0x8b, 0xa7, 0xf1, 0xc5,
-	0x05, 0xbe, 0xbc, 0x87, 0x8d, 0x88, 0xdc, 0xcf, 0x2a, 0xa4, 0x06, 0xc7, 0xcb, 0x64, 0x5f, 0xb4,
-	0xe8, 0xb3, 0xa3, 0x64, 0xa1, 0xf7, 0x2d, 0xc8, 0x56, 0x16, 0xa4, 0x49, 0x40, 0xe5, 0x8b, 0x35,
-	0xbc, 0x13, 0x51, 0x8c, 0xe7, 0xab, 0xd1, 0xbd, 0x0c, 0xdd, 0x4b, 0x6f, 0x80, 0x52, 0x7f, 0x14,
-	0xc3, 0xb6, 0x71, 0xd1, 0xca, 0x1f, 0x21, 0xcf, 0xe0, 0xe9, 0x85, 0xe1, 0x2e, 0x03, 0x14, 0x1c,
-	0x78, 0x24, 0x65, 0x57, 0x27, 0x0c, 0x44, 0x47, 0x19, 0x3a, 0xcd, 0x18, 0x91, 0xcb, 0x10, 0x06,
-	0xdc, 0xb1, 0xd7, 0xc4, 0x13, 0xd4, 0xe8, 0x38, 0x43, 0xa7, 0xf7, 0x3f, 0xc6, 0x7d, 0x6c, 0xd2,
-	0x6b, 0xc4, 0x6a, 0x06, 0x9d, 0x8e, 0x53, 0x59, 0x36, 0x57, 0xe6, 0xd6, 0xcf, 0xe0, 0x65, 0x4e,
-	0x15, 0xfe, 0x38, 0xb5, 0xe0, 0x28, 0x8c, 0x2c, 0x10, 0x6d, 0x3c, 0x51, 0x3d, 0x57, 0x3b, 0x83,
-	0xb7, 0x35, 0xbc, 0x0d, 0x91, 0x05, 0xa2, 0x0d, 0x91, 0xf5, 0xfa, 0x5d, 0x3c, 0x2f, 0xbd, 0xea,
-	0x6e, 0x86, 0xee, 0x6a, 0x74, 0xd7, 0x65, 0x80, 0x4a, 0x95, 0x55, 0x3b, 0x96, 0xb2, 0x2e, 0x2b,
-	0x65, 0x91, 0x8c, 0xf9, 0x20, 0x03, 0x1f, 0xa4, 0x2a, 0xd2, 0xda, 0x79, 0x8d, 0x58, 0xa1, 0x94,
-	0x1d, 0x67, 0x2e, 0xd3, 0xa1, 0x9c, 0xa6, 0x1b, 0x59, 0xd0, 0x4d, 0xde, 0xc3, 0x90, 0x84, 0xbe,
-	0x4e, 0xca, 0x9d, 0xbe, 0xbf, 0x77, 0xe8, 0xcc, 0x67, 0x6c, 0x9d, 0x69, 0x6c, 0x9d, 0x02, 0x5b,
-	0xde, 0xc3, 0x14, 0x0b, 0xc4, 0x26, 0x64, 0xcc, 0x9d, 0x33, 0x98, 0x8d, 0x91, 0x4d, 0x4c, 0x63,
-	0x13, 0x05, 0x36, 0x31, 0x16, 0x1b, 0x90, 0x40, 0x6c, 0xfe, 0x0e, 0xf7, 0x62, 0x67, 0x01, 0x93,
-	0x2c, 0xb2, 0xed, 0x4f, 0x63, 0xdb, 0x2f, 0xb0, 0xed, 0x8f, 0xc5, 0x86, 0x2c, 0xee, 0xb5, 0x89,
-	0x12, 0xe4, 0x44, 0x19, 0xd0, 0x6d, 0x4c, 0x14, 0x2b, 0x59, 0xae, 0x31, 0x8e, 0x97, 0x6b, 0xdc,
-	0xeb, 0xc5, 0xd2, 0xe6, 0x64, 0x21, 0x5c, 0x2f, 0x16, 0x41, 0x27, 0x23, 0x68, 0x17, 0xcb, 0x25,
-	0xc8, 0x44, 0x32, 0x0c, 0xa5, 0xe0, 0x22, 0xd6, 0x2c, 0x4f, 0xac, 0xa8, 0x11, 0x91, 0xfb, 0xb5,
-	0x51, 0xac, 0xc0, 0x4e, 0xf6, 0xe0, 0xe4, 0xc3, 0x2a, 0x9d, 0x52, 0x58, 0x90, 0xc0, 0x13, 0xfd,
-	0xf2, 0x68, 0x39, 0x25, 0xd3, 0xf8, 0x92, 0x02, 0x5f, 0x32, 0x96, 0xc0, 0x93, 0x40, 0xb8, 0xef,
-	0x17, 0x6a, 0x49, 0xd0, 0x3e, 0x3e, 0x6c, 0x46, 0x76, 0x93, 0xfc, 0x69, 0xf4, 0x7e, 0x81, 0xde,
-	0x1f, 0xd3, 0x3e, 0x56, 0x42, 0x1f, 0x19, 0x85, 0xb2, 0xf4, 0x64, 0x1b, 0x98, 0x46, 0x53, 0x3a,
-	0x8d, 0x68, 0xde, 0x9b, 0xac, 0x86, 0x4f, 0x77, 0xb1, 0x1f, 0x1a, 0x93, 0x85, 0xf5, 0xbf, 0xb8,
-	0xd6, 0x8d, 0xc9, 0x7a, 0x1e, 0x6e, 0x7a, 0xc4, 0x05, 0x4f, 0x30, 0x9a, 0xaa, 0x8a, 0x46, 0x64,
-	0xd1, 0xa4, 0xe5, 0x9b, 0x70, 0x99, 0xc2, 0xb9, 0x2f, 0x4f, 0x56, 0xff, 0x27, 0xbb, 0xa6, 0xdf,
-	0x98, 0xa4, 0x96, 0xe6, 0x9a, 0x76, 0xf6, 0x38, 0x1b, 0xc7, 0x7f, 0x9c, 0x61, 0xae, 0xd2, 0xb1,
-	0xb6, 0x6e, 0x93, 0x58, 0xf1, 0x61, 0xc8, 0xf1, 0x4e, 0x2c, 0xac, 0x9f, 0xc3, 0x07, 0x74, 0x34,
-	0xf7, 0xea, 0xdb, 0x87, 0x21, 0x7f, 0xdc, 0x1b, 0x8c, 0x63, 0x47, 0xdb, 0x6f, 0x9d, 0xc2, 0xf6,
-	0x8f, 0x5d, 0xfc, 0xf2, 0x69, 0xe5, 0xa3, 0x4f, 0x0d, 0x62, 0xc1, 0x5a, 0xc6, 0xab, 0x69, 0xc8,
-	0xe4, 0xaa, 0x9a, 0x4e, 0x0b, 0xe8, 0x12, 0x9d, 0x27, 0xd5, 0x37, 0xf7, 0x79, 0x14, 0x07, 0x5d,
-	0x6e, 0x9b, 0x74, 0x81, 0x10, 0x9d, 0xc0, 0xa0, 0x96, 0xb6, 0xe8, 0x22, 0x99, 0xd3, 0xdf, 0x5b,
-	0xb2, 0xc7, 0xed, 0x32, 0x25, 0xa4, 0xa2, 0xee, 0xa7, 0x5d, 0x81, 0x42, 0x1b, 0xe5, 0x6b, 0xcf,
-	0x02, 0x6e, 0xa3, 0x1f, 0x4b, 0x8d, 0xb5, 0xab, 0xf0, 0x1b, 0x03, 0x69, 0xd8, 0xb5, 0xac, 0x1e,
-	0x27, 0xee, 0x27, 0xe6, 0x58, 0x47, 0x08, 0xbd, 0x55, 0xec, 0x35, 0x3b, 0x5c, 0xeb, 0x24, 0xd7,
-	0x88, 0xa0, 0x3b, 0xdd, 0x77, 0xb4, 0x99, 0x82, 0xea, 0x9e, 0xb0, 0xf4, 0x8f, 0x3d, 0xe1, 0x7a,
-	0xda, 0xf7, 0x98, 0x93, 0xdc, 0x8f, 0x6d, 0x72, 0xb0, 0x3e, 0xb2, 0x26, 0x9b, 0x16, 0xf0, 0xa6,
-	0x75, 0x1b, 0x98, 0xba, 0x40, 0x5a, 0x27, 0xe5, 0x3b, 0x41, 0xd4, 0x4b, 0x0f, 0x2e, 0x37, 0x07,
-	0xba, 0xf5, 0x08, 0x65, 0x33, 0x05, 0xa5, 0xd7, 0x49, 0x25, 0xc4, 0xee, 0x4b, 0xd7, 0x70, 0x73,
-	0xb9, 0x86, 0x2c, 0x3f, 0x25, 0x80, 0xd2, 0x27, 0x15, 0x4c, 0xa6, 0x87, 0x41, 0x95, 0xa0, 0xde,
-	0xe1, 0x59, 0x7c, 0x87, 0x51, 0x2d, 0xe1, 0x34, 0xb5, 0x84, 0x05, 0xb5, 0x84, 0x63, 0x55, 0x82,
-	0x7a, 0xa5, 0x93, 0xf1, 0x96, 0xfc, 0xd8, 0x3d, 0x77, 0xb6, 0x8e, 0xd2, 0x13, 0xad, 0xc3, 0x7d,
-	0x50, 0xca, 0x77, 0xfe, 0xc7, 0x9e, 0xf7, 0x92, 0x7a, 0xd3, 0x4a, 0x93, 0xbd, 0x72, 0x32, 0xea,
-	0xac, 0xc1, 0x52, 0x65, 0xe6, 0xf3, 0xa4, 0x92, 0x04, 0x42, 0xf0, 0x48, 0x8b, 0x60, 0x69, 0x38,
-	0xa8, 0x5f, 0x1c, 0xc1, 0x05, 0x8f, 0xb2, 0x11, 0xf0, 0xc1, 0x34, 0x7a, 0xd4, 0xbf, 0x5b, 0xc7,
-	0xec, 0xdf, 0x5f, 0x1a, 0x6f, 0xc3, 0x9e, 0x3e, 0x1a, 0xd4, 0x95, 0x23, 0x13, 0x84, 0xda, 0x6c,
-	0xbd, 0x0f, 0x68, 0xa7, 0x2d, 0xd9, 0xbb, 0x69, 0x45, 0xaa, 0xda, 0xff, 0x1b, 0x47, 0x83, 0xfa,
-	0x22, 0x3a, 0xc6, 0xce, 0xf4, 0x8a, 0xae, 0x4a, 0xc7, 0x7f, 0x48, 0x2b, 0xd3, 0x09, 0xaf, 0xae,
-	0x4e, 0x37, 0xff, 0x7f, 0xef, 0xe1, 0x92, 0x71, 0xff, 0xe1, 0x92, 0xf1, 0xe0, 0xe1, 0x92, 0xf1,
-	0xf1, 0xa3, 0xa5, 0x99, 0xfb, 0x8f, 0x96, 0x66, 0xbe, 0x7c, 0xb4, 0x34, 0x73, 0xdb, 0xbc, 0xbb,
-	0xbb, 0xd3, 0xac, 0xe0, 0xbf, 0x58, 0xcf, 0xfd, 0x1d, 0x00, 0x00, 0xff, 0xff, 0xfa, 0xa7, 0x1d,
-	0x4a, 0x06, 0x13, 0x00, 0x00,
+var fileDescriptor_zjh_383ac9ba43e013e7 = []byte{
+	// 1608 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x58, 0x4f, 0x6f, 0xdb, 0x46,
+	0x16, 0x37, 0x45, 0x49, 0x96, 0x47, 0xfe, 0x43, 0xcf, 0x26, 0x01, 0x37, 0xc8, 0x5a, 0x02, 0xb1,
+	0xbb, 0xf0, 0x3a, 0x89, 0x0d, 0x78, 0x81, 0x2c, 0xb0, 0x29, 0x5a, 0xdb, 0x69, 0x10, 0x04, 0x71,
+	0xff, 0x80, 0x29, 0x50, 0xb4, 0x97, 0x82, 0xa4, 0x26, 0x32, 0x2d, 0x8a, 0xc3, 0x52, 0x23, 0xcb,
+	0xca, 0xa1, 0x9f, 0xa1, 0x87, 0xde, 0xfa, 0x59, 0x72, 0x6f, 0x6f, 0x01, 0xda, 0x43, 0x4f, 0x42,
+	0x90, 0xdc, 0xdc, 0x16, 0x45, 0xdd, 0x0f, 0xd0, 0xe2, 0xbd, 0x99, 0xd1, 0x50, 0x96, 0x90, 0x38,
+	0x89, 0x4f, 0x7e, 0x7c, 0xfe, 0xcd, 0x8f, 0x8f, 0x6f, 0x7e, 0xef, 0xcd, 0x3c, 0x91, 0x85, 0xc7,
+	0x87, 0x07, 0x9b, 0x59, 0xce, 0x05, 0xa7, 0xf6, 0xe3, 0xc3, 0x83, 0xab, 0x37, 0xdb, 0xb1, 0x38,
+	0xe8, 0x87, 0x9b, 0x11, 0xef, 0x6e, 0xb5, 0x79, 0x9b, 0x6f, 0xe1, 0xff, 0xc2, 0xfe, 0x23, 0x7c,
+	0xc2, 0x07, 0xb4, 0xe4, 0x1a, 0xef, 0xc7, 0x32, 0xa9, 0x7e, 0x9c, 0x04, 0x43, 0x96, 0xd3, 0x7f,
+	0x93, 0x52, 0xdc, 0x72, 0xad, 0xa6, 0xb5, 0x5e, 0xd9, 0xbb, 0x72, 0x3a, 0x6a, 0xd0, 0xb0, 0xc7,
+	0xd3, 0xff, 0x7b, 0x71, 0xcb, 0x6b, 0x76, 0x7b, 0x6d, 0x34, 0xfc, 0x52, 0xdc, 0xa2, 0x9b, 0xa4,
+	0x1c, 0x47, 0x3c, 0x75, 0x4b, 0x88, 0xbc, 0x7a, 0x3a, 0x6a, 0x5c, 0x51, 0xc8, 0x88, 0xa7, 0x1a,
+	0x0b, 0xa6, 0x8f, 0x38, 0xba, 0x41, 0xec, 0xa3, 0x38, 0x73, 0x6d, 0x84, 0xbb, 0xa7, 0xa3, 0xc6,
+	0x25, 0x09, 0x3f, 0x8a, 0x33, 0x85, 0x06, 0xcb, 0x07, 0x10, 0xdd, 0x26, 0x95, 0xe8, 0x20, 0x88,
+	0x73, 0xb7, 0x8c, 0xe8, 0x6b, 0xa7, 0xa3, 0x86, 0x2b, 0xd1, 0xe8, 0x56, 0x78, 0x69, 0xfb, 0x12,
+	0x0a, 0xf1, 0x44, 0x3c, 0x4e, 0xdd, 0x4a, 0xd3, 0x5a, 0xb7, 0x8b, 0xf1, 0x80, 0x57, 0xaf, 0x00,
+	0xd3, 0x47, 0x1c, 0xc4, 0x13, 0x32, 0xe1, 0x56, 0x11, 0x5e, 0x88, 0x27, 0x64, 0x42, 0xa1, 0xc1,
+	0xf2, 0x01, 0x04, 0xdc, 0x69, 0xd0, 0x65, 0xee, 0x7c, 0xd3, 0x5a, 0x5f, 0x28, 0x72, 0x83, 0x57,
+	0xa1, 0xd1, 0xf4, 0x11, 0x47, 0xef, 0x92, 0x4a, 0x4f, 0x04, 0x82, 0xb9, 0xb5, 0xa6, 0xb5, 0xbe,
+	0xbc, 0xbd, 0xba, 0x09, 0xbb, 0x23, 0xf3, 0xbb, 0xf9, 0x10, 0xfe, 0x51, 0xfc, 0x24, 0x44, 0x2a,
+	0x12, 0x69, 0xfb, 0x72, 0x35, 0xbc, 0x36, 0xe1, 0xbc, 0xe3, 0x2e, 0x34, 0xad, 0xf5, 0x5a, 0xf1,
+	0xb5, 0xe0, 0x55, 0x2b, 0xd0, 0xf4, 0x11, 0x07, 0xf8, 0x16, 0x1f, 0xa4, 0x2e, 0x39, 0xbb, 0x25,
+	0xe0, 0x55, 0x78, 0x34, 0x7d, 0xc4, 0x79, 0x5f, 0x90, 0x0a, 0x46, 0x43, 0x6b, 0xa4, 0xfc, 0x21,
+	0x4f, 0x99, 0x33, 0x47, 0x17, 0x48, 0xc5, 0x67, 0x41, 0x6b, 0xe8, 0x58, 0xb4, 0x4e, 0xe6, 0x21,
+	0xe4, 0x38, 0x6d, 0x3b, 0x25, 0xf0, 0xef, 0x26, 0x49, 0x9c, 0x3a, 0x36, 0xf8, 0xdf, 0x8f, 0x7b,
+	0x51, 0x90, 0xb7, 0x9c, 0x32, 0xac, 0xdc, 0xe7, 0x3d, 0xe6, 0x54, 0xe8, 0x3c, 0xb1, 0x3f, 0x8d,
+	0x53, 0xa7, 0x0a, 0xd0, 0x7d, 0x16, 0x1c, 0x31, 0x67, 0xde, 0x7b, 0x52, 0x21, 0xb5, 0x7b, 0x41,
+	0x97, 0xed, 0xc5, 0x49, 0x42, 0xaf, 0x13, 0xbb, 0x3f, 0x56, 0xd6, 0xdf, 0x4f, 0x46, 0x0d, 0xab,
+	0x7f, 0x3a, 0x6a, 0x38, 0x32, 0xc2, 0xbe, 0x0a, 0xaf, 0xef, 0xf9, 0x80, 0xa2, 0xf7, 0x89, 0x7d,
+	0xc8, 0x43, 0x25, 0xae, 0xff, 0x9d, 0x8c, 0x1a, 0xf5, 0xc3, 0x1b, 0xbc, 0x1b, 0x0b, 0xd6, 0xcd,
+	0xc4, 0xf0, 0x74, 0xd4, 0xf8, 0xa7, 0x5c, 0x56, 0x70, 0x2a, 0x82, 0xa2, 0xc7, 0x07, 0x0e, 0x7a,
+	0x53, 0x09, 0xc3, 0xc6, 0x9d, 0xc6, 0x17, 0x47, 0xe6, 0xc5, 0x91, 0x96, 0x86, 0xd6, 0xc5, 0x75,
+	0xa9, 0x8b, 0xb2, 0x41, 0x87, 0x06, 0x1d, 0x6a, 0x69, 0x28, 0x61, 0x6c, 0x91, 0x4a, 0xc6, 0x3b,
+	0x2c, 0x47, 0xd5, 0x2d, 0x4a, 0x78, 0x66, 0xe0, 0x5a, 0xd9, 0x99, 0xe7, 0x4b, 0x1c, 0xb0, 0x0f,
+	0xe2, 0x14, 0x55, 0x47, 0x25, 0x7c, 0x60, 0xe0, 0x03, 0x05, 0x1f, 0x78, 0x3e, 0xa0, 0x20, 0x09,
+	0x22, 0x38, 0x46, 0xd5, 0xd9, 0x32, 0x09, 0xc7, 0xb3, 0x92, 0x70, 0x3c, 0x95, 0x84, 0xe3, 0x89,
+	0x24, 0x88, 0xe0, 0x98, 0x7e, 0x40, 0x2a, 0x83, 0x40, 0xb0, 0x1c, 0x15, 0xa9, 0xc8, 0xf8, 0x2c,
+	0x32, 0x3e, 0x45, 0x56, 0xf4, 0xf8, 0x92, 0x05, 0xe8, 0x92, 0x7e, 0xd4, 0x19, 0xa2, 0x34, 0x15,
+	0xdd, 0x70, 0x16, 0xdd, 0x70, 0x8a, 0x6e, 0x38, 0x41, 0x87, 0x2c, 0x40, 0x97, 0xf3, 0x90, 0x0b,
+	0x54, 0x2e, 0x95, 0x74, 0x62, 0x16, 0x9d, 0x98, 0xa2, 0x13, 0x13, 0x74, 0xc8, 0x42, 0xef, 0x91,
+	0x52, 0xd6, 0x71, 0xeb, 0x4d, 0x5b, 0x6b, 0xa7, 0x33, 0x8b, 0xeb, 0xe6, 0x14, 0x57, 0xa7, 0xc8,
+	0x55, 0xca, 0x3a, 0xde, 0xb7, 0xf3, 0x64, 0x01, 0xf4, 0xeb, 0xf3, 0x7e, 0xda, 0xa2, 0xff, 0x19,
+	0x77, 0x46, 0x25, 0x8c, 0xd8, 0x6c, 0x5d, 0xac, 0x3b, 0x9e, 0x6c, 0x8e, 0x5b, 0xd8, 0x00, 0x72,
+	0x81, 0x02, 0x56, 0xe8, 0x9e, 0x41, 0xf7, 0x74, 0xb9, 0xcb, 0x52, 0xcf, 0x05, 0xe8, 0x82, 0xa5,
+	0xad, 0xa2, 0x46, 0x99, 0x81, 0xeb, 0xee, 0xc0, 0x3c, 0x1f, 0x50, 0xa0, 0xe8, 0x9c, 0xf3, 0xae,
+	0xea, 0x8e, 0x88, 0xce, 0x0d, 0x5a, 0xb7, 0xc7, 0xdc, 0xf3, 0x11, 0x06, 0xdc, 0x22, 0x08, 0x51,
+	0xa2, 0x0a, 0x2d, 0x0c, 0x5a, 0x37, 0x3b, 0x81, 0x42, 0x09, 0xe9, 0x3b, 0xa4, 0x1c, 0xc6, 0x49,
+	0xe2, 0x56, 0x9b, 0xf6, 0x7a, 0x7d, 0x7b, 0x09, 0x3b, 0x97, 0x2e, 0xe1, 0x97, 0x95, 0x03, 0xae,
+	0x82, 0xc8, 0x82, 0x54, 0x30, 0x25, 0x59, 0x84, 0x07, 0x06, 0x1e, 0x28, 0x78, 0xe0, 0xf9, 0x08,
+	0xc3, 0x0f, 0x89, 0xd3, 0x36, 0x8a, 0x52, 0x85, 0xd6, 0x36, 0xf0, 0xb6, 0x82, 0xb7, 0xe1, 0x43,
+	0xe2, 0xb4, 0x0d, 0x1f, 0xd2, 0xeb, 0x77, 0x95, 0xe6, 0x10, 0xdd, 0x35, 0xe8, 0xae, 0x42, 0x77,
+	0x3d, 0x1f, 0x50, 0xba, 0xd2, 0xc8, 0xb9, 0x2a, 0xed, 0xba, 0xac, 0xb4, 0xba, 0x61, 0x3e, 0x36,
+	0xe0, 0x63, 0x5d, 0x55, 0xaa, 0x96, 0xb6, 0x74, 0x2d, 0x2d, 0x1a, 0x38, 0x37, 0x70, 0xae, 0xeb,
+	0x66, 0x5c, 0x2d, 0xb7, 0x89, 0x9d, 0xf0, 0xb6, 0xbb, 0x84, 0x29, 0x5d, 0xc6, 0x94, 0xee, 0x46,
+	0x22, 0xe6, 0xe9, 0x3e, 0x6f, 0xcb, 0xe5, 0x89, 0x59, 0x9e, 0xe8, 0xc6, 0xee, 0xf9, 0xb0, 0x0a,
+	0x72, 0x94, 0x71, 0x9e, 0xb8, 0xcb, 0xe6, 0x65, 0xb3, 0x3b, 0x0c, 0xc2, 0x4c, 0x65, 0xae, 0x5c,
+	0x48, 0x65, 0x3e, 0x20, 0xe5, 0x94, 0x0b, 0xe6, 0x3a, 0x78, 0xf2, 0x21, 0x5b, 0x3a, 0x8b, 0x2d,
+	0x9d, 0x62, 0x2b, 0x7a, 0x7c, 0x24, 0x81, 0xd8, 0xa2, 0x03, 0x16, 0x08, 0x77, 0x15, 0x0f, 0x34,
+	0x64, 0x3b, 0x9a, 0xc5, 0x76, 0x34, 0xc5, 0x76, 0x34, 0x11, 0x1b, 0xb2, 0x78, 0x3f, 0x5b, 0x64,
+	0x41, 0xe6, 0xd1, 0x67, 0x5f, 0xd2, 0x77, 0x49, 0x59, 0x0c, 0x33, 0x86, 0xf5, 0xb9, 0xbc, 0xbd,
+	0x52, 0xc8, 0xf2, 0x27, 0xc3, 0x8c, 0xbd, 0x4c, 0xf7, 0xb8, 0x0e, 0x9a, 0x2d, 0xf4, 0xfd, 0xc2,
+	0x89, 0x13, 0xce, 0x0a, 0x2d, 0x9c, 0x0a, 0x2d, 0x9c, 0x68, 0xb6, 0x70, 0x2a, 0x3c, 0x24, 0x35,
+	0x9e, 0x65, 0x3c, 0x65, 0xa9, 0x50, 0xf7, 0x9d, 0x37, 0xee, 0xb7, 0x63, 0x22, 0xef, 0x4f, 0x5b,
+	0x7f, 0xed, 0x6e, 0xd4, 0x79, 0xbd, 0xc3, 0x54, 0xa7, 0xa6, 0xf4, 0x76, 0xa9, 0xb1, 0x2f, 0x38,
+	0x35, 0xe5, 0x0b, 0x4a, 0x0d, 0xe8, 0xaa, 0x78, 0x0a, 0x23, 0x63, 0x36, 0x8b, 0x31, 0x9b, 0x62,
+	0xcc, 0x26, 0x74, 0x25, 0xcf, 0xe8, 0xfb, 0xe6, 0x8c, 0x56, 0x22, 0x1d, 0xcc, 0x22, 0x1b, 0x4c,
+	0x91, 0x0d, 0x26, 0x3e, 0x17, 0xfa, 0xca, 0x03, 0x75, 0xf7, 0x28, 0x1c, 0xe1, 0xd1, 0x2c, 0xae,
+	0x68, 0x8a, 0x2b, 0x9a, 0x28, 0x1f, 0xbc, 0xb8, 0x7e, 0x33, 0x56, 0xc0, 0x3e, 0x6f, 0x9b, 0x23,
+	0xc6, 0x3a, 0xff, 0x11, 0x03, 0x92, 0x29, 0xbd, 0x96, 0x64, 0xec, 0xb7, 0x93, 0x4c, 0x61, 0x8b,
+	0xdf, 0xe4, 0xbb, 0xa7, 0x24, 0x53, 0xb9, 0x28, 0xc9, 0x5c, 0xdc, 0x1e, 0x7b, 0xdf, 0xdb, 0xa4,
+	0x0e, 0x27, 0xe4, 0xfd, 0x34, 0x16, 0x50, 0x9a, 0xdb, 0xa4, 0x22, 0x82, 0x30, 0x61, 0xaa, 0x38,
+	0x0b, 0x37, 0x7d, 0x74, 0xeb, 0x4c, 0xa1, 0xed, 0x4b, 0xa8, 0x1a, 0xba, 0x4a, 0xaf, 0x1c, 0xba,
+	0x6e, 0xa9, 0xc3, 0x40, 0xde, 0x13, 0xbc, 0x93, 0x51, 0x03, 0x9f, 0xcd, 0x4d, 0x1f, 0x9e, 0xb4,
+	0xb4, 0xc1, 0x54, 0xa7, 0xc2, 0xb6, 0x1e, 0x48, 0xa6, 0x06, 0xaa, 0x97, 0x4e, 0x1f, 0x78, 0x38,
+	0x57, 0xce, 0x4e, 0x13, 0xe0, 0xd5, 0x77, 0x0c, 0x30, 0xd5, 0xe9, 0xbc, 0x4d, 0x2a, 0x8f, 0xe2,
+	0xbc, 0x27, 0x47, 0xaa, 0x89, 0x77, 0xa0, 0x5b, 0xad, 0x90, 0xb6, 0x2f, 0xa1, 0xf4, 0x3d, 0x52,
+	0xcd, 0x70, 0x2c, 0x72, 0xe7, 0xf1, 0x70, 0xac, 0x17, 0x26, 0xa5, 0xe2, 0x2b, 0x01, 0xa4, 0x3f,
+	0x0b, 0x4c, 0x5f, 0x2d, 0x33, 0xa5, 0x5f, 0xbb, 0x88, 0xd2, 0xf7, 0x9e, 0x58, 0x64, 0x11, 0xf6,
+	0xf2, 0x21, 0x54, 0x0c, 0x6c, 0xe6, 0x8d, 0xc2, 0x34, 0x7c, 0xed, 0x64, 0xd4, 0x28, 0xc5, 0xad,
+	0x73, 0x6c, 0x4f, 0xe9, 0x35, 0xb7, 0xe7, 0xde, 0x38, 0x0d, 0xf6, 0x74, 0x1a, 0x24, 0x4d, 0x12,
+	0x0c, 0x5f, 0x9d, 0x0e, 0xef, 0x59, 0x89, 0x10, 0x88, 0xff, 0x6e, 0xda, 0x82, 0xe8, 0xcf, 0x3b,
+	0xcb, 0x6f, 0xc8, 0x6a, 0x28, 0x9d, 0x9d, 0x85, 0x07, 0xe3, 0xc9, 0x19, 0x2c, 0xd9, 0xd2, 0x6e,
+	0x91, 0xea, 0x20, 0x4e, 0x53, 0x8c, 0x15, 0x78, 0xd7, 0x4e, 0x47, 0x8d, 0xab, 0x63, 0x78, 0xca,
+	0x72, 0xb3, 0x02, 0x1e, 0x7c, 0x85, 0x1e, 0xcf, 0xe7, 0xe5, 0x73, 0xce, 0xe7, 0xb7, 0x27, 0x9b,
+	0xfa, 0xbf, 0x4e, 0x46, 0x0d, 0xe9, 0x30, 0xba, 0x92, 0x7b, 0xa6, 0xd3, 0x09, 0xb6, 0x6e, 0xe1,
+	0x9f, 0xe9, 0x5b, 0x90, 0x1c, 0xef, 0xef, 0x9c, 0x8c, 0x1a, 0x2b, 0xe8, 0x98, 0x90, 0xc6, 0x0d,
+	0x75, 0xe3, 0x9a, 0xfc, 0x87, 0xbe, 0x7f, 0x9d, 0xf1, 0xaa, 0x1b, 0xd1, 0xc6, 0x57, 0xa4, 0x7c,
+	0x87, 0xb7, 0x18, 0x5d, 0x24, 0x35, 0xf8, 0xab, 0xe6, 0x66, 0x4a, 0x96, 0xe0, 0x69, 0x7c, 0x1d,
+	0x71, 0x7e, 0xd9, 0x99, 0xf4, 0xed, 0x46, 0x1d, 0xe7, 0xd7, 0x1d, 0x7a, 0x89, 0xac, 0x80, 0xaf,
+	0xd0, 0x2f, 0x9c, 0xdf, 0x76, 0xe8, 0x65, 0xe2, 0x68, 0xaf, 0x56, 0x9e, 0xf3, 0xfb, 0x0e, 0xfd,
+	0x1b, 0x59, 0xd6, 0x6e, 0xb9, 0xa1, 0xce, 0x1f, 0x3b, 0x1b, 0x3f, 0x58, 0x84, 0x98, 0x4e, 0x4c,
+	0x97, 0xf5, 0x93, 0x0a, 0x64, 0x85, 0xd4, 0x75, 0x10, 0x72, 0x8c, 0x1f, 0x03, 0xf6, 0x39, 0xef,
+	0x38, 0x25, 0xba, 0x4a, 0x96, 0xe4, 0xb3, 0x1e, 0xe2, 0x6d, 0x4a, 0xc9, 0xb2, 0x74, 0x7d, 0x74,
+	0xc4, 0x72, 0x11, 0x77, 0x99, 0x53, 0x36, 0xb0, 0x3b, 0xbc, 0x9b, 0x05, 0x39, 0x4c, 0xf8, 0x0e,
+	0x59, 0x54, 0xdf, 0xd2, 0x6a, 0xed, 0x31, 0xe1, 0x54, 0xcd, 0xcb, 0xe4, 0x6f, 0x03, 0xf3, 0xf4,
+	0x32, 0x59, 0x55, 0x8e, 0xbe, 0xe0, 0x7a, 0x65, 0xad, 0x18, 0x54, 0xca, 0x06, 0xce, 0x82, 0x71,
+	0xc8, 0x5f, 0x0a, 0xc8, 0xde, 0x3f, 0xbe, 0x7b, 0xbe, 0x66, 0x3d, 0x7d, 0xbe, 0x66, 0x3d, 0x7b,
+	0xbe, 0x66, 0x7d, 0xfd, 0x62, 0x6d, 0xee, 0xe9, 0x8b, 0xb5, 0xb9, 0x9f, 0x5e, 0xac, 0xcd, 0x7d,
+	0x6e, 0x3f, 0x3e, 0x3c, 0x08, 0xab, 0xf8, 0x33, 0xd5, 0x7f, 0xff, 0x0a, 0x00, 0x00, 0xff, 0xff,
+	0xc3, 0xaa, 0x8d, 0x7f, 0xe7, 0x12, 0x00, 0x00,
 }

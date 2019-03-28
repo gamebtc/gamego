@@ -44,7 +44,7 @@ type RoomInfo struct {
 	Lock    int32     `bson:"lock"`    //是否锁定(锁定后，只出不进)
 	Close   int32     `bson:"close"`   //是否关闭中(0:任何人可进，1:设置为关闭状态,不再开始新的游戏)
 	Sort    int32     `bson:"sort"`    //房间排序
-	Addr    string    `bson:"addr"`    //服务器地址
+	Addr    []string  `bson:"addr"`    //服务器地址
 	Key     string    `bson:"key"`     //服务器KEY
 	Init    time.Time `bson:"init"`    //创建时间
 	Up      time.Time `bson:"up"`      //更新时间

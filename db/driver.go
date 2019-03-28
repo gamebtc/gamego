@@ -24,8 +24,10 @@ type GameDriver interface {
 	GetRoom(roomId int32, ver int32) (*model.RoomInfo, error)
 	// 锁定房间服务
 	LockRoomServer(room *protocol.RoomConfig) (obj *model.RoomInfo, err error)
-	// 获取所有房间
-	GetAllRoom(query interface{}) ([]*model.RoomInfo, error)
+	// 获取房间信息
+	FindRoomInfos(query interface{}) ([]*model.RoomInfo, error)
+	// 获取房间地址
+	FindRoomConfigs(query interface{}) (all []*protocol.RoomConfig, err error)
 	// 获取账号
 	GetAccount(app int32, t int32, name string) (*model.Account, error)
 	// 创建账号

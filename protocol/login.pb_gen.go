@@ -1744,6 +1744,11 @@ func (z *LoginSuccessAck) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "kind":
+			z.Level, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
 		case "room":
 			z.Room, err = dc.ReadInt32()
 			if err != nil {
@@ -1761,9 +1766,9 @@ func (z *LoginSuccessAck) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *LoginSuccessAck) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 11
+	// map header, size 12
 	// write "id"
-	err = en.Append(0x8b, 0xa2, 0x69, 0x64)
+	err = en.Append(0x8c, 0xa2, 0x69, 0x64)
 	if err != nil {
 		return err
 	}
@@ -1862,6 +1867,15 @@ func (z *LoginSuccessAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
+	// write "kind"
+	err = en.Append(0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.Level)
+	if err != nil {
+		return
+	}
 	// write "room"
 	err = en.Append(0xa4, 0x72, 0x6f, 0x6f, 0x6d)
 	if err != nil {
@@ -1877,9 +1891,9 @@ func (z *LoginSuccessAck) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *LoginSuccessAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 11
+	// map header, size 12
 	// string "id"
-	o = append(o, 0x8b, 0xa2, 0x69, 0x64)
+	o = append(o, 0x8c, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
 	// string "agent"
 	o = append(o, 0xa5, 0x61, 0x67, 0x65, 0x6e, 0x74)
@@ -1912,6 +1926,9 @@ func (z *LoginSuccessAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "kind"
 	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
 	o = msgp.AppendInt32(o, z.Kind)
+	// string "kind"
+	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	o = msgp.AppendInt32(o, z.Level)
 	// string "room"
 	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
 	o = msgp.AppendInt32(o, z.Room)
@@ -2006,6 +2023,11 @@ func (z *LoginSuccessAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "kind":
+			z.Level, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
 		case "room":
 			z.Room, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
@@ -2031,7 +2053,7 @@ func (z *LoginSuccessAck) Msgsize() (s int) {
 			s += msgp.StringPrefixSize + len(zema) + msgp.Int64Size
 		}
 	}
-	s += 5 + msgp.Int32Size + 5 + msgp.Int32Size
+	s += 5 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size
 	return
 }
 

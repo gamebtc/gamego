@@ -4,7 +4,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"strconv"
 	"sync/atomic"
 	"time"
 
@@ -38,11 +37,11 @@ func tcpServer(config *AppConfig) {
 	lis := l.(*net.TCPListener)
 	defer lis.Close()
 
-	// 注册服务器地址
-	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
-	defer func() {
-		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
-	}()
+	//// 注册服务器地址
+	//protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	//defer func() {
+	//	protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+	//}()
 
 	// loop accepting
 	for {
@@ -80,11 +79,11 @@ func udpServer(config *AppConfig) {
 		log.Println("SetDSCP:", err)
 	}
 
-	// 注册服务器地址
-	protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
-	defer func() {
-		protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
-	}()
+	//// 注册服务器地址
+	//protocol.ConsulSetValue(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)), []byte(config.Room.Addr))
+	//defer func() {
+	//	protocol.ConsulRemove(config.Consul.Addr, strconv.Itoa(int(config.Room.Id)))
+	//}()
 
 	// loop accepting
 	for {
