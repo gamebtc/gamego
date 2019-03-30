@@ -188,6 +188,12 @@ func PokerArrayString(src []byte) string {
 	return b.String()
 }
 
+func PokerStringAppend(b *strings.Builder, src []byte){
+	for _, poker := range src {
+		b.WriteString(pokerMap[poker])
+	}
+}
+
 func PokerArrayString2(src []byte, split string) string {
 	b := strings.Builder{}
 	b.Grow(len(src) * (4 + len(split)))

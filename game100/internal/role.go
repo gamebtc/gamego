@@ -27,21 +27,21 @@ type Role struct {
 	LastWinCount byte
 }
 
-func (role *Role) GetPlayer() *folks.Player {
+func (role *Role) getPlayer() *folks.Player {
 	role.player.Coin = role.Coin
 	return role.player
 }
 
-func (role *Role) IsRobot() bool {
+func (role *Role) isRobot() bool {
 	return role.User.Job == model.JobRobot
 }
 
-func (role *Role) IsPlayer() bool {
+func (role *Role) isPlayer() bool {
 	return role.User.Job == model.JobPlayer
 }
 
 // 检查投注项位置
-func (role *Role) RobotCanBet(item int32, bet int32) bool {
+func (role *Role) robotCanBet(item int32, bet int32) bool {
 	if int64(bet) > role.Coin || role.Coin < room.Config.PlayMin {
 		return false
 	}
@@ -58,12 +58,12 @@ func (role *Role) Reset() {
 }
 
 // 存在指定的下注额
-func ExistsBetItem(bet int32) bool {
+func existsBetItem(bet int32) bool {
 	return (bet >= betItems[0]) && (bet <= betItems[len(betItems)-1]) && (bet%100 == 0)
 }
 
 // 投注
-func (role *Role) AddBet(req folks.BetReq) error {
+func (role *Role) addBet(req folks.BetReq) error {
 	// 检查游戏状态
 	round := role.table.round
 	if round == nil || role.table.State != GameStatePlaying {
@@ -77,7 +77,7 @@ func (role *Role) AddBet(req folks.BetReq) error {
 		return errors.New(fmt.Sprintf("错误的投注项:%v,%v", i, bet))
 	}
 
-	if !ExistsBetItem(req.Bet) {
+	if !existsBetItem(req.Bet) {
 		return errors.New(fmt.Sprintf("错误的投注额:%v|%v", i, bet))
 	}
 
@@ -115,10 +115,11 @@ func (role *Role) AddBet(req folks.BetReq) error {
 	round.Group[i] += bet
 
 	role.Coin -= bet
+	role.player.Coin = role.Coin
 	bill.Group[i] += bet
 	bill.Bet += bet
 	// 有真实玩家下注
-	if role.IsPlayer() {
+	if role.isPlayer() {
 		if round.UserBet == nil {
 			round.UserBet = make([]int64, betItemCount)
 		}
@@ -132,21 +133,21 @@ func (role *Role) AddBet(req folks.BetReq) error {
 const radix = 100
 const lostRadix = 0
 
-func (role *Role) Balance() {
+func (role *Role) balance(round *GameRound) {
 	bill := role.bill
-	round := role.table.round
-	if bill == nil || bill.Bet <= 0 || round == nil {
+	if bill == nil || bill.Bet <= 0 {
 		return //没有投注
 	}
 
 	prize, tax, bet := Balance(bill.Group, round.Odds)
 	if bet != bill.Bet {
-		log.Errorf("Balance error:uid:%v,bet1:%v,bet2:%v", role.Id, bet, bill.Bet)
+		log.Errorf("balance error:uid:%v,bet1:%v,bet2:%v", role.Id, bet, bill.Bet)
 	}
 
 	// 扣税后返给玩家的币
 	prize -= tax
 	role.Coin += prize
+	role.player.Coin = role.Coin
 	// 实际输赢要扣掉本金(用于写分)
 	addCoin := prize - bet
 	role.AddWinBet(addCoin, bet)
@@ -167,11 +168,11 @@ func (role *Role) Balance() {
 	bill.Tax = tax
 	bill.Win = addCoin
 
-	if role.IsRobot() {
+	if role.isRobot() {
 		return
 	}
 
-	if role.IsPlayer() {
+	if role.isPlayer() {
 		round.Tax += tax
 		round.Win -= addCoin
 	}

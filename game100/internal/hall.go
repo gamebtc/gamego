@@ -52,7 +52,7 @@ func NewGame() room.Haller {
 
 func (hall *gameHall) Update() {
 	for _, v := range hall.tables {
-		v.Update()
+		v.update()
 	}
 
 	if room.Config.Close > 0 {
@@ -256,7 +256,7 @@ func betReq(m *room.NetMessage) {
 		Sn:   req.Sn,
 		Item: req.Item,
 	}
-	if err := role.AddBet(*req); err != nil {
+	if err := role.addBet(*req); err != nil {
 		role.SendError(int32(folks.Folks_BetReq), 1000, err.Error(), "")
 		log.Debugf("add bet error: %v", err)
 	} else {

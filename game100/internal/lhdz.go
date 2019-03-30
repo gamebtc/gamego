@@ -65,8 +65,8 @@ func (this *LhdzDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
 
 	// 系统必须赢
 	cheat := false
-	if table.MustWin() {
-		for table.CheckWin(odds) < 0 {
+	if table.mustWin() {
+		for table.checkWin(odds) < 0 {
 			cheat = true
 			offset += 1
 			if offset >= len(this.Poker)/2 {

@@ -11,9 +11,12 @@ import (
 )
 
 var (
-	dealer = model.NewGoldenFlowerDealer(true)
-	goldPool int64 = 0
+	dealer   = model.NewGoldenFlowerDealer(false)
+	goldPool = int64(0)
 )
+
+type Player struct {
+}
 
 // 每个角色的游戏数据
 type Role struct {
@@ -22,6 +25,8 @@ type Role struct {
 	table         *Table        // 桌子ID
 	bill          *zjh.GameBill // 输赢情况
 	player        *zjh.Player   // 玩家信息
+	robot         Robot         // 机器人行为
+	poker         *model.GoldenFlowerGroup
 }
 
 func (role *Role) GetPlayer() *zjh.Player {
@@ -36,24 +41,9 @@ func (role *Role) IsPlayer() bool {
 	return role.User.Job == model.JobPlayer
 }
 
-//func (role *Role) Reset() {
-//	role.bill = &zjh.GameBill{
-//		Uid:  role.User.Id,
-//		Job:  role.User.Job,
-//		Coin: role.Coin,
-//	}
-//
-//	role.player.State = zjh.Player_None
-//	role.player.Look = false
-//	role.player.Bet = 0
-//	role.player.Down = 0
-//	role.player.Coin = role.Coin
-//}
-
-func ChangeGoldPool(add int64){
-	goldPool+=add
+func ChangeGoldPool(add int64) {
+	goldPool += add
 }
-
 
 // 准备
 func (role *Role) Ready() {
@@ -76,9 +66,7 @@ func (role *Role) Look() {
 		// 没有下注不能看牌
 		return
 	}
-	if player.Look == false {
-		player.Look = true
-	}
+
 	// 发送消息给自己
 	if !role.IsRobot() {
 		role.UnsafeSend(&zjh.ActionAck{
@@ -87,6 +75,13 @@ func (role *Role) Look() {
 			Poker: role.bill.Poker,
 		})
 	}
+
+	if player.Look{
+		return
+	}
+
+	log.Debugf("look:%v", player.Id)
+	player.Look = true
 	// 发送消息给其它人
 	ack := &zjh.ActionAck{
 		Uid:  role.User.Id,
@@ -104,13 +99,19 @@ func (role *Role) Look() {
 
 // 输了，结算
 func (role *Role) Lose() {
+	player := role.player
+	player.State = zjh.Player_Lose
+	log.Debugf("lose:%v", player.Id)
+
+	bill := role.bill
+	bet := bill.Bet
+	bill.Win = -bet
+	role.AddWinBet(-bet, bet)
+
 	if role.IsRobot() {
 		// 机器人输了不用写分直接返回
 		return
 	}
-
-	bill := role.bill
-	bet := bill.Bet
 	round := role.table.round
 	round.Win += bet
 	// 写分
@@ -121,7 +122,7 @@ func (role *Role) Lose() {
 		Uid:   role.Id,
 		Add:   -bet,
 		New:   role.Coin,
-		Old:   bill.Coin,
+		Old:   bill.OldCoin,
 		Tax:   0,
 		Room:  room.RoomId,
 		Kind:  room.KindId,
@@ -139,7 +140,12 @@ func (role *Role) Lose() {
 }
 
 // 赢了，结算
+const poolTax = 10 // 千分之10进入彩金池
 func (role *Role) Win(prize int64) {
+	player := role.player
+	player.State = zjh.Player_Win
+	log.Debugf("win:%v", player.Id)
+
 	// 下注金额
 	bill := role.bill
 	bet := bill.Bet
@@ -147,36 +153,40 @@ func (role *Role) Win(prize int64) {
 	tax := int64(0)
 	water := int64(0) //抽水进入彩金池
 	if winCoin > 0 {
-		const poolTax= 10 // 千分之10进入彩金池
 		water = winCoin * poolTax / 1000
 		tax = winCoin * room.Config.Tax / 1000
 	}
 	round := role.table.round
 	// TODO:检查是否有彩金,彩金不交税
 	lucky := int64(0)
-	ag := dealer.GetGroup(bill.Poker)
-	if ag.IsThreeKind() {
+	if role.poker.IsThreeKind() {
 		// 豹子5%
 		lucky = round.Pool * 5 / 100
-	} else if ag.IsStraightFlush() {
+	} else if role.poker.IsStraightFlush() {
 		// 顺金1%
 		lucky = round.Pool * 1 / 100
 	}
 	// 扣税后返给玩家的币
 	prize = prize - tax - water + lucky
 	role.Coin += prize
-	role.player.Coin = role.Coin
+	player.Coin = role.Coin
+	// 实际输赢要扣掉本金(用于写分)
+	addCoin := prize - bet
 	bill.Tax = tax
 	bill.Water = water
 	bill.Lucky = lucky
+	bill.Win = addCoin
+	role.AddWinBet(addCoin, bet)
+	// 更新全局池子
+	//if lucky > 0{
+	//	ChangeGoldPool()
+	//}
 
 	if role.IsRobot() {
 		// 机器人赢了不用写分直接返回
 		return
 	}
 
-	// 实际输赢要扣掉本金(用于写分)
-	addCoin := prize - bet
 	round.Tax += tax
 	round.Water += water
 	round.Lucky += lucky
@@ -189,7 +199,7 @@ func (role *Role) Win(prize int64) {
 		Uid:   role.Id,
 		Add:   addCoin,
 		New:   role.Coin,
-		Old:   bill.Coin,
+		Old:   bill.OldCoin,
 		Tax:   tax,
 		Room:  room.RoomId,
 		Kind:  room.KindId,
@@ -221,50 +231,43 @@ func (role *Role) Discard(overtime bool) {
 	if player.State != zjh.Player_Playing {
 		return
 	}
+
+	log.Debugf("dis:%v-%v", player.Id,overtime)
+
 	player.State = zjh.Player_Discard
 	role.Lose()
 
+	actionType := zjh.ActionType_ActionDiscard
+	if overtime {
+		actionType = zjh.ActionType_ActionOvertime
+	}
 	table := role.table
 	// 发送消息所有人
 	table.SendToAll(&zjh.ActionAck{
 		Uid:  role.User.Id,
-		Type: zjh.ActionType_ActionDiscard,
+		Type: actionType,
 	})
 	// 添加日志
 	log := &zjh.ActionLog{
 		Start: room.Now(),
 		Uid:   role.User.Id,
-		Type:  zjh.ActionType_ActionDiscard,
+		Type:  actionType,
 	}
 	table.round.Log = append(table.round.Log, log)
 
 	// 已经有人胜利
-	if table.TryDeal() {
+	if table.tryCheckout() {
 		return
 	}
 
 	// 轮到自己下注时放弃
-	if player.Chair == table.waitChair {
-		table.NextWait()
+	if table.isRunner(player.Id) {
+		table.nextWait()
 	}
-}
-
-func (role *Role) pk(opp *Role) bool {
-	ag := dealer.GetGroup(role.bill.Poker)
-	bg := dealer.GetGroup(opp.bill.Poker)
-	win := ag.Power > bg.Power
-	if win {
-		opp.player.State = zjh.Player_Lose
-		opp.Lose()
-	} else {
-		role.player.State = zjh.Player_Lose
-		role.Lose()
-	}
-	return win
 }
 
 // 是否是PK过的对手
-func(role *Role) IsOpponent(id int32)bool {
+func (role *Role) IsOpponent(id int32) bool {
 	if role.bill != nil && role.bill.Pk != nil {
 		for _, opp := range role.bill.Pk {
 			if opp == id {
@@ -283,9 +286,11 @@ func (role *Role) Compare(opponent int32) {
 	}
 
 	table := role.table
-
 	// 3轮后到自己才可以比牌
-	if table.round.Ring < 3 || player.Chair != table.waitChair {
+	if table.round.Ring < 3{
+		return
+	}
+	if !table.isRunner(player.Id){
 		return
 	}
 
@@ -299,7 +304,7 @@ func (role *Role) Compare(opponent int32) {
 		return
 	}
 
-	opp := table.FindRole(opponent)
+	opp := table.findRole(opponent)
 	if opp == nil || opp == role {
 		return
 	}
@@ -310,37 +315,48 @@ func (role *Role) Compare(opponent int32) {
 		return
 	}
 
+	log.Debugf("vs%v-%v", player.Id, opp.User.Id)
+
 	role.decCoin(int64(bet))
 
 	// PK
 	role.bill.Pk = append(role.bill.Pk, opp.User.Id)
 	opp.bill.Pk = append(opp.bill.Pk, role.User.Id)
-	win := role.pk(opp)
+	var winner []int32
+	if role.poker.Power > opp.poker.Power {
+		opp.player.State = zjh.Player_Lose
+		opp.Lose()
+		winner = []int32{role.User.Id}
+	} else {
+		player.State = zjh.Player_Lose
+		role.Lose()
+		winner = []int32{opp.User.Id}
+	}
 
+	players := []int32{role.User.Id, opponent}
 	table.SendToAll(&zjh.ActionAck{
-		Uid:      role.User.Id,
-		Type:     zjh.ActionType_ActionCompare,
-		Bet:      bet,
-		Opponent: opponent,
-		Win:      win,
+		Uid:     role.User.Id,
+		Type:    zjh.ActionType_ActionCompare,
+		Bet:     bet,
+		Players: players,
+		Winners: winner,
 	})
 	// 添加日志
 	log := &zjh.ActionLog{
-		Start:    room.Now(),
-		Uid:      role.User.Id,
-		Type:     zjh.ActionType_ActionCompare,
-		Bet:      bet,
-		Opponent: opponent,
-		Win:      win,
+		Start:   room.Now(),
+		Uid:     role.User.Id,
+		Type:    zjh.ActionType_ActionCompare,
+		Bet:     bet,
+		Players: players,
+		Winners: winner,
 	}
 	table.round.Log = append(table.round.Log, log)
 
 	// 已经有人胜利
-	if table.TryDeal() {
+	if table.tryCheckout() {
 		return
 	}
-
-	table.NextWait()
+	table.nextWait()
 }
 
 // 下注(跟注+加注)
@@ -349,13 +365,13 @@ func (role *Role) AddBet(bet int32) {
 	if player.State != zjh.Player_Playing {
 		return
 	}
-	if player.Chair != role.table.waitChair {
+	table := role.table
+	if !table.isRunner(player.Id) {
 		return
 	}
 
-	table := role.table
 	// 转为全压
-	if table.allinBet > 0 {
+	if table.firstAllin != nil {
 		role.Allin()
 		return
 	}
@@ -375,8 +391,7 @@ func (role *Role) AddBet(bet int32) {
 		return
 	}
 
-	if role.Coin < int64(bet)+100 {
-		// 下注后至少保留1块钱，钱不够
+	if role.Coin < int64(bet) {
 		return
 	}
 
@@ -388,6 +403,8 @@ func (role *Role) AddBet(bet int32) {
 		}
 		table.curAnte = newAnte
 	}
+
+	log.Debugf("bet:%v-%v", player.Id, bet)
 
 	role.decCoin(int64(bet))
 
@@ -406,7 +423,7 @@ func (role *Role) AddBet(bet int32) {
 	}
 	table.round.Log = append(table.round.Log, log)
 
-	table.NextWait()
+	table.nextWait()
 }
 
 // 全压(3轮后,有玩家的钱小于最小下注金额时开启)
@@ -418,7 +435,10 @@ func (role *Role) Allin() {
 
 	table := role.table
 	// 3轮后到自己才可以全压
-	if table.round.Ring < 3 || player.Chair != table.waitChair {
+	if table.round.Ring < 3 {
+		return
+	}
+	if !table.isRunner(player.Id) {
 		return
 	}
 
@@ -428,27 +448,28 @@ func (role *Role) Allin() {
 	}
 
 	// 第一次全压，底注设置为带钱最少的人
-	if table.allinBet == 0 {
+	if table.firstAllin == nil {
+		table.firstAllin = role
 		allinBet := (role.Coin - (role.Coin % 100)) / int64(rate)
-		for _, item := range table.Roles {
-			if item != nil && item != role {
-				coin := (item.Coin - (item.Coin % 100)) / 2
+		for _, other := range table.players {
+			if other.State == zjh.Player_Playing && other != player {
+				coin := (other.Coin - (other.Coin % 100)) / 2
 				if coin > 0 && coin < allinBet {
 					allinBet = coin
 				}
 			}
 		}
-		table.allinBet = int32(allinBet)
+		table.curAnte = int32(allinBet)
 	}
-	if table.allinBet == 0 {
+
+	bet := table.curAnte * rate
+	if role.Coin < int64(bet) {
+		// 钱不够
+		log.Debugf("allin err:%v-%v-%v", player.Id, bet,role.Coin)
 		return
 	}
 
-	bet := table.allinBet * rate
-	if role.Coin < int64(bet) {
-		// 钱不够
-		return
-	}
+	log.Debugf("all:%v-%v", player.Id, bet)
 
 	player.State = zjh.Player_Allin
 
@@ -469,13 +490,10 @@ func (role *Role) Allin() {
 	}
 	table.round.Log = append(table.round.Log, log)
 	// 自动比牌
-	table.TryAutoComp()
-
-	// 已经有人胜利
-	if table.TryDeal() {
+	if table.tryAllinComp() {
 		return
 	}
-	table.NextWait()
+	table.nextWait()
 }
 
 // 换桌玩

@@ -17,9 +17,9 @@ const RicherCount = 6
 type GameState int32
 
 const (
-	GameStateReady   GameState = 0
-	GameStatePlaying GameState = 1
-	GameStateDeal    GameState = 2
+	GameStateReady    GameState = 0
+	GameStatePlaying  GameState = 1
+	GameStateCheckout GameState = 2
 )
 
 type Dealer interface {
@@ -56,15 +56,15 @@ func NewTable() *Table {
 	return t
 }
 
-func (table *Table) MustWin() bool {
-	// round.BetGroup != nil; 有真人下注
-	return (table.round.UserBet != nil) && (room.Config.WinRate > gameRand.Int31n(1000))
+func (table *Table) mustWin() bool {
+	// 有真人下注或者上庄时才检查
+	return (table.round.UserBet != nil || table.round.Bank != 0) && (room.Config.WinRate > gameRand.Int31n(1000))
 }
 
-func (table *Table) GetRichPlayer() []*folks.Player {
+func (table *Table) getPlayers() []*folks.Player {
 	richer := make([]*folks.Player, len(table.Richer))
 	for i, role := range table.Richer {
-		richer[i] = role.GetPlayer()
+		richer[i] = role.player
 	}
 	return richer
 }
@@ -103,7 +103,7 @@ func (table *Table) sendGameInit(role *Role) {
 		Id:    table.CurId,
 		State: int32(table.State),
 		Time:  table.delay,
-		Rich:  table.GetRichPlayer(),
+		Rich:  table.getPlayers(),
 		Log:   table.Log,
 	}
 	if round := table.round; round != nil {
@@ -193,7 +193,7 @@ func (table *Table) Start() {
 	table.gameReady()
 }
 
-func (table *Table) Update() {
+func (table *Table) update() {
 	table.delay--
 	switch table.State {
 	case GameStateReady:
@@ -208,9 +208,9 @@ func (table *Table) Update() {
 		if table.delay > 0 {
 			table.gamePlay()
 		} else {
-			table.gameDeal()
+			table.gameCheckout()
 		}
-	case GameStateDeal:
+	case GameStateCheckout:
 		if table.delay <= 0 {
 			table.gameReady()
 		}
@@ -218,16 +218,39 @@ func (table *Table) Update() {
 }
 
 // 返回系统输赢
-func (table *Table) CheckWin(odds []int32) int64 {
-	if round := table.round; round != nil && round.UserBet != nil {
-		prize, _, bet := Balance(round.UserBet, odds)
+func (table *Table) checkWin(odds []int32) int64 {
+	round := table.round
+	if round == nil {
+		return 0
+	}
+	userBet := round.UserBet
+	// 系统或者机器人上庄,检查玩家的下注
+	if round.Bank == 0 {
+		if userBet == nil {
+			return 0
+		}
+		prize, _, bet := Balance(userBet, odds)
 		return bet - prize
 	}
-	return 0
+
+	// 玩家上庄,检查机器人的下注
+	var robotBet []int64
+	if userBet != nil {
+		robotBet = make([]int64, betItemCount)
+		copy(robotBet, round.Group)
+		for i := 0; i < betItemCount; i++ {
+			robotBet[i] -= userBet[i]
+		}
+	} else {
+		robotBet = round.Group
+	}
+	prize, _, bet := Balance(robotBet, odds)
+	// 此处系统输赢为奖励-下注，跟上面相反
+	return prize - bet
 }
 
 // 发送消息给所有在线玩家
-func (table *Table) SendToAll(val interface{}) {
+func (table *Table) sendToAll(val interface{}) {
 	if len(table.Roles) > 0 {
 		if val, err := room.Encode(val); err != nil {
 			for _, role := range table.Roles {
@@ -315,7 +338,7 @@ func (table *Table) clearOffline() {
 }
 
 // 结算结果发给玩家
-func (table *Table) sendDealResult() {
+func (table *Table) sendGameResult() {
 	if len(table.Roles) > 0 {
 		round := table.round
 		// 富豪玩家的输赢
@@ -364,10 +387,10 @@ func (table *Table) gameOpen() {
 	log.Debugf("开始下注:%v", table.CurId)
 
 	table.newGameRound()
-	table.SendToAll(&folks.OpenBetAck{
+	table.sendToAll(&folks.OpenBetAck{
 		Id:   table.CurId,
 		Time: table.delay,
-		Rich: table.GetRichPlayer(),
+		Rich: table.getPlayers(),
 	})
 }
 
@@ -384,8 +407,8 @@ func (table *Table) gamePlay() {
 			Bet:  betItems[betIndex],
 		}
 		for addCount := rand.Intn(3); addCount >= 0; addCount-- {
-			if role.RobotCanBet(bet.Item, bet.Bet) {
-				role.AddBet(bet)
+			if role.robotCanBet(bet.Item, bet.Bet) {
+				role.addBet(bet)
 				//log.Debugf("R%v下注:%v_%v,%v", role.Id, bet.Item, bet.Bet/100, role.Coin/100)
 			}
 		}
@@ -394,7 +417,7 @@ func (table *Table) gamePlay() {
 	l := len(table.round.Flow)
 	if l > table.lastFlow {
 		// 发送这段时间其他玩家的下注数据
-		table.SendToAll(&folks.UserBetAck{
+		table.sendToAll(&folks.UserBetAck{
 			Time: table.delay,
 			Bet:  table.round.Flow[table.lastFlow:l],
 		})
@@ -402,11 +425,11 @@ func (table *Table) gamePlay() {
 	}
 }
 
-// 发牌结算
-func (table *Table) gameDeal() {
+// 结算
+func (table *Table) gameCheckout() {
 	table.delay = 5
-	table.State = GameStateDeal
-	log.Debugf("发牌结算:%v", table.CurId)
+	table.State = GameStateCheckout
+	log.Debugf("结算:%v", table.CurId)
 	// 发牌
 	poker, odds, note, cheat := table.Dealer.Deal(table)
 	round := table.round
@@ -418,25 +441,25 @@ func (table *Table) gameDeal() {
 
 	// 结算真人
 	for _, role := range table.Roles {
-		role.Balance()
+		role.balance(round)
 	}
 	// 结算机器人
 	for _, role := range table.Robots {
-		role.Balance()
+		role.balance(round)
 	}
 
 	// 保存牌局
-	table.LastId = table.CurId
 	round.End = room.Now()
 	room.SaveLog(round)
 
 	// 最后60局的对战日志
+	table.LastId = table.CurId
 	table.Log = append(table.Log, round.Poker...)
 	if over := len(table.Log) - 60*betItemCount; over > 0 {
 		table.Log = table.Log[over:]
 	}
 	// 结算结果发给玩家
-	table.sendDealResult()
+	table.sendGameResult()
 	// 清理离线玩家
 	table.clearOffline()
 

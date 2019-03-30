@@ -17,6 +17,7 @@ var (
 	gameName     = "炸金花" // 游戏名称
 	betItemCount int     // 可投注的项
 	betItems     []int32 // 可投注的项
+	maxBetItem   int64   // betItems最后一个项的2倍
 	taxRate      []int64 // 税率千分比
 	gameRand     *rand.Rand
 	roles        []*Role  // 所有玩家
@@ -26,8 +27,6 @@ var (
 	idleTables   []*Table // 空闲的桌子
 	runTables    []*Table // 游戏中的桌子
 )
-
-type GameRound = zjh.GameRound
 
 // 桌面对战游戏大厅(斗地主/炸金花/抢庄牛/五张/德州)
 type gameHall struct {
@@ -60,6 +59,7 @@ func (hall *gameHall) Update() {
 		t.Update()
 		// 回收无人的桌子
 		if t.State == GameStateReady && t.RoleCount == 0 {
+			t.reset()
 			runTables = append(runTables[:i], runTables[i+1:]...)
 			idleTables = append(idleTables, t)
 		} else {
@@ -67,13 +67,13 @@ func (hall *gameHall) Update() {
 		}
 	}
 
-	if len(waitRoles) > 0 {
+	//if len(waitRoles) > 0 {
 		matchRoles()
-	}
+	//}
 }
 
 func matchRoles() {
-	log.Debugf("开始配桌:%v")
+	//log.Debugf("开始配桌")
 	// 先把等待中的桌子座满
 	for _, t := range runTables {
 		if t.State != GameStatePlaying && t.RoleCount < chairCount {
@@ -131,6 +131,26 @@ func matchRoles() {
 		}
 		t.Start()
 	}
+
+	// 测试，配1桌机器人
+	if len(waitRobots) > 0 && len(runTables) ==0 {
+		// 获取空闲桌子
+		idleLen := len(idleTables)
+		if idleLen == 0 {
+			return
+		}
+		t := idleTables[idleLen-1]
+		idleTables = idleTables[:idleLen-1]
+		runTables = append(runTables, t)
+		for i := 0; i < chairCount; i++ {
+			role := PopWaitRobot()
+			if role == nil {
+				break
+			}
+			t.addRole(role)
+		}
+		t.Start()
+	}
 }
 
 func loadRobot(count int32) {
@@ -157,6 +177,7 @@ func loadRobot(count int32) {
 				AgentId: 0,
 			}
 			coin := rand.Int63n(10*room.Config.PlayMin) + (2 * room.Config.PlayMin)
+			user.Coin = coin
 			robot := &Role{
 				User:    *user,
 				Session: sess,
@@ -179,6 +200,7 @@ func (hall *gameHall) Start() {
 		case 3:
 		default:
 			betItems = []int32{100, 200, 400, 600, 800, 1000}
+			maxBetItem = 1000*2
 		}
 	}
 
@@ -192,7 +214,7 @@ func (hall *gameHall) Start() {
 	room.RegistMsg(int32(zjh.Code_CodeActionAck), &zjh.ActionAck{})
 	room.RegistMsg(int32(zjh.Code_CodeGameInitAck), &zjh.GameInitAck{})
 	room.RegistMsg(int32(zjh.Code_CodeGameStartAck), &zjh.GameStartAck{})
-	room.RegistMsg(int32(zjh.Code_CodeGameEndAck), &zjh.GameEndAck{})
+	room.RegistMsg(int32(zjh.Code_CodeGameResultAck), &zjh.GameResultAck{})
 
 	room.RegistHandler(int32(zjh.Code_CodeActionReq), &zjh.ActionReq{}, action)
 
@@ -297,7 +319,7 @@ func action(m *room.NetMessage) {
 
 	switch req.Type {
 	case zjh.ActionType_ActionReady: // 准备
-	    role.Ready()
+		role.Ready()
 	case zjh.ActionType_ActionLook: // 看牌
 		role.Look()
 	case zjh.ActionType_ActionDiscard: // 主动弃牌
@@ -314,4 +336,3 @@ func action(m *room.NetMessage) {
 		role.RenewDesk()
 	}
 }
-

@@ -1744,7 +1744,7 @@ func (z *LoginSuccessAck) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
+		case "level":
 			z.Level, err = dc.ReadInt32()
 			if err != nil {
 				return
@@ -1867,8 +1867,8 @@ func (z *LoginSuccessAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "kind"
-	err = en.Append(0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "level"
+	err = en.Append(0xa5, 0x6c, 0x65, 0x76, 0x65, 0x6c)
 	if err != nil {
 		return err
 	}
@@ -1926,8 +1926,8 @@ func (z *LoginSuccessAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "kind"
 	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
 	o = msgp.AppendInt32(o, z.Kind)
-	// string "kind"
-	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// string "level"
+	o = append(o, 0xa5, 0x6c, 0x65, 0x76, 0x65, 0x6c)
 	o = msgp.AppendInt32(o, z.Level)
 	// string "room"
 	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
@@ -2023,7 +2023,7 @@ func (z *LoginSuccessAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
+		case "level":
 			z.Level, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
@@ -2053,7 +2053,7 @@ func (z *LoginSuccessAck) Msgsize() (s int) {
 			s += msgp.StringPrefixSize + len(zema) + msgp.Int64Size
 		}
 	}
-	s += 5 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size
+	s += 5 + msgp.Int32Size + 6 + msgp.Int32Size + 5 + msgp.Int32Size
 	return
 }
 
