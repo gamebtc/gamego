@@ -15,7 +15,7 @@ func TrimEndZero(a []int64) []int64 {
 }
 
 // 计划的机器人数量
-func PlanRobotCount(roleCount int32) int32 {
+func PlanRobotCount(roleCount int) int {
 	robotConf := Config.Robot
 	end := len(robotConf) / 6
 	now := time.Now()
@@ -23,10 +23,10 @@ func PlanRobotCount(roleCount int32) int32 {
 	for count := 0; count < end; count++ {
 		i := 6 * count
 		if minute >= robotConf[i] && minute < robotConf[i+1] {
-			min := robotConf[i+2]  //最小人数
-			max := robotConf[i+3]  //最大人数
-			base := robotConf[i+4] //基础人数
-			rate := robotConf[i+5] //真实玩家的百分比人数
+			min := int(robotConf[i+2])  //最小人数
+			max := int(robotConf[i+3])  //最大人数
+			base := int(robotConf[i+4]) //基础人数
+			rate := int(robotConf[i+5]) //真实玩家的百分比人数
 			//真人数量
 			count := base + roleCount*rate/100
 			if count < min {

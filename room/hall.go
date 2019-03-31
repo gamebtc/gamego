@@ -55,7 +55,7 @@ var (
 	messageChan     chan interface{}                  // 消息队列消息
 	messageHandlers [math.MaxUint16]func(*NetMessage) // 消息处理器
 	eventHandlers   [math.MaxUint16]func(*GameEvent)  // 事件处理器
-	sessions        map[model.UserId]*Session         // 所有玩家
+	sessions        map[model.UserId]*Session         // 所有真实玩家
 	signal          *util.AppSignal
 	coder           protocol.Coder
 )
@@ -101,6 +101,10 @@ func RemoveUser(sess *Session) bool {
 		return true
 	}
 	return false
+}
+
+func UserCount()int {
+	return len(sessions)
 }
 
 func Start(configName string, r Haller) {

@@ -1,0 +1,40 @@
+package room
+
+import (
+	"local.com/abc/game/db"
+	"local.com/abc/game/model"
+)
+
+var(
+	pool = []*model.User{}
+	poolCap = 5
+)
+
+func SetRobotCap(cap int){
+	poolCap = cap
+}
+
+// 获取一个机器人
+func PopRobot()(user *model.User) {
+	if len(pool) == 0 {
+		pool = db.Driver.LoadRobots(RoomId, poolCap)
+	}
+	if len(pool) > 0 {
+		user = pool[0]
+		pool = pool[1:]
+	}
+	return
+}
+
+// 释放一个机器人
+func PutRobot(user *model.User) {
+	if len(pool) < poolCap {
+		user.Bag = nil
+		user.Coin = 0
+		user.Online = false
+		user.FlowSn = 0
+		pool = append(pool, user)
+	} else {
+		db.Driver.UnloadRobot(RoomId, user.Id)
+	}
+}

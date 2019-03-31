@@ -48,9 +48,11 @@ type GameDriver interface {
 	LoadUser(uid model.UserId, ip model.IP) (user *model.User, err error)
 
 	// 加载机器人
-	LoadRobot(room int32, count int32) []*model.User
+	LoadRobot(room int32) *model.User
+	LoadRobots(room int32, count int) []*model.User
 	// 卸载机器人
-	UnloadRobot(room int32, ids []int32)
+	UnloadRobot(room int32, id model.UserId)
+	UnloadRobots(room int32, ids []model.UserId)
 	// 清理机器人
 	ClearRobot(room int32)
 

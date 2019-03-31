@@ -24,7 +24,7 @@ const (
 
 type Dealer interface {
 	// 发牌
-	Deal(table *Table)(pocker []byte, odd []int32, note string, cheat bool)
+	Deal(table *Table) (pocker []byte, odd []int32, note string, cheat bool)
 }
 
 // 开始下注：下注时间12秒
@@ -168,9 +168,9 @@ func (table *Table) findRicher() []model.UserId {
 }
 
 func (table *Table) newGameRound() {
-	count := room.PlanRobotCount(int32(len(table.Roles)))
+	count := room.PlanRobotCount(len(table.Roles))
 	if count >= 0 {
-		table.loadRobot(count - int32(len(table.Robots)))
+		table.loadRobots(count - len(table.Robots))
 	}
 	id := room.NewGameRoundId()
 	round := &GameRound{
@@ -260,11 +260,11 @@ func (table *Table) sendToAll(val interface{}) {
 	}
 }
 
-func (table *Table) loadRobot(count int32) {
+func (table *Table) loadRobots(count int) {
 	if count < 0 {
 		// 退出机器人
 		dec := int(-count)
-		ids := make([]int32, 0, dec)
+		ids := make([]model.UserId, 0, dec)
 		for i := 0; i < len(table.Robots) && i < dec; i++ {
 			role := table.Robots[i]
 			ids = append(ids, role.Id)
@@ -272,11 +272,11 @@ func (table *Table) loadRobot(count int32) {
 		dec = len(ids)
 		if dec > 0 {
 			table.Robots = table.Robots[dec:]
-			db.Driver.UnloadRobot(room.RoomId, ids)
+			db.Driver.UnloadRobots(room.RoomId, ids)
 		}
 	} else if count > 0 {
 		// 增加机器人
-		robots := db.Driver.LoadRobot(room.RoomId, count)
+		robots := db.Driver.LoadRobots(room.RoomId, count)
 		for _, user := range robots {
 			sess := &room.Session{
 				Ip:      user.Ip,
@@ -297,7 +297,7 @@ func (table *Table) loadRobot(count int32) {
 
 func (table *Table) clearOffline() {
 	// 删除已断线的玩家
-	var ids []int32
+	var ids []model.UserId
 	for k, role := range table.Roles {
 		role.Reset()
 		if role.Online == false {
@@ -333,7 +333,7 @@ func (table *Table) clearOffline() {
 		}
 	}
 	if len(ids) > 0 {
-		db.Driver.UnloadRobot(room.RoomId, ids)
+		db.Driver.UnloadRobots(room.RoomId, ids)
 	}
 }
 

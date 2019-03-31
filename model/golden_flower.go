@@ -210,30 +210,37 @@ type GoldenFlowerGroup struct {
 	Values [18]byte
 }
 
+// 三同52种[22048-22099]
 func (g *GoldenFlowerGroup) IsThreeKind() bool {
 	return g.Power >= 22048 && g.Power <= 22099
 }
 
+// 顺金48种[22000-22047]
 func (g *GoldenFlowerGroup) IsStraightFlush() bool {
 	return g.Power >= 22000 && g.Power <= 22047
 }
 
+// 金花1096[20904-21999]
 func (g *GoldenFlowerGroup) IsFlush() bool {
 	return g.Power >= 20904 && g.Power <= 21999
 }
 
+// 顺子720[20184-20903]
 func (g *GoldenFlowerGroup) IsStraight() bool {
 	return g.Power >= 20184 && g.Power <= 20903
 }
 
+// 对子3744[16440-20183]
 func (g *GoldenFlowerGroup) IsPair() bool {
 	return g.Power >= 16440 && g.Power <= 20183
 }
 
+// 散牌16440[0-16439]
 func (g *GoldenFlowerGroup) Zilch() bool {
 	return g.Power <= 16439
 }
 
+// 特殊牌60[0-59]
 func (g *GoldenFlowerGroup) Special() bool {
 	return g.Power <= 59
 }
@@ -248,7 +255,7 @@ type GoldenFlowerDealer struct {
 	Straight      []*GoldenFlowerGroup // 顺子720[20184-20903]
 	Pair          []*GoldenFlowerGroup // 对子3744[16440-20183]
 	Zilch         []*GoldenFlowerGroup // 散牌16440[0-16439]
-	Special       []*GoldenFlowerGroup // 特殊牌[0-59]60
+	Special       []*GoldenFlowerGroup // 特殊牌60[0-59]
 }
 
 func (d *GoldenFlowerDealer) Len() int {

@@ -14,26 +14,28 @@ import (
 )
 
 var (
-	gameName     = "炸金花" // 游戏名称
-	betItemCount int     // 可投注的项
-	betItems     []int32 // 可投注的项
-	maxBetItem   int64   // betItems最后一个项的2倍
-	taxRate      []int64 // 税率千分比
-	gameRand     *rand.Rand
-	roles        []*Role  // 所有玩家
-	robots       []*Role  // 所有机器人
-	waitRoles    []*Role  // 等待配桌的玩家
-	waitRobots   []*Role  // 等待配桌的机器人
-	idleTables   []*Table // 空闲的桌子
-	runTables    []*Table // 游戏中的桌子
+	gameName     = "炸金花"  // 游戏名称
+	betItemCount int        // 可投注的项
+	betItems     []int32    // 可投注的项
+	maxBetItem   int64      // betItems最后一个项的2倍
+	taxRate      []int64    // 税率千分比
+	gameRand     *rand.Rand // 游戏随机生成器
+	waitRoles    []*Role    // 等待配桌的玩家
+	waitRobots   []*Role    // 等待配桌的机器人
+	robotCount   int        // 机器人数量
+	idleTables   []*Table   // 空闲的桌子
+	runTables    []*Table   // 游戏中的桌子
 )
 
 // 桌面对战游戏大厅(斗地主/炸金花/抢庄牛/五张/德州)
 type gameHall struct {
+	t *time.Ticker
 }
 
 func NewGame() room.Haller {
-	g := &gameHall{}
+	g := &gameHall{
+		t: time.NewTicker(10 * time.Second),
+	}
 	return g
 }
 
@@ -53,6 +55,10 @@ func PopWaitRobot() (role *Role) {
 	return
 }
 
+func PutWaitRobot(role *Role) {
+	waitRobots = append(waitRobots, role)
+}
+
 func (hall *gameHall) Update() {
 	for i := 0; i < len(runTables); {
 		t := runTables[i]
@@ -67,8 +73,16 @@ func (hall *gameHall) Update() {
 		}
 	}
 
+	select {
+	case <-hall.t.C:
+		roleCount := room.UserCount()
+		planCount := room.PlanRobotCount(roleCount)
+		loadRobots(planCount - robotCount)
+	default:
+	}
+
 	//if len(waitRoles) > 0 {
-		matchRoles()
+	matchRoles()
 	//}
 }
 
@@ -78,10 +92,15 @@ func matchRoles() {
 	for _, t := range runTables {
 		if t.State != GameStatePlaying && t.RoleCount < chairCount {
 			// 随机少配1个玩家
-			for remain := chairCount - t.RoleCount - gameRand.Int31n(1); remain > 0; remain-- {
+			remain := chairCount - t.RoleCount - gameRand.Int31n(1)
+			for ; remain > 0; remain-- {
 				role := PopWaitRole()
 				if role == nil {
-					return
+					role = PopWaitRobot()
+					if role == nil {
+						log.Debugf("[%v]配桌失败:%v", t.Id, remain)
+						return
+					}
 				}
 				t.addRole(role)
 			}
@@ -133,7 +152,7 @@ func matchRoles() {
 	}
 
 	// 测试，配1桌机器人
-	if len(waitRobots) > 0 && len(runTables) ==0 {
+	if len(waitRobots) > 0 && len(runTables) == 0 {
 		// 获取空闲桌子
 		idleLen := len(idleTables)
 		if idleLen == 0 {
@@ -153,23 +172,33 @@ func matchRoles() {
 	}
 }
 
-func loadRobot(count int32) {
+func unloadRobots(ids []model.UserId) {
+	if len(ids) > 0 {
+		robotCount -= len(ids)
+		db.Driver.UnloadRobots(room.RoomId, ids)
+	}
+}
+
+func loadRobots(count int) {
 	if count < 0 {
 		// 退出机器人
 		dec := int(-count)
-		ids := make([]int32, 0, dec)
-		for i := 0; i < len(waitRobots) && i < dec; i++ {
-			role := waitRobots[i]
-			ids = append(ids, role.Id)
+		if dec > len(waitRobots) {
+			dec = len(waitRobots)
 		}
-		dec = len(ids)
-		if dec > 0 {
-			waitRobots = waitRobots[dec:]
-			db.Driver.UnloadRobot(room.RoomId, ids)
+		if dec == 0 {
+			return
 		}
+		temp := waitRobots[:dec]
+		waitRobots = waitRobots[dec:]
+		ids := make([]model.UserId, 0, len(temp))
+		for i, r := range temp {
+			ids[i] = r.Id
+		}
+		unloadRobots(ids)
 	} else if count > 0 {
 		// 增加机器人
-		robots := db.Driver.LoadRobot(room.RoomId, count)
+		robots := db.Driver.LoadRobots(room.RoomId, count)
 		for _, user := range robots {
 			sess := &room.Session{
 				Ip:      user.Ip,
@@ -181,8 +210,10 @@ func loadRobot(count int32) {
 			robot := &Role{
 				User:    *user,
 				Session: sess,
+				robot:   &RobotAi{},
 			}
 			robot.Online = true
+			robotCount++
 			waitRobots = append(waitRobots, robot)
 			log.Debugf("add robot: %v, coin:%v", user, coin)
 		}
@@ -200,14 +231,14 @@ func (hall *gameHall) Start() {
 		case 3:
 		default:
 			betItems = []int32{100, 200, 400, 600, 800, 1000}
-			maxBetItem = 1000*2
+			maxBetItem = 1000 * 2
 		}
 	}
 
 	// 清理并加载机器人
 	db.Driver.ClearRobot(room.RoomId)
 	robotCount := room.PlanRobotCount(0)
-	loadRobot(robotCount)
+	loadRobots(robotCount)
 
 	// 注册消息和事件
 	room.RegistEvent(room.EventConfigChanged, configChange)
@@ -312,27 +343,37 @@ func action(m *room.NetMessage) {
 	if role.table == nil {
 		return
 	}
-
 	if role.table.round == nil {
+		return
+	}
+	if role.player == nil {
 		return
 	}
 
 	switch req.Type {
-	case zjh.ActionType_ActionReady: // 准备
+	case zjh.ActionType_ActionReady:
+		// 准备
 		role.Ready()
-	case zjh.ActionType_ActionLook: // 看牌
+	case zjh.ActionType_ActionLook:
+		// 看牌
 		role.Look()
-	case zjh.ActionType_ActionDiscard: // 主动弃牌
+	case zjh.ActionType_ActionDiscard:
+		// 主动弃牌
 		role.Discard(false)
-	case zjh.ActionType_ActionOvertime: // 超时弃牌
+	case zjh.ActionType_ActionOvertime:
+		// 超时弃牌
 		role.Discard(true)
-	case zjh.ActionType_ActionCompare: // 比牌
+	case zjh.ActionType_ActionCompare:
+		// 比牌
 		role.Compare(req.Opponent)
-	case zjh.ActionType_ActionAddBet: // 下注(跟注+加注)
+	case zjh.ActionType_ActionAddBet:
+		// 下注(跟注+加注)
 		role.AddBet(req.Bet)
-	case zjh.ActionType_ActionAllin: // 全压
+	case zjh.ActionType_ActionAllin:
+		// 全压
 		role.Allin()
-	case zjh.ActionType_ActionRenew: // 换桌玩
+	case zjh.ActionType_ActionRenew:
+		// 换桌玩
 		role.RenewDesk()
 	}
 }
