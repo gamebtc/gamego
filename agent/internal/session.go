@@ -36,7 +36,7 @@ var (
 	userOffline = &GameFrame{Data: make([]byte, HeadLen)}
 )
 
-func init(){
+func init() {
 	SetHead(userOffline.Data, int32(MsgId_UserOffline))
 }
 
@@ -56,20 +56,20 @@ type Session struct {
 	services   [8]GameClient   // 服务连接
 	conn       net.Conn        // 底层网络连接
 	totalRecv  int64           // 总接收字节数
+	stopRecv   chan struct{}   // 读取停止信号
+	recvTag    int32           // 接收到消息信号
 	dieChan    chan struct{}   // 会话关闭信号
 	dieOnce    int32           // 会话关闭保护
 	callCtx    context.Context // 调用上下文
 }
 
-// mail goroutine
-func (sess *Session) mainLoop() {
-	// TODO:1分钟还没登录成功的断开连接
+// 接收线程同步处理所有请求消息
+func (sess *Session) recvLoop() {
 	defer util.PrintPanicStack()
-	h := [HeadLen]byte{}
-	head := h[:]
+	defer close(sess.stopRecv)
+	h := [HeadLen + math.MaxUint16]byte{}
+	head := h[:HeadLen]
 	for sess.Flag < SESS_CLOSE {
-		// 设置读取超时时间,读取消息长度
-		sess.conn.SetReadDeadline(time.Now().Add(readTimeout))
 		n, err := io.ReadFull(sess.conn, head)
 		if err != nil || n != HeadLen {
 			return
@@ -80,26 +80,38 @@ func (sess *Session) mainLoop() {
 			log.Warnf("user:%v,msg:%v,addr:%v,size:%v", sess.UserId, id, sess.Addr, size)
 			return
 		}
-		payload := make([]byte, HeadLen+size)
+		payload := h[:HeadLen+size]
 		if size > 0 {
-			// 10秒内读完消息内容
-			sess.conn.SetReadDeadline(time.Now().Add(time.Second * 10))
 			n, err = io.ReadFull(sess.conn, payload[HeadLen:])
 			if err != nil || n != int(size) {
 				return
 			}
 		}
 		sess.totalRecv += int64(size + HeadLen)
-		copy(payload[:HeadLen], head)
 		sess.processData(payload)
+		atomic.StoreInt32(&sess.recvTag, 0)
+	}
+}
 
+// mail goroutine
+func (sess *Session) mainLoop() {
+	// TODO:1分钟还没登录成功的断开连接
+	defer util.PrintPanicStack()
+	defer sess.Close()
+	t := time.NewTicker(30 * time.Second)
+	for sess.Flag < SESS_CLOSE {
 		// deliver the data to the input queue
 		select {
 		case <-sess.dieChan: // sess.Close
 			sess.Flag = SESS_CLOSE
 		case <-signal.Die(): // 服务关闭
 			sess.Flag = SESS_CLOSE
-		default:
+		case <-sess.stopRecv:
+			sess.Flag = SESS_CLOSE
+		case <-t.C:
+			if atomic.AddInt32(&sess.recvTag, 1) >= 3 {
+				sess.Flag = SESS_CLOSE
+			}
 		}
 	}
 }
@@ -124,7 +136,7 @@ func (sess *Session) send(val interface{}) bool {
 	return sess.write(data)
 }
 
-func(sess *Session) write(data []byte) bool {
+func (sess *Session) write(data []byte) bool {
 	//sess.conn.SetWriteDeadline(time.Now().Add(time.Second))
 	if _, err := sess.conn.Write(data); err != nil {
 		return false
@@ -157,9 +169,10 @@ func (sess *Session) processData(data []byte) {
 	}
 }
 
-//每个玩家1个线程，客户端网络写1个,主线程接收1个，房间消息流接收1个
+//每个玩家1个线程,所有消息同步处理
 func (sess *Session) Start() {
 	sess.SetUser(0)
+	go sess.recvLoop()
 	sess.mainLoop()
 }
 
@@ -208,7 +221,7 @@ func (sess *Session) route(data []byte) (ret interface{}, err error) {
 	}
 
 	// 需要登录才能调用的协议
-	if id >= int32(MsgId_UserLoginMessageSplit) && sess.Flag != SESS_LOGINED{
+	if id >= int32(MsgId_UserLoginMessageSplit) && sess.Flag != SESS_LOGINED {
 		err = ErrorUnauthorized
 		return
 	}
@@ -312,7 +325,7 @@ func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (int
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", e.Error()), nil
 	}
 	data, e := stream.Recv()
-	if e != nil{
+	if e != nil {
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", e.Error()), nil
 	}
 	if len(data) < HeadLen {

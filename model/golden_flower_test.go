@@ -25,7 +25,7 @@ func writeGoldenFlower(t *testing.T, name string, group []*GoldenFlowerGroup) {
 			values += PokerArrayString(v.Values[t*3:t*3+3])
 			values += "|"
 		}
-		msg := fmt.Sprintf("Power:%v, number:%v,key:|%v|, values:|%v\n", v.Power, v.Number, key, values)
+		msg := fmt.Sprintf("power:%v,key:%v\n", v.Power, key)
 		f.WriteString(msg)
 		fmt.Println(msg)
 	}
@@ -33,7 +33,7 @@ func writeGoldenFlower(t *testing.T, name string, group []*GoldenFlowerGroup) {
 }
 
 func TestGod(t *testing.T) {
-	d := NewGoldenFlowerDealer(true)
+	d := NewGoldenFlowerDealer(false)
 
 	writeGoldenFlower(t, "GoldenFlower_All.txt", d.All)
 	writeGoldenFlower(t, "GoldenFlower_ThreeKind.txt", d.ThreeKind)

@@ -114,16 +114,16 @@ func NewGoldenFlower(a []byte) GoldenFlower {
 	}
 }
 
-func GoldenFlowerNumber(a []byte) uint32 {
+func GoldenFlowerNumber(a []byte) int32 {
 	a0, a1, a2 := goldenFlowerNumberSort(a)
-	return (uint32(a0) << 16) | (uint32(a1) << 8) | uint32(a2)
+	return (int32(a0) << 16) | (int32(a1) << 8) | int32(a2)
 }
 
-func (a GoldenFlower) GetNumber() uint32 {
+func (a GoldenFlower) GetNumber() int32 {
 	a0 := a.p[0] | (a.f[0])
 	a1 := a.p[1] | (a.f[1])
 	a2 := a.p[2] | (a.f[2])
-	return (uint32(a0) << 16) | (uint32(a1) << 8) | uint32(a2)
+	return (int32(a0) << 16) | (int32(a1) << 8) | int32(a2)
 }
 
 // 三同点数
@@ -204,8 +204,8 @@ func (a GoldenFlower) sameFlower() bool {
 }
 
 type GoldenFlowerGroup struct {
-	Power  uint32
-	Number uint32
+	Power  int32
+	Number int32
 	Key    GoldenFlower
 	Values [18]byte
 }
@@ -236,18 +236,18 @@ func (g *GoldenFlowerGroup) IsPair() bool {
 }
 
 // 散牌16440[0-16439]
-func (g *GoldenFlowerGroup) Zilch() bool {
+func (g *GoldenFlowerGroup) IsZilch() bool {
 	return g.Power <= 16439
 }
 
 // 特殊牌60[0-59]
-func (g *GoldenFlowerGroup) Special() bool {
+func (g *GoldenFlowerGroup) IsSpecial() bool {
 	return g.Power <= 59
 }
 
 type GoldenFlowerDealer struct {
-	Flower        bool
-	Groups        map[uint32]*GoldenFlowerGroup
+	flower        bool
+	Groups        map[int32]*GoldenFlowerGroup
 	All           []*GoldenFlowerGroup // 全部牌型22100[0-22099]
 	ThreeKind     []*GoldenFlowerGroup // 三同52种[22048-22099]
 	StraightFlush []*GoldenFlowerGroup // 顺金48种[22000-22047]
@@ -266,7 +266,7 @@ func (d *GoldenFlowerDealer) Swap(i, j int) {
 }
 
 func (d *GoldenFlowerDealer) Less(i, j int) bool {
-	return goldenFlowerLess(d.All[i].Key, d.All[j].Key, d.Flower)
+	return goldenFlowerLess(d.All[i].Key, d.All[j].Key, d.flower)
 }
 
 func (d *GoldenFlowerDealer) GetGroup(a []byte) *GoldenFlowerGroup {
@@ -317,10 +317,10 @@ func (d *GoldenFlowerDealer) Kind() {
 }
 
 func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
-	valOff := make(map[uint32]int, 50000)
+	valOff := make(map[int32]int, 50000)
 	dealer := &GoldenFlowerDealer{
-		Flower: flower,
-		Groups: make(map[uint32]*GoldenFlowerGroup, 50000),
+		flower: flower,
+		Groups: make(map[int32]*GoldenFlowerGroup, 50000),
 	}
 	const maxIndex = 52
 	for i := 0; i < maxIndex; i++ {
@@ -358,8 +358,21 @@ func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
 		pokerMap[poker] = pokerChar[i]
 	}
 	sort.Sort(dealer)
-	for i := 0; i < len(dealer.All); i++ {
-		dealer.All[i].Power = uint32(i)
+	allCount := len(dealer.All)
+	for i := 0; i < allCount; i++ {
+		dealer.All[i].Power = int32(i)
+	}
+	if flower == false {
+		// 如果不比较花色，重新设置POWER
+		cur := dealer.All[allCount-1]
+		for i := allCount - 2; i >= 0; i-- {
+			g := dealer.All[i]
+			if cur.Key.p[0] == g.Key.p[0] && cur.Key.p[1] == g.Key.p[1] && cur.Key.p[2] == g.Key.p[2] {
+				g.Power = cur.Power
+			} else {
+				cur = g
+			}
+		}
 	}
 	dealer.Kind()
 	return dealer

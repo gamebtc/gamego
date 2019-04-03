@@ -1,7 +1,7 @@
 module game100
 
 require (
-	github.com/sirupsen/logrus v1.4.0
+	github.com/sirupsen/logrus v1.4.1
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0
 	local.com/abc/game/protocol v0.0.0

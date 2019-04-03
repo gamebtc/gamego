@@ -6,20 +6,20 @@ taskkill /f /im gamezjh.exe /t
 
 cd agent
 go build
-start agent
+start call agent
 
 cd ../gameclient
 go build
-start gameclient
+start call gameclient
 
 cd ../grpcserver
 go build
-start grpcserver
+start call grpcserver
 
 cd ../game100
 go build
-start game100
+start call game100
 
 cd ../gamezjh
 go build
-start gamezjh
+start call gamezjh

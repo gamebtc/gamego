@@ -17,7 +17,7 @@ func StartSession(s *Session) {
 	}()
 	signal.Add(1)
 	defer func(){
-		signal.Add(-1)
+		signal.Done()
 		delSession(s)
 	}()
 	log.Debugf("new session: %v", s.Addr)

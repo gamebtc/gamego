@@ -83,14 +83,14 @@ func TestKind(t *testing.T) {
 	//for i := offset; i >= 0; i-- {
 	//	if d.All[i].Key.Pair() == 0 {
 	//		d.Straight = d.All[i+1 : offset+1]
-	//		d.Zilch = d.All[0:i]
+	//		d.IsZilch = d.All[0:i]
 	//		break
 	//	}
 	//}
 	//
 	//for i := 0; i < len(d.All); i++ {
-	//	if d.All[i].Key.Special() == false {
-	//		d.Special = d.All[0:i]
+	//	if d.All[i].Key.IsSpecial() == false {
+	//		d.IsSpecial = d.All[0:i]
 	//		break
 	//	}
 	//}

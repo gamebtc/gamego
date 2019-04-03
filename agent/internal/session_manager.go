@@ -29,7 +29,7 @@ func newSession(ip uint32, addr string, conn net.Conn) {
 		id = newAgentId()
 	}
 	signal.Add(1)
-	defer signal.Add(-1)
+	defer signal.Done()
 	s := &Session{
 		Id:       id,
 		Ip:       ip,
@@ -38,6 +38,7 @@ func newSession(ip uint32, addr string, conn net.Conn) {
 		Coder:    coder,
 		conn:     conn,
 		dieChan:  make(chan struct{}),
+		stopRecv: make(chan struct{}),
 	}
 	defer delSession(s)
 	s.Start()

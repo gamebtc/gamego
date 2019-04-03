@@ -1,9 +1,7 @@
 module gameclient
 
 require (
-	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/golang/snappy v0.0.1 // indirect
-	github.com/sirupsen/logrus v1.4.0
+	github.com/sirupsen/logrus v1.4.1
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/model v0.0.0
 	local.com/abc/game/protocol v0.0.0

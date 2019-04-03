@@ -210,7 +210,6 @@ func loadRobots(count int) {
 			robot := &Role{
 				User:    *user,
 				Session: sess,
-				robot:   &RobotAi{},
 			}
 			robot.Online = true
 			robotCount++
@@ -296,7 +295,7 @@ func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 func (hall *gameHall) UserOffline(sess *room.Session) {
 	if role, ok := sess.Role.(*Role); ok && role != nil {
 		role.Online = false
-		if role.bill == nil {
+		if role.Bill == nil {
 			room.RemoveUser(sess)
 			sess.UnlockRoom()
 		}
@@ -346,7 +345,7 @@ func action(m *room.NetMessage) {
 	if role.table.round == nil {
 		return
 	}
-	if role.player == nil {
+	if role.Player == nil {
 		return
 	}
 

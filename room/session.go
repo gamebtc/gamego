@@ -2,6 +2,7 @@ package room
 
 import (
 	"io"
+	"net"
 	"sync/atomic"
 	"time"
 
@@ -36,6 +37,7 @@ type Session struct {
 
 	sendChan chan interface{} // 发送出去的数据
 	stopSend chan struct{}    // 发送停止信号
+	stopRecv chan struct{}    // 读取停止信号
 	dieOnce  int32            // 会话关闭信号
 }
 
@@ -75,10 +77,12 @@ func (sess *Session) SendError(id int32, code int32, m string, k string) {
 
 func (sess *Session) Start(stream protocol.GameStream) {
 	if stream != nil {
-		sess.sendChan = make(chan interface{}, 512)
+		sess.sendChan = make(chan interface{}, 128)
 		sess.stopSend = make(chan struct{})
+		sess.stopRecv = make(chan struct{})
 		go sess.sendLoop(stream)
-		sess.recvLoop(stream)
+		go sess.recvLoop(stream)
+		sess.mainLoop(stream)
 		select {
 		case <-sess.stopSend:
 			//等级发送结束再关闭连接
@@ -119,29 +123,40 @@ func (sess *Session) sendLoop(stream protocol.GameStream) {
 
 func (sess *Session) recvLoop(stream protocol.GameStream) {
 	defer util.PrintPanicStack()
+	defer close(sess.stopRecv)
+	for sess.Flag < SESS_CLOSE {
+		if data, err := stream.Recv(); err != nil {
+			if e, ok := err.(net.Error); ok && e.Timeout() {
+				continue
+			}
+			if err != io.EOF {
+				log.Error(err)
+			}
+			return
+		} else {
+			if len(data) < protocol.HeadLen {
+				return
+			}
+			id, arg, e := coder.Decode(data)
+			log.Debugf("coder:%v,%v,%v,%v", coder.Name(), id, arg, e)
+			if e != nil || sess.Call(id, arg) == false {
+				return
+			}
+		}
+	}
+}
+
+func (sess *Session) mainLoop(stream protocol.GameStream) {
+	defer util.PrintPanicStack()
 	defer sess.Close()
 	for sess.Flag < SESS_CLOSE {
 		select {
 		case <-sess.stopSend:
 			sess.Flag = SESS_CLOSE
+		case <-sess.stopRecv:
+			sess.Flag = SESS_CLOSE
 		case <-signal.Die():
 			sess.Flag = SESS_CLOSE
-		default:
-			if data, err := stream.Recv(); err != nil {
-				if err != io.EOF {
-					log.Error(err)
-				}
-				return
-			} else {
-				if len(data) < protocol.HeadLen {
-					return
-				}
-				id, arg, e := coder.Decode(data)
-				log.Debugf("coder:%v,%v,%v,%v", coder.Name(), id, arg, e)
-				if e != nil || sess.Call(id, arg) == false {
-					return
-				}
-			}
 		}
 	}
 }

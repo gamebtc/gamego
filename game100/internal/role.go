@@ -28,16 +28,15 @@ type Role struct {
 }
 
 func (role *Role) getPlayer() *folks.Player {
-	role.player.Coin = role.Coin
 	return role.player
 }
 
 func (role *Role) isRobot() bool {
-	return role.User.Job == model.JobRobot
+	return role.Job == model.JobRobot
 }
 
 func (role *Role) isPlayer() bool {
-	return role.User.Job == model.JobPlayer
+	return role.Job == model.JobPlayer
 }
 
 // 检查投注项位置
@@ -104,7 +103,7 @@ func (role *Role) addBet(req folks.BetReq) error {
 			Uid:   role.Id,
 			Coin:  role.Coin,
 			Group: make([]int64, betItemCount),
-			Job:   role.User.Job,
+			Job:   role.Job,
 		}
 		role.bill = bill
 		// 首次投注
@@ -116,8 +115,8 @@ func (role *Role) addBet(req folks.BetReq) error {
 
 	role.Coin -= bet
 	role.player.Coin = role.Coin
-	bill.Group[i] += bet
 	bill.Bet += bet
+	bill.Group[i] += bet
 	// 有真实玩家下注
 	if role.isPlayer() {
 		if round.UserBet == nil {

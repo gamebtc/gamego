@@ -121,7 +121,7 @@ func handleClient(conn net.Conn) {
 // create a new session object for the connection
 func newSession(conn net.Conn) {
 	signal.Add(1)
-	defer signal.Add(-1)
+	defer signal.Done()
 
 	// 读取头信息
 	head := [16]byte{}
@@ -155,9 +155,7 @@ func newSession(conn net.Conn) {
 
 	// 连接事件
 	Call(func() { userOnline(sess, uid) })
-	sess.Start(&NetStream{
-		conn: conn,
-	})
+	sess.Start(&NetStream{conn: conn})
 }
 
 func checkError(err error) {
@@ -169,7 +167,7 @@ func checkError(err error) {
 
 type NetStream struct {
 	conn net.Conn
-	head [protocol.HeadLen]byte
+	buffer [protocol.HeadLen+65536]byte
 }
 
 func (stream *NetStream) Send(d []byte) error {
@@ -181,18 +179,22 @@ func (stream *NetStream) Send(d []byte) error {
 }
 
 func (stream *NetStream) Recv() ([]byte, error) {
-	head := stream.head[:]
+	//
+	head := stream.buffer[:protocol.HeadLen]
 	n, err := io.ReadFull(stream.conn, head)
 	if err != nil || n != protocol.HeadLen {
 		return nil, err
 	}
 	size := int(protocol.GetHeadLen(head))
-	payload := make([]byte, protocol.HeadLen+size)
+	if size > 65536 {
+		return nil, protocol.ErrorDataTooLong
+	}
+
+	payload := stream.buffer[:protocol.HeadLen+size]
 	n, err = io.ReadFull(stream.conn, payload[protocol.HeadLen:])
 	if err != nil || n != size {
 		return nil, err
 	}
-	copy(payload[:protocol.HeadLen], head)
 	return payload, nil
 }
 
