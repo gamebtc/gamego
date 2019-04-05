@@ -41,15 +41,15 @@ func newSession(ip uint32, addr string, conn net.Conn) {
 		stopRecv: make(chan struct{}),
 	}
 	defer delSession(s)
-	s.Start()
 	log.Debugf("new session %v: %v", s.Id, s.Addr)
+	s.Start()
 	return
 }
 
 func delSession(s *Session) {
 	removeUser(s)
 	removeSession(s)
-	s.destroy()
+	s.Close()
 	log.Debugf("del session %v: %v", s.Id, s.Addr)
 }
 

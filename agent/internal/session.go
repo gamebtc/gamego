@@ -59,7 +59,7 @@ type Session struct {
 	stopRecv   chan struct{}   // 读取停止信号
 	recvTag    int32           // 接收到消息信号
 	dieChan    chan struct{}   // 会话关闭信号
-	dieOnce    int32           // 会话关闭保护
+	disposed   uint32          // 会话关闭标记
 	callCtx    context.Context // 调用上下文
 }
 
@@ -178,7 +178,9 @@ func (sess *Session) Start() {
 
 // 线程安全关闭
 func (sess *Session) Close() {
-	if atomic.CompareAndSwapInt32(&sess.dieOnce, 0, 1) {
+	if atomic.CompareAndSwapUint32(&sess.disposed, 0, 1) {
+		sess.Flag = SESS_CLOSE
+		sess.closeRoom()
 		close(sess.dieChan)
 		// 通知服务器退出
 		if sess.UserId != 0 {
@@ -191,18 +193,11 @@ func (sess *Session) Close() {
 
 func (sess *Session) closeRoom() {
 	if c := sess.gameStream; c != nil {
+		log.Debugf("close room:%v, %v", sess.Id, sess.RoomId)
 		c.Close()
 		sess.RoomId = 0
 		sess.gameStream = nil
 	}
-}
-
-func (sess *Session) destroy() {
-	//sess.once.Do(func(){
-	sess.closeRoom()
-	sess.Close()
-	sess.Flag = SESS_CLOSE
-	//})
 }
 
 func (sess *Session) SetUser(uid UserId) {
@@ -248,22 +243,25 @@ func (sess *Session) route(data []byte) (ret interface{}, err error) {
 }
 
 func (sess *Session) readFromGame(roomId int32, stream GameStream) {
+	log.Debugf("read room:%v, %v", sess.Id, roomId)
 	defer stream.Close()
+loop:
 	for sess.Flag < SESS_CLOSE {
 		if bin, err := stream.Recv(); err == nil {
 			select {
 			case <-sess.dieChan:
-				return
+				break loop
 			default:
 				if sess.write(bin) == false {
-					return
+					break loop
 				}
 			}
 		} else {
 			sess.SendError(0, 2002, "房间连接已断开", err.Error())
-			return
+			break loop
 		}
 	}
+	log.Debugf("close read:%v, %v", sess.Id, roomId)
 }
 
 func makeError(id int32, code int32, m string, k string) *ErrorInfo {
@@ -321,6 +319,7 @@ func (sess *Session) getContext() context.Context {
 
 // 登录游戏房间
 func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (interface{}, error) {
+	log.Debugf("start login Room:%v,a:%v;uid:%v", roomId, sess.Id, sess.UserId)
 	if e := stream.Send(req); e != nil {
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", e.Error()), nil
 	}
@@ -332,16 +331,19 @@ func (sess *Session) loginRoom(roomId int32, req []byte, stream GameStream) (int
 		return makeError(int32(MsgId_LoginRoomReq), 2001, "房间连接失败，请您稍后重试！", "接收数据长度错误"), nil
 	}
 
-	if id := GetHeadId(data); id == int32(MsgId_LoginRoomAck) {
+	id := GetHeadId(data)
+	if id == int32(MsgId_LoginRoomAck) {
 		ack := LoginRoomAck{}
-		if e = sess.Unmarshal(data[HeadLen:], &ack); e == nil && ack.Code == 0 {
-			if oldStream := sess.gameStream; oldStream != nil {
-				oldStream.Close()
-			}
+		e = sess.Unmarshal(data[HeadLen:], &ack)
+		if e == nil && ack.Code == 0 {
+			sess.closeRoom()
 			sess.gameStream = stream
 			sess.RoomId = roomId
 			go sess.readFromGame(roomId, stream)
 		}
+		log.Debugf("loginRoom:%v,%v", e, ack)
+	} else {
+		log.Debugf("loginRoom error2:%v", id)
 	}
 	return data, e
 }

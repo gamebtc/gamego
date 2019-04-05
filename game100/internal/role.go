@@ -15,11 +15,11 @@ const lastBillCount = 20
 
 // 每个角色的游戏数据
 type Role struct {
-	model.User             // 玩家信息
-	*room.Session          // 发送消息
-	table  *Table          // 桌子ID
-	bill   *folks.GameBill // 输赢情况
-	player *folks.Player   // 玩家信息
+	model.User                    // 玩家信息
+	*room.Session                 // 发送消息
+	table         *Table          // 桌子ID
+	bill          *folks.GameBill // 输赢情况
+	player        *folks.Player   // 玩家信息
 
 	LastBet      [lastBillCount]int64 // 最后20局的下注金币
 	LastWin      [lastBillCount]byte  // 最后20局的输赢金币
@@ -63,8 +63,13 @@ func existsBetItem(bet int32) bool {
 
 // 投注
 func (role *Role) addBet(req folks.BetReq) error {
+	table := role.table
+	if table == nil {
+		return errors.New("正在配桌，请您稍后再试！")
+	}
+
 	// 检查游戏状态
-	round := role.table.round
+	round := table.round
 	if round == nil || role.table.State != GameStatePlaying {
 		return errors.New("本局游戏已停止下注，请您稍后再试！")
 	}

@@ -27,7 +27,7 @@ type Session struct {
 	AgentId    int64        // 连接唯一ID
 	UserId     model.UserId // 玩家ID
 	Ip         model.IP     // IP地址
-	Disposed   bool         // 是否已销毁(被强制退出)
+	locked     bool         // 是否已解锁(被强制退出)
 	Role       interface{}  // 游戏角色数据
 	Created    time.Time    // 建立时间
 	Flag       int32        // 会话标记(0:初始化，1:已通过版本检查，2:登录中，3:登录成功, 4:已关闭)
@@ -38,7 +38,7 @@ type Session struct {
 	sendChan chan interface{} // 发送出去的数据
 	stopSend chan struct{}    // 发送停止信号
 	stopRecv chan struct{}    // 读取停止信号
-	dieOnce  int32            // 会话关闭信号
+	disposed uint32           // 会话关闭标记
 }
 
 func(sess *Session) AddWinBet(win int64, bet int64)() {
@@ -87,6 +87,7 @@ func (sess *Session) Start(stream protocol.GameStream) {
 		case <-sess.stopSend:
 			//等级发送结束再关闭连接
 		}
+		log.Debugf("close sess:%v", sess.AgentId)
 	}
 }
 
@@ -172,7 +173,7 @@ func (sess *Session) Call(id int32, arg interface{}) bool {
 }
 
 func (sess *Session) Close() {
-	if atomic.CompareAndSwapInt32(&sess.dieOnce, 0, 1) {
+	if atomic.CompareAndSwapUint32(&sess.disposed, 0, 1) {
 		if sess.sendChan == nil {
 			return
 		}
@@ -180,19 +181,19 @@ func (sess *Session) Close() {
 	}
 }
 
-func(sess *Session)LockRoom(uid model.UserId, win int64, bet int64, round int32) (*model.User, error) {
+func(sess *Session) lockRoom(uid model.UserId, win int64, bet int64, round int32) (*model.User, error) {
 	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId, CoinKey, win, bet, round)
 }
 
-func(sess *Session)UnlockRoom() bool {
-	log.Debugf("UnlockRoom:%v,%v", sess.AgentId, sess.UserId)
-	if sess.Disposed == false && sess.UserId != 0 {
-		sess.Disposed = true
+func(sess *Session) unlockRoom() bool {
+	log.Debugf("unlockRoom:%v,%v", sess.AgentId, sess.UserId)
+	if sess.locked {
+		sess.locked = false
 		if db.Driver.UnlockUserRoom(sess.AgentId, sess.UserId, RoomId, sess.TotalWin, sess.TotalBet, sess.TotalRound) {
-			log.Debugf("UnlockRoom success:%v,%v", sess.AgentId, sess.UserId)
+			log.Debugf("unlockRoom success:%v,%v", sess.AgentId, sess.UserId)
 			return true
 		}
 	}
-	log.Debugf("UnlockRoom fail:%v,%v", sess.AgentId, sess.UserId)
+	log.Debugf("unlockRoom fail:%v,%v", sess.AgentId, sess.UserId)
 	return false
 }

@@ -8,6 +8,7 @@ import (
 
 // 创建socket连接
 func StartSession(s *Session) {
+	log.Debugf("new session: %v", s.Addr)
 	id := atomic.AddInt32(&connectCount, 1)
 	s.Ip = uint32(id)
 	conn := s.conn
@@ -20,7 +21,6 @@ func StartSession(s *Session) {
 		signal.Done()
 		delSession(s)
 	}()
-	log.Debugf("new session: %v", s.Addr)
 	s.Start()
 }
 

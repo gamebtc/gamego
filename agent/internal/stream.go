@@ -1,10 +1,14 @@
 package internal
 
 import (
-	"google.golang.org/grpc"
 	"io"
-	. "local.com/abc/game/protocol"
 	"net"
+	"sync/atomic"
+
+	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+
+	. "local.com/abc/game/protocol"
 )
 
 type GrpcStream struct {
@@ -30,19 +34,20 @@ func (stream *GrpcStream) Close() {
 type NetStream struct {
 	conn net.Conn
 	head [HeadLen]byte
+	disposed   uint32           // 会话关闭标记
 }
 
-func (this *NetStream) Send(d []byte) error {
-	if _, e := this.conn.Write(d); e == nil {
+func (stream *NetStream) Send(d []byte) error {
+	if _, e := stream.conn.Write(d); e == nil {
 		return nil
 	} else {
 		return e
 	}
 }
 
-func (this *NetStream) Recv() ([]byte, error) {
-	head := this.head[:]
-	n, err := io.ReadFull(this.conn, head)
+func (stream *NetStream) Recv() ([]byte, error) {
+	head := stream.head[:]
+	n, err := io.ReadFull(stream.conn, head)
 	if err != nil || n != HeadLen {
 		return nil, err
 	}
@@ -51,7 +56,7 @@ func (this *NetStream) Recv() ([]byte, error) {
 	payload := make([]byte, HeadLen+size)
 
 	if size > 0 {
-		n, err = io.ReadFull(this.conn, payload[HeadLen:])
+		n, err = io.ReadFull(stream.conn, payload[HeadLen:])
 		if err != nil || n != size {
 			return nil, err
 		}
@@ -61,5 +66,8 @@ func (this *NetStream) Recv() ([]byte, error) {
 }
 
 func (stream *NetStream) Close() {
-	stream.conn.Close()
+	if atomic.CompareAndSwapUint32(&stream.disposed, 0, 1) {
+		stream.conn.Close()
+		log.Debugf("close net stream:%v", stream.conn.LocalAddr())
+	}
 }

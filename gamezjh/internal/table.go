@@ -320,34 +320,26 @@ func (table *Table) addRole(role *Role) bool {
 	if !role.IsRobot() {
 		role.Player.Robot = &RobotAi{}
 		table.sendGameInit(role)
-	}else{
+	} else {
 		role.Player.Robot = &RobotAi{}
 	}
 	log.Debugf("[%v]addRole:%v", table.Id, role.Id)
 	return true
 }
 
-func (table *Table) removeRole(i int) bool {
-	role := table.Roles[i]
-	if role == nil {
-		return false
-	}
-	table.RoleCount--
-	table.Roles[i] = nil
-	role.table = nil
-	role.Player = nil
-	log.Debugf("[%v]removeRole:%v", table.Id, role.Id)
-	return true
-}
-
-// 所有机器人退出
-func (table *Table) freeRobots() {
-	for i, role := range table.Roles {
-		if role != nil && role.IsRobot() {
-			table.removeRole(i)
-			PutWaitRobot(role)
+func (table *Table) removeRole(role *Role) bool {
+	if role != nil && role == table.Roles[role.Chair] {
+		player := role.Player
+		if player.State != zjh.Player_Playing && player.State != zjh.Player_Allin {
+			table.RoleCount--
+			table.Roles[role.Chair] = nil
+			role.table = nil
+			role.Player = nil
+			log.Debugf("[%v]removeRole:%v", table.Id, role.Id)
+			return true
 		}
 	}
+	return false
 }
 
 // 初始化场景
@@ -534,7 +526,11 @@ func (table *Table) gameReady() {
 
 	if realCount == 0 {
 		//// 没有真人了机器人退出
-		//table.freeRobots()
+		//for _, role := range table.Roles {
+		//	if role != nil && table.removeRole(role) {
+		//		PutWaitRobot(role)
+		//	}
+		//}
 		//return
 	}
 
@@ -686,7 +682,7 @@ func (table *Table) gameClose() {
 		role.Robot.End(role)
 	}
 
-	// TODO:清理钱不够的机器人和玩家
+	// 清理钱不够的机器人和玩家
 	table.clearRole()
 }
 
@@ -702,7 +698,7 @@ func (table *Table) gameCheckout() {
 func (table *Table) clearRole() {
 	// 删除钱不足或者钱多的机器人
 	var ids []model.UserId
-	for i, role := range table.Roles {
+	for _, role := range table.Roles {
 		if role == nil {
 			continue
 		}
@@ -711,13 +707,16 @@ func (table *Table) clearRole() {
 				role.Coin < room.Config.PlayMin ||
 				role.Coin > room.Config.PlayMax ||
 				role.TotalWin > 10000*100 {
-				ids = append(ids, role.Id)
-				table.removeRole(i)
-				role.Online = false
+				if table.removeRole(role) {
+					role.Online = false
+					ids = append(ids, role.Id)
+				}
 			}
 		} else {
 			if role.Online == false {
-				table.removeRole(i)
+				if table.removeRole(role) {
+					room.RemoveUser(role.Session)
+				}
 			}
 		}
 	}

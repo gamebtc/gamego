@@ -98,12 +98,13 @@ func RemoveUser(sess *Session) bool {
 	uid := sess.UserId
 	if s, ok := sessions[uid]; ok && s == sess {
 		delete(sessions, uid)
+		sess.unlockRoom()
 		return true
 	}
 	return false
 }
 
-func UserCount()int {
+func UserCount() int {
 	return len(sessions)
 }
 
@@ -204,7 +205,7 @@ func exec(m interface{}) {
 	switch m := m.(type) {
 	case *NetMessage:
 		if f := messageHandlers[m.Id]; f != nil {
-			if m.UserId != 0 && m.Disposed == false {
+			if m.locked {
 				f(m)
 			}
 		}

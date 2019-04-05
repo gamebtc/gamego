@@ -7,7 +7,6 @@ import (
 
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
-	"local.com/abc/game/protocol"
 	"local.com/abc/game/protocol/folks"
 	"local.com/abc/game/room"
 )
@@ -161,23 +160,17 @@ func (hall *gameHall) UserOnline(sess *room.Session, user *model.User) {
 	}
 	sess.Role = role
 	role.Online = true
-
-	// 发送登录游戏信息
-	sess.UnsafeSend(&protocol.LoginRoomAck{
-		Room: room.RoomId,
-		Kind: room.KindId,
-	})
 	table.addRole(role)
 	table.sendGameInit(role)
 }
 
 // 用户重新连接
 func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
-	if role, ok := oldSess.Role.(*Role); ok && role != nil {
-		oldSess.Role = nil
+	if role, ok := newSess.Role.(*Role); ok && role != nil {
 		role.Online = true
-		newSess.Role = role
+		role.Session = newSess
 		if table := role.table; table != nil {
+			log.Debugf("reline:old%v,new:%v,uid:%v", oldSess.AgentId, newSess.AgentId, role.UserId)
 			table.sendGameInit(role)
 		}
 	}
@@ -189,7 +182,6 @@ func (hall *gameHall) UserOffline(sess *room.Session) {
 		role.Online = false
 		if role.bill == nil{
 			room.RemoveUser(sess)
-			sess.UnlockRoom()
 		}
 	}
 }

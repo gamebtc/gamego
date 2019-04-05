@@ -8,13 +8,12 @@ import (
 
 	"local.com/abc/game/db"
 	"local.com/abc/game/model"
-	"local.com/abc/game/protocol"
 	"local.com/abc/game/protocol/zjh"
 	"local.com/abc/game/room"
 )
 
 var (
-	gameName     = "炸金花"  // 游戏名称
+	gameName     = "炸金花"    // 游戏名称
 	betItemCount int        // 可投注的项
 	betItems     []int32    // 可投注的项
 	maxBetItem   int64      // betItems最后一个项的2倍
@@ -236,8 +235,8 @@ func (hall *gameHall) Start() {
 
 	// 清理并加载机器人
 	db.Driver.ClearRobot(room.RoomId)
-	robotCount := room.PlanRobotCount(0)
-	loadRobots(robotCount)
+	//robotCount := room.PlanRobotCount(0)
+	loadRobots(8)
 
 	// 注册消息和事件
 	room.RegistEvent(room.EventConfigChanged, configChange)
@@ -270,24 +269,18 @@ func (hall *gameHall) UserOnline(sess *room.Session, user *model.User) {
 	}
 	role.Online = true
 	sess.Role = role
-	// 发送登录游戏信息
-	sess.UnsafeSend(&protocol.LoginRoomAck{
-		Room: room.RoomId,
-		Kind: room.KindId,
-	})
-
 	waitRoles = append(waitRoles, role)
 }
 
 // 用户重新连接
 func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
-	if role, ok := oldSess.Role.(*Role); ok && role != nil {
-		oldSess.Role = nil
+	if role, ok := newSess.Role.(*Role); ok && role != nil {
 		role.Online = true
-		newSess.Role = role
-		//if table := role.table; table != nil {
-		//	table.sendGameInit(role)
-		//}
+		role.Session = newSess
+		if table := role.table; table != nil {
+			log.Debugf("reline:%#v", role)
+			table.sendGameInit(role)
+		}
 	}
 }
 
@@ -295,9 +288,12 @@ func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 func (hall *gameHall) UserOffline(sess *room.Session) {
 	if role, ok := sess.Role.(*Role); ok && role != nil {
 		role.Online = false
-		if role.Bill == nil {
+		if table := role.table; table != nil {
+			if table.removeRole(role) {
+				room.RemoveUser(sess)
+			}
+		} else {
 			room.RemoveUser(sess)
-			sess.UnlockRoom()
 		}
 	}
 }

@@ -303,7 +303,6 @@ func (table *Table) clearOffline() {
 		if role.Online == false {
 			ids = append(ids, k)
 			room.RemoveUser(role.Session)
-			role.UnlockRoom()
 			role.table = nil
 			role.player = nil
 		}
@@ -382,7 +381,7 @@ func (table *Table) gameReady() {
 // 开始下注
 func (table *Table) gameOpen() {
 	// 发送开始下注消息给所有玩家
-	table.delay = 15
+	table.delay = 60
 	table.State = GameStatePlaying
 	log.Debugf("开始下注:%v", table.CurId)
 
