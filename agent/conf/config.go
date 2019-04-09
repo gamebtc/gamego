@@ -34,12 +34,12 @@ func InitConfig(path string)(*AppConfig) {
 	cfg := &AppConfig{}
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Fatal("app config file not exists:%v", err)
+		log.Fatalf("app config file not exists:%v", err)
 		return nil
 	}
 
 	if err = yaml.Unmarshal(data, cfg); err != nil {
-		log.Fatal("app config file error:%v", err)
+		log.Fatalf("app config file error:%v", err)
 		return nil
 	}
 

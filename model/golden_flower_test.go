@@ -25,7 +25,7 @@ func writeGoldenFlower(t *testing.T, name string, group []*GoldenFlowerGroup) {
 			values += PokerArrayString(v.Values[t*3:t*3+3])
 			values += "|"
 		}
-		msg := fmt.Sprintf("power:%v,key:%v\n", v.Power, key)
+		msg := fmt.Sprintf("h:%v,k:%v\n", v.Weight, key)
 		f.WriteString(msg)
 		fmt.Println(msg)
 	}

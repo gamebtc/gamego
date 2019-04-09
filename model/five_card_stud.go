@@ -304,7 +304,7 @@ func (a FiveCard) sameFlower() bool {
 }
 
 type FiveCardItem struct {
-	Power  uint32
+	Weight int32
 	Number uint64
 	Key    FiveCard
 }
@@ -316,47 +316,47 @@ type FiveCardGroup struct {
 
 // 同花顺16种[98264-98279]
 func (g *FiveCardGroup) IsStraightFlush() bool {
-	return g.Power >= 98264 && g.Power <= 98279
+	return g.Weight >= 98264 && g.Weight <= 98279
 }
 
 // 铁支168种[98096-98263]
 func (g *FiveCardGroup) IsFourKind() bool {
-	return g.Power >= 98096 && g.Power <= 98263
+	return g.Weight >= 98096 && g.Weight <= 98263
 }
 
 // 葫芦1008[97088-98095]
 func (g *FiveCardGroup) IsFullHouse() bool {
-	return g.Power >= 97088 && g.Power <= 98095
+	return g.Weight >= 97088 && g.Weight <= 98095
 }
 
 // 同花68[97020-97087]
 func (g *FiveCardGroup) IsFlush() bool {
-	return g.Power >= 97020 && g.Power <= 97087
+	return g.Weight >= 97020 && g.Weight <= 97087
 }
 
 // 顺子4080[92940-97019]
 func (g *FiveCardGroup) IsStraight() bool {
-	return g.Power >= 92940 && g.Power <= 97019
+	return g.Weight >= 92940 && g.Weight <= 97019
 }
 
 // 三条6720[86220-92939]
 func (g *FiveCardGroup) IsThreeKind() bool {
-	return g.Power >= 86220 && g.Power <= 92939
+	return g.Weight >= 86220 && g.Weight <= 92939
 }
 
 // 两对15120[71100-86219]
 func (g *FiveCardGroup) IsTwoPair() bool {
-	return g.Power >= 71100 && g.Power <= 86219
+	return g.Weight >= 71100 && g.Weight <= 86219
 }
 
 // 一对53760[17340-71099]
 func (g *FiveCardGroup) IsOnePair() bool {
-	return g.Power >= 17340 && g.Power <= 71099
+	return g.Weight >= 17340 && g.Weight <= 71099
 }
 
 // 散牌17340[0-17339]
 func (g *FiveCardGroup) Zilch() bool {
-	return g.Power <= 17339
+	return g.Weight <= 17339
 }
 
 // (同花顺>铁支>葫芦>同花>顺子>三条>二对>对子>散牌)
@@ -393,7 +393,7 @@ func (d *FiveCardDealer) GetGroup(a []byte) *FiveCardGroup {
 
 func (d *FiveCardDealer) SumPower() (i int) {
 	for _, v := range d.All {
-		i += int(v.Power)
+		i += int(v.Weight)
 	}
 	return
 }
@@ -447,9 +447,9 @@ func (d *FiveCardDealer) Kind() {
 
 func (d *FiveCardDealer) Pk(a *FiveCardDealer) (win int, lost int, draw int) {
 	for _, item1 := range d.All {
-		dp := item1.Power
+		dp := item1.Weight
 		for _, item2 := range a.All {
-			ap := item2.Power
+			ap := item2.Weight
 			if dp > ap {
 				win += 1
 			} else if dp < ap {
@@ -538,7 +538,7 @@ func NewFiveCardDealer() *FiveCardDealer {
 	}
 	sort.Sort(dealer)
 	for i := 0; i < len(dealer.All); i++ {
-		dealer.All[i].Power = uint32(i)
+		dealer.All[i].Weight = int32(i)
 	}
 	dealer.Kind()
 	return dealer
@@ -613,7 +613,7 @@ func CreateFiveCardDealer(a []byte, b []byte) *FiveCardDealer {
 					if g, ok := dealer.Groups[number]; !ok {
 						g = new(FiveCardGroup)
 						g.Key, g.Number = key, number
-						g.Power = globalDealer.Groups[number].Power
+						g.Weight = globalDealer.Groups[number].Weight
 						dealer.Groups[number] = g
 						dealer.All = append(dealer.All, g)
 					}

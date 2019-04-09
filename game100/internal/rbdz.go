@@ -79,9 +79,9 @@ func rbdzPk(a []byte, b []byte) (odds []int32) {
 
 	redWin := int32(lostRadix)
 	blackWin := int32(lostRadix)
-	if ag.Power > bg.Power {
+	if ag.Weight > bg.Weight {
 		redWin = 1*radix + radix
-	} else if ag.Power < bg.Power {
+	} else if ag.Weight < bg.Weight {
 		blackWin = 1*radix + radix
 	}
 

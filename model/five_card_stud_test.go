@@ -25,8 +25,8 @@ func writeFiveCard(t *testing.T, name string, group []*FiveCardGroup) {
 		//	values += PokerArrayString(v.Values[t*5:t*5+5], "")
 		//	values += "|"
 		//}
-		//msg := fmt.Sprintf("Power:%v, number:%v,key:|%v|, values:|%v\n", v.Power, v.Number, key, values)
-		msg := fmt.Sprintf("Power:%v, number:%v,key:|%v|\n", v.Power, v.Number, key)
+		//msg := fmt.Sprintf("Weight:%v, number:%v,key:|%v|, values:|%v\n", v.Weight, v.Number, key, values)
+		msg := fmt.Sprintf("h:%v, n:%v,k:|%v|\n", v.Weight, v.Number, key)
 		f.WriteString(msg)
 		//fmt.Println(msg)
 	}

@@ -1,0 +1,265 @@
+Fish: [
+  {Id: 1, Name: '小黄鱼', BroadCast: false, Probability: 500, Speed: 100, VisualId: 1, BoundBox: 1, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 2]}]},
+
+  {Id: 2, Name: '绿草鱼', BroadCast: false, Probability: 500, Speed: 89, VisualId: 2, BoundBox: 2, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 2]}]},
+
+  {Id: 3, Name: '黄草鱼', BroadCast: false, Probability: 333, Speed: 92, VisualId: 3, BoundBox: 3, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 3]}]},
+
+  {Id: 4, Name: '大眼鱼', BroadCast: false, Probability: 250, Speed: 78, VisualId: 4, BoundBox: 4, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 4]}]},
+
+  {Id: 5, Name: '黄边鱼', BroadCast: false, Probability: 200, Speed: 98, VisualId: 5, BoundBox: 5, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 5]}]},
+
+  {Id: 6, Name: '小丑鱼', BroadCast: false, Probability: 166, Speed: 99, VisualId: 6, BoundBox: 6, ShowBingo: false, Particle: 'bubble', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 6]}]},
+
+  {Id: 7, Name: '小刺鱼', BroadCast: false, Probability: 142, Speed: 110, VisualId: 7, BoundBox: 7, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 7]}]},
+
+  {Id: 8, Name: '蓝鱼', BroadCast: false, Probability: 125, Speed: 101, VisualId: 8, BoundBox: 8, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 8]}]},
+
+  {Id: 9, Name: '灯笼鱼', BroadCast: false, Probability: 111, Speed: 120, VisualId: 9, BoundBox: 9, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 9]}]},
+
+  {Id: 10, Name: '海龟', BroadCast: false, Probability: 100, Speed: 72, VisualId: 10, BoundBox: 10, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 10]}]},
+
+  {Id: 11, Name: '花斑鱼', BroadCast: false, Probability: 83, Speed: 113, VisualId: 11, BoundBox: 11, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 12]}]},
+
+  {Id: 12, Name: '蝴蝶鱼', BroadCast: false, Probability: 66, Speed: 93, VisualId: 12, BoundBox: 12, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 15]}]},
+
+  {Id: 13, Name: '孔雀鱼', BroadCast: false, Probability: 55, Speed: 103, VisualId: 13, BoundBox: 13, ShowBingo: false, Particle: 'bomb3', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 18]}]},
+
+  {Id: 14, Name: '剑鱼', BroadCast: false, Probability: 50, Speed: 127, VisualId: 14, BoundBox: 14, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 20]}]},
+
+  {Id: 15, Name: '蝙蝠鱼', BroadCast: false, Probability: 40, Speed: 81, VisualId: 15, BoundBox: 15, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 25]}]},
+
+  {Id: 16, Name: '银鲨', BroadCast: false, Probability: 33, Speed: 133, VisualId: 16, BoundBox: 16, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 1,
+  Effects: [{Id: 0, Param: [1, 30]}]},
+
+  {Id: 17, Name: '金鲨', BroadCast: false, Probability: 28.5, Speed: 145, VisualId: 17, BoundBox: 17, ShowBingo: false, Particle: 'switch', ShakeScreen: false, LockLevel: 1,
+  Effects: [{Id: 0, Param: [1, 50]}]},
+
+  {Id: 18, Name: '小海豚', BroadCast: false, Probability: 25, Speed: 66, VisualId: 18, BoundBox: 18, ShowBingo: true, Particle: 'salute1', ShakeScreen: true, LockLevel: 2,
+  Effects: [{Id: 0, Param: [1, 100]}]},
+
+  {Id: 19, Name: '霸王鲸', BroadCast: true, Probability: 20, Speed: 128, VisualId: 19, BoundBox: 19, ShowBingo: true, Particle: 'bagualu00', ShakeScreen: true, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 80, 150]}]},
+
+  {Id: 20, Name: '双头企鹅', BroadCast: true, Probability: 15, Speed: 130, VisualId: 20, BoundBox: 20, ShowBingo: true, Particle: 'bagualu00', ShakeScreen: true, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 80, 120]}]},
+
+  {Id: 21, Name: '银龙', BroadCast: true, Probability: 12, Speed: 126, VisualId: 21, BoundBox: 21, ShowBingo: true, Particle: 'bagualu00', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 70]}]},
+
+  {Id: 22, Name: '金龙', BroadCast: true, Probability: 10, Speed: 130, VisualId: 22, BoundBox: 22, ShowBingo: true, Particle: 'bagualu00', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 40, 180]}]},
+
+  {Id: 23, Name: '虎皮鲨', BroadCast: true, Probability: 7, Speed: 59, VisualId: 23, BoundBox: 23, ShowBingo: true, Particle: 'bagualu00', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 80, 200]}]},
+
+  {Id: 24, Name: '美人鱼', BroadCast: true, Probability: 10, Speed: 66, VisualId: 24, BoundBox: 24, ShowBingo: true, Particle: 'salute1', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 120]}]},
+
+  {Id: 25, Name: '神仙船', BroadCast: true, Probability: 10, Speed: 42, VisualId: 25, BoundBox: 25, ShowBingo: true, Particle: 'bagualu02_0', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 140]}]},
+
+  {Id: 26, Name: '神秘鱼', BroadCast: false, Probability: 100, Speed: 88, VisualId: 26, BoundBox: 26, ShowBingo: false, Particle: '0', ShakeScreen: false, LockLevel: 0,
+  Effects: [{Id: 0, Param: [1, 1, 10]}]},
+
+  {Id: 27, Name: '玉帝', BroadCast: true, Probability: 3.3, Speed: 76, VisualId: 27, BoundBox: 27, ShowBingo: true, Particle: 'bagualu02_0', ShakeScreen: true, LockLevel: 8,
+  Effects: [{Id: 0, Param: [1, 200, 300]}]},
+
+  {Id: 28, Name: '金蟾', BroadCast: true, Probability: 3.3, Speed: 74, VisualId: 28, BoundBox: 28, ShowBingo: true, Particle: 'bagualu02_0', ShakeScreen: true, LockLevel: 8,
+  Effects: [{Id: 0, Param: [1, 40, 300]}], Buffers: [{Id: 4, Param: 0, Life: -1}]},
+
+  {Id: 29, Name: '李逵', BroadCast: true, Probability: 3.3, Speed: 123, VisualId: 29, BoundBox: 29, ShowBingo: true, Particle: '0', ShakeScreen: true, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 40, 300]}], Buffers: [{Id: 4, Param: 0, Life: -1}]},
+
+  {Id: 30, Name: '孙悟空', BroadCast: true, Probability: 3.3, Speed: 78, VisualId: 30, BoundBox: 30, ShowBingo: true, Particle: '0', ShakeScreen: true, LockLevel: 8,
+  Effects: [{Id: 0, Param: [1, 40, 300]}], Buffers: [{Id: 4, Param: 0, Life: -1}]},
+
+  {Id: 200, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 200, BoundBox: 200, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 201, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 201, BoundBox: 201, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 202, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 202, BoundBox: 202, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 3]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 203, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 203, BoundBox: 203, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 4]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 204, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 204, BoundBox: 204, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 5]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 205, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 205, BoundBox: 203, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 6]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 206, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 206, BoundBox: 204, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 7]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 207, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 207, BoundBox: 205, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 8]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 208, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 208, BoundBox: 206, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 9]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 209, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 209, BoundBox: 207, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 210, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 210, BoundBox: 200, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 211, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 211, BoundBox: 201, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 212, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 212, BoundBox: 202, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 3]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 213, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 213, BoundBox: 203, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 4]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 214, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 214, BoundBox: 204, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 5]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 215, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 215, BoundBox: 203, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 6]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 216, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 216, BoundBox: 204, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 7]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 217, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 217, BoundBox: 205, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 8]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 218, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 218, BoundBox: 206, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 9]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 219, Name: '连锁闪电', BroadCast: true, Probability: 20, Speed: 66, VisualId: 219, BoundBox: 207, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [3, 1, 300]}]},
+
+  {Id: 300, Name: '金玉满堂', BroadCast: true, Probability: 20, Speed: 78, VisualId: 300, BoundBox: 300, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 2, 300]}, {Id: 1, Param: [2, 3, 300]}, {Id: 1, Param: [2, 1, 300]}, {Id: 1, Param: [2, 9, 300]}, {Id: 1, Param: [2, 10, 300]}]},
+
+  {Id: 301, Name: '金玉满堂', BroadCast: true, Probability: 20, Speed: 78, VisualId: 301, BoundBox: 300, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 2, 300]}, {Id: 1, Param: [2, 3, 300]}, {Id: 1, Param: [2, 5, 300]}, {Id: 1, Param: [2, 6, 300]}, {Id: 1, Param: [2, 7, 300]}]},
+
+  {Id: 500, Name: '超级炸弹', BroadCast: true, Probability: 0.1, Speed: 119, VisualId: 500, BoundBox: 500, ShowBingo: true, Particle: 'bomb2', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [0, 0, 9999]}]},
+
+  {Id: 501, Name: '范围炸弹', BroadCast: true, Probability: 0.1, Speed: 117, VisualId: 501, BoundBox: 501, ShowBingo: true, Particle: 'bagualu02_1', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [1, 500, 4096]}]},
+
+  {Id: 502, Name: '定屏炸弹', BroadCast: false, Probability: 50, Speed: 116, VisualId: 502, BoundBox: 502, ShowBingo: false, Particle: 'bomb4', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [0, 10]}, {Id: 2, Param: [0, 0, 1, 0, 15]}]},
+
+  {Id: 601, Name: '小黄鱼王', BroadCast: true, Probability: 12.5, Speed: 89, VisualId: 601, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [2, 1, 800]}, {Id: 3, Param: [1, 3, 30, 1]}]},
+
+  {Id: 602, Name: '绿草鱼王', BroadCast: true, Probability: 12.5, Speed: 88, VisualId: 602, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [2, 2, 800]}, {Id: 3, Param: [2, 3, 30, 1]}]},
+
+  {Id: 603, Name: '黄草鱼王', BroadCast: true, Probability: 12.5, Speed: 87, VisualId: 603, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [2, 3, 800]}, {Id: 3, Param: [3, 3, 30, 1]}]},
+
+  {Id: 604, Name: '大眼鱼王', BroadCast: true, Probability: 11.1, Speed: 86, VisualId: 604, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 4]}, {Id: 1, Param: [2, 4, 900]}, {Id: 3, Param: [4, 3, 30, 1]}]},
+
+  {Id: 605, Name: '黄边鱼王', BroadCast: true, Probability: 11.1, Speed: 85, VisualId: 605, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 5]}, {Id: 1, Param: [2, 5, 900]}, {Id: 3, Param: [5, 3, 30, 1]}]},
+
+  {Id: 606, Name: '小丑鱼王', BroadCast: true, Probability: 11.1, Speed: 84, VisualId: 606, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 6]}, {Id: 1, Param: [2, 6, 900]}, {Id: 3, Param: [6, 3, 30, 1]}]},
+
+  {Id: 607, Name: '小刺鱼王', BroadCast: true, Probability: 11.1, Speed: 83, VisualId: 607, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 7]}, {Id: 1, Param: [2, 7, 900]}, {Id: 3, Param: [7, 3, 30, 1]}]},
+
+  {Id: 608, Name: '蓝鱼王', BroadCast: true, Probability: 11.1, Speed: 82, VisualId: 608, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 8]}, {Id: 1, Param: [2, 8, 900]}, {Id: 3, Param: [8, 3, 30, 1]}]},
+
+  {Id: 609, Name: '灯笼鱼王', BroadCast: true, Probability: 11.1, Speed: 81, VisualId: 609, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 9]}, {Id: 1, Param: [2, 9, 900]}, {Id: 3, Param: [9, 3, 30, 1]}]},
+
+  {Id: 610, Name: '海龟鱼王', BroadCast: true, Probability: 10, Speed: 79, VisualId: 610, BoundBox: 600, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 10, 1000]}, {Id: 3, Param: [10, 3, 30, 1]}]},
+
+  {Id: 701, Name: '一箭双雕', BroadCast: true, Probability: 20, Speed: 60, VisualId: 701, BoundBox: 700, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 1, 200]}, {Id: 1, Param: [2, 2, 200]}]},
+
+  {Id: 702, Name: '一箭双雕', BroadCast: true, Probability: 20, Speed: 60, VisualId: 702, BoundBox: 700, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 3, 200]}, {Id: 1, Param: [2, 4, 200]}]},
+
+  {Id: 703, Name: '一箭双雕', BroadCast: true, Probability: 20, Speed: 60, VisualId: 703, BoundBox: 700, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 5, 200]}, {Id: 1, Param: [2, 6, 200]}]},
+
+  {Id: 704, Name: '一箭双雕', BroadCast: true, Probability: 20, Speed: 60, VisualId: 704, BoundBox: 700, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 7, 200]}, {Id: 1, Param: [2, 8, 200]}]},
+
+  {Id: 705, Name: '一箭双雕', BroadCast: true, Probability: 20, Speed: 60, VisualId: 705, BoundBox: 700, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 9, 200]}, {Id: 1, Param: [2, 10, 200]}]},
+
+  {Id: 801, Name: '一石三鸟', BroadCast: true, Probability: 20, Speed: 46, VisualId: 801, BoundBox: 800, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 8, 300]}, {Id: 1, Param: [2, 9, 300]}, {Id: 1, Param: [2, 10, 300]}]},
+
+  {Id: 802, Name: '一石三鸟', BroadCast: true, Probability: 20, Speed: 46, VisualId: 802, BoundBox: 800, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 11, 300]}, {Id: 1, Param: [2, 13, 300]}, {Id: 1, Param: [2, 14, 300]}]},
+
+  {Id: 803, Name: '一石三鸟', BroadCast: true, Probability: 20, Speed: 46, VisualId: 803, BoundBox: 800, ShowBingo: true, Particle: '0', ShakeScreen: false, LockLevel: 5,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [2, 5, 300]}, {Id: 1, Param: [2, 6, 300]}, {Id: 1, Param: [2, 7, 300]}]},
+
+  {Id: 901, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 901, BoundBox: 901, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 902, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 902, BoundBox: 901, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 903, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 903, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 904, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 904, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 2]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 905, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 905, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 3]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 906, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 906, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 4]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 907, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 907, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 5]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 908, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 908, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 6]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 909, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 909, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 7]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 910, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 910, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 8]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 911, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 911, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 9]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 912, Name: '金蛇王', BroadCast: true, Probability: 20, Speed: 70, VisualId: 912, BoundBox: 903, ShowBingo: true, Particle: 'salute1', ShakeScreen: false, LockLevel: 3,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [3, 0, 300]}]},
+
+  {Id: 1001, Name: '八卦炉', BroadCast: false, Probability: 10, Speed: 60, VisualId: 1001, BoundBox: 1001, ShowBingo: false, Particle: 'bagualu03', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [1, 300, 4096]}]},
+
+  {Id: 1002, Name: '八卦炉', BroadCast: false, Probability: 10, Speed: 60, VisualId: 1002, BoundBox: 1001, ShowBingo: false, Particle: 'bagualu01', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 1, Param: [1, 500, 4096]}]},
+
+  {Id: 1003, Name: '八卦炉', BroadCast: false, Probability: 10, Speed: 60, VisualId: 1003, BoundBox: 1001, ShowBingo: false, Particle: 'bagualu02_1', ShakeScreen: true, LockLevel: 4,
+  Effects: [{Id: 0, Param: [1, 10]}, {Id: 2, Param: [0, 0, 1, 0, 15]}]},
+]

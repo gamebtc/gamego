@@ -94,18 +94,20 @@ message GameBill {
 	int64 bet = 4 ;//[(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
 	// 发牌情况
 	bytes poker = 5 ;//[(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
+	// 牌力
+	int32 weight = 6 ;//[(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
 	// 输赢情况
-	sint64 win = 6 ;//[(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	sint64 win = 7 ;//[(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
 	// 税收
-	int64 tax = 7 ;//[(gogoproto.jsontag) = 'x,omitempty', (gogoproto.moretags) = 'bson:"x,omitempty" msg:"x,omitempty"'];
+	int64 tax = 8 ;//[(gogoproto.jsontag) = 'x,omitempty', (gogoproto.moretags) = 'bson:"x,omitempty" msg:"x,omitempty"'];
 	// 进入彩池的税收
-	int64 water = 8 ;//[(gogoproto.jsontag) = 'o,omitempty', (gogoproto.moretags) = 'bson:"o,omitempty" msg:"o,omitempty"'];
+	int64 water = 9 ;//[(gogoproto.jsontag) = 'o,omitempty', (gogoproto.moretags) = 'bson:"o,omitempty" msg:"o,omitempty"'];
 	// 喜钱，从彩池单独出
-	int64 lucky = 9 ;//[(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
+	int64 lucky = 10 ;//[(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
 	// 和机器人之间的输赢
-	sint64 robot = 10 ;//[(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
+	sint64 robot = 11 ;//[(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
 	// PK过的玩家ID
-	repeated int32 pk = 11 ;//[(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"-" msg:"k,omitempty"'];
+	repeated int32 pk = 12 ;//[(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"-" msg:"k,omitempty"'];
 }
 
 // 炸金花日志

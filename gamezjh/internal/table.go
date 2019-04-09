@@ -150,9 +150,9 @@ func (table *Table) selectWinners(allinRoles []*Role, allIn bool) (winners []*Ro
 			}
 		}
 		if role != opp {
-			if role.Poker.Power > opp.Poker.Power {
+			if role.Bill.Weight > opp.Bill.Weight {
 				loses = append(loses, opp)
-			} else if role.Poker.Power < opp.Poker.Power {
+			} else if role.Bill.Weight < opp.Bill.Weight {
 				loses = append(loses, role)
 				role = opp
 				winners = winners[:0]

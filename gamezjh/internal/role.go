@@ -19,7 +19,6 @@ type Player struct {
 	zjh.Player          // 玩家信息
 	Robot               // 机器人行为
 	Bill  *zjh.GameBill // 输赢结算情况
-	Poker *model.GoldenFlowerGroup
 }
 
 // 每个角色的游戏数据
@@ -108,11 +107,11 @@ func (role *Role) Win(prize int64) {
 	round := role.table.round
 	// TODO:检查是否有彩金,彩金不交税
 	lucky := int64(0)
-	if role.Poker.IsThreeKind() {
+	if model.IsThreeKind(role.Bill.Weight) {
 		// 豹子5%
 		lucky = round.Pool * 5 / 100
 		log.Debugf("[%v]lucky:%v-%v-%v", table.Id, model.PokerArrayString(bill.Poker), player.Id, lucky)
-	} else if role.Poker.IsStraightFlush() {
+	} else if model.IsStraightFlush(role.Bill.Weight) {
 		// 顺金1%
 		lucky = round.Pool * 1 / 100
 		log.Debugf("[%v]lucky:%v-%v-%v", table.Id, model.PokerArrayString(bill.Poker), player.Id, lucky)
@@ -182,6 +181,7 @@ func (role *Role) decCoin(bet int64) {
 
 // 新的一局
 func(role *Role)newGameRound(poker []byte) {
+	pg := dealer.GetGroup(poker)
 	player := role.Player
 	player.State = zjh.Player_Playing
 	player.Look = false
@@ -192,8 +192,8 @@ func(role *Role)newGameRound(poker []byte) {
 		Job:     role.Job,
 		OldCoin: role.Coin,
 		Poker:   poker,
+		Weight:  pg.Weight,
 	}
-	role.Poker = dealer.GetGroup(poker)
 }
 
 // 准备
@@ -360,7 +360,7 @@ func (role *Role) Compare(opponent int32) {
 	role.Bill.Pk = append(role.Bill.Pk, opp.User.Id)
 	opp.Bill.Pk = append(opp.Bill.Pk, role.Id)
 	var winner []int32
-	if role.Poker.Power > opp.Poker.Power {
+	if role.Bill.Weight > opp.Bill.Weight {
 		opp.Player.State = zjh.Player_Lose
 		opp.Lose()
 		winner = []int32{role.Id}

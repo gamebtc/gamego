@@ -60,8 +60,3 @@ sameIp: 5
 codec: msg
 #客户端消息签名检查
 verSign: false
-
-
-
-
-

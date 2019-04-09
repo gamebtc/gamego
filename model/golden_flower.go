@@ -204,7 +204,7 @@ func (a GoldenFlower) sameFlower() bool {
 }
 
 type GoldenFlowerGroup struct {
-	Power  int32
+	Weight int32
 	Number int32
 	Key    GoldenFlower
 	Values [18]byte
@@ -212,37 +212,72 @@ type GoldenFlowerGroup struct {
 
 // 三同52种[22048-22099]
 func (g *GoldenFlowerGroup) IsThreeKind() bool {
-	return g.Power >= 22048 && g.Power <= 22099
+	return IsThreeKind(g.Weight)
 }
 
 // 顺金48种[22000-22047]
 func (g *GoldenFlowerGroup) IsStraightFlush() bool {
-	return g.Power >= 22000 && g.Power <= 22047
+	return IsStraightFlush(g.Weight)
 }
 
 // 金花1096[20904-21999]
 func (g *GoldenFlowerGroup) IsFlush() bool {
-	return g.Power >= 20904 && g.Power <= 21999
+	return IsFlush(g.Weight)
 }
 
 // 顺子720[20184-20903]
 func (g *GoldenFlowerGroup) IsStraight() bool {
-	return g.Power >= 20184 && g.Power <= 20903
+	return IsStraight(g.Weight)
 }
 
 // 对子3744[16440-20183]
 func (g *GoldenFlowerGroup) IsPair() bool {
-	return g.Power >= 16440 && g.Power <= 20183
+	return IsPair(g.Weight)
 }
 
 // 散牌16440[0-16439]
 func (g *GoldenFlowerGroup) IsZilch() bool {
-	return g.Power <= 16439
+	return IsZilch(g.Weight)
 }
 
 // 特殊牌60[0-59]
 func (g *GoldenFlowerGroup) IsSpecial() bool {
-	return g.Power <= 59
+	return IsSpecial(g.Weight)
+}
+
+// 三同52种[22048-22099]
+func IsThreeKind(weight int32) bool {
+	return weight >= 22048 && weight <= 22099
+}
+
+// 顺金48种[22000-22047]
+func IsStraightFlush(weight int32) bool {
+	return weight >= 22000 && weight <= 22047
+}
+
+// 金花1096[20904-21999]
+func IsFlush(weight int32) bool {
+	return weight >= 20904 && weight <= 21999
+}
+
+// 顺子720[20184-20903]
+func IsStraight(weight int32) bool {
+	return weight >= 20184 && weight <= 20903
+}
+
+// 对子3744[16440-20183]
+func IsPair(weight int32) bool {
+	return weight >= 16440 && weight <= 20183
+}
+
+// 散牌16440[0-16439]
+func IsZilch(weight int32) bool {
+	return weight <= 16439
+}
+
+// 特殊牌60[0-59]
+func IsSpecial(weight int32) bool {
+	return weight <= 59
 }
 
 type GoldenFlowerDealer struct {
@@ -360,7 +395,7 @@ func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
 	sort.Sort(dealer)
 	allCount := len(dealer.All)
 	for i := 0; i < allCount; i++ {
-		dealer.All[i].Power = int32(i)
+		dealer.All[i].Weight = int32(i)
 	}
 	if flower == false {
 		// 如果不比较花色，重新设置POWER
@@ -368,7 +403,7 @@ func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
 		for i := allCount - 2; i >= 0; i-- {
 			g := dealer.All[i]
 			if cur.Key.p[0] == g.Key.p[0] && cur.Key.p[1] == g.Key.p[1] && cur.Key.p[2] == g.Key.p[2] {
-				g.Power = cur.Power
+				g.Weight = cur.Weight
 			} else {
 				cur = g
 			}

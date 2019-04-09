@@ -121,7 +121,7 @@ func (t *RobotAi) play(role *Role) {
 	if r < 400 {
 		//  牌小于♣K♠0♥2=11099,则放弃
 		minPower := 10000 + (2000*table.compCount + 500*table.playCount) + r
-		if int32(role.Poker.Power) <= minPower {
+		if role.Bill.Weight <= minPower {
 			role.Discard(false)
 		}
 	}
@@ -170,7 +170,7 @@ func (t *RobotAi) playAllin(role *Role) {
 	if r := rn(); r < 100 {
 		//  牌小于♣K♠0♥2=11099,则放弃
 		minPower := 10000 + (1000*table.compCount + 1000*table.playCount) + r
-		if int32(role.Poker.Power) <= minPower {
+		if role.Bill.Weight <= minPower {
 			role.Discard(false)
 		}
 	}
@@ -219,13 +219,13 @@ func (t *RobotAi) ring2my(role *Role) {
 	if table.playCount > 2 && r < 800 {
 		//  已看牌,牌小于Power:10019, number:861986,key:|♦K♥7♥2|,则放弃
 		minPower := 10000 + (1200*table.compCount + 500*table.playCount) - r
-		if int32(role.Poker.Power) <= minPower {
+		if int32(role.Bill.Weight) <= minPower {
 			role.Discard(false)
 			return
 		}
 	}
 
-	if r < 400 && role.Poker.Power < 10000+rn() {
+	if r < 400 && role.Bill.Weight < 10000+rn() {
 		role.Discard(false)
 		return
 	}
@@ -245,8 +245,8 @@ func (t *RobotAi) playmyAllin(role *Role) {
 	r := rn()
 	if !player.Look {
 		if r < 500 {
-			//  Power:19631, number:4001058,key:|♠K♦K♥2|
-			if role.Poker.Power >= 19631 {
+			//  Weight:19631, number:4001058,key:|♠K♦K♥2|
+			if role.Bill.Weight >= 19631 {
 				role.Allin()
 				return
 			}
@@ -255,8 +255,8 @@ func (t *RobotAi) playmyAllin(role *Role) {
 		return
 	}
 
-	//Power:17615, number:2496034,key:|♥6♣6♥2|
-	if role.Poker.Power < 17615+r {
+	//Weight:17615, number:2496034,key:|♥6♣6♥2|
+	if role.Bill.Weight < 17615+r {
 		role.Discard(false)
 		return
 	}
@@ -296,14 +296,14 @@ func (t *RobotAi) playmy(role *Role) {
 	}
 
 	if r < 300+200 {
-		// Power:19631, number:4001058,key:|♠K♦K♥2|
-		if role.Poker.Power >= 19631+r*5 {
+		// Weight:19631, number:4001058,key:|♠K♦K♥2|
+		if role.Bill.Weight >= 19631+r*5 {
 			role.Allin()
 			return
 		}
 		//  已看牌,牌小于Power:10019, number:861986,key:|♦K♥7♥2|,则放弃
 		minPower := 10000 + (1200*table.compCount + 500*table.playCount) - r
-		if int32(role.Poker.Power) <= minPower {
+		if int32(role.Bill.Weight) <= minPower {
 			role.Discard(false)
 			return
 		}

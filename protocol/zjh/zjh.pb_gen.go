@@ -872,6 +872,11 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "Weight":
+			z.Weight, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
 		case "Win":
 			z.Win, err = dc.ReadInt64()
 			if err != nil {
@@ -926,9 +931,9 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 11
+	// map header, size 12
 	// write "Uid"
-	err = en.Append(0x8b, 0xa3, 0x55, 0x69, 0x64)
+	err = en.Append(0x8c, 0xa3, 0x55, 0x69, 0x64)
 	if err != nil {
 		return err
 	}
@@ -969,6 +974,15 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 		return err
 	}
 	err = en.WriteBytes(z.Poker)
+	if err != nil {
+		return
+	}
+	// write "Weight"
+	err = en.Append(0xa6, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.Weight)
 	if err != nil {
 		return
 	}
@@ -1038,9 +1052,9 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 11
+	// map header, size 12
 	// string "Uid"
-	o = append(o, 0x8b, 0xa3, 0x55, 0x69, 0x64)
+	o = append(o, 0x8c, 0xa3, 0x55, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Uid)
 	// string "Job"
 	o = append(o, 0xa3, 0x4a, 0x6f, 0x62)
@@ -1054,6 +1068,9 @@ func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Poker"
 	o = append(o, 0xa5, 0x50, 0x6f, 0x6b, 0x65, 0x72)
 	o = msgp.AppendBytes(o, z.Poker)
+	// string "Weight"
+	o = append(o, 0xa6, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74)
+	o = msgp.AppendInt32(o, z.Weight)
 	// string "Win"
 	o = append(o, 0xa3, 0x57, 0x69, 0x6e)
 	o = msgp.AppendInt64(o, z.Win)
@@ -1119,6 +1136,11 @@ func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "Weight":
+			z.Weight, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
 		case "Win":
 			z.Win, bts, err = msgp.ReadInt64Bytes(bts)
 			if err != nil {
@@ -1174,7 +1196,7 @@ func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameBill) Msgsize() (s int) {
-	s = 1 + 4 + msgp.Int32Size + 4 + msgp.Int32Size + 8 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.BytesPrefixSize + len(z.Poker) + 4 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 3 + msgp.ArrayHeaderSize + (len(z.Pk) * (msgp.Int32Size))
+	s = 1 + 4 + msgp.Int32Size + 4 + msgp.Int32Size + 8 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.BytesPrefixSize + len(z.Poker) + 7 + msgp.Int32Size + 4 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 3 + msgp.ArrayHeaderSize + (len(z.Pk) * (msgp.Int32Size))
 	return
 }
 

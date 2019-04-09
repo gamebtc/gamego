@@ -1,0 +1,41 @@
+King: [
+  {Id: 1,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 2,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 3,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 4,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 5,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 6,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 7,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 8,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 9,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+  {Id: 10,  Probability: 30, MaxScore: 200, CatchProbability: 10, VisualScale: 1.0, VisualId: 600, BoundingBox: 600, LockLevel: 3},
+]
+
+SanYuan: [
+  {Id: 1, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 2, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 3, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 4, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 5, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 6, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 7, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 8, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 9, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+  {Id: 10, Probability: 20, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 900, BoundingBox: 900, LockLevel: 3},
+]
+
+SiXi: [
+  {Id: 1, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 2, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 3, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 4, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 5, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 6, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 7, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 8, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 9, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+  {Id: 10, Probability: 50, MaxScore: 200, CatchProbability: 100, VisualScale: 1.0, VisualId: 1000, BoundingBox: 1000, LockLevel: 3},
+]
+
+
+

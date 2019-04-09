@@ -1,7 +1,6 @@
 module gamezjh
 
 require (
-	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.4.1
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0
