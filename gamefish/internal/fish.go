@@ -14,6 +14,7 @@ var (
 	SiXiFishMap    = make(map[int32]*SpecialFish, 20) // 四喜
 	BBXMap         = make(map[int32]*BBX, 100)        //
 	FishMap        = make(map[int32]*Fish, 100)
+	BulletList     []Bullet
 )
 
 // 鱼王/三元/四喜
@@ -66,6 +67,15 @@ type Fish struct {
 	Buffers     []Buffer `yaml:"Buffers"`
 }
 
+// 子弹
+type Bullet struct {
+	Multiple    int32 `yaml:"Multiple"`    // 倍率
+	Speed       int32 `yaml:"Speed"`       // 速度
+	MaxCatch    int32 `yaml:"MaxCatch"`    // 最大捕鱼数量
+	CatchRadius int32 `yaml:"CatchRadius"` // 捕获半径
+	CannonType  int32 `yaml:"CannonType"`  // 炮管类型
+}
+
 func LoadSpecialFish(fileName string) bool {
 	var config struct {
 		King    []SpecialFish `yaml:"King"`
@@ -99,7 +109,7 @@ func LoadSpecialFish(fileName string) bool {
 	return true
 }
 
-func LoadBoundingBox(fileName string)bool{
+func LoadBoundingBox(fileName string) bool {
 	var config struct {
 		BBX []BBX `yaml:"BBX"`
 	}
@@ -122,7 +132,7 @@ func LoadBoundingBox(fileName string)bool{
 	return true
 }
 
-func LoadFish(fileName string)bool {
+func LoadFish(fileName string) bool {
 	var config struct {
 		Fish []Fish `yaml:"Fish"`
 	}
@@ -142,5 +152,23 @@ func LoadFish(fileName string)bool {
 		FishMap[v.Id] = v
 	}
 
+	return true
+}
+
+func LoadBullet(fileName string) bool {
+	var config struct {
+		Bullet []Bullet `yaml:"Bullet"`
+	}
+	data, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		log.Fatalf("path config file not exists:%v", err)
+		return false
+	}
+
+	if err = yaml.Unmarshal(data, &config); err != nil {
+		log.Fatalf("path config file error:%v", err)
+		return false
+	}
+	BulletList = config.Bullet
 	return true
 }

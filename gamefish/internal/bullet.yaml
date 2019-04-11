@@ -1,0 +1,13 @@
+#<!--子弹设定  倍率        速度        捕获半径       最大捕鱼数量  炮管类型--},
+Bullet: [
+  {Multiple: 1, Speed: 2000, CatchRadius: 30, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 2, Speed: 2000, CatchRadius: 30, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 3, Speed: 2000, CatchRadius: 35, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 4, Speed: 2000, CatchRadius: 35, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 5, Speed: 2000, CatchRadius: 40, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 6, Speed: 2000, CatchRadius: 40, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 7, Speed: 2000, CatchRadius: 45, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 8, Speed: 2000, CatchRadius: 50, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 9, Speed: 2000, CatchRadius: 55, MaxCatch: 1, CannonType: 0,},
+  {Multiple: 10, Speed: 2000, CatchRadius: 60, MaxCatch: 1, CannonType: 0,},
+]

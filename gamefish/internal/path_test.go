@@ -10,10 +10,17 @@ import (
 // -benchmem 表示分配内存的次数和字节数，-benchtime="3s" 表示持续3秒
 
 
+func TestLoadBullet(t *testing.T){
+	LoadBullet("bullet.yaml")
+}
+
+func TestLoadCannon(t *testing.T){
+	LoadCannon("cannon.yaml")
+}
+
 func TestLoadScene(t *testing.T){
 	LoadScene("scene.yaml")
 }
-
 func TestLoadFish(t *testing.T){
 	LoadFish("fish.yaml")
 }

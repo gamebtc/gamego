@@ -1,8 +1,8 @@
 package internal
 
 type Point struct {
-	X float64
-	Y float64
+	X float64 `yaml:"X"`
+	Y float64 `yaml:"Y"`
 }
 
 func (point *Point) Offset(x, y float64) {
@@ -37,8 +37,8 @@ func (point *Point) Mul(multip float64) Point {
 }
 
 type MovePoint struct {
-	Point
-	Direction float64
+	Point     `yaml:",inline"`
+	Direction float64 `yaml:"Direction"`
 }
 
 type MovePoints = []MovePoint

@@ -1,4 +1,4 @@
-scene: [
+Scene: [
 {Id: 1, Time: 600, Image: 'Map_0.jpg', Next: 2, TroopList: [{BeginTime: 300, EndTime: 350, Id: 6}], DistrubFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishList: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1}, 
 {Time: 47, MinCount: 20, MaxCount: 25, FishList: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1}, 

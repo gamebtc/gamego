@@ -40,7 +40,7 @@ type SceneSet struct {
 
 func LoadScene(fileName string) bool {
 	var config struct {
-		Scene []SceneSet `yaml:"scene"`
+		Scene []SceneSet `yaml:"Scene"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {

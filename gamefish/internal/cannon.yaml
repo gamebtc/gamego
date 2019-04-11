@@ -1,0 +1,79 @@
+#炮台ID X位置 Y位置 朝向
+CannonPos: [
+  {Id: 0, X: 0.32, Y: 0.07, Direction: 3.14},
+  {Id: 1, X: 0.68, Y: 0.07, Direction: 3.14},
+  {Id: 2, X: 0.68, Y: 0.93, Direction: 0.0},
+  {Id: 3, X: 0.32, Y: 0.93, Direction: 0.0},
+]
+
+CannonEffect: {Name: 'PaoTaiEffect', X: 0,  Y: -0}
+# 筹码
+Jetton: {X: -60,  Y: 0, Max: 4}
+# 锁定
+Lock: {Icon: 'lock_Flag',   Line: 'lock_Line',  Flag: 'lock_Flag_%d', X: 160, Y: -120}
+
+CannonSet: [
+  #<!--免费场-->
+  {Id: 1, Normal: 0, Ion: 1, Double: 1, CannonList: [
+    {Id: 0,
+     Cannon: {ResName: 'pao1_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet0', Name: 'move', ResType: 1, Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_02_ani', ResType: 1, X: 0, Y: 0, Scale: 1.0}
+    },
+    #<!--能量炮-->
+    {Id: 1,
+     Cannon: {ResName: 'pao2_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet1', Name: 'move', ResType: 1, Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_01_ani', ResType: 1,  X: 0, Y: 0, Scale: 1.0}
+    }
+  ]
+  },
+
+  #<!--百炮房，普通场-->
+  {Id: 3, Normal: 0, Ion: 1, Double: 1, CannonList: [
+    {Id: 0,
+     Cannon: {ResName: 'pao1_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet0', Name: 'move', ResType: 1, Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_02_ani', ResType: 1,  X: 0, Y: 0, Scale: 1.0}
+    },
+    #<!--能量炮-->
+    {Id: 1,
+     Cannon: {ResName: 'pao2_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet1', Name: 'move', ResType: 1, Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_01_ani', ResType: 1,  X: 0, Y: 0, Scale: 1.0}
+    }
+  ]
+  },
+
+  #<!--千炮房，中级场-->
+  {id: 4, Normal: 0, Ion: 1, Double: 1, CannonList: [
+    {Id: 0,
+     Cannon: {ResName: 'pao3_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet2', Name: 'move', ResType: 1,  Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_03_ani', ResType: 1,  X: 0,   Y: 0, Scale: 1.0}
+    },
+    #<!--能量炮-->
+    {Id: 1,
+     Cannon: {ResName: 'pao4_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet3', Name: 'move', ResType: 1,  Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_01_ani', ResType: 1,  X: 0,   Y: 0, Scale: 1.0}
+    }
+  ]
+  },
+
+  #<!--万炮房， 高级场-->
+  {id: 5, Normal: 0, Ion: 1, Double: 1, CannonList: [
+    {Id: 0,
+     Cannon: {ResName: 'pao5_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet4', Name: 'move', ResType: 1,  Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_04_ani', ResType: 1,  X: 0,   Y: 0, Scale: 1.0}
+    },
+    #<!--能量炮-->
+    {Id: 1,
+     Cannon: {ResName: 'pao6_buyu', Name: 'move', ResType: 0, X: 0, Y: 0, FireOffset: 0, Type: 0},
+     Bullet: {ResName: 'bullet5', Name: 'move', ResType: 1,  Scale: 1.0},
+     Net: {ResName: 'effect_fish_bomb', Name: 'effect_fish_bomb_01_ani', ResType: 1,  X: 0,   Y: 0, Scale: 1.0}
+    }
+  ]
+  }
+]
