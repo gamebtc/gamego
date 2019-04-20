@@ -72,7 +72,7 @@ func (x Folks_Code) String() string {
 	return proto.EnumName(Folks_Code_name, int32(x))
 }
 func (Folks_Code) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{0, 0}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{0, 0}
 }
 
 type Folks struct {
@@ -82,7 +82,7 @@ func (m *Folks) Reset()         { *m = Folks{} }
 func (m *Folks) String() string { return proto.CompactTextString(m) }
 func (*Folks) ProtoMessage()    {}
 func (*Folks) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{0}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{0}
 }
 func (m *Folks) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -129,7 +129,7 @@ func (m *Player) Reset()         { *m = Player{} }
 func (m *Player) String() string { return proto.CompactTextString(m) }
 func (*Player) ProtoMessage()    {}
 func (*Player) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{1}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{1}
 }
 func (m *Player) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -215,7 +215,7 @@ func (m *GameBill) Reset()         { *m = GameBill{} }
 func (m *GameBill) String() string { return proto.CompactTextString(m) }
 func (*GameBill) ProtoMessage()    {}
 func (*GameBill) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{2}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{2}
 }
 func (m *GameBill) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -317,7 +317,7 @@ type GameRound struct {
 	Odds []int32 `protobuf:"zigzag32,10,rep,packed,name=odds,proto3" json:"o" bson:"o" msg:"o"`
 	// 系统税收
 	Tax int64 `protobuf:"varint,11,opt,name=tax,proto3" json:"x" bson:"x" msg:"x"`
-	// 系统输赢
+	// 本局所有真实玩家的输赢
 	Win int64 `protobuf:"zigzag64,12,opt,name=win,proto3" json:"w" bson:"w" msg:"w"`
 	// 备注
 	Note string `protobuf:"bytes,13,opt,name=note,proto3" json:"n,omitempty" bson:"n,omitempty" msg:"n,omitempty"`
@@ -335,7 +335,7 @@ func (m *GameRound) Reset()         { *m = GameRound{} }
 func (m *GameRound) String() string { return proto.CompactTextString(m) }
 func (*GameRound) ProtoMessage()    {}
 func (*GameRound) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{3}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{3}
 }
 func (m *GameRound) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -508,7 +508,7 @@ func (m *GameInitAck) Reset()         { *m = GameInitAck{} }
 func (m *GameInitAck) String() string { return proto.CompactTextString(m) }
 func (*GameInitAck) ProtoMessage()    {}
 func (*GameInitAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{4}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{4}
 }
 func (m *GameInitAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -614,7 +614,7 @@ func (m *BetReq) Reset()         { *m = BetReq{} }
 func (m *BetReq) String() string { return proto.CompactTextString(m) }
 func (*BetReq) ProtoMessage()    {}
 func (*BetReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{5}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{5}
 }
 func (m *BetReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -680,7 +680,7 @@ func (m *BetAck) Reset()         { *m = BetAck{} }
 func (m *BetAck) String() string { return proto.CompactTextString(m) }
 func (*BetAck) ProtoMessage()    {}
 func (*BetAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{6}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{6}
 }
 func (m *BetAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -749,7 +749,7 @@ func (m *UserBetAck) Reset()         { *m = UserBetAck{} }
 func (m *UserBetAck) String() string { return proto.CompactTextString(m) }
 func (*UserBetAck) ProtoMessage()    {}
 func (*UserBetAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{7}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{7}
 }
 func (m *UserBetAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -808,7 +808,7 @@ func (m *OpenBetAck) Reset()         { *m = OpenBetAck{} }
 func (m *OpenBetAck) String() string { return proto.CompactTextString(m) }
 func (*OpenBetAck) ProtoMessage()    {}
 func (*OpenBetAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{8}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{8}
 }
 func (m *OpenBetAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -875,7 +875,7 @@ func (m *StopBetAck) Reset()         { *m = StopBetAck{} }
 func (m *StopBetAck) String() string { return proto.CompactTextString(m) }
 func (*StopBetAck) ProtoMessage()    {}
 func (*StopBetAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{9}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{9}
 }
 func (m *StopBetAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -929,7 +929,7 @@ func (m *GameResult) Reset()         { *m = GameResult{} }
 func (m *GameResult) String() string { return proto.CompactTextString(m) }
 func (*GameResult) ProtoMessage()    {}
 func (*GameResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{10}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{10}
 }
 func (m *GameResult) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1007,7 +1007,7 @@ func (m *GameDealAck) Reset()         { *m = GameDealAck{} }
 func (m *GameDealAck) String() string { return proto.CompactTextString(m) }
 func (*GameDealAck) ProtoMessage()    {}
 func (*GameDealAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{11}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{11}
 }
 func (m *GameDealAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1066,7 +1066,7 @@ func (m *LeaveReq) Reset()         { *m = LeaveReq{} }
 func (m *LeaveReq) String() string { return proto.CompactTextString(m) }
 func (*LeaveReq) ProtoMessage()    {}
 func (*LeaveReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{12}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{12}
 }
 func (m *LeaveReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1111,7 +1111,7 @@ func (m *LeaveAck) Reset()         { *m = LeaveAck{} }
 func (m *LeaveAck) String() string { return proto.CompactTextString(m) }
 func (*LeaveAck) ProtoMessage()    {}
 func (*LeaveAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_folks_bac40a42800f8cfa, []int{13}
+	return fileDescriptor_folks_ab278ee52b3a0a9e, []int{13}
 }
 func (m *LeaveAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -5107,9 +5107,9 @@ var (
 	ErrIntOverflowFolks   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("folks.proto", fileDescriptor_folks_bac40a42800f8cfa) }
+func init() { proto.RegisterFile("folks.proto", fileDescriptor_folks_ab278ee52b3a0a9e) }
 
-var fileDescriptor_folks_bac40a42800f8cfa = []byte{
+var fileDescriptor_folks_ab278ee52b3a0a9e = []byte{
 	// 1314 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x97, 0xcb, 0x6f, 0x1c, 0xc5,
 	0x13, 0xc7, 0x3d, 0x3b, 0xbb, 0xf6, 0xa6, 0x37, 0x8f, 0x4d, 0x2b, 0x8a, 0xe6, 0x17, 0xfd, 0xe4,

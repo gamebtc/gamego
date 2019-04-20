@@ -8,17 +8,26 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+const (
+	SpecialFishType_Normal      = 0
+	SpecialFishType_King        = 1
+	SpecialFishType_KingAndQuan = 2
+	SpecialFishType_Sanyuan     = 3
+	SpecialFishType_Sixi        = 4
+	SpecialFishType_Max         = 5
+)
+
 var (
-	KingFishMap    = make(map[int32]*SpecialFish, 20) // 鱼王
-	SanYuanFishMap = make(map[int32]*SpecialFish, 20) // 三元
-	SiXiFishMap    = make(map[int32]*SpecialFish, 20) // 四喜
-	BBXMap         = make(map[int32]*BBX, 100)        //
-	FishMap        = make(map[int32]*Fish, 100)
-	BulletList     []Bullet
+	kingFishMap        = make(map[int32]*SpecialFishTemplate, 20) // 鱼王
+	sanYuanFishMap     = make(map[int32]*SpecialFishTemplate, 20) // 三元
+	siXiFishMap        = make(map[int32]*SpecialFishTemplate, 20) // 四喜
+	bbxMap             = make(map[int32]*BBX, 100)                //
+	fishTemplateMap    = make(map[int32]*FishTemplate, 100)
+	bulletTemplateList []BulletTemplate
 )
 
 // 鱼王/三元/四喜
-type SpecialFish struct {
+type SpecialFishTemplate struct {
 	Id               int32   `yaml:"Id"`               // ID
 	Probability      float64 `yaml:"Probability"`      // 产生几率
 	MaxScore         int32   `yaml:"MaxScore"`         // 最大倍率
@@ -36,8 +45,8 @@ type BoundingBox struct {
 }
 
 type BBX struct {
-	Id     int32         `yaml:"Id"`
-	BBList []BoundingBox `yaml:"BB"`
+	Id    int32         `yaml:"Id"`
+	Boxes []BoundingBox `yaml:"BB"`
 }
 
 type Effect struct {
@@ -51,24 +60,25 @@ type Buffer struct {
 	Life  float64 `yaml:"Life"`
 }
 
-type Fish struct {
-	Id          int32    `yaml:"Id"`
-	Name        string   `yaml:"Name"`
-	BroadCast   bool     `yaml:"BroadCast"`
-	Probability float64  `yaml:"Probability"`
-	VisualId    int32    `yaml:"VisualId"`
-	Speed       float64  `yaml:"Speed"`
-	BoundBox    int32    `yaml:"BoundBox"`
-	ShowBingo   bool     `yaml:"ShowBingo"`
-	Particle    string   `yaml:"Particle"`
-	ShakeScree  bool     `yaml:"ShakeScree"`
-	LockLevel   int32    `yaml:"LockLevel"`
-	Effects     []Effect `yaml:"Effects"`
-	Buffers     []Buffer `yaml:"Buffers"`
+type FishTemplate struct {
+	Id          int32         `yaml:"Id"`
+	Name        string        `yaml:"Name"`
+	BroadCast   bool          `yaml:"BroadCast"`
+	Probability float64       `yaml:"Probability"`
+	VisualId    int32         `yaml:"VisualId"`
+	Speed       float64       `yaml:"Speed"`
+	BoundBox    int32         `yaml:"BoundBox"`
+	ShowBingo   bool          `yaml:"ShowBingo"`
+	Particle    string        `yaml:"Particle"`
+	ShakeScree  bool          `yaml:"ShakeScree"`
+	LockLevel   int32         `yaml:"LockLevel"`
+	Effects     []Effect      `yaml:"Effects"`
+	Buffers     []Buffer      `yaml:"Buffers"`
+	Boxes       []BoundingBox `yaml:"-"`
 }
 
 // 子弹
-type Bullet struct {
+type BulletTemplate struct {
 	Multiple    int32 `yaml:"Multiple"`    // 倍率
 	Speed       int32 `yaml:"Speed"`       // 速度
 	MaxCatch    int32 `yaml:"MaxCatch"`    // 最大捕鱼数量
@@ -76,11 +86,22 @@ type Bullet struct {
 	CannonType  int32 `yaml:"CannonType"`  // 炮管类型
 }
 
+func LoadConfig() {
+	LoadBullet("bullet.yaml")
+	LoadCannon("cannon.yaml")
+	LoadScene("scene.yaml")
+	LoadBoundingBox("bbox.yaml")
+	LoadFish("fish.yaml")
+	LoadSpecialFish("special.yaml")
+	LoadTroop("troop.yaml")
+	LoadNormalPath("path.yaml")
+}
+
 func LoadSpecialFish(fileName string) bool {
 	var config struct {
-		King    []SpecialFish `yaml:"King"`
-		SanYuan []SpecialFish `yaml:"SanYuan"`
-		SiXi    []SpecialFish `yaml:"SiXi"`
+		King    []SpecialFishTemplate `yaml:"King"`
+		SanYuan []SpecialFishTemplate `yaml:"SanYuan"`
+		SiXi    []SpecialFishTemplate `yaml:"SiXi"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -95,15 +116,15 @@ func LoadSpecialFish(fileName string) bool {
 
 	for i := 0; i < len(config.King); i++ {
 		v := &config.King[i]
-		KingFishMap[v.Id] = v
+		kingFishMap[v.Id] = v
 	}
 	for i := 0; i < len(config.SanYuan); i++ {
 		v := &config.SanYuan[i]
-		SanYuanFishMap[v.Id] = v
+		sanYuanFishMap[v.Id] = v
 	}
 	for i := 0; i < len(config.SiXi); i++ {
 		v := &config.SiXi[i]
-		SiXiFishMap[v.Id] = v
+		siXiFishMap[v.Id] = v
 	}
 
 	return true
@@ -126,7 +147,7 @@ func LoadBoundingBox(fileName string) bool {
 
 	for i := 0; i < len(config.BBX); i++ {
 		v := &config.BBX[i]
-		BBXMap[v.Id] = v
+		bbxMap[v.Id] = v
 	}
 
 	return true
@@ -134,7 +155,7 @@ func LoadBoundingBox(fileName string) bool {
 
 func LoadFish(fileName string) bool {
 	var config struct {
-		Fish []Fish `yaml:"Fish"`
+		Fish []FishTemplate `yaml:"Fish"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -149,15 +170,17 @@ func LoadFish(fileName string) bool {
 
 	for i := 0; i < len(config.Fish); i++ {
 		v := &config.Fish[i]
-		FishMap[v.Id] = v
+		if bbList, ok := bbxMap[v.BoundBox]; ok {
+			v.Boxes = bbList.Boxes
+		}
+		fishTemplateMap[v.Id] = v
 	}
-
 	return true
 }
 
 func LoadBullet(fileName string) bool {
 	var config struct {
-		Bullet []Bullet `yaml:"Bullet"`
+		Bullet []BulletTemplate `yaml:"Bullet"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -169,6 +192,6 @@ func LoadBullet(fileName string) bool {
 		log.Fatalf("path config file error:%v", err)
 		return false
 	}
-	BulletList = config.Bullet
+	bulletTemplateList = config.Bullet
 	return true
 }

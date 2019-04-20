@@ -29,15 +29,19 @@ func (point *Point) Dec(a Point) Point {
 	}
 }
 
-func (point *Point) Mul(multip float64) Point {
+func (point *Point) Mul(mul float64) Point {
 	return Point{
-		X: point.X * multip,
-		Y: point.Y * multip,
+		X: point.X * mul,
+		Y: point.Y * mul,
 	}
 }
 
+type Points = []Point
+
 type MovePoint struct {
-	Point     `yaml:",inline"`
+	//Point     `yaml:",inline"`
+	X float64 `yaml:"X"`
+	Y float64 `yaml:"Y"`
 	Direction float64 `yaml:"Direction"`
 }
 

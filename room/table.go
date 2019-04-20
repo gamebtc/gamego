@@ -4,6 +4,10 @@ import (
 	"time"
 )
 
+const (
+	YUAN = 100   // 1元对应的游戏分
+)
+
 // 去掉数组结尾的0
 func TrimEndZero(a []int64) []int64 {
 	for i := len(a) - 1; i >= 0; i-- {

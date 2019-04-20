@@ -8,15 +8,14 @@ import (
 )
 
 var (
-	SceneMap = make(map[int32]*SceneSet, 20)
+	SceneSets []SceneSet
 )
 
 type DistrubFishSet struct {
+	FishWeight  `yaml:",inline"`
 	Time        float64 `yaml:"Time"`
 	MinCount    int32   `yaml:"MinCount"`
 	MaxCount    int32   `yaml:"MaxCount"`
-	FishList    []int32 `yaml:"FishList"`
-	Weight      []int32 `yaml:"Weight"`
 	RefreshType int32   `yaml:"RefreshType"`
 	OffsetX     float64 `yaml:"OffsetX"`
 	OffsetY     float64 `yaml:"OffsetY"`
@@ -38,6 +37,21 @@ type SceneSet struct {
 	DistrubFish []DistrubFishSet `yaml:"DistrubFish"`
 }
 
+func (t *SceneSet) fixWeight() {
+	for i := 0; i < len(t.DistrubFish); i++ {
+		t.DistrubFish[i].fixWeight()
+	}
+}
+
+func (t *SceneSet) findTroopSet(time float64)(int, *TroopSet) {
+	for i := 0; i < len(t.TroopList); i++ {
+		if time >= t.TroopList[i].BeginTime && time < t.TroopList[i].EndTime {
+			return i, &t.TroopList[i]
+		}
+	}
+	return -1, nil
+}
+
 func LoadScene(fileName string) bool {
 	var config struct {
 		Scene []SceneSet `yaml:"Scene"`
@@ -54,9 +68,9 @@ func LoadScene(fileName string) bool {
 	}
 
 	for i := 0; i < len(config.Scene); i++ {
-		v := &config.Scene[i]
-		SceneMap[v.Id] = v
+		config.Scene[i].fixWeight()
 	}
+	SceneSets = config.Scene
 
 	return true
 }

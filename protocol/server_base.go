@@ -97,7 +97,7 @@ func (s *ServerBase) Call(ctx context.Context, req *GameFrame) (res *GameFrame, 
 	}
 	// 慢消息检查
 	if s.SlowOpNa > 0 {
-		if elapse := time.Now().UnixNano() - start.UnixNano(); elapse > s.SlowOpNa {
+		if elapse := time.Since(start).Nanoseconds(); elapse > s.SlowOpNa {
 			log.Warningf("elapse:%v(ms), id:%v, arg:%v", elapse/Ms2Na, id, arg)
 		}
 	}

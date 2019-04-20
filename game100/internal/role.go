@@ -17,7 +17,7 @@ const lastBillCount = 20
 type Role struct {
 	model.User                    // 玩家信息
 	*room.Session                 // 发送消息
-	table         *Table          // 桌子ID
+	table         *Table          // 桌子
 	bill          *folks.GameBill // 输赢情况
 	player        *folks.Player   // 玩家信息
 
@@ -178,7 +178,7 @@ func (role *Role) balance(round *GameRound) {
 
 	if role.isPlayer() {
 		round.Tax += tax
-		round.Win -= addCoin
+		round.Win += addCoin
 	}
 
 	// 写分

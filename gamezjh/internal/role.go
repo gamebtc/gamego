@@ -16,24 +16,24 @@ var (
 )
 
 type Player struct {
-	zjh.Player          // 玩家信息
-	Robot               // 机器人行为
-	Bill  *zjh.GameBill // 输赢结算情况
+	zjh.Player               // 玩家信息
+	Robot                    // 机器人行为
+	Bill       *zjh.GameBill // 输赢结算情况
 }
 
 // 每个角色的游戏数据
 type Role struct {
-	model.User    // 玩家信息
-	*room.Session // 发送消息
-	*Player       // 玩家信息
-	table *Table  // 桌子ID
+	model.User           // 玩家信息
+	*room.Session        // 发送消息
+	*Player              // 玩家信息
+	table         *Table // 桌子
 }
 
-func (role *Role) IsRobot() bool {
+func (role *Role) isRobot() bool {
 	return role.Job == model.JobRobot
 }
 
-func (role *Role) IsPlayer() bool {
+func (role *Role) isPlayer() bool {
 	return role.Job == model.JobPlayer
 }
 
@@ -55,7 +55,7 @@ func (role *Role) Lose() {
 	role.AddWinBet(addCoin, bet)
 	//log.Debugf("[%v]lose:%v-%v", table.Id, player.Id, addCoin)
 
-	if role.IsRobot() {
+	if role.isRobot() {
 		// 机器人输了不用写分直接返回
 		return
 	}
@@ -137,12 +137,12 @@ func (role *Role) Win(prize int64) {
 		ChangeGoldPool(water)
 	}
 
-	if role.IsRobot() {
+	if role.isRobot() {
 		// 机器人赢了不用写分直接返回
 		return
 	}
 	round.Tax += tax
-	round.Win -= addCoin
+	round.Win += addCoin
 	round.Water += water
 	round.Lucky += lucky
 	// 写分
@@ -180,7 +180,7 @@ func (role *Role) decCoin(bet int64) {
 }
 
 // 新的一局
-func(role *Role)newGameRound(poker []byte) {
+func (role *Role) newGameRound(poker []byte) {
 	pg := dealer.GetGroup(poker)
 	player := role.Player
 	player.State = zjh.Player_Playing
@@ -205,8 +205,8 @@ func (role *Role) Ready() {
 	player.State = zjh.Player_Ready
 	// 发送准备信息
 	role.table.SendToAll(&zjh.ActionAck{
-		Uid:   role.Id,
-		Type:  zjh.ActionType_ActionReady,
+		Uid:  role.Id,
+		Type: zjh.ActionType_ActionReady,
 	})
 }
 
@@ -225,7 +225,7 @@ func (role *Role) Look() {
 	}
 
 	// 发送消息给自己
-	if !role.IsRobot() {
+	if !role.isRobot() {
 		role.UnsafeSend(&zjh.ActionAck{
 			Uid:   role.Id,
 			Type:  zjh.ActionType_ActionLook,
@@ -299,7 +299,7 @@ func (role *Role) Discard(overtime bool) {
 }
 
 // 是否是PK过的对手
-func (role *Role) IsOpponent(id int32) bool {
+func (role *Role) isOpponent(id int32) bool {
 	if role.Bill != nil && role.Bill.Pk != nil {
 		for _, opp := range role.Bill.Pk {
 			if opp == id {
@@ -407,7 +407,6 @@ func (role *Role) randAddBet() {
 		}
 	}
 }
-
 
 // 下注(跟注+加注)
 func (role *Role) AddBet(bet int32) {
@@ -548,7 +547,7 @@ func (role *Role) Allin() {
 // 换桌玩
 func (role *Role) RenewDesk() {
 	player := role.Player
-	if player.State == zjh.Player_Playing || player.State == zjh.Player_Allin{
+	if player.State == zjh.Player_Playing || player.State == zjh.Player_Allin {
 		return
 	}
 

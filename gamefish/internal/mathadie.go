@@ -4,14 +4,12 @@ import (
 	"math"
 )
 
-func Factorial(number int) int {
-	factorial := 1
-	temp := number
-	for i := 0; i < number; i++ {
-		factorial *= temp
-		temp--
+func Factorial(n int) int {
+	val := 1
+	for i := 1; i <= n; i++ {
+		val *= i
 	}
-	return factorial
+	return val
 }
 
 func Combination(count int, r int) int {
@@ -23,12 +21,12 @@ func CalcDistance(x1, y1, x2, y2 float64) float64 {
 }
 
 func CalcAngle(x1, y1, x2, y2 float64) float64 {
-	fDistance := CalcDistance(x1, y1, x2, y2)
-	if fDistance == 0 {
+	distance := CalcDistance(x1, y1, x2, y2)
+	if distance == 0 {
 		return 0
 	}
 
-	cosValue := (x1 - x2) / fDistance
+	cosValue := (x1 - x2) / distance
 	angle := math.Acos(cosValue)
 	if y1 < y2 {
 		angle = 2*math.Pi - angle
@@ -37,23 +35,23 @@ func CalcAngle(x1, y1, x2, y2 float64) float64 {
 	return angle
 }
 
-func BuildLinear(initX, initY []float64, initCount int,  fDistance float64) (points []Point) {
-	points = make([]Point, 0, initCount)
+func BuildLinear(initX, initY []float64, initCount int, distance float64) (points Points) {
+	points = make(Points, 0, initCount)
 
 	if initCount < 2 {
 		return
 	}
 
-	if fDistance <= 0 {
+	if distance <= 0 {
 		return
 	}
 
-	disTotal := CalcDistance(initX[initCount-1], initY[initCount-1], initX[0], initY[0])
-	if disTotal <= 0.0 {
+	totalDist := CalcDistance(initX[initCount-1], initY[initCount-1], initX[0], initY[0])
+	if totalDist <= 0.0 {
 		return
 	}
 
-	cosValue := math.Abs(initY[initCount-1]-initY[0]) / disTotal
+	cosValue := math.Abs(initY[initCount-1]-initY[0]) / totalDist
 	angle := math.Acos(cosValue)
 
 	point := Point{
@@ -62,182 +60,166 @@ func BuildLinear(initX, initY []float64, initCount int,  fDistance float64) (poi
 	}
 	points = append(points, point)
 
-	tfDis := float64(0)
-	for tfDis < disTotal {
-		size := float64(len(points))
+	dis := float64(0)
+	for dis < totalDist {
+		dis := float64(len(points)) * distance
 		if initX[initCount-1] < initX[0] {
-			point.X = initX[0] - math.Sin(angle)*(fDistance*size)
+			point.X = initX[0] - math.Sin(angle)*dis
 		} else {
-			point.X = initX[0] + math.Sin(angle)*(fDistance*size)
+			point.X = initX[0] + math.Sin(angle)*dis
 		}
 
 		if initY[initCount-1] < initY[0] {
-			point.Y = initY[0] - math.Cos(angle)*(fDistance*size)
+			point.Y = initY[0] - math.Cos(angle)*dis
 		} else {
-			point.Y = initY[0] + math.Cos(angle)*(fDistance*size)
+			point.Y = initY[0] + math.Cos(angle)*dis
 		}
 		points = append(points, point)
-		tfDis = CalcDistance(point.X, point.Y, initX[0], initY[0])
+		dis = CalcDistance(point.X, point.Y, initX[0], initY[0])
 	}
-
-	tPoint := &points[len(points)-1]
-	tPoint.X = initX[initCount-1]
-	tPoint.Y = initY[initCount-1]
+	points[len(points)-1].X = initX[initCount-1]
+	points[len(points)-1].Y = initY[initCount-1]
 	return
 }
 
-func BuildLinear2(initX, initY []float64, initCount int32, fDistance float64) (points []MovePoint) {
-	points = make([]MovePoint, 0, initCount)
+func BuildLinear2(initX, initY []float64, initCount int32, distance float64) (points MovePoints) {
+	points = make(MovePoints, 0, initCount)
 	if initCount < 2 {
 		return
 	}
 
-	if fDistance <= 0 {
+	if distance <= 0 {
 		return
 	}
 
-	disTotal := CalcDistance(initX[0], initY[0], initX[initCount-1], initY[initCount-1])
-	if disTotal <= 0 {
+	totalDist := CalcDistance(initX[0], initY[0], initX[initCount-1], initY[initCount-1])
+	if totalDist <= 0 {
 		return
 	}
 
-	tAngle := CalcAngle(initX[initCount-1], initY[initCount-1], initX[0], initY[0]) - (math.Pi / 2)
+	angle := CalcAngle(initX[initCount-1], initY[initCount-1], initX[0], initY[0]) - (math.Pi / 2)
 	point := MovePoint{
-		Point: Point{
-			X: initX[0],
-			Y: initY[0],
-		},
-		Direction: tAngle,
+		X:         initX[0],
+		Y:         initY[0],
+		Direction: angle,
 	}
 	points = append(points, point)
-	tfDis := float64(0)
-
-	for tfDis < disTotal {
-		size := float64(len(points))
-
-		point.X = initX[0] + math.Cos(tAngle)*(fDistance*size)
-		point.Y = initY[0] + math.Sin(tAngle)*(fDistance*size)
-		point.Direction = tAngle
+	dis := float64(0)
+	for dis < totalDist {
+		dis := float64(len(points)) * distance
+		point.X = initX[0] + math.Cos(angle)*dis
+		point.Y = initY[0] + math.Sin(angle)*dis
+		//point.Direction = Direction
 
 		points = append(points, point)
-		tfDis = CalcDistance(point.X, point.Y, initX[0], initY[0])
+		dis = CalcDistance(point.X, point.Y, initX[0], initY[0])
 	}
-
-	tPoint := &points[len(points)-1]
-	tPoint.X = initX[initCount-1]
-	tPoint.X = initY[initCount-1]
+	points[len(points)-1].X = initX[initCount-1]
+	points[len(points)-1].Y = initY[initCount-1]
 	return
 }
 
-func BuildBezier(initX, initY []float64, initCount int32, fDistance float64) (points []MovePoint) {
+func BuildBezier(initX, initY []float64, initCount int32, distance float64) MovePoints {
 	if initCount < 3 {
-		return
+		return make(MovePoints, 0, 0)
 	}
-	index := int32(0)
-	tPos0 := MovePoint{}
+	pos0 := Point{}
 	t := float64(0)
-	count := initCount - 1
-	tfDis := fDistance
-	tPos := MovePoint{}
-
-	points = make([]MovePoint, 0, int(1.0/0.00001))
+	count := int(initCount - 1)
+	points := make(MovePoints, 0, int(1.0/0.00001))
 	for t < 1 {
-		tPos.X = 0
-		tPos.Y = 0
-		index = 0
-		for index <= count {
-			tempValue := math.Pow(t, float64(index)) * math.Pow(1-t, float64(count-index)) * float64(Combination(int(count), int(index)))
-			tPos.X += initX[index] * tempValue
-			tPos.Y += initY[index] * tempValue
-			index++
+		x, y := float64(0), float64(0)
+		for i := 0; i <= count; i++ {
+			tempValue := math.Pow(t, float64(i)) * math.Pow(1-t, float64(count-i)) * float64(Combination(count, i))
+			x += initX[i] * tempValue
+			y += initY[i] * tempValue
 		}
 
-		fSpace := float64(0)
+		space := float64(0)
 		if len(points) > 0 {
 			backPos := &points[len(points)-1]
-			fSpace = CalcDistance(backPos.X, backPos.Y, tPos.X, tPos.Y)
+			space = CalcDistance(backPos.X, backPos.Y, x, y)
 		}
 
-		if fSpace >= tfDis || len(points) == 0 {
+		if space >= distance || len(points) == 0 {
+			var direction float64
 			if len(points) > 0 {
-				temp_dis := CalcDistance(tPos.X, tPos.Y, tPos0.X, tPos0.Y)
-				if temp_dis != 0 {
-					tempValue := (tPos.X - tPos0.X) / temp_dis
-					if tPos.Y-tPos0.Y >= 0 {
-						tPos.Direction = math.Acos(tempValue)
+				if dist := CalcDistance(x, y, pos0.X, pos0.Y); dist != 0 {
+					tempValue := (x - pos0.X) / dist
+					if y-pos0.Y >= 0 {
+						direction = math.Acos(tempValue)
 					} else {
-						tPos.Direction = -math.Acos(tempValue)
+						direction = -math.Acos(tempValue)
 					}
 				} else {
-					tPos.Direction = 1
+					direction = 1
 				}
 			} else {
-				tPos.Direction = 1.
+				direction = 1
 			}
-			points = append(points, tPos)
-			tPos0.X = tPos.X
-			tPos0.Y = tPos.Y
+			points = append(points, MovePoint{X: x, Y: y, Direction: direction})
+			pos0.X = x
+			pos0.Y = y
 		}
 		t += 0.00001
 	}
-	return
+	return points
 }
 
-func BuildCircle( centerX,  centerY,  radius float64,  fishCount int32)(points []MovePoint) {
+func BuildCircle(centerX, centerY, radius float64, fishCount int32) MovePoints {
 	if fishCount <= 0 || radius == 0 {
-		return
+		return make(MovePoints, 0, 0)
 	}
-	cell_radian := 2 * math.Pi / float64(fishCount)
+	cellRadian := 2 * math.Pi / float64(fishCount)
+	points := make(MovePoints, 0, fishCount)
 	for i := int32(0); i < fishCount; i++ {
 		pp := MovePoint{
-			Point: Point{
-				X: centerX + radius*math.Cos(float64(i)*cell_radian),
-				Y: centerY + radius*math.Sin(float64(i)*cell_radian),
-			},
-			Direction: cell_radian,
+			X:         centerX + radius*math.Cos(float64(i)*cellRadian),
+			Y:         centerY + radius*math.Sin(float64(i)*cellRadian),
+			Direction: cellRadian,
 		}
 		points = append(points, pp)
 	}
-	return
+	return points
 }
 
-func BuildCirclePath( centerX,  centerY,  radius float64,  begin float64,  fAngle float64,  nStep int32,  fAdd float64)(points []MovePoint) {
-	if fAngle == 0 || radius == 0 {
-		return
+func BuildCirclePath(centerX, centerY, radius float64, begin float64, angle float64, step int32, add float64) MovePoints {
+	if angle == 0 || radius == 0 {
+		return make(MovePoints, 0, 0)
 	}
-	if nStep < 1 {
-		nStep = 1
+	if step < 1 {
+		step = 1
 	}
-	nCir := float64(int(2 * math.Pi * radius / float64(nStep)))
-	nCount := int(nCir * math.Abs(fAngle) / (2 * math.Pi))
-	cell_radian := 2 * math.Pi / nCir * fAngle / math.Abs(fAngle)
-	pLast := Point{}
-	for i := 0; i < nCount; i++ {
+	cir := float64(int(2 * math.Pi * radius / float64(step)))
+	count := int(cir * math.Abs(angle) / (2 * math.Pi))
+	cellRadian := 2 * math.Pi / cir * angle / math.Abs(angle)
+	lastX, lastY := float64(0), float64(0)
+	points := make(MovePoints, 0, count)
+	for i := 0; i < count; i++ {
 		pp := MovePoint{
-			Point: Point{
-				X: centerX + radius*math.Cos(begin+float64(i)*cell_radian),
-				Y: centerY + radius*math.Sin(begin+float64(i)*cell_radian),
-			},
+			X: centerX + radius*math.Cos(begin+float64(i)*cellRadian),
+			Y: centerY + radius*math.Sin(begin+float64(i)*cellRadian),
 		}
 		if i == 0 {
-			pp.Direction = begin + float64(i)*cell_radian + (math.Pi / 2)
+			pp.Direction = begin + float64(i)*cellRadian + (math.Pi / 2)
 		} else {
-			pp.Direction = CalcAngle(pLast.X, pLast.Y, pp.X, pp.Y) + (math.Pi / 2)
+			pp.Direction = CalcAngle(lastX, lastY, pp.X, pp.Y) + (math.Pi / 2)
 		}
-		pLast = pp.Point
-		if fAdd != 0 {
-			radius += fAdd
+		lastX = pp.X
+		lastY = pp.Y
+		if add != 0 {
+			radius += add
 		}
 		points = append(points, pp)
 	}
-	return
+	return points
 }
 
-func GetRotationPosByOffest( xPos,  yPos,  xOffest,  yOffest,  dir,  fHScale,  fVScale float64)(Point) {
-	pt := Point{}
-	r := math.Sqrt(xOffest*xOffest + yOffest*yOffest)
-	fd := CalcAngle(0, 0, xOffest, yOffest) - (math.Pi / 2) + dir
-	pt.X = (xPos - r*math.Cos(fd)) * fHScale
-	pt.Y = (yPos - r*math.Sin(fd)) * fVScale
-	return pt
+func GetRotationPosByOffset(xPos, yPos, xOffset, yOffset, dir, hScale, vScale float64) Point {
+	r := math.Sqrt(xOffset*xOffset + yOffset*yOffset)
+	fd := CalcAngle(0, 0, xOffset, yOffset) - (math.Pi / 2) + dir
+	return Point{
+		X: (xPos - r*math.Cos(fd)) * hScale,
+		Y: (yPos - r*math.Sin(fd)) * vScale,
+	}
 }

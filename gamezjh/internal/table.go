@@ -317,7 +317,7 @@ func (table *Table) addRole(role *Role) bool {
 	role.table = table
 	table.Roles[i] = role
 	table.RoleCount++
-	if !role.IsRobot() {
+	if !role.isRobot() {
 		role.Player.Robot = &RobotAi{}
 		table.sendGameInit(role)
 	} else {
@@ -344,7 +344,7 @@ func (table *Table) removeRole(role *Role) bool {
 
 // 初始化场景
 func (table *Table) sendGameInit(role *Role) {
-	if !role.IsRobot() {
+	if !role.isRobot() {
 		ack := &zjh.GameInitAck{
 			Table:   table.Id,
 			Id:      table.CurId,
@@ -463,7 +463,7 @@ func (table *Table) SendToOther(val interface{}, my *Role) {
 // 检查是否有真实玩家
 func (table *Table) ExistsRealPlayer() bool {
 	for _, role := range table.Roles {
-		if role.IsRobot() == false {
+		if role.isRobot() == false {
 			return true
 		}
 	}
@@ -501,13 +501,13 @@ func (table *Table) gameReady() {
 		if role == nil {
 			continue
 		}
-		if !role.IsRobot() {
+		if !role.isRobot() {
 			realCount++
 		}
 		player := role.Player
 		if player.State == zjh.Player_None {
 			player.Down--
-			if role.IsRobot() {
+			if role.isRobot() {
 				// 机器人准备时间0-4秒,不大于5秒
 				if gameRand.Int31n(4) == 0 || table.waitSecond >= 5 {
 					player.State = zjh.Player_Ready
@@ -601,13 +601,13 @@ func (table *Table) robotPlay() {
 func (table *Table) sendGameResult() {
 	round := table.round
 	for _, role := range table.Roles {
-		if role == nil || role.IsRobot() {
+		if role == nil || role.isRobot() {
 			continue
 		}
 		// 看自己的牌+PK过的牌
 		poker := make([]byte, 3*chairCount)
 		for _, opp := range table.players {
-			if opp.Id == role.Id || role.IsOpponent(opp.Id) {
+			if opp.Id == role.Id || role.isOpponent(opp.Id) {
 				i := opp.Chair
 				copy(poker[i:i+3], table.poker[i:i+3])
 			}
@@ -634,7 +634,7 @@ func (table *Table) gameClose() {
 	robotWin := true //
 	playerWin := true
 	for _, winner := range table.winner {
-		if winner.IsRobot() {
+		if winner.isRobot() {
 			playerWin = false
 		} else {
 			robotWin = false
@@ -702,7 +702,7 @@ func (table *Table) clearRole() {
 		if role == nil {
 			continue
 		}
-		if role.IsRobot() {
+		if role.isRobot() {
 			if role.TotalRound > rand.Int31n(64)+10 ||
 				role.Coin < room.Config.PlayMin ||
 				role.Coin > room.Config.PlayMax ||

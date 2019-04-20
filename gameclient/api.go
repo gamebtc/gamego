@@ -37,29 +37,28 @@ func Run(config *AppConfig) {
 	coder = GetCoder(config.Codec)
 	jsonCoder = GetCoder("json") //jsonIter
 
-	registMsg(int32(MsgId_UserLoginReq), &LoginReq{}, nil)
-	registMsg(int32(MsgId_LoginRoomReq), &LoginRoomReq{}, nil)
-	registMsg(int32(MsgId_LoginRoomAck), &LoginRoomAck{}, loginRoom)
-	registMsg(int32(folks.Folks_BetReq), &folks.BetReq{}, nil)
+	registMsg(int32(MsgId_UserLoginReq), (*LoginReq)(nil), nil)
+	registMsg(int32(MsgId_LoginRoomReq), (*LoginRoomReq)(nil), nil)
+	registMsg(int32(MsgId_LoginRoomAck), (*LoginRoomAck)(nil), loginRoom)
+	registMsg(int32(folks.Folks_BetReq), (*folks.BetReq)(nil), nil)
 
-	registMsg(int32(MsgId_ExitRoomReq), &ExitRoomReq{}, nil)
-	registMsg(int32(MsgId_ExitRoomAck), &ExitRoomAck{}, exitRoom)
+	registMsg(int32(MsgId_ExitRoomReq), (*ExitRoomReq)(nil), nil)
+	registMsg(int32(MsgId_ExitRoomAck), (*ExitRoomAck)(nil), exitRoom)
 
-	registMsg(int32(folks.Folks_BetAck), &folks.BetAck{}, betAck)
-	registMsg(int32(MsgId_HandshakeAck), &Handshake{}, handshake)
-	registMsg(int32(MsgId_UserLoginFailAck), &LoginFailAck{}, loginFail)
-	registMsg(int32(MsgId_UserLoginSuccessAck), &LoginSuccessAck{}, loginSuccess)
-	registMsg(int32(MsgId_ErrorInfo), &ErrorInfo{}, showErrorInfo)
+	registMsg(int32(folks.Folks_BetAck), (*folks.BetAck)(nil), betAck)
+	registMsg(int32(MsgId_HandshakeAck), (*Handshake)(nil), handshake)
+	registMsg(int32(MsgId_UserLoginFailAck), (*LoginFailAck)(nil), loginFail)
+	registMsg(int32(MsgId_UserLoginSuccessAck), (*LoginSuccessAck)(nil), loginSuccess)
+	registMsg(int32(MsgId_ErrorInfo), (*ErrorInfo)(nil), showErrorInfo)
 
-	registMsg(int32(MsgId_VerCheckReq), &VerCheckReq{}, nil)
-	registMsg(int32(MsgId_VerCheckAck), &VerCheckAck{}, verCheck)
+	registMsg(int32(MsgId_VerCheckReq), (*VerCheckReq)(nil), nil)
+	registMsg(int32(MsgId_VerCheckAck), (*VerCheckAck)(nil), verCheck)
 
-	registMsg(int32(MsgId_HeartBeatReq), &HeartBeatReq{}, nil)
-	registMsg(int32(MsgId_HeartBeatAck), &HeartBeatAck{}, heartBeat)
+	registMsg(int32(MsgId_HeartBeatReq), (*HeartBeatReq)(nil), nil)
+	registMsg(int32(MsgId_HeartBeatAck), (*HeartBeatAck)(nil), heartBeat)
 
-
-	registMsg(int32(folks.Folks_GameInitAck), &folks.GameInitAck{}, folksGameInit)
-	//registMsg(int32(folks.Folks_CloseBetAck), &folks.CloseBetAck{}, folksGameInit)
+	registMsg(int32(folks.Folks_GameInitAck), (*folks.GameInitAck)(nil), folksGameInit)
+	//registMsg(int32(folks.Folks_CloseBetAck), (*folks.CloseBetAck)(nil), folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
 	//handlers[MsgId_UserLoginReq] = userLoginHandler
@@ -147,7 +146,7 @@ func startServer(config *AppConfig) {
 	}
 }
 
-func CreateUser(id int64)(user *Session){
+func CreateUser(id int64) (user *Session) {
 	//创建客户端连接
 	server := conf.Server
 	conn, err := net.Dial("tcp", server)
@@ -179,7 +178,7 @@ func cmd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user := getSession(int64(uid))
-	if user == nil{
+	if user == nil {
 		user = CreateUser(int64(uid))
 	}
 	if user == nil {
@@ -193,7 +192,7 @@ func cmd(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if cid == -1{
+	if cid == -1 {
 		user.Close()
 		return
 	}

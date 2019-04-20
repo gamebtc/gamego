@@ -13,7 +13,7 @@ import (
 
 var (
 	gameRand     *rand.Rand
-	newDealer    func()Dealer
+	newDealer    func() Dealer
 	betItemCount int     // 可投注的项
 	betItems     []int32 // 可投注的项
 	robotBetRate []int32 // 机器人投注的概率
@@ -25,7 +25,7 @@ var (
 	// 最多输的倍数，百人牛为10，其它为1
 	multipleLost int64 = 1
 	// 大厅
-	hall = &gameHall{ tables: make([]*Table, 0, 1) }
+	hall = &gameHall{tables: make([]*Table, 0, 1)}
 )
 
 type GameRound = folks.GameRound
@@ -133,14 +133,14 @@ func (hall *gameHall) Start() {
 	// 清理机器人
 	db.Driver.ClearRobot(room.RoomId)
 	// 注册消息和事件
-	room.RegistMsg(int32(folks.Folks_UserBetAck), &folks.UserBetAck{})
-	room.RegistMsg(int32(folks.Folks_OpenBetAck), &folks.OpenBetAck{})
-	room.RegistMsg(int32(folks.Folks_StopBetAck), &folks.StopBetAck{})
-	room.RegistMsg(int32(folks.Folks_GameInitAck), &folks.GameInitAck{})
-	room.RegistMsg(int32(folks.Folks_BetAck), &folks.BetAck{})
+	room.RegistMsg(int32(folks.Folks_UserBetAck), (*folks.UserBetAck)(nil))
+	room.RegistMsg(int32(folks.Folks_OpenBetAck), (*folks.OpenBetAck)(nil))
+	room.RegistMsg(int32(folks.Folks_StopBetAck), (*folks.StopBetAck)(nil))
+	room.RegistMsg(int32(folks.Folks_GameInitAck), (*folks.GameInitAck)(nil))
+	room.RegistMsg(int32(folks.Folks_BetAck), (*folks.BetAck)(nil))
 
 	room.RegistEvent(room.EventConfigChanged, configChange)
-	room.RegistHandler(int32(folks.Folks_BetReq), &folks.BetReq{}, betReq)
+	room.RegistHandler(int32(folks.Folks_BetReq), (*folks.BetReq)(nil), betReq)
 
 	// 创建桌子
 	table := NewTable()
@@ -180,7 +180,7 @@ func (hall *gameHall) UserReline(oldSess *room.Session, newSess *room.Session) {
 func (hall *gameHall) UserOffline(sess *room.Session) {
 	if role, ok := sess.Role.(*Role); ok && role != nil {
 		role.Online = false
-		if role.bill == nil{
+		if role.bill == nil {
 			room.RemoveUser(sess)
 		}
 	}
@@ -209,7 +209,7 @@ func roomClose(event *room.GameEvent) {
 }
 
 // 预算输赢(prize:扣税前总返奖，tax:总税收，bet:总下注)
-func Balance(group []int64, odds []int32)(prize, tax, bet int64) {
+func Balance(group []int64, odds []int32) (prize, tax, bet int64) {
 	for i := 0; i < betItemCount; i++ {
 		// 下注金币大于0
 		if b := group[i]; b > 0 {

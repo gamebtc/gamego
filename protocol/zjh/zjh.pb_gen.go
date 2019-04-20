@@ -847,7 +847,7 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "Uid":
+		case "u":
 			z.Uid, err = dc.ReadInt32()
 			if err != nil {
 				return
@@ -932,8 +932,8 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 12
-	// write "Uid"
-	err = en.Append(0x8c, 0xa3, 0x55, 0x69, 0x64)
+	// write "u"
+	err = en.Append(0x8c, 0xa1, 0x75)
 	if err != nil {
 		return err
 	}
@@ -1053,8 +1053,8 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 12
-	// string "Uid"
-	o = append(o, 0x8c, 0xa3, 0x55, 0x69, 0x64)
+	// string "u"
+	o = append(o, 0x8c, 0xa1, 0x75)
 	o = msgp.AppendInt32(o, z.Uid)
 	// string "Job"
 	o = append(o, 0xa3, 0x4a, 0x6f, 0x62)
@@ -1111,7 +1111,7 @@ func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "Uid":
+		case "u":
 			z.Uid, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
@@ -1196,7 +1196,7 @@ func (z *GameBill) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameBill) Msgsize() (s int) {
-	s = 1 + 4 + msgp.Int32Size + 4 + msgp.Int32Size + 8 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.BytesPrefixSize + len(z.Poker) + 7 + msgp.Int32Size + 4 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 3 + msgp.ArrayHeaderSize + (len(z.Pk) * (msgp.Int32Size))
+	s = 1 + 2 + msgp.Int32Size + 4 + msgp.Int32Size + 8 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.BytesPrefixSize + len(z.Poker) + 7 + msgp.Int32Size + 4 + msgp.Int64Size + 4 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 6 + msgp.Int64Size + 3 + msgp.ArrayHeaderSize + (len(z.Pk) * (msgp.Int32Size))
 	return
 }
 
@@ -1794,7 +1794,7 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "Start":
+		case "s":
 			z.Start, err = dc.ReadInt64()
 			if err != nil {
 				return
@@ -1814,7 +1814,7 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "Bill":
+		case "b":
 			var zare uint32
 			zare, err = dc.ReadArrayHeader()
 			if err != nil {
@@ -1942,8 +1942,8 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "Start"
-	err = en.Append(0xa5, 0x53, 0x74, 0x61, 0x72, 0x74)
+	// write "s"
+	err = en.Append(0xa1, 0x73)
 	if err != nil {
 		return err
 	}
@@ -1978,8 +1978,8 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "Bill"
-	err = en.Append(0xa4, 0x42, 0x69, 0x6c, 0x6c)
+	// write "b"
+	err = en.Append(0xa1, 0x62)
 	if err != nil {
 		return err
 	}
@@ -2122,8 +2122,8 @@ func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "i"
 	o = append(o, 0xde, 0x0, 0x11, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Id)
-	// string "Start"
-	o = append(o, 0xa5, 0x53, 0x74, 0x61, 0x72, 0x74)
+	// string "s"
+	o = append(o, 0xa1, 0x73)
 	o = msgp.AppendInt64(o, z.Start)
 	// string "End"
 	o = append(o, 0xa3, 0x45, 0x6e, 0x64)
@@ -2134,8 +2134,8 @@ func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "Tab"
 	o = append(o, 0xa3, 0x54, 0x61, 0x62)
 	o = msgp.AppendInt32(o, z.Tab)
-	// string "Bill"
-	o = append(o, 0xa4, 0x42, 0x69, 0x6c, 0x6c)
+	// string "b"
+	o = append(o, 0xa1, 0x62)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Bill)))
 	for zana := range z.Bill {
 		if z.Bill[zana] == nil {
@@ -2214,7 +2214,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "Start":
+		case "s":
 			z.Start, bts, err = msgp.ReadInt64Bytes(bts)
 			if err != nil {
 				return
@@ -2234,7 +2234,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "Bill":
+		case "b":
 			var zrsc uint32
 			zrsc, bts, err = msgp.ReadArrayHeaderBytes(bts)
 			if err != nil {
@@ -2353,7 +2353,7 @@ func (z *GameRound) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameRound) Msgsize() (s int) {
-	s = 3 + 2 + msgp.Int64Size + 6 + msgp.Int64Size + 4 + msgp.Int64Size + 5 + msgp.Int32Size + 4 + msgp.Int32Size + 5 + msgp.ArrayHeaderSize
+	s = 3 + 2 + msgp.Int64Size + 2 + msgp.Int64Size + 4 + msgp.Int64Size + 5 + msgp.Int32Size + 4 + msgp.Int32Size + 2 + msgp.ArrayHeaderSize
 	for zana := range z.Bill {
 		if z.Bill[zana] == nil {
 			s += msgp.NilSize

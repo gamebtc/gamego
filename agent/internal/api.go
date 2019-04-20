@@ -43,14 +43,14 @@ func Run(config *conf.AppConfig) {
 
 	coder = GetCoder(config.Codec)
 
-	registMsg(MsgId_ErrorInfo, &ErrorInfo{})
-	registMsg(MsgId_HandshakeAck, &Handshake{})
-	registMsg(MsgId_VerCheckAck, &VerCheckAck{})
-	registMsg(MsgId_HeartBeatAck, &HeartBeatAck{})
-	registMsg(MsgId_UserLoginFailAck, &LoginFailAck{})
-	registMsg(MsgId_LoginRoomAck, &LoginRoomAck{})
-	registMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{})
-	registMsg(MsgId_ExitRoomAck, &ExitRoomAck{})
+	registMsg(MsgId_ErrorInfo, (*ErrorInfo)(nil))
+	registMsg(MsgId_HandshakeAck, (*Handshake)(nil))
+	registMsg(MsgId_VerCheckAck, (*VerCheckAck)(nil))
+	registMsg(MsgId_HeartBeatAck, (*HeartBeatAck)(nil))
+	registMsg(MsgId_UserLoginFailAck, (*LoginFailAck)(nil))
+	registMsg(MsgId_LoginRoomAck, (*LoginRoomAck)(nil))
+	registMsg(MsgId_UserLoginSuccessAck, (*LoginSuccessAck)(nil))
+	registMsg(MsgId_ExitRoomAck, (*ExitRoomAck)(nil))
 
 	handlers[MsgId_HandshakeReq] = handshakeHandler
 	handlers[MsgId_UserLoginReq] = userLoginHandler

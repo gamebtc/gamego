@@ -240,12 +240,12 @@ func (hall *gameHall) Start() {
 
 	// 注册消息和事件
 	room.RegistEvent(room.EventConfigChanged, configChange)
-	room.RegistMsg(int32(zjh.Code_CodeActionAck), &zjh.ActionAck{})
-	room.RegistMsg(int32(zjh.Code_CodeGameInitAck), &zjh.GameInitAck{})
-	room.RegistMsg(int32(zjh.Code_CodeGameStartAck), &zjh.GameStartAck{})
-	room.RegistMsg(int32(zjh.Code_CodeGameResultAck), &zjh.GameResultAck{})
+	room.RegistMsg(int32(zjh.Code_CodeActionAck), (*zjh.ActionAck)(nil))
+	room.RegistMsg(int32(zjh.Code_CodeGameInitAck), (*zjh.GameInitAck)(nil))
+	room.RegistMsg(int32(zjh.Code_CodeGameStartAck), (*zjh.GameStartAck)(nil))
+	room.RegistMsg(int32(zjh.Code_CodeGameResultAck), (*zjh.GameResultAck)(nil))
 
-	room.RegistHandler(int32(zjh.Code_CodeActionReq), &zjh.ActionReq{}, action)
+	room.RegistHandler(int32(zjh.Code_CodeActionReq), (*zjh.ActionReq)(nil), action)
 
 	// 创建所有的桌子
 	tableCount := room.Config.Tab

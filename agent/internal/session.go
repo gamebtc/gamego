@@ -235,7 +235,7 @@ func (sess *Session) route(data []byte) (ret interface{}, err error) {
 	}
 	// 记录慢操作
 	if slowOpNano > 0 {
-		if elapsed := time.Now().UnixNano() - start.UnixNano(); elapsed > slowOpNano {
+		if elapsed := time.Since(start).Nanoseconds(); elapsed > slowOpNano {
 			log.Warnf("user:%v, api:%v,cost:%v ms", sess.UserId, id, elapsed/Ms2Na)
 		}
 	}

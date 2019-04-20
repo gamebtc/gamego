@@ -78,7 +78,7 @@ message GameRound {
 	repeated sint32 odds = 10 [(gogoproto.jsontag) = 'o', (gogoproto.moretags) = 'bson:"o" msg:"o"'];
 	// 系统税收
 	int64 tax = 11 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
-	// 系统输赢
+	// 本局所有真实玩家的输赢
 	sint64 win = 12 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
 	// 备注
 	string note = 13 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];

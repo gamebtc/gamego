@@ -18,8 +18,14 @@ const (
 
 // 游戏默认的窗口大小
 var (
-	DefaultWidth  = float64(2160)
-	DefaultHeight = float64(1350)
+	DefaultWidth    = float64(2160)
+	DefaultHeight   = float64(1350)
+	AndroidProbMul  = float64(1300) // 机器人捕鱼概率
+	BulletSpeed     = float64(2000) // 子弹速度
+	SwitchSceneTime = float64(5)    // 切换场景的时间5秒
+	SnakeHeadType        int32
+	SnakeTailType		 int32
+	MaxSpecailCount      int32
 )
 
 type SPATH struct {
@@ -32,53 +38,76 @@ type SPATH struct {
 	PointCount int32      `yaml:"-"`
 }
 
-type ShapeBase struct {
-	Count    int32   `yaml:"Count"`
-	Same     bool    `yaml:"Same"`
-	Path     int32   `yaml:"Path"`
-	Speed    float64 `yaml:"Speed"`
-	Interval float64 `yaml:"Interval"`
-	FishList []int32 `yaml:"FishList"`
+type FishWeight struct {
+	FishType []int32 `yaml:"FishType"`
 	Weight   []int32 `yaml:"Weight"`
+	fix      bool    `yaml:"-"`
 }
 
-type ShapeLine struct {
-	X          [2]float64 `yaml:"X"`
-	Y          [2]float64 `yaml:"Y"`
-	Count      int32      `yaml:"Count"`
-	PriceCount int32      `yaml:"PriceCount"`
-	Path       int32      `yaml:"Path"`
-	Same       bool       `yaml:"Same"`
-	Speed      float64    `yaml:"Speed"`
-	Interval   float64    `yaml:"Interval"`
-	FishType   []int32    `yaml:"FishType"`
-	Weight     []int32    `yaml:"Weight"`
+func (fw *FishWeight) fixWeight() {
+	if fw.fix {
+		return
+	}
+	fw.fix = true
+	l := len(fw.FishType)
+	if l < len(fw.Weight) {
+		l = len(fw.Weight)
+	}
+	if l == 0 {
+		fw.FishType = nil
+		fw.Weight = nil
+		return
+	}
+	fw.FishType = fw.FishType[0:l]
+	fw.Weight = fw.Weight[0:l]
+	for i := 1; i < len(fw.Weight); i++ {
+		fw.Weight[i] += fw.Weight[i-1]
+	}
 }
 
-type ShapeCircle struct {
-	X          float64 `yaml:"X"`
-	Y          float64 `yaml:"Y"`
-	R          float64 `yaml:"R"`
-	Count      int32   `yaml:"Count"`
-	PriceCount int32   `yaml:"PriceCount"`
-	Same       bool    `yaml:"Same"`
-	Path       int32   `yaml:"Path"`
-	Speed      float64 `yaml:"Speed"`
-	Interval   float64 `yaml:"Interval"`
-	FishType   []int32 `yaml:"FishType"`
-	Weight     []int32 `yaml:"Weight"`
+func (fw *FishWeight) RandFish() int32 {
+	if fw.fix == false {
+		fw.fixWeight()
+	}
+	l := int32(len(fw.Weight))
+	if l > 0 {
+		r := gameRand.Int31n(l)
+		for i, w := range fw.Weight {
+			if r < w {
+				return fw.FishType[i]
+			}
+		}
+	}
+	return 0
 }
 
 type ShapePoint struct {
-	X        float64 `yaml:"X"`
-	Y        float64 `yaml:"Y"`
-	Count    int32   `yaml:"Count"`
-	Path     int32   `yaml:"Path"`
-	Speed    float64 `yaml:"Speed"`
-	Same     bool    `yaml:"Same"`
-	Interval float64 `yaml:"Interval"`
-	FishType []int32 `yaml:"FishType"`
-	Weight   []int32 `yaml:"Weight"`
+	FishWeight `yaml:",inline"`
+	Count      int32   `yaml:"Count"`
+	Path       int32   `yaml:"Path"`
+	Speed      float64 `yaml:"Speed"`
+	Same       bool    `yaml:"Same"`
+	Interval   float64 `yaml:"Interval"`
+	X          float64 `yaml:"X"`
+	Y          float64 `yaml:"Y"`
+}
+
+type ShapeLine struct {
+	FishWeight `yaml:",inline"`
+	Count      int32      `yaml:"Count"`
+	Path       int32      `yaml:"Path"`
+	Speed      float64    `yaml:"Speed"`
+	Same       bool       `yaml:"Same"`
+	Interval   float64    `yaml:"Interval"`
+	X          [2]float64 `yaml:"X"`
+	Y          [2]float64 `yaml:"Y"`
+	PriceCount int32      `yaml:"PriceCount"`
+}
+
+type ShapeCircle struct {
+	ShapePoint `yaml:",inline"`
+	R          float64 `yaml:"R"`
+	PriceCount int32   `yaml:"PriceCount"`
 }
 
 type TroopData struct {
@@ -89,12 +118,25 @@ type TroopData struct {
 	PointData  []ShapePoint  `yaml:"PointData"`
 }
 
+func (t *TroopData) fixWeight() {
+	for i := 0; i < len(t.LineData); i++ {
+		t.LineData[i].fixWeight()
+	}
+	for i := 0; i < len(t.CircleData); i++ {
+		t.CircleData[i].fixWeight()
+	}
+	for i := 0; i < len(t.PointData); i++ {
+		t.PointData[i].fixWeight()
+	}
+}
+
 type Troop struct {
 	Id        int32        `yaml:"Id"`
 	Describes []string     `yaml:"Describes"`
 	Step      []int32      `yaml:"Step"`
 	Shape     []ShapePoint `yaml:"Shape"`
 }
+
 
 var (
 	LoadPath         = false
@@ -255,6 +297,7 @@ func LoadTroop(fileName string) bool {
 
 	for i := 0; i < len(config.Troop); i++ {
 		td := &config.Troop[i]
+		//td.Fix
 		TroopDataMap[td.Id] = td
 		trp := CreatTroopByData(td)
 		TroopMap[td.Id] = trp
@@ -344,8 +387,8 @@ func LoadNormalPath(fileName string) bool {
 	return true
 }
 
-func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) (out MovePoints) {
-	out = make(MovePoints, 0, 1000)
+func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) MovePoints {
+	out := make(MovePoints, 0, 1000)
 	for sp != nil {
 		x := [4]float64{}
 		y := [4]float64{}
@@ -448,5 +491,5 @@ func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) (o
 			}
 		}
 	}
-	return
+	return out
 }

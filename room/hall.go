@@ -178,8 +178,8 @@ func Init(config *AppConfig, r Haller) error {
 	sessions = make(map[model.UserId]*Session, roomInfo.Cap*2)
 	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
 
-	RegistMsg(int32(protocol.MsgId_ErrorInfo), &protocol.ErrorInfo{})
-	RegistMsg(int32(protocol.MsgId_LoginRoomAck), &protocol.LoginRoomAck{})
+	RegistMsg(int32(protocol.MsgId_ErrorInfo), (*protocol.ErrorInfo)(nil) )
+	RegistMsg(int32(protocol.MsgId_LoginRoomAck), (*protocol.LoginRoomAck)(nil))
 
 	log.Infof("room:%#v", roomInfo)
 	return nil

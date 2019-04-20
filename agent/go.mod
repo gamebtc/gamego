@@ -6,8 +6,8 @@ require (
 	github.com/klauspost/reedsolomon v0.0.0-20180704173009-925cb01d6510 // indirect
 	github.com/sirupsen/logrus v1.4.1
 	github.com/xtaci/kcp-go v2.0.3+incompatible
-	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
-	google.golang.org/grpc v1.20.0
+	golang.org/x/net v0.0.0-20190420063019-afa5a82059c6
+	google.golang.org/grpc v1.20.1
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/protocol v0.0.0
 	local.com/abc/game/util v0.0.0
