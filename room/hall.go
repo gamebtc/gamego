@@ -246,7 +246,7 @@ func startRoomConfigCheck(ver int32) {
 func mainLoop() {
 	// 帧更新周期
 	hall.Start()
-	period := time.Duration(Config.Period) * time.Millisecond
+	period := time.Duration(Config.Period*1000) * time.Microsecond
 	ticker := time.NewTicker(period)
 	defer ticker.Stop()
 

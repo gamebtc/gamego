@@ -29,8 +29,8 @@ func TestLoadBoundingBox(t *testing.T){
 	LoadBoundingBox("bbox.yaml")
 }
 
-func TestLoadSpecialFish(t *testing.T){
-	LoadSpecialFish("special.yaml")
+func TestLoadSystem(t *testing.T){
+	LoadSystem("system.yaml")
 }
 
 func TestLoadTroop(t *testing.T) {

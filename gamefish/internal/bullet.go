@@ -7,6 +7,10 @@ import (
 	"local.com/abc/game/protocol/fish"
 )
 
+
+const(
+	bulletRadius = 20
+)
 // 子弹
 type Bullet struct {
 	fish.Bullet   // 子弹
@@ -25,23 +29,21 @@ func (bullet *Bullet) isPlayer() bool {
 }
 
 func (bullet *Bullet) InitMove() {
-	angle := bullet.Direction
-	bullet.dx = math.Cos(angle - (math.Pi / 2))
-	bullet.dy = math.Sin(angle - (math.Pi / 2))
+	bullet.dx = math.Cos(bullet.Direction - (math.Pi / 2))
+	bullet.dy = math.Sin(bullet.Direction - (math.Pi / 2))
 }
 
-func (bullet *Bullet) Move(ms float64) {
-	se := float64(ms) / 1000
-	x := bullet.X + (bullet.Speed * bullet.dx * se)
-	y := bullet.Y + (bullet.Speed * bullet.dy * se)
+func (bullet *Bullet) Move(second float64) {
+	x := bullet.X + (bullet.Speed * bullet.dx * second)
+	y := bullet.Y + (bullet.Speed * bullet.dy * second)
 
 	if x < 0 {
 		x = 0 + (0 - x)
 		bullet.dx = -bullet.dx
 		bullet.Direction = -bullet.Direction
 	}
-	if x > DefaultWidth {
-		x = DefaultWidth - (x - DefaultWidth)
+	if x > SystemConf.ScreenWidth {
+		x = SystemConf.ScreenWidth - (x - SystemConf.ScreenWidth)
 		bullet.dx = -bullet.dx
 		bullet.Direction = -bullet.Direction
 	}
@@ -50,8 +52,8 @@ func (bullet *Bullet) Move(ms float64) {
 		bullet.dy = -bullet.dy
 		bullet.Direction = math.Pi - bullet.Direction
 	}
-	if y < DefaultHeight {
-		y = DefaultHeight - (y - DefaultHeight)
+	if y < SystemConf.ScreenHeight {
+		y = SystemConf.ScreenHeight - (y - SystemConf.ScreenHeight)
 		bullet.dy = -bullet.dy
 		bullet.Direction = math.Pi - bullet.Direction
 	}
@@ -68,7 +70,7 @@ func (bullet *Bullet) HitTest(fish *Fish ) bool {
 	}
 	for _, box := range fish.Boxes {
 		dis := CalcDistance(box.X, box.Y, bullet.X, bullet.Y)
-		if dis < box.Radio+20 {
+		if dis < box.Radius+bulletRadius {
 			return true
 		}
 	}

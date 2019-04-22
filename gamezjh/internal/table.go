@@ -61,7 +61,7 @@ func NewTable() *Table {
 	return t
 }
 
-func (table *Table) reset() {
+func (table *Table) clear() {
 	table.round = nil
 	table.waitSecond = 0
 	table.poker = nil
@@ -361,7 +361,7 @@ func (table *Table) sendGameInit(role *Role) {
 }
 
 func (table *Table) newGameRound() {
-	table.reset()
+	table.clear()
 	count := table.RoleCount
 	ante := room.Config.Ante // 底注
 	id := room.NewGameRoundId()

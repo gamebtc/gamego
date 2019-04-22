@@ -349,18 +349,18 @@ func (z *Fish) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "type":
-			z.Type, err = dc.ReadInt32()
+		case "tmpId":
+			z.TmpId, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
-		case "path":
-			z.Path, err = dc.ReadInt32()
+		case "pathId":
+			z.PathId, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
 		case "speed":
-			z.Speed, err = dc.ReadInt32()
+			z.Speed, err = dc.ReadFloat64()
 			if err != nil {
 				return
 			}
@@ -411,21 +411,21 @@ func (z *Fish) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "type"
-	err = en.Append(0xa4, 0x74, 0x79, 0x70, 0x65)
+	// write "tmpId"
+	err = en.Append(0xa5, 0x74, 0x6d, 0x70, 0x49, 0x64)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Type)
+	err = en.WriteInt32(z.TmpId)
 	if err != nil {
 		return
 	}
-	// write "path"
-	err = en.Append(0xa4, 0x70, 0x61, 0x74, 0x68)
+	// write "pathId"
+	err = en.Append(0xa6, 0x70, 0x61, 0x74, 0x68, 0x49, 0x64)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Path)
+	err = en.WriteInt32(z.PathId)
 	if err != nil {
 		return
 	}
@@ -434,7 +434,7 @@ func (z *Fish) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Speed)
+	err = en.WriteFloat64(z.Speed)
 	if err != nil {
 		return
 	}
@@ -493,15 +493,15 @@ func (z *Fish) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "id"
 	o = append(o, 0x89, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
-	// string "type"
-	o = append(o, 0xa4, 0x74, 0x79, 0x70, 0x65)
-	o = msgp.AppendInt32(o, z.Type)
-	// string "path"
-	o = append(o, 0xa4, 0x70, 0x61, 0x74, 0x68)
-	o = msgp.AppendInt32(o, z.Path)
+	// string "tmpId"
+	o = append(o, 0xa5, 0x74, 0x6d, 0x70, 0x49, 0x64)
+	o = msgp.AppendInt32(o, z.TmpId)
+	// string "pathId"
+	o = append(o, 0xa6, 0x70, 0x61, 0x74, 0x68, 0x49, 0x64)
+	o = msgp.AppendInt32(o, z.PathId)
 	// string "speed"
 	o = append(o, 0xa5, 0x73, 0x70, 0x65, 0x65, 0x64)
-	o = msgp.AppendInt32(o, z.Speed)
+	o = msgp.AppendFloat64(o, z.Speed)
 	// string "created"
 	o = append(o, 0xa7, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64)
 	o = msgp.AppendInt64(o, z.Created)
@@ -541,18 +541,18 @@ func (z *Fish) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "type":
-			z.Type, bts, err = msgp.ReadInt32Bytes(bts)
+		case "tmpId":
+			z.TmpId, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
-		case "path":
-			z.Path, bts, err = msgp.ReadInt32Bytes(bts)
+		case "pathId":
+			z.PathId, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
 		case "speed":
-			z.Speed, bts, err = msgp.ReadInt32Bytes(bts)
+			z.Speed, bts, err = msgp.ReadFloat64Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -594,7 +594,7 @@ func (z *Fish) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *Fish) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 6 + msgp.Int32Size + 8 + msgp.Int64Size + 10 + msgp.Float64Size + 2 + msgp.Float64Size + 2 + msgp.Float64Size + 6 + msgp.BoolSize
+	s = 1 + 3 + msgp.Int32Size + 6 + msgp.Int32Size + 7 + msgp.Int32Size + 6 + msgp.Float64Size + 8 + msgp.Int64Size + 10 + msgp.Float64Size + 2 + msgp.Float64Size + 2 + msgp.Float64Size + 6 + msgp.BoolSize
 	return
 }
 
@@ -620,7 +620,7 @@ func (z *FishSeed) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "speed":
-			z.Speed, err = dc.ReadInt32()
+			z.Speed, err = dc.ReadFloat64()
 			if err != nil {
 				return
 			}
@@ -651,7 +651,7 @@ func (z FishSeed) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Speed)
+	err = en.WriteFloat64(z.Speed)
 	if err != nil {
 		return
 	}
@@ -667,7 +667,7 @@ func (z FishSeed) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.AppendInt32(o, z.Id)
 	// string "speed"
 	o = append(o, 0xa5, 0x73, 0x70, 0x65, 0x65, 0x64)
-	o = msgp.AppendInt32(o, z.Speed)
+	o = msgp.AppendFloat64(o, z.Speed)
 	return
 }
 
@@ -693,7 +693,7 @@ func (z *FishSeed) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "speed":
-			z.Speed, bts, err = msgp.ReadInt32Bytes(bts)
+			z.Speed, bts, err = msgp.ReadFloat64Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -710,7 +710,7 @@ func (z *FishSeed) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z FishSeed) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 6 + msgp.Int32Size
+	s = 1 + 3 + msgp.Int32Size + 6 + msgp.Float64Size
 	return
 }
 
@@ -834,7 +834,7 @@ func (z *GameInitAck) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "maxBullet":
+		case "fireInterval":
 			z.FireInterval, err = dc.ReadInt32()
 			if err != nil {
 				return
@@ -959,8 +959,8 @@ func (z *GameInitAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "maxBullet"
-	err = en.Append(0xa9, 0x6d, 0x61, 0x78, 0x42, 0x75, 0x6c, 0x6c, 0x65, 0x74)
+	// write "fireInterval"
+	err = en.Append(0xac, 0x66, 0x69, 0x72, 0x65, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c)
 	if err != nil {
 		return err
 	}
@@ -1035,8 +1035,8 @@ func (z *GameInitAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "maxBullet"
 	o = append(o, 0xa9, 0x6d, 0x61, 0x78, 0x42, 0x75, 0x6c, 0x6c, 0x65, 0x74)
 	o = msgp.AppendInt32(o, z.MaxBullet)
-	// string "maxBullet"
-	o = append(o, 0xa9, 0x6d, 0x61, 0x78, 0x42, 0x75, 0x6c, 0x6c, 0x65, 0x74)
+	// string "fireInterval"
+	o = append(o, 0xac, 0x66, 0x69, 0x72, 0x65, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c)
 	o = msgp.AppendInt32(o, z.FireInterval)
 	// string "stopFire"
 	o = append(o, 0xa8, 0x73, 0x74, 0x6f, 0x70, 0x46, 0x69, 0x72, 0x65)
@@ -1164,7 +1164,7 @@ func (z *GameInitAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "maxBullet":
+		case "fireInterval":
 			z.FireInterval, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
@@ -1211,7 +1211,7 @@ func (z *GameInitAck) Msgsize() (s int) {
 			s += z.Bullets[zdaf].Msgsize()
 		}
 	}
-	s += 10 + msgp.Int32Size + 10 + msgp.Int32Size + 9 + msgp.BoolSize
+	s += 10 + msgp.Int32Size + 13 + msgp.Int32Size + 9 + msgp.BoolSize
 	return
 }
 
@@ -1588,8 +1588,8 @@ func (z *GameUpdateAck) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "scene":
-			z.Scene, err = dc.ReadInt32()
+		case "switchScene":
+			z.SwitchScene, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -1809,7 +1809,7 @@ func (z *GameUpdateAck) DecodeMsg(dc *msgp.Reader) (err error) {
 								return
 							}
 						case "speed":
-							z.Seed[zgmo].Speed, err = dc.ReadInt32()
+							z.Seed[zgmo].Speed, err = dc.ReadFloat64()
 							if err != nil {
 								return
 							}
@@ -1887,12 +1887,12 @@ func (z *GameUpdateAck) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "scene"
-	err = en.Append(0xa5, 0x73, 0x63, 0x65, 0x6e, 0x65)
+	// write "switchScene"
+	err = en.Append(0xab, 0x73, 0x77, 0x69, 0x74, 0x63, 0x68, 0x53, 0x63, 0x65, 0x6e, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Scene)
+	err = en.WriteInt32(z.SwitchScene)
 	if err != nil {
 		return
 	}
@@ -2069,7 +2069,7 @@ func (z *GameUpdateAck) EncodeMsg(en *msgp.Writer) (err error) {
 			if err != nil {
 				return err
 			}
-			err = en.WriteInt32(z.Seed[zgmo].Speed)
+			err = en.WriteFloat64(z.Seed[zgmo].Speed)
 			if err != nil {
 				return
 			}
@@ -2118,9 +2118,9 @@ func (z *GameUpdateAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "tick"
 	o = append(o, 0xa4, 0x74, 0x69, 0x63, 0x6b)
 	o = msgp.AppendInt64(o, z.Tick)
-	// string "scene"
-	o = append(o, 0xa5, 0x73, 0x63, 0x65, 0x6e, 0x65)
-	o = msgp.AppendInt32(o, z.Scene)
+	// string "switchScene"
+	o = append(o, 0xab, 0x73, 0x77, 0x69, 0x74, 0x63, 0x68, 0x53, 0x63, 0x65, 0x6e, 0x65)
+	o = msgp.AppendInt32(o, z.SwitchScene)
 	// string "play"
 	o = append(o, 0xa4, 0x70, 0x6c, 0x61, 0x79)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Players)))
@@ -2204,7 +2204,7 @@ func (z *GameUpdateAck) MarshalMsg(b []byte) (o []byte, err error) {
 			o = msgp.AppendInt32(o, z.Seed[zgmo].Id)
 			// string "speed"
 			o = append(o, 0xa5, 0x73, 0x70, 0x65, 0x65, 0x64)
-			o = msgp.AppendInt32(o, z.Seed[zgmo].Speed)
+			o = msgp.AppendFloat64(o, z.Seed[zgmo].Speed)
 		}
 	}
 	// string "offline"
@@ -2248,8 +2248,8 @@ func (z *GameUpdateAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "scene":
-			z.Scene, bts, err = msgp.ReadInt32Bytes(bts)
+		case "switchScene":
+			z.SwitchScene, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -2469,7 +2469,7 @@ func (z *GameUpdateAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 								return
 							}
 						case "speed":
-							z.Seed[zgmo].Speed, bts, err = msgp.ReadInt32Bytes(bts)
+							z.Seed[zgmo].Speed, bts, err = msgp.ReadFloat64Bytes(bts)
 							if err != nil {
 								return
 							}
@@ -2529,7 +2529,7 @@ func (z *GameUpdateAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *GameUpdateAck) Msgsize() (s int) {
-	s = 1 + 9 + msgp.BoolSize + 5 + msgp.Int64Size + 6 + msgp.Int32Size + 5 + msgp.ArrayHeaderSize
+	s = 1 + 9 + msgp.BoolSize + 5 + msgp.Int64Size + 12 + msgp.Int32Size + 5 + msgp.ArrayHeaderSize
 	for zqyh := range z.Players {
 		if z.Players[zqyh] == nil {
 			s += msgp.NilSize
@@ -2566,7 +2566,7 @@ func (z *GameUpdateAck) Msgsize() (s int) {
 		if z.Seed[zgmo] == nil {
 			s += msgp.NilSize
 		} else {
-			s += 1 + 3 + msgp.Int32Size + 6 + msgp.Int32Size
+			s += 1 + 3 + msgp.Int32Size + 6 + msgp.Float64Size
 		}
 	}
 	s += 8 + msgp.ArrayHeaderSize + (len(z.Offline) * (msgp.Int32Size)) + 9 + msgp.ArrayHeaderSize

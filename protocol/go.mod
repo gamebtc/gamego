@@ -57,7 +57,7 @@ require (
 	github.com/vmihailenco/msgpack v4.0.4+incompatible
 	go.opencensus.io v0.20.2 // indirect
 	golang.org/x/crypto v0.0.0-20190418165655-df01cb2cc480 // indirect
-	golang.org/x/exp v0.0.0-20190419195159-b8972e603456 // indirect
+	golang.org/x/exp v0.0.0-20190422150234-47ea93f3503f // indirect
 	golang.org/x/image v0.0.0-20190417020941-4e30a6eb7d9a // indirect
 	golang.org/x/lint v0.0.0-20190409202823-959b441ac422 // indirect
 	golang.org/x/mobile v0.0.0-20190415191353-3e0bab5405d6 // indirect
@@ -66,7 +66,7 @@ require (
 	golang.org/x/sync v0.0.0-20190412183630-56d357773e84 // indirect
 	golang.org/x/sys v0.0.0-20190419153524-e8e3143a4f4a // indirect
 	golang.org/x/time v0.0.0-20190308202827-9d24e82272b4 // indirect
-	golang.org/x/tools v0.0.0-20190420000508-685fecacd0a0 // indirect
+	golang.org/x/tools v0.0.0-20190420181800-aa740d480789 // indirect
 	google.golang.org/api v0.3.2 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20190418145605-e7d98fc518a7 // indirect

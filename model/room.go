@@ -36,7 +36,7 @@ type RoomInfo struct {
 	Seat    int32     `bson:"seat"`    //每一桌的座位数目,0不限制
 	Icon    int32     `bson:"icon"`    //房间图标
 	Show    int32     `bson:"show"`    //是否显示
-	Period  int       `bson:"period"`  //帧更新周期(毫秒)
+	Period  float64   `bson:"period"`  //帧更新周期(毫秒)
 	Pause   int32     `bson:"pause"`   //暂停
 	State   int32     `bson:"state"`   //房间状态(0:不可用，1：可用)
 	Jobs    []int32   `bson:"jobs"`    //只对特定人员开放(0:无锁任何人可进，其它：锁定，指定类型的玩家可以进入)

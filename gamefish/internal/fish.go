@@ -8,14 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const (
-	SpecialFishType_Normal      = 0
-	SpecialFishType_King        = 1
-	SpecialFishType_KingAndQuan = 2
-	SpecialFishType_Sanyuan     = 3
-	SpecialFishType_Sixi        = 4
-	SpecialFishType_Max         = 5
-)
 
 var (
 	kingFishMap        = make(map[int32]*SpecialFishTemplate, 20) // 鱼王
@@ -28,20 +20,20 @@ var (
 
 // 鱼王/三元/四喜
 type SpecialFishTemplate struct {
-	Id               int32   `yaml:"Id"`               // ID
-	Probability      float64 `yaml:"Probability"`      // 产生几率
-	MaxScore         int32   `yaml:"MaxScore"`         // 最大倍率
-	CatchProbability float64 `yaml:"CatchProbability"` // 捕获几率
-	VisualScale      float64 `yaml:"VisualScale"`      // 缩放
-	VisualId         int32   `yaml:"VisualId"`         // 视图ID
-	BoundingBox      int32   `yaml:"BoundingBox"`
-	LockLevel        int32   `yaml:"LockLevel"`
+	Id               int32         `yaml:"Id"`               // ID
+	Probability      float64       `yaml:"Probability"`      // 产生几率
+	MaxScore         int32         `yaml:"MaxScore"`         // 最大倍率
+	CatchProbability float64       `yaml:"CatchProbability"` // 捕获几率
+	VisualScale      float64       `yaml:"VisualScale"`      // 缩放
+	VisualId         int32         `yaml:"VisualId"`         // 视图ID
+	BoundBox         int32         `yaml:"BoundBox"`
+	LockLevel        int32         `yaml:"LockLevel"`
 }
 
 type BoundingBox struct {
-	Radio float64 `yaml:"R"`
-	X     float64 `yaml:"X"`
-	Y     float64 `yaml:"Y"`
+	Radius float64 `yaml:"R"`
+	X      float64 `yaml:"X"`
+	Y      float64 `yaml:"Y"`
 }
 
 type BBX struct {
@@ -74,7 +66,6 @@ type FishTemplate struct {
 	LockLevel   int32         `yaml:"LockLevel"`
 	Effects     []Effect      `yaml:"Effects"`
 	Buffers     []Buffer      `yaml:"Buffers"`
-	Boxes       []BoundingBox `yaml:"-"`
 }
 
 // 子弹
@@ -87,14 +78,16 @@ type BulletTemplate struct {
 }
 
 func LoadConfig() {
+	LoadSystem("system.yaml")
 	LoadBullet("bullet.yaml")
 	LoadCannon("cannon.yaml")
-	LoadScene("scene.yaml")
 	LoadBoundingBox("bbox.yaml")
+	LoadNormalPath("path.yaml")
+	//
 	LoadFish("fish.yaml")
 	LoadSpecialFish("special.yaml")
 	LoadTroop("troop.yaml")
-	LoadNormalPath("path.yaml")
+	LoadScene("scene.yaml")
 }
 
 func LoadSpecialFish(fileName string) bool {
@@ -170,9 +163,6 @@ func LoadFish(fileName string) bool {
 
 	for i := 0; i < len(config.Fish); i++ {
 		v := &config.Fish[i]
-		if bbList, ok := bbxMap[v.BoundBox]; ok {
-			v.Boxes = bbList.Boxes
-		}
 		fishTemplateMap[v.Id] = v
 	}
 	return true

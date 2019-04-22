@@ -1,0 +1,200 @@
+syntax = "proto3";
+option go_package = "fish";
+package fish;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+enum Code {
+	// 8600-8699(捕鱼)
+	CodeNone = 0;
+	CodeTimeSyncReq = 8600;
+	CodeTimeSyncAck = 8601;
+	CodeShootReq = 8602;
+	CodeHitReq = 8604;
+	CodeGameInitAck = 8603;
+	CodeGameUpdateAck = 8605;
+}
+
+// 同步tick
+message TimeSyncReq {
+	int64 tick = 1;
+}
+
+// 同步时间
+message TimeSyncAck {
+	int64 client = 1;
+	int64 server = 2;
+}
+
+// 玩家信息
+message Player {
+	// 玩家ID
+	int32 id = 1 [(gogoproto.jsontag) = 'id', (gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 玩家头像
+	int32 icon = 2 [(gogoproto.jsontag) = 'icon', (gogoproto.moretags) = 'bson:"icon" msg:"icon"'];
+	// VIP等级
+	int32 vip = 3 [(gogoproto.jsontag) = 'vip', (gogoproto.moretags) = 'bson:"vip" msg:"vip"'];
+	// 椅子号(从0开始)
+	int32 chair = 4 [(gogoproto.jsontag) = 'chair', (gogoproto.moretags) = 'bson:"chair" msg:"chair"'];
+	// 玩家带的分
+	int64 coin = 5 [(gogoproto.jsontag) = 'coin', (gogoproto.moretags) = 'bson:"coin" msg:"coin"'];
+	// 玩家名称
+	string name = 6 [(gogoproto.jsontag) = 'name', (gogoproto.moretags) = 'bson:"name" msg:"name"'];
+}
+
+// 子弹
+message Bullet {
+	// 同屏唯一ID
+	int32 id = 1 [(gogoproto.jsontag) = 'id', (gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 玩家ID
+	int32 uid = 2 [(gogoproto.jsontag) = 'uid', (gogoproto.moretags) = 'bson:"uid" msg:"uid"'];
+	// 客户端ID
+	int32 client = 3 [(gogoproto.jsontag) = 'client', (gogoproto.moretags) = 'bson:"client" msg:"client"'];
+	// 创建时间
+	int64 created = 4 [(gogoproto.jsontag) = 'created', (gogoproto.moretags) = 'bson:"created" msg:"created"'];
+	// 炮倍
+	int32 bet = 5 [(gogoproto.jsontag) = 'bet', (gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	// 方向
+	double direction = 6 [(gogoproto.jsontag) = 'direction', (gogoproto.moretags) = 'bson:"direction" msg:"direction"'];
+	// 子弹位置X
+	double x = 7 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
+	// 子弹位置Y
+	double y = 8 [(gogoproto.jsontag) = 'y', (gogoproto.moretags) = 'bson:"y" msg:"y"'];
+	// 锁定的鱼
+	int32 fish = 9 [(gogoproto.jsontag) = 'fish', (gogoproto.moretags) = 'bson:"fish" msg:"fish"'];
+}
+
+// 鱼
+message Fish {
+	// 同屏唯一ID
+	int32 id = 1 [(gogoproto.jsontag) = 'id', (gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 鱼的模板ID
+	int32 tmpId = 2 [(gogoproto.jsontag) = 'tmpId', (gogoproto.moretags) = 'bson:"tmpId" msg:"tmpId"'];
+	// path
+	int32 pathId = 3 [(gogoproto.jsontag) = 'pathId', (gogoproto.moretags) = 'bson:"pathId" msg:"pathId"'];
+	// 速度
+	double speed = 4 [(gogoproto.jsontag) = 'speed', (gogoproto.moretags) = 'bson:"speed" msg:"speed"'];
+	// 创建时的Tick
+	int64 created = 5 [(gogoproto.jsontag) = 'created', (gogoproto.moretags) = 'bson:"created" msg:"created"'];
+	// 方向
+	double direction = 6 [(gogoproto.jsontag) = 'direction', (gogoproto.moretags) = 'bson:"direction" msg:"direction"'];
+	// 鱼位置X
+	double x = 7 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
+	// 鱼位置Y
+	double y = 8 [(gogoproto.jsontag) = 'y', (gogoproto.moretags) = 'bson:"y" msg:"y"'];
+	// 是否是队伍
+	bool troop = 9 [(gogoproto.jsontag) = 'troop', (gogoproto.moretags) = 'bson:"troop" msg:"troop"'];
+}
+
+// 捕鱼日志
+message GameRound {
+	// 全局唯一游戏ID(i有建立索引，不要更改名称)
+	int64 id = 1 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
+	// 玩家ID
+	int32 uid = 2 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	// 游戏开始时间(s有建立索引，不要更改名称)
+	int64 start = 3 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
+	// 游戏结束时间
+	int64 end = 4 [(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
+	// 房间ID
+	int32 room = 5 [(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	// 桌子ID
+	int32 tab = 6 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
+	// 开始游戏时带的钱
+	int64 oldCoin = 7 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
+	// 下注总金币
+	int64 bet = 8 [(gogoproto.jsontag) = 'm', (gogoproto.moretags) = 'bson:"m" msg:"m"'];
+	// 玩家输赢
+	sint64 win = 9 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	// 动作日志(子弹消耗的钱/击中的鱼/得分)
+	repeated int32 log = 11 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
+	// 备注
+	string note = 12 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
+}
+
+// 射击
+message ShootReq {
+	// 锁定的鱼
+	int32 fish = 1 [(gogoproto.jsontag) = 'fish', (gogoproto.moretags) = 'bson:"fish" msg:"fish"'];
+	// 子弹客户端ID
+	int32 client = 2 [(gogoproto.jsontag) = 'client', (gogoproto.moretags) = 'bson:"client" msg:"client"'];
+	// 炮倍
+	int32 bet = 3 [(gogoproto.jsontag) = 'bet', (gogoproto.moretags) = 'bson:"bet" msg:"bet"'];
+	// 方向
+	double direction = 4 [(gogoproto.jsontag) = 'direction', (gogoproto.moretags) = 'bson:"direction" msg:"direction"'];
+}
+
+// 命中
+message HitReq {
+	// 子弹Id
+	int32 bulletId = 1 [(gogoproto.jsontag) = 'bulletId', (gogoproto.moretags) = 'bson:"bulletId" msg:"bulletId"'];
+	// 鱼ID
+	int32 fishId = 2 [(gogoproto.jsontag) = 'fishId', (gogoproto.moretags) = 'bson:"fishId" msg:"fishId"'];
+}
+
+message GameInitAck {
+	// 当前游戏ID
+	int32 table = 1 [(gogoproto.jsontag) = 'table', (gogoproto.moretags) = 'bson:"table" msg:"table"'];
+	// 服务器tick时间
+	int64 tick = 2 [(gogoproto.jsontag) = 'tick', (gogoproto.moretags) = 'bson:"tick" msg:"tick"'];
+	// 场景Id
+	int32 scene = 3 [(gogoproto.jsontag) = 'scene', (gogoproto.moretags) = 'bson:"scene" msg:"scene"'];
+	// 玩家
+	repeated Player players = 4 [(gogoproto.jsontag) = 'play', (gogoproto.moretags) = 'bson:"play" msg:"play"'];
+	// 鱼
+	repeated Fish fishes = 5 [(gogoproto.jsontag) = 'fishes', (gogoproto.moretags) = 'bson:"fishes" msg:"fishes"'];
+	// 子弹
+	repeated Bullet bullets = 6 [(gogoproto.jsontag) = 'bull', (gogoproto.moretags) = 'bson:"bull" msg:"bull"'];
+	// 最大子弹数
+	int32 maxBullet = 7 [(gogoproto.jsontag) = 'maxBullet', (gogoproto.moretags) = 'bson:"maxBullet" msg:"maxBullet"'];
+	// 子弹发射间隔
+	int32 fireInterval = 8 [(gogoproto.jsontag) = 'fireInterval', (gogoproto.moretags) = 'bson:"fireInterval" msg:"fireInterval"'];
+	// 停火
+	bool stopFire = 9 [(gogoproto.jsontag) = 'stopFire', (gogoproto.moretags) = 'bson:"stopFire" msg:"stopFire"'];
+}
+
+// 击杀鱼
+message KillFish {
+	// 鱼的ID
+	int32 id = 1 [(gogoproto.jsontag) = 'id', (gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 玩家ID
+	int32 uid = 2 [(gogoproto.jsontag) = 'uid', (gogoproto.moretags) = 'bson:"uid" msg:"uid"'];
+	// 获得的金币
+	int64 score = 3 [(gogoproto.jsontag) = 'score', (gogoproto.moretags) = 'bson:"score" msg:"score"'];
+}
+
+// 更改鱼的速度
+message FishSeed{
+	// 鱼的ID
+	int32 id = 1 [(gogoproto.jsontag) = 'id', (gogoproto.moretags) = 'bson:"id" msg:"id"'];
+	// 速度
+	double speed = 4 [(gogoproto.jsontag) = 'speed', (gogoproto.moretags) = 'bson:"speed" msg:"speed"'];
+}
+
+// 游戏更新
+message GameUpdateAck {
+	// 停火
+	bool stopFire = 1  [(gogoproto.jsontag) = 'stopFire', (gogoproto.moretags) = 'bson:"stopFire" msg:"stopFire"'];
+	// 服务器tick时间
+	int64 tick = 2 [(gogoproto.jsontag) = 'tick', (gogoproto.moretags) = 'bson:"tick" msg:"tick"'];
+	// 切换场景
+	int32 switchScene = 3 [(gogoproto.jsontag) = 'switchScene', (gogoproto.moretags) = 'bson:"switchScene" msg:"switchScene"'];
+	// 新的玩家
+	repeated Player players = 4 [(gogoproto.jsontag) = 'play', (gogoproto.moretags) = 'bson:"play" msg:"play"'];
+	// 新的鱼
+	repeated Fish fishes = 5 [(gogoproto.jsontag) = 'fishes', (gogoproto.moretags) = 'bson:"fishes" msg:"fishes"'];
+	// 新的子弹
+	repeated Bullet bullets = 6 [(gogoproto.jsontag) = 'bull', (gogoproto.moretags) = 'bson:"bull" msg:"bull"'];
+	// 消失的子弹
+	repeated int32 dieBullets = 7 [(gogoproto.jsontag) = 'dieBullets', (gogoproto.moretags) = 'bson:"dieBullets" msg:"dieBullets"'];
+	// 消失的鱼
+	repeated int32 dieFishes = 8 [(gogoproto.jsontag) = 'dieFishes', (gogoproto.moretags) = 'bson:"dieFishes" msg:"dieFishes"'];
+	// 击杀鱼
+	repeated KillFish kills = 9 [(gogoproto.jsontag) = 'kills', (gogoproto.moretags) = 'bson:"kills" msg:"kills"'];
+	// 更改鱼的速度
+	repeated FishSeed seed = 10 [(gogoproto.jsontag) = 'seed', (gogoproto.moretags) = 'bson:"seed" msg:"seed"'];
+	// 下线的玩家
+	repeated int32 offline = 11 [(gogoproto.jsontag) = 'offline', (gogoproto.moretags) = 'bson:"offline" msg:"offline"'];
+	// 文字提示
+	repeated string describe = 12 [(gogoproto.jsontag) = 'describe', (gogoproto.moretags) = 'bson:"describe" msg:"describe"'];
+}

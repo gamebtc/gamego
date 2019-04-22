@@ -1,5 +1,5 @@
 Scene: [
-{Id: 1, Time: 600, Image: 'Map_0.jpg', Next: 2, TroopList: [{BeginTime: 300, EndTime: 350, Id: 6}], DistrubFish: [
+{Id: 1, Time: 600, Image: 'Map_0.jpg', Next: 2, Troop: {BeginTime: 300, EndTime: 350, TroopId: 6}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
@@ -18,7 +18,7 @@ Scene: [
 {Time: 25, MinCount: 1, MaxCount: 1, FishType: [701, 702, 703, 704, 705, 801, 802, 803], Weight: [100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2},
 {Time: 45, MinCount: 1, MaxCount: 1, FishType: [1001, 1002, 1003], Weight: [30, 20, 50], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2}, ],
 }, 
-{Id: 2, Time: 600, Image: 'Map_1.jpg', Next: 3, TroopList: [{BeginTime: 300, EndTime: 340, Id: 3}], DistrubFish: [
+{Id: 2, Time: 600, Image: 'Map_1.jpg', Next: 3, Troop: {BeginTime: 300, EndTime: 340, TroopId: 3}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
@@ -37,7 +37,7 @@ Scene: [
 {Time: 25, MinCount: 1, MaxCount: 1, FishType: [701, 702, 703, 704, 705, 801, 802, 803], Weight: [100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2},
 {Time: 45, MinCount: 1, MaxCount: 1, FishType: [1001, 1002, 1003], Weight: [30, 20, 50], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2}, ],
 }, 
-{Id: 3, Time: 600, Image: 'Map_2.jpg', Next: 4, TroopList: [{BeginTime: 300, EndTime: 350, Id: 7}], DistrubFish: [
+{Id: 3, Time: 600, Image: 'Map_2.jpg', Next: 4, Troop: {BeginTime: 300, EndTime: 350, TroopId: 7}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
@@ -56,7 +56,7 @@ Scene: [
 {Time: 25, MinCount: 1, MaxCount: 1, FishType: [701, 702, 703, 704, 705, 801, 802, 803], Weight: [100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2},
 {Time: 45, MinCount: 1, MaxCount: 1, FishType: [1001, 1002, 1003], Weight: [30, 20, 50], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2}, ],
 }, 
-{Id: 4, Time: 300, Image: 'Map_3.jpg', Next: 5, TroopList: [{BeginTime: 100, EndTime: 150, Id: 8}], DistrubFish: [
+{Id: 4, Time: 300, Image: 'Map_3.jpg', Next: 5, Troop: {BeginTime: 100, EndTime: 150, TroopId: 8}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
@@ -75,7 +75,7 @@ Scene: [
 {Time: 25, MinCount: 1, MaxCount: 1, FishType: [701, 702, 703, 704, 705, 801, 802, 803], Weight: [100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2},
 {Time: 45, MinCount: 1, MaxCount: 1, FishType: [1001, 1002, 1003], Weight: [30, 20, 50], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2}, ],
 }, 
-{Id: 5, Time: 600, Image: 'Map_4.jpg', Next: 6, TroopList: [{BeginTime: 300, EndTime: 340, Id: 5}], DistrubFish: [
+{Id: 5, Time: 600, Image: 'Map_4.jpg', Next: 6, Troop: {BeginTime: 300, EndTime: 340, TroopId: 5}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
@@ -94,7 +94,7 @@ Scene: [
 {Time: 25, MinCount: 1, MaxCount: 1, FishType: [701, 702, 703, 704, 705, 801, 802, 803], Weight: [100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2},
 {Time: 45, MinCount: 1, MaxCount: 1, FishType: [1001, 1002, 1003], Weight: [30, 20, 50], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 2}, ],
 }, 
-{Id: 6, Time: 600, Image: 'Map_5.jpg', Next: 1, TroopList: [{BeginTime: 300, EndTime: 350, Id: 4}], DistrubFish: [
+{Id: 6, Time: 600, Image: 'Map_5.jpg', Next: 1, Troop: {BeginTime: 300, EndTime: 350, TroopId: 4}, DistributeFish: [
 {Time: 23, MinCount: 20, MaxCount: 25, FishType: [1, 2, 3], Weight: [100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 47, MinCount: 20, MaxCount: 25, FishType: [4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100], RefreshType: 2, OffsetX: 50, OffsetY: 50, OffsetTime: 1},
 {Time: 3, MinCount: 1, MaxCount: 1, FishType: [1, 2, 3, 4, 5, 6, 7, 8, 9], Weight: [100, 100, 100, 100, 100, 100, 100, 100, 100], RefreshType: 0, OffsetX: 50, OffsetY: 50, OffsetTime: 1},

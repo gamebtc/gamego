@@ -1,7 +1,6 @@
 package internal
 
 const(
-	maxBulletCount = 20
 	bulletPoolCap  = 4096
 	fishPoolCap  = 4096
 )
@@ -9,6 +8,7 @@ const(
 var(
 	minBulletBet = int32(100)
 	maxBulletBet = minBulletBet *10
+	fireInterval = int32(60)
 
 
 	bulletPool = [bulletPoolCap]*Bullet{}

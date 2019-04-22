@@ -16,18 +16,6 @@ const (
 	NPT_CIRCLE = 2
 )
 
-// 游戏默认的窗口大小
-var (
-	DefaultWidth    = float64(2160)
-	DefaultHeight   = float64(1350)
-	AndroidProbMul  = float64(1300) // 机器人捕鱼概率
-	BulletSpeed     = float64(2000) // 子弹速度
-	SwitchSceneTime = float64(5)    // 切换场景的时间5秒
-	SnakeHeadType        int32
-	SnakeTailType		 int32
-	MaxSpecailCount      int32
-)
-
 type SPATH struct {
 	Id         int32      `yaml:"Id"`
 	Type       int32      `yaml:"Type"`
@@ -101,13 +89,13 @@ type ShapeLine struct {
 	Interval   float64    `yaml:"Interval"`
 	X          [2]float64 `yaml:"X"`
 	Y          [2]float64 `yaml:"Y"`
-	PriceCount int32      `yaml:"PriceCount"`
+	CreatCount int32      `yaml:"CreatCount"`
 }
 
 type ShapeCircle struct {
 	ShapePoint `yaml:",inline"`
 	R          float64 `yaml:"R"`
-	PriceCount int32   `yaml:"PriceCount"`
+	CreatCount int32   `yaml:"CreatCount"`
 }
 
 type TroopData struct {
@@ -206,7 +194,7 @@ func CreatTroopByData(td *TroopData) (tp *Troop) {
 			tt.X = traceVectors[i].X
 			tt.Y = traceVectors[i].Y
 			tt.Same = sl.Same
-			tt.Count = sl.PriceCount
+			tt.Count = sl.CreatCount
 			tt.Path = sl.Path
 			tt.Interval = sl.Interval
 			tt.Speed = sl.Speed
@@ -238,7 +226,7 @@ func CreatTroopByData(td *TroopData) (tp *Troop) {
 			tt.X = traceVectors[i].X
 			tt.Y = traceVectors[i].Y
 			tt.Same = sc.Same
-			tt.Count = sc.PriceCount
+			tt.Count = sc.CreatCount
 			tt.Path = sc.Path
 			tt.Interval = sc.Interval
 			tt.Speed = sc.Speed
@@ -452,8 +440,8 @@ func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) Mo
 		}
 
 		for n := int32(0); n < pointCount; n++ {
-			x[n] *= DefaultWidth
-			y[n] *= DefaultHeight
+			x[n] *= SystemConf.ScreenWidth
+			y[n] *= SystemConf.ScreenHeight
 			if sp.Type == NPT_CIRCLE {
 				break
 			}

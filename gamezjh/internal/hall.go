@@ -64,7 +64,7 @@ func (hall *gameHall) Update() {
 		t.Update()
 		// 回收无人的桌子
 		if t.State == GameStateReady && t.RoleCount == 0 {
-			t.reset()
+			t.clear()
 			runTables = append(runTables[:i], runTables[i+1:]...)
 			idleTables = append(idleTables, t)
 		} else {
