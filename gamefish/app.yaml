@@ -1,0 +1,70 @@
+consul:
+  addr: '127.0.0.1:8500'
+  #consul service prefix
+  serverPrefix: s
+  #room service prefix
+  roomPrefix: r
+  #ttl(second)
+  ttl: 15
+
+grpc:
+  listen: '0.0.0.0:11001'
+  addr: '127.0.0.1'
+  port: 11001
+  name: 'x.11001'
+  dcsa: 5
+  interval: 5
+  tags: []
+  maxConnect: 1000
+
+tcp:
+  listen: '0.0.0.0:11001'
+  #UDP read buffer 256K
+  readBuf: 262144
+  #UDP write buffer 1MB
+  writeBuf: 1048576
+
+database:
+  driver: 'mongodb'
+  url3: 'mongodb://localhost:27088'
+  url: 'mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs'
+  name: 'game'
+  watch: ['-appConf','-packConf','-chanConf','-hintConf','-roomConf']
+  refresh:
+    appConf: 5
+    packConf: 5
+    chanConf: 5
+    hintConf: 30
+    roomConf: 60
+
+#消息编码
+codec: proto
+#per connection read timeout(second)
+readTimeout: 15
+#per connection output message queue, packet will be dropped if exceeds
+outChanLen: 128
+#per connection in message queue, packet will be dropped if exceeds
+inChanLen: 128
+#max connect number limit
+maxConnect: 4000
+#per connection rpm limit
+rpmLimit: 200
+
+#http://localhost:6060/debug/pprof
+pprof: '0.0.0.0:6060'
+
+#log level: debug/info/warn/error/fatal/panic
+logLevel: 'debug'
+logFile: ''
+
+room:
+  #11001,11001,11001,11001
+  id: 11001
+  #220,280,280,290
+  kind: 110
+  addr: ['127.0.0.1:11001']
+  key: 'fdf843JJE'
+
+
+
+
