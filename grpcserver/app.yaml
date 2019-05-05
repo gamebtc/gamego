@@ -46,7 +46,7 @@ pprof: '0.0.0.0:6061'
 #log level: debug/info/warn/error/fatal/panic
 logLevel: 'debug'
 #消息编码
-codec: msg
+codec: proto
 
 #初始金币
 initBag:

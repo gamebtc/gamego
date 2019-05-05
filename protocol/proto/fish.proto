@@ -72,18 +72,20 @@ message Fish {
 	int32 tmpId = 2 [(gogoproto.jsontag) = 'tmpId', (gogoproto.moretags) = 'bson:"tmpId" msg:"tmpId"'];
 	// path
 	int32 pathId = 3 [(gogoproto.jsontag) = 'pathId', (gogoproto.moretags) = 'bson:"pathId" msg:"pathId"'];
+	// bbxID
+	int32 boxId = 4 [(gogoproto.jsontag) = 'boxId', (gogoproto.moretags) = 'bson:"boxId" msg:"boxId"'];
 	// 速度
-	double speed = 4 [(gogoproto.jsontag) = 'speed', (gogoproto.moretags) = 'bson:"speed" msg:"speed"'];
+	double speed = 5 [(gogoproto.jsontag) = 'speed', (gogoproto.moretags) = 'bson:"speed" msg:"speed"'];
 	// 创建时的Tick
-	int64 created = 5 [(gogoproto.jsontag) = 'created', (gogoproto.moretags) = 'bson:"created" msg:"created"'];
+	int64 created = 6 [(gogoproto.jsontag) = 'created', (gogoproto.moretags) = 'bson:"created" msg:"created"'];
 	// 方向
-	double direction = 6 [(gogoproto.jsontag) = 'direction', (gogoproto.moretags) = 'bson:"direction" msg:"direction"'];
+	double direction = 7 [(gogoproto.jsontag) = 'direction', (gogoproto.moretags) = 'bson:"direction" msg:"direction"'];
 	// 鱼位置X
-	double x = 7 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
+	double x = 8 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
 	// 鱼位置Y
-	double y = 8 [(gogoproto.jsontag) = 'y', (gogoproto.moretags) = 'bson:"y" msg:"y"'];
+	double y = 9 [(gogoproto.jsontag) = 'y', (gogoproto.moretags) = 'bson:"y" msg:"y"'];
 	// 是否是队伍
-	bool troop = 9 [(gogoproto.jsontag) = 'troop', (gogoproto.moretags) = 'bson:"troop" msg:"troop"'];
+	bool troop = 10 [(gogoproto.jsontag) = 'troop', (gogoproto.moretags) = 'bson:"troop" msg:"troop"'];
 }
 
 // 捕鱼日志

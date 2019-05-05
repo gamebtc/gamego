@@ -57,6 +57,6 @@ agentId: 1
 #同一IP的最大连接数
 sameIp: 5
 #消息编码
-codec: msg
+codec: proto
 #客户端消息签名检查
 verSign: false

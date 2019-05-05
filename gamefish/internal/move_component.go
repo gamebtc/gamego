@@ -62,8 +62,8 @@ func (fish *Fish) moveByDirection(second float64) {
 	}
 
 	if fish.TargetId != 0 {
-		target, ok := fish.table.fishes[fish.TargetId]
-		if ok && target.State < ObjectState_Dead && target.InSide {
+		target := fish.table.fishes[fish.TargetId]
+		if target!=nil && target.State < ObjectState_Dead && target.InSide {
 			if CalcDistance(target.X, target.Y, fish.X, fish.Y) > 10 {
 				fish.Direction = CalcAngle(target.X, target.Y, fish.X, fish.Y)
 				fish.initAngle()

@@ -1,7 +1,11 @@
 package util
 
 import (
+	"context"
+	"os"
 	"runtime"
+	"runtime/pprof"
+	"runtime/trace"
 
 	"github.com/davecgh/go-spew/spew"
 	log "github.com/sirupsen/logrus"
@@ -23,4 +27,54 @@ func PrintPanicStack(extras ...interface{}) {
 			log.Errorf("EXRAS#%v DATA:%v\n", k, spew.Sdump(extras[k]))
 		}
 	}
+}
+
+
+//https://www.cnblogs.com/YYRise/p/10797794.html
+
+func CpuProfile(ctx context.Context) {
+	f, err := os.Create("cpu.prof")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("CPU Profile started")
+	pprof.StartCPUProfile(f)
+	go func(){
+		select{
+		case <-ctx.Done():
+			pprof.StopCPUProfile()
+			f.Close()
+		}
+	}()
+}
+
+func HeapProfile(ctx context.Context) {
+	f, err := os.Create("heap.prof")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	pprof.WriteHeapProfile(f)
+	go func(){
+		select{
+		case <-ctx.Done():
+			f.Close()
+		}
+	}()
+}
+
+func TraceProfile(ctx context.Context) {
+	f, err := os.Create("trace.out")
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Trace started")
+	trace.Start(f)
+	go func(){
+		select{
+		case <-ctx.Done():
+			trace.Stop()
+			f.Close()
+		}
+	}()
 }

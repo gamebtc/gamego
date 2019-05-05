@@ -16,7 +16,17 @@ const (
 	NPT_CIRCLE = 2
 )
 
-type SPATH struct {
+var (
+	LoadPath         = false
+	normalPaths      = make([]Path, 0, 64)
+	NormalPathVector = make([]MovePoints, 0, 64*2*2*2*2)
+	troopPaths       = make(map[int32]*Path)
+	troopPoints      = make(map[int32]MovePoints)
+	troops           []Troop
+	troopDatas       []TroopData
+)
+
+type Path struct {
 	Id         int32      `yaml:"Id"`
 	Type       int32      `yaml:"Type"`
 	PosX       [4]float64 `yaml:"PosX"`
@@ -125,47 +135,31 @@ type Troop struct {
 	Shape     []ShapePoint `yaml:"Shape"`
 }
 
-
-var (
-	LoadPath         = false
-	NormalPaths      = make([]SPATH, 0, 64)
-	NormalPathVector = make([]MovePoints, 0, 64*2*2*2*2)
-
-	TroopPath    = make(map[int32]*SPATH)
-	TroopMap     = make(map[int32]*Troop)
-	TroopDataMap = make(map[int32]*TroopData)
-	TroopPathMap = make(map[int32]MovePoints)
-)
-
-func GetNormalPath(id int32) *SPATH {
-	if len(NormalPaths) <= 0 || id < 0 {
+func GetNormalPath(id int32) *Path {
+	if len(normalPaths) <= 0 || id < 0 {
 		return nil
 	}
-	return &NormalPaths[id%int32(len(NormalPaths))]
+	return &normalPaths[id%int32(len(normalPaths))]
+}
+
+func GetTroopPath(id int32) *Path {
+	return troopPaths[id]
 }
 
 func GetPathData(id int32, troop bool) MovePoints {
 	if troop {
-		if r, ok := TroopPathMap[id]; ok {
-			return r
-		} else {
-			return nil
-		}
+		return troopPoints[id]
 	} else {
 		return NormalPathVector[id%int32(len(NormalPathVector))]
 	}
 }
 
-func GetTroopPath(id int32) *SPATH {
-	if r, ok := TroopPath[id]; ok {
-		return r
-	}
-	return nil
-}
-
 func GetTroop(id int32) *Troop {
-	if r, ok := TroopMap[id]; ok {
-		return r
+	for i := len(troops) - 1; i >= 0; i-- {
+		t := &troops[i]
+		if t.Id == id {
+			return t
+		}
 	}
 	return nil
 }
@@ -247,7 +241,7 @@ func CreatTroopByData(td *TroopData) (tp *Troop) {
 	return
 }
 
-func SetPointCount(p []SPATH) {
+func SetPointCount(p []Path) {
 	size := int32(len(p))
 	for i := int32(0); i < size; i++ {
 		path := &p[i]
@@ -269,7 +263,7 @@ func LoadTroop(fileName string) bool {
 	// TODO:json to TroopPath
 	var config struct {
 		Troop []TroopData `yaml:"Troop"`
-		Path  []SPATH     `yaml:"Path"`
+		Path  []Path      `yaml:"Path"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -283,22 +277,24 @@ func LoadTroop(fileName string) bool {
 	}
 	SetPointCount(config.Path)
 
+	troopDatas = config.Troop
+	troops = make([]Troop,0,len(config.Troop))
 	for i := 0; i < len(config.Troop); i++ {
 		td := &config.Troop[i]
 		//td.Fix
-		TroopDataMap[td.Id] = td
 		trp := CreatTroopByData(td)
-		TroopMap[td.Id] = trp
+		troops = append(troops, *trp)
 	}
+
 
 	for i := 0; i < len(config.Path); i++ {
 		pd := &config.Path[i]
-		TroopPath[pd.Id] = pd
+		troopPaths[pd.Id] = pd
 	}
 
-	size := len(TroopPath)
+	size := len(troopPaths)
 	exclude := make([]int32, 0, size)
-	for k, sph := range TroopPath {
+	for k, sph := range troopPaths {
 		find := false
 		for _, tt := range exclude {
 			if k == tt {
@@ -312,14 +308,15 @@ func LoadTroop(fileName string) bool {
 
 		nxt := sph.Next
 		for nxt > 0 {
-			if _, ok := TroopPath[nxt]; ok == false {
+			if tmpPath := troopPaths[nxt]; tmpPath == nil {
 				break
+			}else {
+				exclude = append(exclude, nxt)
+				nxt = tmpPath.Next
 			}
-			exclude = append(exclude, nxt)
-			nxt = TroopPath[nxt].Next
 		}
 		path := CreatePathByData(sph, false, false, false, false, true)
-		TroopPathMap[k] = path
+		troopPoints[k] = path
 	}
 	return true
 }
@@ -327,7 +324,7 @@ func LoadTroop(fileName string) bool {
 func LoadNormalPath(fileName string) bool {
 	// TODO:json to NormalPaths
 	var config struct {
-		Path []SPATH `yaml:"Path"`
+		Path []Path `yaml:"Path"`
 	}
 	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -341,8 +338,8 @@ func LoadNormalPath(fileName string) bool {
 	}
 	SetPointCount(config.Path)
 
-	NormalPaths = config.Path
-	size := int32(len(NormalPaths))
+	normalPaths = config.Path
+	size := int32(len(normalPaths))
 	exclude := make([]int32, 0, size)
 	for i := int32(0); i < size; i++ {
 		find := false
@@ -355,11 +352,11 @@ func LoadNormalPath(fileName string) bool {
 		if find {
 			continue
 		}
-		sph := &NormalPaths[i]
+		sph := &normalPaths[i]
 		nxt := sph.Next
 		for nxt > 0 && nxt < size {
 			exclude = append(exclude, nxt)
-			nxt = NormalPaths[nxt].Next
+			nxt = normalPaths[nxt].Next
 		}
 		for x := 0; x < 2; x++ {
 			for y := 0; y < 2; y++ {
@@ -375,7 +372,7 @@ func LoadNormalPath(fileName string) bool {
 	return true
 }
 
-func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) MovePoints {
+func CreatePathByData(sp *Path, xMirror, yMirror, xyMirror, Not, troop bool) MovePoints {
 	out := make(MovePoints, 0, 1000)
 	for sp != nil {
 		x := [4]float64{}
@@ -466,14 +463,14 @@ func CreatePathByData(sp *SPATH, xMirror, yMirror, xyMirror, Not, troop bool) Mo
 
 		if troop {
 			nxt := sp.Next
-			if s, ok := TroopPath[nxt]; ok {
+			if s := troopPaths[nxt]; s != nil {
 				sp = s
 			} else {
 				break
 			}
 		} else {
-			if sp.Next > 0 && sp.Next < int32(len(NormalPaths)) {
-				sp = &NormalPaths[sp.Next]
+			if sp.Next > 0 && sp.Next < int32(len(normalPaths)) {
+				sp = &normalPaths[sp.Next]
 			} else {
 				break
 			}

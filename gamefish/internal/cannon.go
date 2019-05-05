@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	CannonPosList = make([]CannonPos, 0, 10)
-	EffectPos     = CannonPos{}
-	LockInfo      = CannonLock{}
-	JettonPos     = Point{}
+	Cannons   []CannonPos
+	EffectPos      = CannonPos{}
+	LockInfo        = CannonLock{}
+	JettonPos      = Point{}
 )
 
 // 筹码
@@ -95,6 +95,6 @@ func LoadCannon(fileName string) bool {
 		log.Fatalf("path config file error:%v", err)
 		return false
 	}
-
+	Cannons = config.Cannon
 	return true
 }

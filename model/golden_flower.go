@@ -373,7 +373,7 @@ func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
 				val := []byte{a0, a1, a2}
 				key := NewGoldenFlower(val)
 				number := key.GetNumber()
-				if g, ok := dealer.Groups[number]; ok {
+				if g := dealer.Groups[number]; g !=nil {
 					off := valOff[number]
 					g.Values[off], g.Values[off+1], g.Values[off+2] = a0, a1, a2
 					valOff[number] = off + goldenFlowerCount

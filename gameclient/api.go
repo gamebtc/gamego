@@ -15,6 +15,7 @@ import (
 
 	. "local.com/abc/game/protocol"
 	"local.com/abc/game/protocol/folks"
+	"local.com/abc/game/protocol/zjh"
 	"local.com/abc/game/util"
 )
 
@@ -58,6 +59,14 @@ func Run(config *AppConfig) {
 	registMsg(int32(MsgId_HeartBeatAck), (*HeartBeatAck)(nil), heartBeat)
 
 	registMsg(int32(folks.Folks_GameInitAck), (*folks.GameInitAck)(nil), folksGameInit)
+
+	registMsg(int32(zjh.Code_CodeActionReq), (*zjh.ActionReq)(nil), nil)
+	registMsg(int32(zjh.Code_CodeActionAck), (*zjh.ActionAck)(nil), zjhAction)
+	registMsg(int32(zjh.Code_CodeGameInitAck), (*zjh.GameInitAck)(nil), zjhGameInit)
+	registMsg(int32(zjh.Code_CodeGameStartAck), (*zjh.GameStartAck)(nil), zjhGameStart)
+	registMsg(int32(zjh.Code_CodeGameResultAck), (*zjh.GameResultAck)(nil), zjhGameResult)
+
+
 	//registMsg(int32(folks.Folks_CloseBetAck), (*folks.CloseBetAck)(nil), folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
@@ -72,8 +81,30 @@ func Run(config *AppConfig) {
 	})
 }
 
-func folksGameInit(sess *Session, arg interface{}) {
+func zjhAction(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*zjh.ActionAck); ok && arg != nil {
+		log.Debugf("zjhAction:%#v", arg)
+	}
+}
+
+func zjhGameInit(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*zjh.GameInitAck); ok && arg != nil {
+		log.Debugf("zjhGameInit:%#v", arg)
+	}
+}
+func zjhGameStart(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*zjh.GameStartAck); ok && arg != nil {
+		log.Debugf("zjhGameStart:%#v", arg)
+	}
+}
+func zjhGameResult(sess *Session, arg interface{}) {
 	if arg, ok := arg.(*folks.GameInitAck); ok && arg != nil {
+		log.Debugf("zjhGameResult:%#v", arg)
+	}
+}
+
+func folksGameInit(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*zjh.GameResultAck); ok && arg != nil {
 		log.Debugf("folksGameInitAck:%#v", arg)
 	}
 }

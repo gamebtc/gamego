@@ -359,6 +359,11 @@ func (z *Fish) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "boxId":
+			z.BoxId, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
 		case "speed":
 			z.Speed, err = dc.ReadFloat64()
 			if err != nil {
@@ -401,9 +406,9 @@ func (z *Fish) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *Fish) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 9
+	// map header, size 10
 	// write "id"
-	err = en.Append(0x89, 0xa2, 0x69, 0x64)
+	err = en.Append(0x8a, 0xa2, 0x69, 0x64)
 	if err != nil {
 		return err
 	}
@@ -426,6 +431,15 @@ func (z *Fish) EncodeMsg(en *msgp.Writer) (err error) {
 		return err
 	}
 	err = en.WriteInt32(z.PathId)
+	if err != nil {
+		return
+	}
+	// write "boxId"
+	err = en.Append(0xa5, 0x62, 0x6f, 0x78, 0x49, 0x64)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.BoxId)
 	if err != nil {
 		return
 	}
@@ -489,9 +503,9 @@ func (z *Fish) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *Fish) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 9
+	// map header, size 10
 	// string "id"
-	o = append(o, 0x89, 0xa2, 0x69, 0x64)
+	o = append(o, 0x8a, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
 	// string "tmpId"
 	o = append(o, 0xa5, 0x74, 0x6d, 0x70, 0x49, 0x64)
@@ -499,6 +513,9 @@ func (z *Fish) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "pathId"
 	o = append(o, 0xa6, 0x70, 0x61, 0x74, 0x68, 0x49, 0x64)
 	o = msgp.AppendInt32(o, z.PathId)
+	// string "boxId"
+	o = append(o, 0xa5, 0x62, 0x6f, 0x78, 0x49, 0x64)
+	o = msgp.AppendInt32(o, z.BoxId)
 	// string "speed"
 	o = append(o, 0xa5, 0x73, 0x70, 0x65, 0x65, 0x64)
 	o = msgp.AppendFloat64(o, z.Speed)
@@ -551,6 +568,11 @@ func (z *Fish) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "boxId":
+			z.BoxId, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
 		case "speed":
 			z.Speed, bts, err = msgp.ReadFloat64Bytes(bts)
 			if err != nil {
@@ -594,7 +616,7 @@ func (z *Fish) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *Fish) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 6 + msgp.Int32Size + 7 + msgp.Int32Size + 6 + msgp.Float64Size + 8 + msgp.Int64Size + 10 + msgp.Float64Size + 2 + msgp.Float64Size + 2 + msgp.Float64Size + 6 + msgp.BoolSize
+	s = 1 + 3 + msgp.Int32Size + 6 + msgp.Int32Size + 7 + msgp.Int32Size + 6 + msgp.Int32Size + 6 + msgp.Float64Size + 8 + msgp.Int64Size + 10 + msgp.Float64Size + 2 + msgp.Float64Size + 2 + msgp.Float64Size + 6 + msgp.BoolSize
 	return
 }
 

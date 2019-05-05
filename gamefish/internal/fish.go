@@ -8,26 +8,25 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-
 var (
-	kingFishMap        = make(map[int32]*SpecialFishTemplate, 20) // 鱼王
-	sanYuanFishMap     = make(map[int32]*SpecialFishTemplate, 20) // 三元
-	siXiFishMap        = make(map[int32]*SpecialFishTemplate, 20) // 四喜
-	bbxMap             = make(map[int32]*BBX, 100)                //
-	fishTemplateMap    = make(map[int32]*FishTemplate, 100)
 	bulletTemplateList []BulletTemplate
+	kingFishes         []SpecialFishTemplate // 鱼王
+	sanYuanFishes      []SpecialFishTemplate // 三元
+	siXiFishes         []SpecialFishTemplate // 四喜
+	bbxMap             = make(map[int32]*BBX, 100)
+	fishTemplateMap    = make(map[int32]*FishTemplate, 100)
 )
 
 // 鱼王/三元/四喜
 type SpecialFishTemplate struct {
-	Id               int32         `yaml:"Id"`               // ID
-	Probability      float64       `yaml:"Probability"`      // 产生几率
-	MaxScore         int32         `yaml:"MaxScore"`         // 最大倍率
-	CatchProbability float64       `yaml:"CatchProbability"` // 捕获几率
-	VisualScale      float64       `yaml:"VisualScale"`      // 缩放
-	VisualId         int32         `yaml:"VisualId"`         // 视图ID
-	BoundBox         int32         `yaml:"BoundBox"`
-	LockLevel        int32         `yaml:"LockLevel"`
+	Id               int32   `yaml:"Id"`               // ID
+	Probability      float64 `yaml:"Probability"`      // 产生几率
+	MaxScore         int32   `yaml:"MaxScore"`         // 最大倍率
+	CatchProbability float64 `yaml:"CatchProbability"` // 捕获几率
+	VisualScale      float64 `yaml:"VisualScale"`      // 缩放
+	VisualId         int32   `yaml:"VisualId"`         // 视图ID
+	BoundBox         int32   `yaml:"BoundBox"`
+	LockLevel        int32   `yaml:"LockLevel"`
 }
 
 type BoundingBox struct {
@@ -53,19 +52,19 @@ type Buffer struct {
 }
 
 type FishTemplate struct {
-	Id          int32         `yaml:"Id"`
-	Name        string        `yaml:"Name"`
-	BroadCast   bool          `yaml:"BroadCast"`
-	Probability float64       `yaml:"Probability"`
-	VisualId    int32         `yaml:"VisualId"`
-	Speed       float64       `yaml:"Speed"`
-	BoundBox    int32         `yaml:"BoundBox"`
-	ShowBingo   bool          `yaml:"ShowBingo"`
-	Particle    string        `yaml:"Particle"`
-	ShakeScree  bool          `yaml:"ShakeScree"`
-	LockLevel   int32         `yaml:"LockLevel"`
-	Effects     []Effect      `yaml:"Effects"`
-	Buffers     []Buffer      `yaml:"Buffers"`
+	Id          int32    `yaml:"Id"`
+	Name        string   `yaml:"Name"`
+	BroadCast   bool     `yaml:"BroadCast"`
+	Probability float64  `yaml:"Probability"`
+	VisualId    int32    `yaml:"VisualId"`
+	Speed       float64  `yaml:"Speed"`
+	BoundBox    int32    `yaml:"BoundBox"`
+	ShowBingo   bool     `yaml:"ShowBingo"`
+	Particle    string   `yaml:"Particle"`
+	ShakeScree  bool     `yaml:"ShakeScree"`
+	LockLevel   int32    `yaml:"LockLevel"`
+	Effects     []Effect `yaml:"Effects"`
+	Buffers     []Buffer `yaml:"Buffers"`
 }
 
 // 子弹
@@ -107,19 +106,9 @@ func LoadSpecialFish(fileName string) bool {
 		return false
 	}
 
-	for i := 0; i < len(config.King); i++ {
-		v := &config.King[i]
-		kingFishMap[v.Id] = v
-	}
-	for i := 0; i < len(config.SanYuan); i++ {
-		v := &config.SanYuan[i]
-		sanYuanFishMap[v.Id] = v
-	}
-	for i := 0; i < len(config.SiXi); i++ {
-		v := &config.SiXi[i]
-		siXiFishMap[v.Id] = v
-	}
-
+	kingFishes = config.King
+	sanYuanFishes = config.SanYuan
+	siXiFishes = config.SiXi
 	return true
 }
 

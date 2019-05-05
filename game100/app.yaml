@@ -38,7 +38,7 @@ database:
     roomConf: 60
 
 #消息编码
-codec: msg
+codec: proto
 #per connection read timeout(second)
 readTimeout: 15
 #per connection output message queue, packet will be dropped if exceeds
