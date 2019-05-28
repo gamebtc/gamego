@@ -63,7 +63,7 @@ type ChanInfo struct {
 	Id       int32     `bson:"_id"`      //包ID
 	Code     string    `bson:"code"`     //包编码，唯一
 	Name     string    `bson:"name"`     //包名称
-	App      int32     `bson:"app"`      //所属应用ID(同一应用的客户端可以互通)
+	Packs    []int32   `bson:"packs"`    //渠道可以推广的包
 	Parent   int32     `bson:"parent"`   //上级
 	State    int32     `bson:"state"`    //包状态
 	Conf     ConfType  `bson:"conf"`     //包配置
@@ -73,6 +73,15 @@ type ChanInfo struct {
 	Init     time.Time `bson:"init"`     //初始时间
 	Up       time.Time `bson:"up"`       //更新时间
 	Ver      int32     `bson:"ver"`      //版本
+}
+
+func (c* ChanInfo)ExistsPack(p int32) bool {
+	for _, i := range c.Packs {
+		if i == p {
+			return true
+		}
+	}
+	return false
 }
 
 // 提示信息

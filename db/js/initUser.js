@@ -51,6 +51,10 @@ db.user.createIndex(
     { unique: false, background: true }
 );
 
+db.user.createIndex(
+    { "pack": 1 },
+    { unique: false, background: true }
+);
 //db.user.createIndex(
 //    {"": 1},
 //    {

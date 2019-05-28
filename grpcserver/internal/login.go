@@ -41,10 +41,20 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 	now := driver.Now()
 	nowInt := int32(now.Unix())
 	//检查包配置
+	packConf := driver.GetPackConf(req.Env.Pack)
+	if packConf == nil || getBan(packConf.Ban, BAN_LOGIN) > nowInt {
+		return loginFailAck(10001, req.Env.Pack)
+	}
+	//检查渠道配置
 	chanConf := driver.GetChanConf(req.Env.Chan)
 	if chanConf == nil || getBan(chanConf.Ban, BAN_LOGIN) > nowInt {
-		return loginFailAck(10001, req.Env.Chan)
+		return loginFailAck(10002, req.Env.Chan)
 	}
+	// 渠道跟应用ID不匹配
+	if !chanConf.ExistsPack(req.Env.Pack){
+		return loginFailAck(10002, req.Env.Chan)
+	}
+
 	ip := model.IP(uctx.Ip)
 	//检查IP
 	ipInfo := driver.GetIpInfo(ip)
@@ -60,6 +70,9 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 	// 获取账号
 	acc, err := driver.GetAccount(req.Env.Id, req.Type, req.Name)
 	if err != nil {
+		if getBan(packConf.Ban, BAN_REGIST) > nowInt {
+			return loginFailAck(10101)
+		}
 		if getBan(chanConf.Ban, BAN_REGIST) > nowInt {
 			return loginFailAck(10101)
 		}
@@ -71,6 +84,10 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 		ipInfo := driver.GetIpInfo(ip)
 		if ipInfo != nil && getBan(ipInfo.Ban, BAN_REGIST) > nowInt {
 			return loginFailAck(10103)
+		}
+		//检查机器码
+		if udid != nil && getBan(udid.Ban, BAN_REGIST) > nowInt {
+			return loginFailAck(10104)
 		}
 		if acc == nil {
 			acc = new(model.Account)

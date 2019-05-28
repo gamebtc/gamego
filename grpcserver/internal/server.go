@@ -161,7 +161,7 @@ func verCheck(ctx context.Context, in interface{}) interface{} {
 					user := ParseUserContext(ctx)
 					strIp := util.Uint32ToIp(uint32(user.Ip))
 					if strIp == "127.0.0.1" {
-						strIp = "223.104.18.236"
+						strIp = "8.8.8.8"
 					}
 
 					if c, err := city.FindInfo(strIp, "CN"); err == nil {

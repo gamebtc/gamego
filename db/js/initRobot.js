@@ -79,7 +79,7 @@ db.robot.insertMany([
     {_id:N(2330104),sort:23,icon:z, vip:z,name:"南京", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
     {_id:N(1306076),sort:24,icon:z, vip:z,name:"不战而胜", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
     {_id:N(6980142),sort:25,icon:z, vip:z,name:"夜半小夜曲", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
-    {_id:N(1304400),sort:26,icon:z, vip:z,name:"，一见钟情", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
+    {_id:N(1304400),sort:26,icon:z, vip:z,name:"一见钟情", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
     {_id:N(9265524),sort:27,icon:z, vip:z,name:"新浪网", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
     {_id:N(2912409),sort:28,icon:z, vip:z,name:"按程序", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
     {_id:N(4444882),sort:29,icon:z, vip:z,name:"前些天", app:z,sex:z, pack:z,last:now,ip:NL(1),tag:{}, init:now,up:now,ver:v,room:z},
