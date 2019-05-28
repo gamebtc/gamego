@@ -55,7 +55,7 @@ message DeviceInfo {
 
 // 应用环境信息
 message Envirnment{
-    int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];                 // 应用类型(同一应用类型的客户端可以互通)
+    int32 app = 1 [(gogoproto.moretags) = 'bson:"app" msg:"app"'];              // 应用类型(同一应用类型的客户端可以互通)
     int32 pack = 2 [(gogoproto.moretags) = 'bson:"pack" msg:"pack"'];           // 包ID(用于区分来源，写死在程序中)
     string ver = 3 [(gogoproto.moretags) = 'bson:"ver" msg:"ver"'];             // 应用版本号
     string chan = 4 [(gogoproto.moretags) = 'bson:"chan" msg:"chan"'];          // 渠道ID(用于统计推广渠道)

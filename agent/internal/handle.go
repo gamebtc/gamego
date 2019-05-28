@@ -45,7 +45,7 @@ func verCheckHandler(sess *Session, data []byte) (interface{}, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(strconv.Itoa(int(arg.Check)))
 	buffer.WriteString(strconv.Itoa(int(arg.Time)))
-	buffer.WriteString(strconv.Itoa(int(arg.Env.Id)))
+	buffer.WriteString(strconv.Itoa(int(arg.Env.App)))
 	buffer.WriteString(packId)
 	buffer.WriteString(arg.Env.Ver)
 	buffer.WriteString(arg.Env.Chan)

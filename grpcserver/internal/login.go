@@ -68,7 +68,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 	}
 
 	// 获取账号
-	acc, err := driver.GetAccount(req.Env.Id, req.Type, req.Name)
+	acc, err := driver.GetAccount(req.Env.App, req.Type, req.Name)
 	if err != nil {
 		if getBan(packConf.Ban, BAN_REGIST) > nowInt {
 			return loginFailAck(10101)
@@ -98,7 +98,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 			return loginFailAck(10105, req.Env.Chan)
 		}
 		acc.Id = id
-		acc.App = req.Env.Id
+		acc.App = req.Env.App
 		acc.Type = req.Type
 		acc.Name = req.Name
 		acc.Pwd = req.Pwd
@@ -124,7 +124,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 		// 创建玩家
 		bag := appConf.GetInitCoin()
 		user = &model.User{
-			App:  req.Env.Id,
+			App:  req.Env.App,
 			Act:  acc.Id,
 			Pack: req.Env.Pack,
 			Chan: acc.Chan,

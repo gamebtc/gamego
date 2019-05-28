@@ -25,11 +25,11 @@ const testLogin = function (count) {
         osVer: "sx4.34.34",
         other: "nukoowe"
     };
-    const app = {
-        id: 1,
-        pack: 1101,
+    const env = {
+        app: 1,
+        pack: 1000,
         ver: "1.0.0",
-        chan: "bb_ios_1",
+        chan: "bb",
         refer: "100909",
         other: "otherapplication"
     };
@@ -37,7 +37,7 @@ const testLogin = function (count) {
         "type": 0,
         userId: 0,
         device: device,
-        app: app
+        env: env
     };
     const args = ['fUserLogin', agentId, ip, req];
     const cmd = {

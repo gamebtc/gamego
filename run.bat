@@ -16,10 +16,10 @@ cd ../grpcserver
 go build
 start call grpcserver
 
-::cd ../game100
-::go build
+cd ../game100
+go build
 ::start call game100
 
-::cd ../gamezjh
-::go build
+cd ../gamezjh
+go build
 ::start call gamezjh

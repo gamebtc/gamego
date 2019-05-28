@@ -317,8 +317,8 @@ func (z *Envirnment) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "id":
-			z.Id, err = dc.ReadInt32()
+		case "app":
+			z.App, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -360,12 +360,12 @@ func (z *Envirnment) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *Envirnment) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 6
-	// write "id"
-	err = en.Append(0x86, 0xa2, 0x69, 0x64)
+	// write "app"
+	err = en.Append(0x86, 0xa3, 0x61, 0x70, 0x70)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Id)
+	err = en.WriteInt32(z.App)
 	if err != nil {
 		return
 	}
@@ -421,9 +421,9 @@ func (z *Envirnment) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *Envirnment) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 6
-	// string "id"
-	o = append(o, 0x86, 0xa2, 0x69, 0x64)
-	o = msgp.AppendInt32(o, z.Id)
+	// string "app"
+	o = append(o, 0x86, 0xa3, 0x61, 0x70, 0x70)
+	o = msgp.AppendInt32(o, z.App)
 	// string "pack"
 	o = append(o, 0xa4, 0x70, 0x61, 0x63, 0x6b)
 	o = msgp.AppendInt32(o, z.Pack)
@@ -458,8 +458,8 @@ func (z *Envirnment) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "id":
-			z.Id, bts, err = msgp.ReadInt32Bytes(bts)
+		case "app":
+			z.App, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -501,7 +501,7 @@ func (z *Envirnment) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *Envirnment) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Ver) + 5 + msgp.StringPrefixSize + len(z.Chan) + 6 + msgp.StringPrefixSize + len(z.Refer) + 6 + msgp.StringPrefixSize + len(z.Other)
+	s = 1 + 4 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Ver) + 5 + msgp.StringPrefixSize + len(z.Chan) + 6 + msgp.StringPrefixSize + len(z.Refer) + 6 + msgp.StringPrefixSize + len(z.Other)
 	return
 }
 
