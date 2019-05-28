@@ -14,13 +14,16 @@ const f = function (id) {
     };
 };
 
+const N = function (v) {
+    return NumberInt(v)
+};
 const v = NumberInt(1)
 const now = new Date();
 const maxTime = new Date(2145888000000);
 db.appConf.remove({});
 db.appConf.insertMany([
-    { _id: NumberInt(1), code: "bb", name: "BB娱乐", url: "", conf: {"x":"a"}, up: now, ver: v },
-    { _id: NumberInt(2), code: "aa", name: "AA游戏", url: "", conf: {"x":"a"}, up: now, ver: v },
-    { _id: NumberInt(3), code: "wsyl", name: "WS娱乐", url: "", conf: {"x":"a"}, up: now, ver: v },
-    { _id: NumberInt(4), code: "xyyl", name: "XY娱乐", url: "", conf: {"x":"a"}, up: now, ver: v }
+    { _id: N(1), code: "bb", name: "BB娱乐", url: "", conf: {"x":"a"}, up: now, ver: v },
+    { _id: N(2), code: "aa", name: "AA游戏", url: "", conf: {"x":"a"}, up: now, ver: v },
+    { _id: N(3), code: "wsyl", name: "WS娱乐", url: "", conf: {"x":"a"}, up: now, ver: v },
+    { _id: N(4), code: "xyyl", name: "XY娱乐", url: "", conf: {"x":"a"}, up: now, ver: v }
 ]);

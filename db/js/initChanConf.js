@@ -25,19 +25,21 @@ const f = function (id) {
 //    _id: "newChannel",
 //    value: f
 //});
-
-const z = NumberInt(0);
-const v = NumberInt(1)
+const N = function (v) {
+    return NumberInt(v)
+};
+const z = N(0);
+const v = N(1)
 const now = new Date();
 const maxTime = new Date(2145888000000);
 db.chanConf.remove({});
 db.chanConf.insertMany([
-    { _id: NumberInt(1101001), code: "bb_ios_1", name: "BBIOS官方", app: NumberInt(1), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(1201001), code: "bb_ard_1", name: "BB安卓官方", app: NumberInt(1), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(2101001), code: "aa_ios_1", name: "AAISO官方", app: NumberInt(2), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(2201001), code: "aa_ard_1", name: "AA安卓官方", app: NumberInt(2), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(3101001), code: "wsyl_ios_1", name: "WSIOS官方", app: NumberInt(3), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(3201001), code: "wsyl_ard_1", name: "WS安卓官方", app: NumberInt(3), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(4101001), code: "xyyl_ios_1", name: "XYISO官方", app: NumberInt(4), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
-    { _id: NumberInt(4201001), code: "xyyl_ard_1", name: "XY安卓官方", app: NumberInt(4), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v }
+    { _id: N(1101001), code: "bb_ios_1", name: "BBIOS官方", app: N(1), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(1201001), code: "bb_ard_1", name: "BB安卓官方", app: N(1), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(2101001), code: "aa_ios_1", name: "AAISO官方", app: N(2), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(2201001), code: "aa_ard_1", name: "AA安卓官方", app: N(2), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(3101001), code: "wsyl_ios_1", name: "WSIOS官方", app: N(3), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(3201001), code: "wsyl_ard_1", name: "WS安卓官方", app: N(3), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(4101001), code: "xyyl_ios_1", name: "XYISO官方", app: N(4), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v },
+    { _id: N(4201001), code: "xyyl_ard_1", name: "XY安卓官方", app: N(4), parent: z, state: z, conf: {"x":"a"}, canReg: maxTime, canLogin: maxTime, canPlay:[z], note: "", init: now, up: now, ver: v }
 ]);

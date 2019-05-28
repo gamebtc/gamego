@@ -118,15 +118,14 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	if err := sess.Unmarshal(date[HeadLen:], &req); err != nil {
 		return nil, err
 	}
-	roomId := int32(req.Room)
 	if sess.RoomId != 0 {
 		sess.closeRoom()
 	}
 
-	ret, err := loginRoom(sess, roomId, date)
+	ret, err := loginRoom(sess, &req, date)
 	if err != nil {
 		return &LoginRoomAck{
-			Room: roomId,
+			Room: req.Room,
 			Code: 1009,
 			Msg:  err.Error(),
 		}, nil
@@ -155,7 +154,6 @@ func exitRoomHandler(sess *Session, date []byte) (interface{}, error) {
 	}, nil
 }
 
-////
 //func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
 //	// 连接到已选定游戏房间服务器
 //	conn := roomServicePool.GetService(roomId)
@@ -174,19 +172,24 @@ func exitRoomHandler(sess *Session, date []byte) (interface{}, error) {
 //	}
 //}
 
-//
-func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
+func loginRoom(sess *Session, req *LoginRoomReq, v []byte) (interface{}, error) {
+	roomId := int(req.Room)
+	if roomId == 0{
+		// TODO:根据游戏型和房间等级来查找房间
+
+	}
 	// 连接到已选定游戏房间服务器
-	addr := rpcServicePool.GetValue(strconv.Itoa(int(roomId)))
+	addr := rpcServicePool.GetValue(strconv.Itoa(roomId))
+
 	if addr == nil {
 		log.Debugf("cannot get room:%v", roomId)
-		return nil, errors.New("cannot get room:" + strconv.Itoa(int(roomId)))
+		return nil, errors.New("cannot get room:" + strconv.Itoa(roomId))
 	}
 
 	conn, err := net.Dial("tcp", string(addr))
 	if err != nil {
 		log.Warnf("room error %s: %s", string(addr), err.Error())
-		return nil, errors.New("cannot connect room:" + strconv.Itoa(int(roomId)))
+		return nil, errors.New("cannot connect room:" + strconv.Itoa(roomId))
 	}
 
 	if tcpConn, ok := conn.(*net.TCPConn); ok {
@@ -201,5 +204,5 @@ func loginRoom(sess *Session, roomId int32, v []byte) (interface{}, error) {
 	}
 	// 发送登录消息
 	stream := &NetStream{conn: conn}
-	return sess.loginRoom(roomId, v, stream)
+	return sess.loginRoom(int32(roomId), v, stream)
 }

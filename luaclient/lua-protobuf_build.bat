@@ -1,0 +1,2 @@
+::cl /O2 /LD /Fepb.dll /I "C:\Program Files (x86)\Lua\5.1\include" /DLUA_BUILD_AS_DLL pb.c "C:\Program Files (x86)\Lua\5.1\lib\lua51.lib"
+cl /O2 /LD /Fepb.dll /I "C:\Program Files (x86)\Lua\5.3\include" /DLUA_BUILD_AS_DLL pb.c "C:\Program Files (x86)\Lua\5.3\lib\lua53.lib"

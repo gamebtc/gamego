@@ -14,25 +14,27 @@ const f = function () {
     };
 };
 
-
+const N = function (v) {
+    return NumberInt(v)
+};
 const now = new Date();
 const maxTime = new Date(2145888000000);
 db.gameKind.remove({});
 
 db.gameKind.insertMany([
-    { _id: NumberInt(101), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(1), name: "XX斗地主", up: now },
-    { _id: NumberInt(102), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(2), name: "YY斗地主", up: now },
-    { _id: NumberInt(110), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(3), name: "炸金花", up: now },
-    { _id: NumberInt(111), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(4), name: "变态炸金花", up: now },
-    { _id: NumberInt(150), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(5), name: "抢庄牛牛", up: now },
-    { _id: NumberInt(190), type: NumberInt(1), state: NumberInt(1), sort: NumberInt(6), name: "港式五张", up: now },
-    { _id: NumberInt(220), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(7), name: "百家乐", up: now },
-    { _id: NumberInt(230), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(8), name: "百人牛牛", up: now },
-    { _id: NumberInt(260), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(9), name: "多福多财", up: now },
-    { _id: NumberInt(270), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(10), name: "红黑大战", up: now },
-    { _id: NumberInt(280), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(11), name: "龙虎大战", up: now },
-    { _id: NumberInt(290), type: NumberInt(2), state: NumberInt(1), sort: NumberInt(12), name: "骰宝", up: now },
-    { _id: NumberInt(610), type: NumberInt(6), state: NumberInt(1), sort: NumberInt(13), name: "大闹天宫", up: now }
+    { _id: N(101), type: N(1), state: N(1), sort: N(1), name: "XX斗地主", up: now },
+    { _id: N(102), type: N(1), state: N(1), sort: N(2), name: "YY斗地主", up: now },
+    { _id: N(110), type: N(1), state: N(1), sort: N(3), name: "炸金花", up: now },
+    { _id: N(111), type: N(1), state: N(1), sort: N(4), name: "变态炸金花", up: now },
+    { _id: N(150), type: N(1), state: N(1), sort: N(5), name: "抢庄牛牛", up: now },
+    { _id: N(190), type: N(1), state: N(1), sort: N(6), name: "港式五张", up: now },
+    { _id: N(220), type: N(2), state: N(1), sort: N(7), name: "百家乐", up: now },
+    { _id: N(230), type: N(2), state: N(1), sort: N(8), name: "百人牛牛", up: now },
+    { _id: N(260), type: N(2), state: N(1), sort: N(9), name: "多福多财", up: now },
+    { _id: N(270), type: N(2), state: N(1), sort: N(10), name: "红黑大战", up: now },
+    { _id: N(280), type: N(2), state: N(1), sort: N(11), name: "龙虎大战", up: now },
+    { _id: N(290), type: N(2), state: N(1), sort: N(12), name: "骰宝", up: now },
+    { _id: N(610), type: N(6), state: N(1), sort: N(13), name: "大闹天宫", up: now }
 ]);
 
 // db.gameKind.insertMany([

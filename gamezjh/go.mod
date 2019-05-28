@@ -1,7 +1,7 @@
 module gamezjh
 
 require (
-	github.com/sirupsen/logrus v1.4.1
+	github.com/sirupsen/logrus v1.4.2
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0
 	local.com/abc/game/protocol v0.0.0

@@ -85,7 +85,7 @@ message VerCheckAck {
 
 // 用户登录请求
 message LoginReq {
-    int32 type = 1 [(gogoproto.moretags) = 'bson:"type" msg:"type"'];           // 账号类型 0:用户名密码 1：uid 2：客户端证书
+    int32 type = 1 [(gogoproto.moretags) = 'bson:"type" msg:"type"'];           // 账号类型 0:用户名密码 1：udid 2：客户端证书
     string name = 2 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 用户名或UID
     string pwd = 3 [(gogoproto.moretags) = 'bson:"pwd" msg:"pwd"'];             // 密码
     string udid = 4 [(gogoproto.moretags) = 'bson:"udid" msg:"udid"'];          // 机器码

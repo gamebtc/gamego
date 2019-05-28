@@ -18,22 +18,27 @@ const f = function (id) {
         up: zero            //更新时间
     };
 };
-
-const z = NumberInt(0)
-const v = NumberInt(1)
+const N = function (v) {
+    return NumberInt(v)
+};
+const NL = function (v) {
+    return NumberLong(v)
+};
+const z = N(0)
+const v = N(1)
 const now = new Date();
 const maxTime = new Date(2145888000000);
 db.packConf.remove({});
 db.packConf.insertMany([
-    { _id: NumberInt(1101), code: "bb_ios", name: "BB_IOS", app: NumberInt(1), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
-    { _id: NumberInt(1201), code: "bb_ard", name: "BB安卓", app: NumberInt(1), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(1101), code: "bb_ios", name: "BB_IOS", app: N(1), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(1201), code: "bb_ard", name: "BB安卓", app: N(1), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
 
-    { _id: NumberInt(2101), code: "aa_ios", name: "AA_IOS", app: NumberInt(2), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
-    { _id: NumberInt(2201), code: "aa_ard", name: "AA_安卓", app: NumberInt(2), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(2101), code: "aa_ios", name: "AA_IOS", app: N(2), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(2201), code: "aa_ard", name: "AA_安卓", app: N(2), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
 
-    { _id: NumberInt(3101), code: "wsyl_ios", name: "WS_IOS", app: NumberInt(3), tmp: NumberInt(46328),state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
-    { _id: NumberInt(3201), code: "wsyl_ard", name: "WS安卓", app: NumberInt(3), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(3101), code: "wsyl_ios", name: "WS_IOS", app: N(3), tmp: N(46328),state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(3201), code: "wsyl_ard", name: "WS安卓", app: N(3), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
 
-    { _id: NumberInt(4101), code: "xyyl_ios", name: "XY_IOS", app: NumberInt(3), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
-    { _id: NumberInt(4201), code: "xyyl_ard", name: "XY安卓", app: NumberInt(3), tmp: NumberInt(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v }
+    { _id: N(4101), code: "xyyl_ios", name: "XY_IOS", app: N(3), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v },
+    { _id: N(4201), code: "xyyl_ard", name: "XY安卓", app: N(3), tmp: N(46328), state: z, conf: {"x":"a"}, canVer: ["1.0.0", "1.0.1"], canReg: maxTime, canLogin: maxTime, note: "", up: now, ver: v }
 ]);
