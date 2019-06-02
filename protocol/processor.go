@@ -81,8 +81,8 @@ func NewUserHead(agent int64, uid int32, ip uint32) []byte {
 	return head
 }
 
-// 游戏流
-type GameStream interface {
+// 房间流
+type RoomStream interface {
 	Send([]byte) error
 	Recv() ([]byte, error)
 	Close()

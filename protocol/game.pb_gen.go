@@ -10,7 +10,7 @@ import (
 )
 
 // DecodeMsg implements msgp.Decodable
-func (z *ExitRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *ExitGameAck) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
 	var zxvk uint32
@@ -46,7 +46,7 @@ func (z *ExitRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z ExitRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
+func (z ExitGameAck) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 2
 	// write "code"
 	err = en.Append(0x82, 0xa4, 0x63, 0x6f, 0x64, 0x65)
@@ -70,7 +70,7 @@ func (z ExitRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z ExitRoomAck) MarshalMsg(b []byte) (o []byte, err error) {
+func (z ExitGameAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 2
 	// string "code"
@@ -83,7 +83,7 @@ func (z ExitRoomAck) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *ExitRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *ExitGameAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
 	var zbzg uint32
@@ -120,13 +120,13 @@ func (z *ExitRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z ExitRoomAck) Msgsize() (s int) {
+func (z ExitGameAck) Msgsize() (s int) {
 	s = 1 + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Msg)
 	return
 }
 
 // DecodeMsg implements msgp.Decodable
-func (z *ExitRoomReq) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *ExitGameReq) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
 	var zbai uint32
@@ -141,8 +141,13 @@ func (z *ExitRoomReq) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "id":
-			z.Id, err = dc.ReadInt32()
+		case "game":
+			z.Game, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
+		case "room":
+			z.Room, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -157,14 +162,23 @@ func (z *ExitRoomReq) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z ExitRoomReq) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 1
-	// write "id"
-	err = en.Append(0x81, 0xa2, 0x69, 0x64)
+func (z ExitGameReq) EncodeMsg(en *msgp.Writer) (err error) {
+	// map header, size 2
+	// write "game"
+	err = en.Append(0x82, 0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Id)
+	err = en.WriteInt32(z.Game)
+	if err != nil {
+		return
+	}
+	// write "room"
+	err = en.Append(0xa4, 0x72, 0x6f, 0x6f, 0x6d)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.Room)
 	if err != nil {
 		return
 	}
@@ -172,17 +186,20 @@ func (z ExitRoomReq) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z ExitRoomReq) MarshalMsg(b []byte) (o []byte, err error) {
+func (z ExitGameReq) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 1
-	// string "id"
-	o = append(o, 0x81, 0xa2, 0x69, 0x64)
-	o = msgp.AppendInt32(o, z.Id)
+	// map header, size 2
+	// string "game"
+	o = append(o, 0x82, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
+	// string "room"
+	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
+	o = msgp.AppendInt32(o, z.Room)
 	return
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *ExitRoomReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *ExitGameReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
 	var zcmr uint32
@@ -197,8 +214,13 @@ func (z *ExitRoomReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "id":
-			z.Id, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
+		case "room":
+			z.Room, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -214,29 +236,293 @@ func (z *ExitRoomReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z ExitRoomReq) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size
+func (z ExitGameReq) Msgsize() (s int) {
+	s = 1 + 5 + msgp.Int32Size + 5 + msgp.Int32Size
 	return
 }
 
 // DecodeMsg implements msgp.Decodable
-func (z *LoginRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *GameKindAck) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zajw uint32
-	zajw, err = dc.ReadMapHeader()
+	var zwht uint32
+	zwht, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zajw > 0 {
-		zajw--
+	for zwht > 0 {
+		zwht--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
+		case "rooms":
+			var zhct uint32
+			zhct, err = dc.ReadArrayHeader()
+			if err != nil {
+				return
+			}
+			if cap(z.Rooms) >= int(zhct) {
+				z.Rooms = (z.Rooms)[:zhct]
+			} else {
+				z.Rooms = make([]*RoomInfo, zhct)
+			}
+			for zajw := range z.Rooms {
+				if dc.IsNil() {
+					err = dc.ReadNil()
+					if err != nil {
+						return
+					}
+					z.Rooms[zajw] = nil
+				} else {
+					if z.Rooms[zajw] == nil {
+						z.Rooms[zajw] = new(RoomInfo)
+					}
+					err = z.Rooms[zajw].DecodeMsg(dc)
+					if err != nil {
+						return
+					}
+				}
+			}
+		default:
+			err = dc.Skip()
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+// EncodeMsg implements msgp.Encodable
+func (z *GameKindAck) EncodeMsg(en *msgp.Writer) (err error) {
+	// map header, size 1
+	// write "rooms"
+	err = en.Append(0x81, 0xa5, 0x72, 0x6f, 0x6f, 0x6d, 0x73)
+	if err != nil {
+		return err
+	}
+	err = en.WriteArrayHeader(uint32(len(z.Rooms)))
+	if err != nil {
+		return
+	}
+	for zajw := range z.Rooms {
+		if z.Rooms[zajw] == nil {
+			err = en.WriteNil()
+			if err != nil {
+				return
+			}
+		} else {
+			err = z.Rooms[zajw].EncodeMsg(en)
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+// MarshalMsg implements msgp.Marshaler
+func (z *GameKindAck) MarshalMsg(b []byte) (o []byte, err error) {
+	o = msgp.Require(b, z.Msgsize())
+	// map header, size 1
+	// string "rooms"
+	o = append(o, 0x81, 0xa5, 0x72, 0x6f, 0x6f, 0x6d, 0x73)
+	o = msgp.AppendArrayHeader(o, uint32(len(z.Rooms)))
+	for zajw := range z.Rooms {
+		if z.Rooms[zajw] == nil {
+			o = msgp.AppendNil(o)
+		} else {
+			o, err = z.Rooms[zajw].MarshalMsg(o)
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+// UnmarshalMsg implements msgp.Unmarshaler
+func (z *GameKindAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
+	var field []byte
+	_ = field
+	var zcua uint32
+	zcua, bts, err = msgp.ReadMapHeaderBytes(bts)
+	if err != nil {
+		return
+	}
+	for zcua > 0 {
+		zcua--
+		field, bts, err = msgp.ReadMapKeyZC(bts)
+		if err != nil {
+			return
+		}
+		switch msgp.UnsafeString(field) {
+		case "rooms":
+			var zxhx uint32
+			zxhx, bts, err = msgp.ReadArrayHeaderBytes(bts)
+			if err != nil {
+				return
+			}
+			if cap(z.Rooms) >= int(zxhx) {
+				z.Rooms = (z.Rooms)[:zxhx]
+			} else {
+				z.Rooms = make([]*RoomInfo, zxhx)
+			}
+			for zajw := range z.Rooms {
+				if msgp.IsNil(bts) {
+					bts, err = msgp.ReadNilBytes(bts)
+					if err != nil {
+						return
+					}
+					z.Rooms[zajw] = nil
+				} else {
+					if z.Rooms[zajw] == nil {
+						z.Rooms[zajw] = new(RoomInfo)
+					}
+					bts, err = z.Rooms[zajw].UnmarshalMsg(bts)
+					if err != nil {
+						return
+					}
+				}
+			}
+		default:
+			bts, err = msgp.Skip(bts)
+			if err != nil {
+				return
+			}
+		}
+	}
+	o = bts
+	return
+}
+
+// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
+func (z *GameKindAck) Msgsize() (s int) {
+	s = 1 + 6 + msgp.ArrayHeaderSize
+	for zajw := range z.Rooms {
+		if z.Rooms[zajw] == nil {
+			s += msgp.NilSize
+		} else {
+			s += z.Rooms[zajw].Msgsize()
+		}
+	}
+	return
+}
+
+// DecodeMsg implements msgp.Decodable
+func (z *GameKindReq) DecodeMsg(dc *msgp.Reader) (err error) {
+	var field []byte
+	_ = field
+	var zlqf uint32
+	zlqf, err = dc.ReadMapHeader()
+	if err != nil {
+		return
+	}
+	for zlqf > 0 {
+		zlqf--
+		field, err = dc.ReadMapKeyPtr()
+		if err != nil {
+			return
+		}
+		switch msgp.UnsafeString(field) {
+		case "game":
+			z.Game, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
+		default:
+			err = dc.Skip()
+			if err != nil {
+				return
+			}
+		}
+	}
+	return
+}
+
+// EncodeMsg implements msgp.Encodable
+func (z GameKindReq) EncodeMsg(en *msgp.Writer) (err error) {
+	// map header, size 1
+	// write "game"
+	err = en.Append(0x81, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.Game)
+	if err != nil {
+		return
+	}
+	return
+}
+
+// MarshalMsg implements msgp.Marshaler
+func (z GameKindReq) MarshalMsg(b []byte) (o []byte, err error) {
+	o = msgp.Require(b, z.Msgsize())
+	// map header, size 1
+	// string "game"
+	o = append(o, 0x81, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
+	return
+}
+
+// UnmarshalMsg implements msgp.Unmarshaler
+func (z *GameKindReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
+	var field []byte
+	_ = field
+	var zdaf uint32
+	zdaf, bts, err = msgp.ReadMapHeaderBytes(bts)
+	if err != nil {
+		return
+	}
+	for zdaf > 0 {
+		zdaf--
+		field, bts, err = msgp.ReadMapKeyZC(bts)
+		if err != nil {
+			return
+		}
+		switch msgp.UnsafeString(field) {
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
+		default:
+			bts, err = msgp.Skip(bts)
+			if err != nil {
+				return
+			}
+		}
+	}
+	o = bts
+	return
+}
+
+// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
+func (z GameKindReq) Msgsize() (s int) {
+	s = 1 + 5 + msgp.Int32Size
+	return
+}
+
+// DecodeMsg implements msgp.Decodable
+func (z *LoginGameAck) DecodeMsg(dc *msgp.Reader) (err error) {
+	var field []byte
+	_ = field
+	var zpks uint32
+	zpks, err = dc.ReadMapHeader()
+	if err != nil {
+		return
+	}
+	for zpks > 0 {
+		zpks--
+		field, err = dc.ReadMapKeyPtr()
+		if err != nil {
+			return
+		}
+		switch msgp.UnsafeString(field) {
+		case "game":
+			z.Game, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -266,14 +552,14 @@ func (z *LoginRoomAck) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z *LoginRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
+func (z *LoginGameAck) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 4
-	// write "kind"
-	err = en.Append(0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "game"
+	err = en.Append(0x84, 0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Kind)
+	err = en.WriteInt32(z.Game)
 	if err != nil {
 		return
 	}
@@ -308,12 +594,12 @@ func (z *LoginRoomAck) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z *LoginRoomAck) MarshalMsg(b []byte) (o []byte, err error) {
+func (z *LoginGameAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 4
-	// string "kind"
-	o = append(o, 0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
+	// string "game"
+	o = append(o, 0x84, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
 	// string "room"
 	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
 	o = msgp.AppendInt32(o, z.Room)
@@ -327,23 +613,23 @@ func (z *LoginRoomAck) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *LoginRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *LoginGameAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zwht uint32
-	zwht, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zjfb uint32
+	zjfb, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zwht > 0 {
-		zwht--
+	for zjfb > 0 {
+		zjfb--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -374,29 +660,29 @@ func (z *LoginRoomAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *LoginRoomAck) Msgsize() (s int) {
+func (z *LoginGameAck) Msgsize() (s int) {
 	s = 1 + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Msg)
 	return
 }
 
 // DecodeMsg implements msgp.Decodable
-func (z *LoginRoomReq) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *LoginGameReq) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zhct uint32
-	zhct, err = dc.ReadMapHeader()
+	var zcxo uint32
+	zcxo, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zhct > 0 {
-		zhct--
+	for zcxo > 0 {
+		zcxo--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
+		case "game":
+			z.Game, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -426,14 +712,14 @@ func (z *LoginRoomReq) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z *LoginRoomReq) EncodeMsg(en *msgp.Writer) (err error) {
+func (z *LoginGameReq) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 4
-	// write "kind"
-	err = en.Append(0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "game"
+	err = en.Append(0x84, 0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Kind)
+	err = en.WriteInt32(z.Game)
 	if err != nil {
 		return
 	}
@@ -468,12 +754,12 @@ func (z *LoginRoomReq) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z *LoginRoomReq) MarshalMsg(b []byte) (o []byte, err error) {
+func (z *LoginGameReq) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 4
-	// string "kind"
-	o = append(o, 0x84, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
+	// string "game"
+	o = append(o, 0x84, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
 	// string "level"
 	o = append(o, 0xa5, 0x6c, 0x65, 0x76, 0x65, 0x6c)
 	o = msgp.AppendInt32(o, z.Level)
@@ -487,23 +773,23 @@ func (z *LoginRoomReq) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *LoginRoomReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *LoginGameReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zcua uint32
-	zcua, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zeff uint32
+	zeff, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zcua > 0 {
-		zcua--
+	for zeff > 0 {
+		zeff--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -534,7 +820,7 @@ func (z *LoginRoomReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *LoginRoomReq) Msgsize() (s int) {
+func (z *LoginGameReq) Msgsize() (s int) {
 	s = 1 + 5 + msgp.Int32Size + 6 + msgp.Int32Size + 5 + msgp.Int32Size + 5 + msgp.StringPrefixSize + len(z.Args)
 	return
 }
@@ -543,13 +829,13 @@ func (z *LoginRoomReq) Msgsize() (s int) {
 func (z *RoomInfo) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
-	var zxhx uint32
-	zxhx, err = dc.ReadMapHeader()
+	var zrsw uint32
+	zrsw, err = dc.ReadMapHeader()
 	if err != nil {
 		return
 	}
-	for zxhx > 0 {
-		zxhx--
+	for zrsw > 0 {
+		zrsw--
 		field, err = dc.ReadMapKeyPtr()
 		if err != nil {
 			return
@@ -565,8 +851,8 @@ func (z *RoomInfo) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
+		case "game":
+			z.Game, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -661,12 +947,12 @@ func (z *RoomInfo) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "kind"
-	err = en.Append(0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "game"
+	err = en.Append(0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Kind)
+	err = en.WriteInt32(z.Game)
 	if err != nil {
 		return
 	}
@@ -791,9 +1077,9 @@ func (z *RoomInfo) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "id"
 	o = append(o, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
-	// string "kind"
-	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
+	// string "game"
+	o = append(o, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
 	// string "level"
 	o = append(o, 0xa5, 0x6c, 0x65, 0x76, 0x65, 0x6c)
 	o = msgp.AppendInt32(o, z.Level)
@@ -837,13 +1123,13 @@ func (z *RoomInfo) MarshalMsg(b []byte) (o []byte, err error) {
 func (z *RoomInfo) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
-	var zlqf uint32
-	zlqf, bts, err = msgp.ReadMapHeaderBytes(bts)
+	var zxpk uint32
+	zxpk, bts, err = msgp.ReadMapHeaderBytes(bts)
 	if err != nil {
 		return
 	}
-	for zlqf > 0 {
-		zlqf--
+	for zxpk > 0 {
+		zxpk--
 		field, bts, err = msgp.ReadMapKeyZC(bts)
 		if err != nil {
 			return
@@ -859,8 +1145,8 @@ func (z *RoomInfo) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -942,271 +1228,7 @@ func (z *RoomInfo) Msgsize() (s int) {
 }
 
 // DecodeMsg implements msgp.Decodable
-func (z *RoomListAck) DecodeMsg(dc *msgp.Reader) (err error) {
-	var field []byte
-	_ = field
-	var zpks uint32
-	zpks, err = dc.ReadMapHeader()
-	if err != nil {
-		return
-	}
-	for zpks > 0 {
-		zpks--
-		field, err = dc.ReadMapKeyPtr()
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "rooms":
-			var zjfb uint32
-			zjfb, err = dc.ReadArrayHeader()
-			if err != nil {
-				return
-			}
-			if cap(z.Rooms) >= int(zjfb) {
-				z.Rooms = (z.Rooms)[:zjfb]
-			} else {
-				z.Rooms = make([]*RoomInfo, zjfb)
-			}
-			for zdaf := range z.Rooms {
-				if dc.IsNil() {
-					err = dc.ReadNil()
-					if err != nil {
-						return
-					}
-					z.Rooms[zdaf] = nil
-				} else {
-					if z.Rooms[zdaf] == nil {
-						z.Rooms[zdaf] = new(RoomInfo)
-					}
-					err = z.Rooms[zdaf].DecodeMsg(dc)
-					if err != nil {
-						return
-					}
-				}
-			}
-		default:
-			err = dc.Skip()
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// EncodeMsg implements msgp.Encodable
-func (z *RoomListAck) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 1
-	// write "rooms"
-	err = en.Append(0x81, 0xa5, 0x72, 0x6f, 0x6f, 0x6d, 0x73)
-	if err != nil {
-		return err
-	}
-	err = en.WriteArrayHeader(uint32(len(z.Rooms)))
-	if err != nil {
-		return
-	}
-	for zdaf := range z.Rooms {
-		if z.Rooms[zdaf] == nil {
-			err = en.WriteNil()
-			if err != nil {
-				return
-			}
-		} else {
-			err = z.Rooms[zdaf].EncodeMsg(en)
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// MarshalMsg implements msgp.Marshaler
-func (z *RoomListAck) MarshalMsg(b []byte) (o []byte, err error) {
-	o = msgp.Require(b, z.Msgsize())
-	// map header, size 1
-	// string "rooms"
-	o = append(o, 0x81, 0xa5, 0x72, 0x6f, 0x6f, 0x6d, 0x73)
-	o = msgp.AppendArrayHeader(o, uint32(len(z.Rooms)))
-	for zdaf := range z.Rooms {
-		if z.Rooms[zdaf] == nil {
-			o = msgp.AppendNil(o)
-		} else {
-			o, err = z.Rooms[zdaf].MarshalMsg(o)
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// UnmarshalMsg implements msgp.Unmarshaler
-func (z *RoomListAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var field []byte
-	_ = field
-	var zcxo uint32
-	zcxo, bts, err = msgp.ReadMapHeaderBytes(bts)
-	if err != nil {
-		return
-	}
-	for zcxo > 0 {
-		zcxo--
-		field, bts, err = msgp.ReadMapKeyZC(bts)
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "rooms":
-			var zeff uint32
-			zeff, bts, err = msgp.ReadArrayHeaderBytes(bts)
-			if err != nil {
-				return
-			}
-			if cap(z.Rooms) >= int(zeff) {
-				z.Rooms = (z.Rooms)[:zeff]
-			} else {
-				z.Rooms = make([]*RoomInfo, zeff)
-			}
-			for zdaf := range z.Rooms {
-				if msgp.IsNil(bts) {
-					bts, err = msgp.ReadNilBytes(bts)
-					if err != nil {
-						return
-					}
-					z.Rooms[zdaf] = nil
-				} else {
-					if z.Rooms[zdaf] == nil {
-						z.Rooms[zdaf] = new(RoomInfo)
-					}
-					bts, err = z.Rooms[zdaf].UnmarshalMsg(bts)
-					if err != nil {
-						return
-					}
-				}
-			}
-		default:
-			bts, err = msgp.Skip(bts)
-			if err != nil {
-				return
-			}
-		}
-	}
-	o = bts
-	return
-}
-
-// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *RoomListAck) Msgsize() (s int) {
-	s = 1 + 6 + msgp.ArrayHeaderSize
-	for zdaf := range z.Rooms {
-		if z.Rooms[zdaf] == nil {
-			s += msgp.NilSize
-		} else {
-			s += z.Rooms[zdaf].Msgsize()
-		}
-	}
-	return
-}
-
-// DecodeMsg implements msgp.Decodable
-func (z *RoomListReq) DecodeMsg(dc *msgp.Reader) (err error) {
-	var field []byte
-	_ = field
-	var zrsw uint32
-	zrsw, err = dc.ReadMapHeader()
-	if err != nil {
-		return
-	}
-	for zrsw > 0 {
-		zrsw--
-		field, err = dc.ReadMapKeyPtr()
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
-		default:
-			err = dc.Skip()
-			if err != nil {
-				return
-			}
-		}
-	}
-	return
-}
-
-// EncodeMsg implements msgp.Encodable
-func (z RoomListReq) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 1
-	// write "kind"
-	err = en.Append(0x81, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	if err != nil {
-		return err
-	}
-	err = en.WriteInt32(z.Kind)
-	if err != nil {
-		return
-	}
-	return
-}
-
-// MarshalMsg implements msgp.Marshaler
-func (z RoomListReq) MarshalMsg(b []byte) (o []byte, err error) {
-	o = msgp.Require(b, z.Msgsize())
-	// map header, size 1
-	// string "kind"
-	o = append(o, 0x81, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
-	return
-}
-
-// UnmarshalMsg implements msgp.Unmarshaler
-func (z *RoomListReq) UnmarshalMsg(bts []byte) (o []byte, err error) {
-	var field []byte
-	_ = field
-	var zxpk uint32
-	zxpk, bts, err = msgp.ReadMapHeaderBytes(bts)
-	if err != nil {
-		return
-	}
-	for zxpk > 0 {
-		zxpk--
-		field, bts, err = msgp.ReadMapKeyZC(bts)
-		if err != nil {
-			return
-		}
-		switch msgp.UnsafeString(field) {
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
-		default:
-			bts, err = msgp.Skip(bts)
-			if err != nil {
-				return
-			}
-		}
-	}
-	o = bts
-	return
-}
-
-// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z RoomListReq) Msgsize() (s int) {
-	s = 1 + 5 + msgp.Int32Size
-	return
-}
-
-// DecodeMsg implements msgp.Decodable
-func (z *SendRoomFail) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *SendGameFail) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
 	var zdnj uint32
@@ -1231,8 +1253,8 @@ func (z *SendRoomFail) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
+		case "game":
+			z.Game, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -1252,7 +1274,7 @@ func (z *SendRoomFail) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z *SendRoomFail) EncodeMsg(en *msgp.Writer) (err error) {
+func (z *SendGameFail) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 4
 	// write "code"
 	err = en.Append(0x84, 0xa4, 0x63, 0x6f, 0x64, 0x65)
@@ -1272,12 +1294,12 @@ func (z *SendRoomFail) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "kind"
-	err = en.Append(0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "game"
+	err = en.Append(0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Kind)
+	err = en.WriteInt32(z.Game)
 	if err != nil {
 		return
 	}
@@ -1294,7 +1316,7 @@ func (z *SendRoomFail) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z *SendRoomFail) MarshalMsg(b []byte) (o []byte, err error) {
+func (z *SendGameFail) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 4
 	// string "code"
@@ -1303,9 +1325,9 @@ func (z *SendRoomFail) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "msg"
 	o = append(o, 0xa3, 0x6d, 0x73, 0x67)
 	o = msgp.AppendString(o, z.Msg)
-	// string "kind"
-	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
+	// string "game"
+	o = append(o, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
 	// string "room"
 	o = append(o, 0xa4, 0x72, 0x6f, 0x6f, 0x6d)
 	o = msgp.AppendInt32(o, z.Room)
@@ -1313,7 +1335,7 @@ func (z *SendRoomFail) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *SendRoomFail) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *SendGameFail) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
 	var zobc uint32
@@ -1338,8 +1360,8 @@ func (z *SendRoomFail) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -1360,7 +1382,7 @@ func (z *SendRoomFail) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *SendRoomFail) Msgsize() (s int) {
+func (z *SendGameFail) Msgsize() (s int) {
 	s = 1 + 5 + msgp.Int32Size + 4 + msgp.StringPrefixSize + len(z.Msg) + 5 + msgp.Int32Size + 5 + msgp.Int32Size
 	return
 }

@@ -113,8 +113,8 @@ func userLoginHandler(sess *Session, data []byte) (interface{}, error) {
 }
 
 // 玩家连接游戏房间
-func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
-	req := LoginRoomReq{}
+func loginGameHandler(sess *Session, date []byte) (interface{}, error) {
+	req := LoginGameReq{}
 	if err := sess.Unmarshal(date[HeadLen:], &req); err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 
 	ret, err := loginRoom(sess, &req, date)
 	if err != nil {
-		return &LoginRoomAck{
+		return &LoginGameAck{
 			Room: req.Room,
 			Code: 1009,
 			Msg:  err.Error(),
@@ -134,21 +134,21 @@ func loginRoomHandler(sess *Session, date []byte) (interface{}, error) {
 }
 
 // 断开房间连接
-func exitRoomHandler(sess *Session, date []byte) (interface{}, error) {
+func exitGameHandler(sess *Session, date []byte) (interface{}, error) {
 	//req := ExitRoomReq{}
 	//if err := sess.Unmarshal(date[HeadLen:], &req); err != nil {
 	//	return nil, err
 	//}
 	//roomId := int32(req.Id)
 	if sess.RoomId == 0 {
-		return &ExitRoomAck{
+		return &ExitGameAck{
 			Code: 1010,
 			Msg:  "房间号错误",
 		}, nil
 	}
 
 	sess.closeRoom()
-	return &ExitRoomAck{
+	return &ExitGameAck{
 		Code: 0,
 		Msg:  "success",
 	}, nil
@@ -172,7 +172,7 @@ func exitRoomHandler(sess *Session, date []byte) (interface{}, error) {
 //	}
 //}
 
-func loginRoom(sess *Session, req *LoginRoomReq, v []byte) (interface{}, error) {
+func loginRoom(sess *Session, req *LoginGameReq, v []byte) (interface{}, error) {
 	roomId := int(req.Room)
 	if roomId == 0{
 		// TODO:根据游戏型和房间等级来查找房间

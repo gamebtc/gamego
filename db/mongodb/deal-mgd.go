@@ -17,7 +17,7 @@ var sessionOp = options.Session()
 
 func (d *driver) deal(coinKey string, flow *model.CoinFlow, safe bool) error {
 	f := func(sc mongo.SessionContext) (err error) {
-		collName := coinKey + "_" + strconv.Itoa(int(flow.Kind))
+		collName := coinKey + "_" + strconv.Itoa(int(flow.Game))
 		logDeal := d.GetColl(collName)
 		if err = sc.StartTransaction(); err != nil {
 			return err
@@ -72,12 +72,11 @@ func (d *driver) BagDealTransfer(from string, to string, flow *model.CoinFlow, l
 	f := func(sc mongo.SessionContext) (err error) {
 		uid := flow.Uid
 		add := flow.Add
-		logFrom := d.Collection(from + "_" + strconv.Itoa(int(flow.Kind)))
-		logTo := d.Collection(to + "_" + strconv.Itoa(int(flow.Kind)))
+		logFrom := d.Collection(from + "_" + strconv.Itoa(int(flow.Game)))
+		logTo := d.Collection(to + "_" + strconv.Itoa(int(flow.Game)))
 		if err = sc.StartTransaction(); err != nil {
 			return err
 		}
-
 		// 锁定玩家到大厅房间1，房间1代表钱包转账中
 		if lockRoom {
 			var ur *mongo.UpdateResult

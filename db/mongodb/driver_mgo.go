@@ -67,7 +67,7 @@ func (d *driver) Exec(args []interface{}, result interface{})(*model.ExecError) 
 	r := ExecResult{}
 	cmd := bson.D{{"eval", evalFun}, {"args", args}, {"nolock", true}}
 	if e := d.Database.Run(cmd, &r); e == nil {
-		if r.Ok == 1 && r.Result.Data.Kind == bson.ElementDocument {
+		if r.Ok == 1 && r.Result.Data.Game == bson.ElementDocument {
 			bson.Unmarshal(r.Result.Data.Data, result)
 			return nil
 		} else {

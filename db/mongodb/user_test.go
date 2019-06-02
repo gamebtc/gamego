@@ -104,7 +104,7 @@ func TestIn(t *testing.T) {
 			{"room", bson.D{{"$in", []int32{0, 11011}}}},
 		}
 		newId := model.NewObjectId()
-		up := bson.D{{"$set", bson.D{{"log2", newId}, {"kind", 432}, {"room", 11014}}}, upNow}
+		up := bson.D{{"$set", bson.D{{"log2", newId}, {"game", 432}, {"room", 11014}}}, upNow}
 		if _, err := locker.UpdateOne(nil, query, up); err != nil {
 
 			t.Fatal(err)

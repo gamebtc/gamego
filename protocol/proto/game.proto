@@ -6,7 +6,7 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 message RoomInfo{
 	string name = 1 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];      		// 房间名字
 	int32 id = 2 [(gogoproto.moretags) = 'bson:"id" msg:"id"'];         			// 房间ID
-	int32 kind = 3 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];       		// 房间分类
+	int32 game = 3 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];       		// 房间分类
 	int32 level = 4 [(gogoproto.moretags) = 'bson:"level" msg:"level"'];      		// 房间等级
 	int32 cap = 5 [(gogoproto.moretags) = 'bson:"cap" msg:"cap"'];   				// 房间容量
 	int64 ante = 6 [(gogoproto.moretags) = 'bson:"ante" msg:"ante"'];   		    // 下注底注
@@ -21,46 +21,47 @@ message RoomInfo{
 	int32 online = 15 [(gogoproto.moretags) = 'bson:"online" msg:"online"'];   	    // 当前在线人数
 }
 
-// 获取房间列表
-message RoomListReq{
-    int32 kind = 1 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];          // 房间分类
+// 获取游戏列表
+message GameKindReq{
+    int32 game = 1 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];          // 游戏分类
 }
 
-message RoomListAck{
-	repeated RoomInfo rooms = 1 [(gogoproto.moretags) = 'bson:"rooms" msg:"rooms"']; //房间列表
+message GameKindAck{
+	repeated RoomInfo rooms = 1 [(gogoproto.moretags) = 'bson:"rooms" msg:"rooms"']; //游戏列表
 }
 
 // 用户连接房间
-message LoginRoomReq{
-	int32 kind = 1 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];       // 游戏ID
+message LoginGameReq{
+	int32 game = 1 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];       // 游戏ID
 	int32 level = 2 [(gogoproto.moretags) = 'bson:"level" msg:"level"'];    // 房间等级
 	int32 room = 3 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
 	string args = 4 [(gogoproto.moretags) = 'bson:"args" msg:"args"'];      // 其它参数
 }
 
 // 用户连接房间
-message LoginRoomAck{
-    int32 kind = 1 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];       // 游戏ID
+message LoginGameAck{
+    int32 game = 1 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];       // 游戏ID
 	int32 room = 2 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
 	int32 code = 3 [(gogoproto.moretags) = 'bson:"code" msg:"code"'];       // 错误代码
 	string msg = 4 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"'];         // 错误消息
 }
 
 // 消息转发到房间失败，需要重新连接房间
-message SendRoomFail {
+message SendGameFail {
 	int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"']; 		// 错误代码
 	string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"']; 		// 错误消息
-	int32 kind = 3 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"']; 		// 所在游戏分类
+	int32 game = 3 [(gogoproto.moretags) = 'bson:"game" msg:"game"']; 		// 所在游戏分类
 	int32 room = 4 [(gogoproto.moretags) = 'bson:"room" msg:"room"']; 		// 当前所在游戏房间
 }
 
-// 请求退出房间
-message ExitRoomReq {
-	int32 id = 1 [(gogoproto.moretags) = 'bson:"id" msg:"id"']; // 房间ID
+// 请求退出游戏
+message ExitGameReq {
+	int32 game = 1 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];       // 游戏ID
+	int32 room = 2 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];       // 房间ID
 }
 
-// 请求退出房间
-message ExitRoomAck {
+// 请求退出游戏
+message ExitGameAck {
 	int32 code = 1 [(gogoproto.moretags) = 'bson:"code" msg:"code"']; 		// 错误代码
 	string msg = 2 [(gogoproto.moretags) = 'bson:"msg" msg:"msg"']; 		// 错误消息
 }

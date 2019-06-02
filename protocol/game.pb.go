@@ -24,7 +24,7 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 type RoomInfo struct {
 	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" bson:"name" msg:"name"`
 	Id      int32  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty" bson:"id" msg:"id"`
-	Kind    int32  `protobuf:"varint,3,opt,name=kind,proto3" json:"kind,omitempty" bson:"kind" msg:"kind"`
+	Game    int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
 	Level   int32  `protobuf:"varint,4,opt,name=level,proto3" json:"level,omitempty" bson:"level" msg:"level"`
 	Cap     int32  `protobuf:"varint,5,opt,name=cap,proto3" json:"cap,omitempty" bson:"cap" msg:"cap"`
 	Ante    int64  `protobuf:"varint,6,opt,name=ante,proto3" json:"ante,omitempty" bson:"ante" msg:"ante"`
@@ -43,7 +43,7 @@ func (m *RoomInfo) Reset()         { *m = RoomInfo{} }
 func (m *RoomInfo) String() string { return proto.CompactTextString(m) }
 func (*RoomInfo) ProtoMessage()    {}
 func (*RoomInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{0}
+	return fileDescriptor_game_c4578d3b0aa65042, []int{0}
 }
 func (m *RoomInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -86,9 +86,9 @@ func (m *RoomInfo) GetId() int32 {
 	return 0
 }
 
-func (m *RoomInfo) GetKind() int32 {
+func (m *RoomInfo) GetGame() int32 {
 	if m != nil {
-		return m.Kind
+		return m.Game
 	}
 	return 0
 }
@@ -177,23 +177,23 @@ func (m *RoomInfo) GetOnline() int32 {
 	return 0
 }
 
-// 获取房间列表
-type RoomListReq struct {
-	Kind int32 `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty" bson:"kind" msg:"kind"`
+// 获取游戏列表
+type GameKindReq struct {
+	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
 }
 
-func (m *RoomListReq) Reset()         { *m = RoomListReq{} }
-func (m *RoomListReq) String() string { return proto.CompactTextString(m) }
-func (*RoomListReq) ProtoMessage()    {}
-func (*RoomListReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{1}
+func (m *GameKindReq) Reset()         { *m = GameKindReq{} }
+func (m *GameKindReq) String() string { return proto.CompactTextString(m) }
+func (*GameKindReq) ProtoMessage()    {}
+func (*GameKindReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{1}
 }
-func (m *RoomListReq) XXX_Unmarshal(b []byte) error {
+func (m *GameKindReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RoomListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GameKindReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RoomListReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GameKindReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -203,41 +203,41 @@ func (m *RoomListReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *RoomListReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RoomListReq.Merge(dst, src)
+func (dst *GameKindReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameKindReq.Merge(dst, src)
 }
-func (m *RoomListReq) XXX_Size() int {
+func (m *GameKindReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *RoomListReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_RoomListReq.DiscardUnknown(m)
+func (m *GameKindReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameKindReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RoomListReq proto.InternalMessageInfo
+var xxx_messageInfo_GameKindReq proto.InternalMessageInfo
 
-func (m *RoomListReq) GetKind() int32 {
+func (m *GameKindReq) GetGame() int32 {
 	if m != nil {
-		return m.Kind
+		return m.Game
 	}
 	return 0
 }
 
-type RoomListAck struct {
+type GameKindAck struct {
 	Rooms []*RoomInfo `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty" bson:"rooms" msg:"rooms"`
 }
 
-func (m *RoomListAck) Reset()         { *m = RoomListAck{} }
-func (m *RoomListAck) String() string { return proto.CompactTextString(m) }
-func (*RoomListAck) ProtoMessage()    {}
-func (*RoomListAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{2}
+func (m *GameKindAck) Reset()         { *m = GameKindAck{} }
+func (m *GameKindAck) String() string { return proto.CompactTextString(m) }
+func (*GameKindAck) ProtoMessage()    {}
+func (*GameKindAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{2}
 }
-func (m *RoomListAck) XXX_Unmarshal(b []byte) error {
+func (m *GameKindAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RoomListAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GameKindAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RoomListAck.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GameKindAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -247,19 +247,19 @@ func (m *RoomListAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *RoomListAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RoomListAck.Merge(dst, src)
+func (dst *GameKindAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameKindAck.Merge(dst, src)
 }
-func (m *RoomListAck) XXX_Size() int {
+func (m *GameKindAck) XXX_Size() int {
 	return m.Size()
 }
-func (m *RoomListAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_RoomListAck.DiscardUnknown(m)
+func (m *GameKindAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameKindAck.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RoomListAck proto.InternalMessageInfo
+var xxx_messageInfo_GameKindAck proto.InternalMessageInfo
 
-func (m *RoomListAck) GetRooms() []*RoomInfo {
+func (m *GameKindAck) GetRooms() []*RoomInfo {
 	if m != nil {
 		return m.Rooms
 	}
@@ -267,25 +267,25 @@ func (m *RoomListAck) GetRooms() []*RoomInfo {
 }
 
 // 用户连接房间
-type LoginRoomReq struct {
-	Kind  int32  `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty" bson:"kind" msg:"kind"`
+type LoginGameReq struct {
+	Game  int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
 	Level int32  `protobuf:"varint,2,opt,name=level,proto3" json:"level,omitempty" bson:"level" msg:"level"`
 	Room  int32  `protobuf:"varint,3,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
 	Args  string `protobuf:"bytes,4,opt,name=args,proto3" json:"args,omitempty" bson:"args" msg:"args"`
 }
 
-func (m *LoginRoomReq) Reset()         { *m = LoginRoomReq{} }
-func (m *LoginRoomReq) String() string { return proto.CompactTextString(m) }
-func (*LoginRoomReq) ProtoMessage()    {}
-func (*LoginRoomReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{3}
+func (m *LoginGameReq) Reset()         { *m = LoginGameReq{} }
+func (m *LoginGameReq) String() string { return proto.CompactTextString(m) }
+func (*LoginGameReq) ProtoMessage()    {}
+func (*LoginGameReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{3}
 }
-func (m *LoginRoomReq) XXX_Unmarshal(b []byte) error {
+func (m *LoginGameReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *LoginRoomReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *LoginGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_LoginRoomReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_LoginGameReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -295,40 +295,40 @@ func (m *LoginRoomReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *LoginRoomReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginRoomReq.Merge(dst, src)
+func (dst *LoginGameReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginGameReq.Merge(dst, src)
 }
-func (m *LoginRoomReq) XXX_Size() int {
+func (m *LoginGameReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *LoginRoomReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_LoginRoomReq.DiscardUnknown(m)
+func (m *LoginGameReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_LoginGameReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_LoginRoomReq proto.InternalMessageInfo
+var xxx_messageInfo_LoginGameReq proto.InternalMessageInfo
 
-func (m *LoginRoomReq) GetKind() int32 {
+func (m *LoginGameReq) GetGame() int32 {
 	if m != nil {
-		return m.Kind
+		return m.Game
 	}
 	return 0
 }
 
-func (m *LoginRoomReq) GetLevel() int32 {
+func (m *LoginGameReq) GetLevel() int32 {
 	if m != nil {
 		return m.Level
 	}
 	return 0
 }
 
-func (m *LoginRoomReq) GetRoom() int32 {
+func (m *LoginGameReq) GetRoom() int32 {
 	if m != nil {
 		return m.Room
 	}
 	return 0
 }
 
-func (m *LoginRoomReq) GetArgs() string {
+func (m *LoginGameReq) GetArgs() string {
 	if m != nil {
 		return m.Args
 	}
@@ -336,25 +336,25 @@ func (m *LoginRoomReq) GetArgs() string {
 }
 
 // 用户连接房间
-type LoginRoomAck struct {
-	Kind int32  `protobuf:"varint,1,opt,name=kind,proto3" json:"kind,omitempty" bson:"kind" msg:"kind"`
+type LoginGameAck struct {
+	Game int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
 	Room int32  `protobuf:"varint,2,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
 	Code int32  `protobuf:"varint,3,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
 	Msg  string `protobuf:"bytes,4,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
 }
 
-func (m *LoginRoomAck) Reset()         { *m = LoginRoomAck{} }
-func (m *LoginRoomAck) String() string { return proto.CompactTextString(m) }
-func (*LoginRoomAck) ProtoMessage()    {}
-func (*LoginRoomAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{4}
+func (m *LoginGameAck) Reset()         { *m = LoginGameAck{} }
+func (m *LoginGameAck) String() string { return proto.CompactTextString(m) }
+func (*LoginGameAck) ProtoMessage()    {}
+func (*LoginGameAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{4}
 }
-func (m *LoginRoomAck) XXX_Unmarshal(b []byte) error {
+func (m *LoginGameAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *LoginRoomAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *LoginGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_LoginRoomAck.Marshal(b, m, deterministic)
+		return xxx_messageInfo_LoginGameAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -364,40 +364,40 @@ func (m *LoginRoomAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *LoginRoomAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginRoomAck.Merge(dst, src)
+func (dst *LoginGameAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginGameAck.Merge(dst, src)
 }
-func (m *LoginRoomAck) XXX_Size() int {
+func (m *LoginGameAck) XXX_Size() int {
 	return m.Size()
 }
-func (m *LoginRoomAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_LoginRoomAck.DiscardUnknown(m)
+func (m *LoginGameAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_LoginGameAck.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_LoginRoomAck proto.InternalMessageInfo
+var xxx_messageInfo_LoginGameAck proto.InternalMessageInfo
 
-func (m *LoginRoomAck) GetKind() int32 {
+func (m *LoginGameAck) GetGame() int32 {
 	if m != nil {
-		return m.Kind
+		return m.Game
 	}
 	return 0
 }
 
-func (m *LoginRoomAck) GetRoom() int32 {
+func (m *LoginGameAck) GetRoom() int32 {
 	if m != nil {
 		return m.Room
 	}
 	return 0
 }
 
-func (m *LoginRoomAck) GetCode() int32 {
+func (m *LoginGameAck) GetCode() int32 {
 	if m != nil {
 		return m.Code
 	}
 	return 0
 }
 
-func (m *LoginRoomAck) GetMsg() string {
+func (m *LoginGameAck) GetMsg() string {
 	if m != nil {
 		return m.Msg
 	}
@@ -405,25 +405,25 @@ func (m *LoginRoomAck) GetMsg() string {
 }
 
 // 消息转发到房间失败，需要重新连接房间
-type SendRoomFail struct {
+type SendGameFail struct {
 	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
 	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
-	Kind int32  `protobuf:"varint,3,opt,name=kind,proto3" json:"kind,omitempty" bson:"kind" msg:"kind"`
+	Game int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
 	Room int32  `protobuf:"varint,4,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
 }
 
-func (m *SendRoomFail) Reset()         { *m = SendRoomFail{} }
-func (m *SendRoomFail) String() string { return proto.CompactTextString(m) }
-func (*SendRoomFail) ProtoMessage()    {}
-func (*SendRoomFail) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{5}
+func (m *SendGameFail) Reset()         { *m = SendGameFail{} }
+func (m *SendGameFail) String() string { return proto.CompactTextString(m) }
+func (*SendGameFail) ProtoMessage()    {}
+func (*SendGameFail) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{5}
 }
-func (m *SendRoomFail) XXX_Unmarshal(b []byte) error {
+func (m *SendGameFail) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SendRoomFail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SendGameFail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SendRoomFail.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SendGameFail.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -433,63 +433,64 @@ func (m *SendRoomFail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *SendRoomFail) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SendRoomFail.Merge(dst, src)
+func (dst *SendGameFail) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendGameFail.Merge(dst, src)
 }
-func (m *SendRoomFail) XXX_Size() int {
+func (m *SendGameFail) XXX_Size() int {
 	return m.Size()
 }
-func (m *SendRoomFail) XXX_DiscardUnknown() {
-	xxx_messageInfo_SendRoomFail.DiscardUnknown(m)
+func (m *SendGameFail) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendGameFail.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SendRoomFail proto.InternalMessageInfo
+var xxx_messageInfo_SendGameFail proto.InternalMessageInfo
 
-func (m *SendRoomFail) GetCode() int32 {
+func (m *SendGameFail) GetCode() int32 {
 	if m != nil {
 		return m.Code
 	}
 	return 0
 }
 
-func (m *SendRoomFail) GetMsg() string {
+func (m *SendGameFail) GetMsg() string {
 	if m != nil {
 		return m.Msg
 	}
 	return ""
 }
 
-func (m *SendRoomFail) GetKind() int32 {
+func (m *SendGameFail) GetGame() int32 {
 	if m != nil {
-		return m.Kind
+		return m.Game
 	}
 	return 0
 }
 
-func (m *SendRoomFail) GetRoom() int32 {
+func (m *SendGameFail) GetRoom() int32 {
 	if m != nil {
 		return m.Room
 	}
 	return 0
 }
 
-// 请求退出房间
-type ExitRoomReq struct {
-	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty" bson:"id" msg:"id"`
+// 请求退出游戏
+type ExitGameReq struct {
+	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
+	Room int32 `protobuf:"varint,2,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
 }
 
-func (m *ExitRoomReq) Reset()         { *m = ExitRoomReq{} }
-func (m *ExitRoomReq) String() string { return proto.CompactTextString(m) }
-func (*ExitRoomReq) ProtoMessage()    {}
-func (*ExitRoomReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{6}
+func (m *ExitGameReq) Reset()         { *m = ExitGameReq{} }
+func (m *ExitGameReq) String() string { return proto.CompactTextString(m) }
+func (*ExitGameReq) ProtoMessage()    {}
+func (*ExitGameReq) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{6}
 }
-func (m *ExitRoomReq) XXX_Unmarshal(b []byte) error {
+func (m *ExitGameReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ExitRoomReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ExitGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ExitRoomReq.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ExitGameReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -499,43 +500,50 @@ func (m *ExitRoomReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *ExitRoomReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExitRoomReq.Merge(dst, src)
+func (dst *ExitGameReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExitGameReq.Merge(dst, src)
 }
-func (m *ExitRoomReq) XXX_Size() int {
+func (m *ExitGameReq) XXX_Size() int {
 	return m.Size()
 }
-func (m *ExitRoomReq) XXX_DiscardUnknown() {
-	xxx_messageInfo_ExitRoomReq.DiscardUnknown(m)
+func (m *ExitGameReq) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExitGameReq.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ExitRoomReq proto.InternalMessageInfo
+var xxx_messageInfo_ExitGameReq proto.InternalMessageInfo
 
-func (m *ExitRoomReq) GetId() int32 {
+func (m *ExitGameReq) GetGame() int32 {
 	if m != nil {
-		return m.Id
+		return m.Game
 	}
 	return 0
 }
 
-// 请求退出房间
-type ExitRoomAck struct {
+func (m *ExitGameReq) GetRoom() int32 {
+	if m != nil {
+		return m.Room
+	}
+	return 0
+}
+
+// 请求退出游戏
+type ExitGameAck struct {
 	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
 	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
 }
 
-func (m *ExitRoomAck) Reset()         { *m = ExitRoomAck{} }
-func (m *ExitRoomAck) String() string { return proto.CompactTextString(m) }
-func (*ExitRoomAck) ProtoMessage()    {}
-func (*ExitRoomAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_b1f22e7ddc94e046, []int{7}
+func (m *ExitGameAck) Reset()         { *m = ExitGameAck{} }
+func (m *ExitGameAck) String() string { return proto.CompactTextString(m) }
+func (*ExitGameAck) ProtoMessage()    {}
+func (*ExitGameAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_game_c4578d3b0aa65042, []int{7}
 }
-func (m *ExitRoomAck) XXX_Unmarshal(b []byte) error {
+func (m *ExitGameAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ExitRoomAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ExitGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ExitRoomAck.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ExitGameAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalTo(b)
@@ -545,26 +553,26 @@ func (m *ExitRoomAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *ExitRoomAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExitRoomAck.Merge(dst, src)
+func (dst *ExitGameAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExitGameAck.Merge(dst, src)
 }
-func (m *ExitRoomAck) XXX_Size() int {
+func (m *ExitGameAck) XXX_Size() int {
 	return m.Size()
 }
-func (m *ExitRoomAck) XXX_DiscardUnknown() {
-	xxx_messageInfo_ExitRoomAck.DiscardUnknown(m)
+func (m *ExitGameAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExitGameAck.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ExitRoomAck proto.InternalMessageInfo
+var xxx_messageInfo_ExitGameAck proto.InternalMessageInfo
 
-func (m *ExitRoomAck) GetCode() int32 {
+func (m *ExitGameAck) GetCode() int32 {
 	if m != nil {
 		return m.Code
 	}
 	return 0
 }
 
-func (m *ExitRoomAck) GetMsg() string {
+func (m *ExitGameAck) GetMsg() string {
 	if m != nil {
 		return m.Msg
 	}
@@ -573,13 +581,13 @@ func (m *ExitRoomAck) GetMsg() string {
 
 func init() {
 	proto.RegisterType((*RoomInfo)(nil), "protocol.RoomInfo")
-	proto.RegisterType((*RoomListReq)(nil), "protocol.RoomListReq")
-	proto.RegisterType((*RoomListAck)(nil), "protocol.RoomListAck")
-	proto.RegisterType((*LoginRoomReq)(nil), "protocol.LoginRoomReq")
-	proto.RegisterType((*LoginRoomAck)(nil), "protocol.LoginRoomAck")
-	proto.RegisterType((*SendRoomFail)(nil), "protocol.SendRoomFail")
-	proto.RegisterType((*ExitRoomReq)(nil), "protocol.ExitRoomReq")
-	proto.RegisterType((*ExitRoomAck)(nil), "protocol.ExitRoomAck")
+	proto.RegisterType((*GameKindReq)(nil), "protocol.GameKindReq")
+	proto.RegisterType((*GameKindAck)(nil), "protocol.GameKindAck")
+	proto.RegisterType((*LoginGameReq)(nil), "protocol.LoginGameReq")
+	proto.RegisterType((*LoginGameAck)(nil), "protocol.LoginGameAck")
+	proto.RegisterType((*SendGameFail)(nil), "protocol.SendGameFail")
+	proto.RegisterType((*ExitGameReq)(nil), "protocol.ExitGameReq")
+	proto.RegisterType((*ExitGameAck)(nil), "protocol.ExitGameAck")
 }
 func (m *RoomInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -607,10 +615,10 @@ func (m *RoomInfo) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Id))
 	}
-	if m.Kind != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x18
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Kind))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
 	}
 	if m.Level != 0 {
 		dAtA[i] = 0x20
@@ -676,7 +684,7 @@ func (m *RoomInfo) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *RoomListReq) Marshal() (dAtA []byte, err error) {
+func (m *GameKindReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -686,20 +694,20 @@ func (m *RoomListReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RoomListReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *GameKindReq) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Kind))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
 	}
 	return i, nil
 }
 
-func (m *RoomListAck) Marshal() (dAtA []byte, err error) {
+func (m *GameKindAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -709,7 +717,7 @@ func (m *RoomListAck) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RoomListAck) MarshalTo(dAtA []byte) (int, error) {
+func (m *GameKindAck) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -729,7 +737,7 @@ func (m *RoomListAck) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *LoginRoomReq) Marshal() (dAtA []byte, err error) {
+func (m *LoginGameReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -739,15 +747,15 @@ func (m *LoginRoomReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *LoginRoomReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *LoginGameReq) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Kind))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
 	}
 	if m.Level != 0 {
 		dAtA[i] = 0x10
@@ -768,7 +776,7 @@ func (m *LoginRoomReq) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *LoginRoomAck) Marshal() (dAtA []byte, err error) {
+func (m *LoginGameAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -778,15 +786,15 @@ func (m *LoginRoomAck) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *LoginRoomAck) MarshalTo(dAtA []byte) (int, error) {
+func (m *LoginGameAck) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.Kind != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Kind))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
 	}
 	if m.Room != 0 {
 		dAtA[i] = 0x10
@@ -807,7 +815,7 @@ func (m *LoginRoomAck) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *SendRoomFail) Marshal() (dAtA []byte, err error) {
+func (m *SendGameFail) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -817,7 +825,7 @@ func (m *SendRoomFail) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SendRoomFail) MarshalTo(dAtA []byte) (int, error) {
+func (m *SendGameFail) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -833,10 +841,10 @@ func (m *SendRoomFail) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
 		i += copy(dAtA[i:], m.Msg)
 	}
-	if m.Kind != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x18
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Kind))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
 	}
 	if m.Room != 0 {
 		dAtA[i] = 0x20
@@ -846,7 +854,7 @@ func (m *SendRoomFail) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *ExitRoomReq) Marshal() (dAtA []byte, err error) {
+func (m *ExitGameReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -856,20 +864,25 @@ func (m *ExitRoomReq) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ExitRoomReq) MarshalTo(dAtA []byte) (int, error) {
+func (m *ExitGameReq) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
+	if m.Game != 0 {
 		dAtA[i] = 0x8
 		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Id))
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+	}
+	if m.Room != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintGame(dAtA, i, uint64(m.Room))
 	}
 	return i, nil
 }
 
-func (m *ExitRoomAck) Marshal() (dAtA []byte, err error) {
+func (m *ExitGameAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -879,7 +892,7 @@ func (m *ExitRoomAck) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ExitRoomAck) MarshalTo(dAtA []byte) (int, error) {
+func (m *ExitGameAck) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -920,8 +933,8 @@ func (m *RoomInfo) Size() (n int) {
 	if m.Id != 0 {
 		n += 1 + sovGame(uint64(m.Id))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovGame(uint64(m.Kind))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
 	}
 	if m.Level != 0 {
 		n += 1 + sovGame(uint64(m.Level))
@@ -963,19 +976,19 @@ func (m *RoomInfo) Size() (n int) {
 	return n
 }
 
-func (m *RoomListReq) Size() (n int) {
+func (m *GameKindReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		n += 1 + sovGame(uint64(m.Kind))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
 	}
 	return n
 }
 
-func (m *RoomListAck) Size() (n int) {
+func (m *GameKindAck) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -990,14 +1003,14 @@ func (m *RoomListAck) Size() (n int) {
 	return n
 }
 
-func (m *LoginRoomReq) Size() (n int) {
+func (m *LoginGameReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		n += 1 + sovGame(uint64(m.Kind))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
 	}
 	if m.Level != 0 {
 		n += 1 + sovGame(uint64(m.Level))
@@ -1012,14 +1025,14 @@ func (m *LoginRoomReq) Size() (n int) {
 	return n
 }
 
-func (m *LoginRoomAck) Size() (n int) {
+func (m *LoginGameAck) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Kind != 0 {
-		n += 1 + sovGame(uint64(m.Kind))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
 	}
 	if m.Room != 0 {
 		n += 1 + sovGame(uint64(m.Room))
@@ -1034,7 +1047,7 @@ func (m *LoginRoomAck) Size() (n int) {
 	return n
 }
 
-func (m *SendRoomFail) Size() (n int) {
+func (m *SendGameFail) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1047,8 +1060,8 @@ func (m *SendRoomFail) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovGame(uint64(l))
 	}
-	if m.Kind != 0 {
-		n += 1 + sovGame(uint64(m.Kind))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
 	}
 	if m.Room != 0 {
 		n += 1 + sovGame(uint64(m.Room))
@@ -1056,19 +1069,22 @@ func (m *SendRoomFail) Size() (n int) {
 	return n
 }
 
-func (m *ExitRoomReq) Size() (n int) {
+func (m *ExitGameReq) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovGame(uint64(m.Id))
+	if m.Game != 0 {
+		n += 1 + sovGame(uint64(m.Game))
+	}
+	if m.Room != 0 {
+		n += 1 + sovGame(uint64(m.Room))
 	}
 	return n
 }
 
-func (m *ExitRoomAck) Size() (n int) {
+func (m *ExitGameAck) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1176,9 +1192,9 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Kind = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -1188,7 +1204,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1452,7 +1468,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RoomListReq) Unmarshal(dAtA []byte) error {
+func (m *GameKindReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1475,17 +1491,17 @@ func (m *RoomListReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RoomListReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: GameKindReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RoomListReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GameKindReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Kind = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -1495,7 +1511,7 @@ func (m *RoomListReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1521,7 +1537,7 @@ func (m *RoomListReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RoomListAck) Unmarshal(dAtA []byte) error {
+func (m *GameKindAck) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1544,10 +1560,10 @@ func (m *RoomListAck) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RoomListAck: wiretype end group for non-group")
+			return fmt.Errorf("proto: GameKindAck: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RoomListAck: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GameKindAck: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1602,7 +1618,7 @@ func (m *RoomListAck) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *LoginRoomReq) Unmarshal(dAtA []byte) error {
+func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1625,17 +1641,17 @@ func (m *LoginRoomReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: LoginRoomReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: LoginGameReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LoginRoomReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: LoginGameReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Kind = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -1645,7 +1661,7 @@ func (m *LoginRoomReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1738,7 +1754,7 @@ func (m *LoginRoomReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *LoginRoomAck) Unmarshal(dAtA []byte) error {
+func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1761,17 +1777,17 @@ func (m *LoginRoomAck) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: LoginRoomAck: wiretype end group for non-group")
+			return fmt.Errorf("proto: LoginGameAck: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LoginRoomAck: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: LoginGameAck: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Kind = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -1781,7 +1797,7 @@ func (m *LoginRoomAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1874,7 +1890,7 @@ func (m *LoginRoomAck) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SendRoomFail) Unmarshal(dAtA []byte) error {
+func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1897,10 +1913,10 @@ func (m *SendRoomFail) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SendRoomFail: wiretype end group for non-group")
+			return fmt.Errorf("proto: SendGameFail: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SendRoomFail: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SendGameFail: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1953,9 +1969,9 @@ func (m *SendRoomFail) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Kind = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -1965,7 +1981,7 @@ func (m *SendRoomFail) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2010,7 +2026,7 @@ func (m *SendRoomFail) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ExitRoomReq) Unmarshal(dAtA []byte) error {
+func (m *ExitGameReq) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2033,17 +2049,17 @@ func (m *ExitRoomReq) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ExitRoomReq: wiretype end group for non-group")
+			return fmt.Errorf("proto: ExitGameReq: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ExitRoomReq: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ExitGameReq: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Game", wireType)
 			}
-			m.Id = 0
+			m.Game = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGame
@@ -2053,7 +2069,26 @@ func (m *ExitRoomReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= (int32(b) & 0x7F) << shift
+				m.Game |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Room", wireType)
+			}
+			m.Room = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGame
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Room |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2079,7 +2114,7 @@ func (m *ExitRoomReq) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ExitRoomAck) Unmarshal(dAtA []byte) error {
+func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2102,10 +2137,10 @@ func (m *ExitRoomAck) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ExitRoomAck: wiretype end group for non-group")
+			return fmt.Errorf("proto: ExitGameAck: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ExitRoomAck: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ExitGameAck: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2282,49 +2317,49 @@ var (
 	ErrIntOverflowGame   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("game.proto", fileDescriptor_game_b1f22e7ddc94e046) }
+func init() { proto.RegisterFile("game.proto", fileDescriptor_game_c4578d3b0aa65042) }
 
-var fileDescriptor_game_b1f22e7ddc94e046 = []byte{
-	// 651 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0xcf, 0x6a, 0xdc, 0x3e,
-	0x10, 0xc7, 0xa3, 0xfd, 0x97, 0x44, 0x9b, 0xdf, 0xaf, 0x60, 0x4a, 0x10, 0x21, 0x78, 0x17, 0x1f,
-	0xca, 0x52, 0xa8, 0x03, 0x29, 0xed, 0x21, 0xd0, 0x43, 0x03, 0x0d, 0x94, 0xa6, 0x17, 0x95, 0x3e,
-	0x80, 0xd6, 0x76, 0x5c, 0x11, 0x5b, 0xda, 0xae, 0x9d, 0xe2, 0xbc, 0x45, 0x9f, 0xa4, 0xcf, 0x51,
-	0x7a, 0x0a, 0x3d, 0xf5, 0x64, 0x4a, 0xf2, 0x06, 0x7e, 0x82, 0x32, 0x23, 0xc9, 0x71, 0x93, 0x40,
-	0x37, 0x85, 0x9e, 0x3c, 0x33, 0xfa, 0x7e, 0x3c, 0x1a, 0x79, 0x46, 0xa6, 0x34, 0x15, 0x79, 0x12,
-	0x2e, 0x96, 0xba, 0xd4, 0xde, 0x06, 0x3e, 0x22, 0x9d, 0xed, 0x3c, 0x49, 0x65, 0xf9, 0xe1, 0x6c,
-	0x1e, 0x46, 0x3a, 0xdf, 0x4b, 0x75, 0xaa, 0xf7, 0x70, 0x65, 0x7e, 0x76, 0x82, 0x1e, 0x3a, 0x68,
-	0x19, 0x30, 0xf8, 0x32, 0xa2, 0x1b, 0x5c, 0xeb, 0xfc, 0xb5, 0x3a, 0xd1, 0x5e, 0x48, 0x07, 0x4a,
-	0xe4, 0x09, 0x23, 0x53, 0x32, 0xdb, 0x3c, 0xdc, 0x69, 0xea, 0xc9, 0xf6, 0xbc, 0xd0, 0xea, 0x20,
-	0x80, 0x68, 0x30, 0xcd, 0x8b, 0xd4, 0x9a, 0x1c, 0x75, 0xde, 0x23, 0xda, 0x93, 0x31, 0xeb, 0x4d,
-	0xc9, 0x6c, 0x78, 0xb8, 0xdd, 0xd4, 0x13, 0xcf, 0xa8, 0x65, 0x6c, 0xb5, 0x32, 0x0e, 0x78, 0x4f,
-	0xc6, 0xf0, 0xde, 0x53, 0xa9, 0x62, 0xd6, 0x47, 0x65, 0xe7, 0xbd, 0x10, 0xb5, 0x5a, 0x34, 0x39,
-	0xea, 0xbc, 0x7d, 0x3a, 0xcc, 0x92, 0x4f, 0x49, 0xc6, 0x06, 0x08, 0xec, 0x36, 0xf5, 0x84, 0x19,
-	0x00, 0xc3, 0x96, 0x30, 0x36, 0x37, 0x52, 0xef, 0x31, 0xed, 0x47, 0x62, 0xc1, 0x86, 0x48, 0xb0,
-	0xa6, 0x9e, 0x3c, 0x34, 0x44, 0x24, 0x16, 0x56, 0x0f, 0x16, 0x07, 0x11, 0xec, 0x47, 0xa8, 0x32,
-	0x61, 0xa3, 0x29, 0x99, 0xf5, 0xbb, 0xfb, 0x81, 0xa8, 0x55, 0xa3, 0xc9, 0x51, 0xe7, 0x1d, 0xd0,
-	0xf5, 0x58, 0xeb, 0xe5, 0x5b, 0xa9, 0xd8, 0x3a, 0x22, 0xd3, 0xa6, 0x9e, 0xec, 0x1a, 0xc4, 0x2e,
-	0x58, 0xca, 0x79, 0xdc, 0x01, 0x2d, 0x2b, 0x2a, 0xb6, 0x71, 0x27, 0x2b, 0xaa, 0x2e, 0x2b, 0x2a,
-	0xc7, 0x8a, 0x0a, 0xd8, 0xa2, 0x14, 0xe7, 0x90, 0x77, 0xf3, 0x26, 0x6b, 0x17, 0x2c, 0xeb, 0x3c,
-	0xee, 0x80, 0x96, 0x15, 0x15, 0xa3, 0x77, 0xb2, 0x6d, 0x5e, 0xe7, 0x71, 0x07, 0x00, 0xbb, 0xc8,
-	0x4c, 0xde, 0xf1, 0x4d, 0xd6, 0x2e, 0x58, 0xd6, 0x79, 0xdc, 0x01, 0x2d, 0x2b, 0x2a, 0xb6, 0x75,
-	0x27, 0xdb, 0xe6, 0x75, 0x1e, 0x77, 0x00, 0xb0, 0x91, 0x96, 0xea, 0x4d, 0x72, 0xce, 0xfe, 0xc3,
-	0x16, 0xec, 0xb0, 0x76, 0xc1, 0x7d, 0x4b, 0xeb, 0x71, 0x07, 0xc0, 0x37, 0x95, 0x91, 0x56, 0xec,
-	0xff, 0x9b, 0x3d, 0x06, 0x51, 0xd7, 0x8f, 0x60, 0x72, 0xd4, 0x79, 0xcf, 0xe9, 0x48, 0xab, 0x4c,
-	0xaa, 0x84, 0x3d, 0x40, 0xc2, 0x6f, 0xea, 0xc9, 0x8e, 0x21, 0x4c, 0xdc, 0x32, 0xd6, 0xe1, 0x56,
-	0x1d, 0xbc, 0xa0, 0x63, 0x98, 0x97, 0x63, 0x59, 0x94, 0x3c, 0xf9, 0xd8, 0xb6, 0x36, 0x59, 0xad,
-	0xb5, 0x83, 0xf7, 0xd7, 0xf8, 0xcb, 0xe8, 0xd4, 0x3b, 0xa2, 0xc3, 0xa5, 0xd6, 0x79, 0xc1, 0xc8,
-	0xb4, 0x3f, 0x1b, 0xef, 0x7b, 0xa1, 0x9b, 0xe3, 0xd0, 0x0d, 0x65, 0xb7, 0xfb, 0x51, 0x6a, 0x5f,
-	0x6a, 0x6c, 0x6e, 0xf0, 0xe0, 0x3b, 0xa1, 0x5b, 0xc7, 0x3a, 0x95, 0x0a, 0xb0, 0xbf, 0xd8, 0xd7,
-	0xf5, 0xc8, 0xf5, 0x56, 0x1f, 0xb9, 0x90, 0x0e, 0x20, 0xfb, 0xed, 0xb1, 0x86, 0x68, 0x67, 0x9b,
-	0x01, 0x47, 0x1d, 0x8e, 0xdd, 0x32, 0x2d, 0x70, 0xaa, 0x7f, 0xbb, 0x5e, 0x20, 0xea, 0xc6, 0x0e,
-	0x4c, 0x8e, 0xba, 0xe0, 0x5b, 0xb7, 0x28, 0x38, 0xad, 0xfb, 0x16, 0xe5, 0x36, 0xd8, 0x5b, 0x7d,
-	0x83, 0x91, 0x8e, 0x93, 0xdb, 0x05, 0x41, 0xb4, 0xed, 0xbc, 0x18, 0xee, 0x05, 0x78, 0xc0, 0x9d,
-	0x93, 0x17, 0xa9, 0xad, 0xa7, 0x73, 0xe7, 0xe4, 0x45, 0x6a, 0xd5, 0x60, 0x71, 0x10, 0x61, 0x31,
-	0xef, 0x12, 0x15, 0x43, 0x2d, 0x47, 0x42, 0x66, 0x6d, 0x32, 0x72, 0xbf, 0x64, 0xbd, 0x15, 0x92,
-	0xdd, 0xfb, 0xc2, 0x75, 0x07, 0x35, 0x58, 0xed, 0xa0, 0x82, 0x67, 0x74, 0xfc, 0xaa, 0x92, 0xa5,
-	0x6b, 0x36, 0xf3, 0x1f, 0x20, 0x7f, 0xfa, 0x0f, 0x04, 0xf2, 0x1a, 0xb3, 0x9f, 0xf3, 0x5f, 0x9d,
-	0xc0, 0x21, 0xfb, 0x7a, 0xe9, 0x93, 0x8b, 0x4b, 0x9f, 0xfc, 0xbc, 0xf4, 0xc9, 0xe7, 0x2b, 0x7f,
-	0xed, 0xe2, 0xca, 0x5f, 0xfb, 0x71, 0xe5, 0xaf, 0xcd, 0x47, 0x38, 0x62, 0x4f, 0x7f, 0x05, 0x00,
-	0x00, 0xff, 0xff, 0xdf, 0x78, 0x72, 0xd5, 0x3f, 0x07, 0x00, 0x00,
+var fileDescriptor_game_c4578d3b0aa65042 = []byte{
+	// 648 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xcf, 0x6a, 0xdb, 0x4e,
+	0x10, 0xc7, 0x23, 0xf9, 0x4f, 0x9c, 0x75, 0x7e, 0xbf, 0x82, 0x28, 0x61, 0x31, 0x41, 0x12, 0x3a,
+	0x14, 0x53, 0xa8, 0x02, 0x29, 0xf4, 0x10, 0xe8, 0xa1, 0x86, 0xa6, 0x94, 0xb4, 0x97, 0x2d, 0x7d,
+	0x80, 0xb5, 0xa4, 0xa8, 0x4b, 0xa5, 0x5d, 0xd7, 0x72, 0x8a, 0xf2, 0x16, 0x7d, 0x92, 0x3e, 0x47,
+	0xe9, 0x29, 0xf4, 0xd4, 0x93, 0x28, 0xf6, 0x1b, 0xe8, 0x09, 0xca, 0xec, 0x1f, 0x59, 0x75, 0x7d,
+	0xb0, 0x03, 0x3d, 0x69, 0x66, 0xf6, 0xfb, 0xd9, 0x99, 0x5d, 0xcd, 0x2c, 0x42, 0x29, 0xcd, 0x93,
+	0x70, 0x36, 0x17, 0x0b, 0xe1, 0x0c, 0xe4, 0x27, 0x12, 0xd9, 0xe8, 0x49, 0xca, 0x16, 0x1f, 0x6e,
+	0xa6, 0x61, 0x24, 0xf2, 0xb3, 0x54, 0xa4, 0xe2, 0x4c, 0xae, 0x4c, 0x6f, 0xae, 0xa5, 0x27, 0x1d,
+	0x69, 0x29, 0x30, 0xf8, 0xda, 0x47, 0x03, 0x22, 0x44, 0xfe, 0x9a, 0x5f, 0x0b, 0x27, 0x44, 0x5d,
+	0x4e, 0xf3, 0x04, 0x5b, 0xbe, 0x35, 0x3e, 0x9a, 0x8c, 0xea, 0xca, 0x3b, 0x99, 0x16, 0x82, 0x5f,
+	0x04, 0x10, 0x0d, 0xfc, 0xbc, 0x48, 0xb5, 0x49, 0xa4, 0xce, 0x79, 0x84, 0x6c, 0x16, 0x63, 0xdb,
+	0xb7, 0xc6, 0xbd, 0xc9, 0x49, 0x5d, 0x79, 0x8e, 0x52, 0xb3, 0x58, 0x6b, 0x59, 0x1c, 0x10, 0x9b,
+	0xc5, 0xb0, 0x2f, 0xd4, 0x8a, 0x3b, 0x52, 0xd9, 0xda, 0x37, 0x5d, 0xef, 0x9b, 0xaa, 0x7d, 0xe1,
+	0xe3, 0x9c, 0xa3, 0x5e, 0x96, 0x7c, 0x4e, 0x32, 0xdc, 0x95, 0xc0, 0x69, 0x5d, 0x79, 0x58, 0x01,
+	0x32, 0xac, 0x09, 0x65, 0x13, 0x25, 0x75, 0x1e, 0xa3, 0x4e, 0x44, 0x67, 0xb8, 0x27, 0x09, 0x5c,
+	0x57, 0xde, 0x43, 0x45, 0x44, 0x74, 0xa6, 0xf5, 0x60, 0x11, 0x10, 0x41, 0x3d, 0x94, 0x2f, 0x12,
+	0xdc, 0xf7, 0xad, 0x71, 0xa7, 0x5d, 0x0f, 0x44, 0xb5, 0x5a, 0x9a, 0x44, 0xea, 0x9c, 0x0b, 0x74,
+	0x18, 0x0b, 0x31, 0x7f, 0xcb, 0x38, 0x3e, 0x94, 0x88, 0x5f, 0x57, 0xde, 0xa9, 0x42, 0xf4, 0x82,
+	0xa6, 0x8c, 0x47, 0x0c, 0xd0, 0xb0, 0xb4, 0xc4, 0x83, 0xad, 0x2c, 0x2d, 0xdb, 0x2c, 0x2d, 0x0d,
+	0x4b, 0x4b, 0x60, 0x8b, 0x05, 0xbd, 0x85, 0xbc, 0x47, 0x9b, 0xac, 0x5e, 0xd0, 0xac, 0xf1, 0x88,
+	0x01, 0x1a, 0x96, 0x96, 0x18, 0x6d, 0x65, 0x9b, 0xbc, 0xc6, 0x23, 0x06, 0x00, 0x76, 0x96, 0xa9,
+	0xbc, 0xc3, 0x4d, 0x56, 0x2f, 0x68, 0xd6, 0x78, 0xc4, 0x00, 0x0d, 0x4b, 0x4b, 0x7c, 0xbc, 0x95,
+	0x6d, 0xf2, 0x1a, 0x8f, 0x18, 0x00, 0xd8, 0x48, 0x30, 0x7e, 0x95, 0xdc, 0xe2, 0xff, 0x64, 0x0b,
+	0xb6, 0x58, 0xbd, 0x60, 0xfe, 0xa5, 0xf6, 0x88, 0x01, 0xe0, 0x9f, 0xb2, 0x48, 0x70, 0xfc, 0xff,
+	0x66, 0x8f, 0x41, 0xd4, 0xf4, 0x23, 0x98, 0x44, 0xea, 0x9c, 0x67, 0xa8, 0x2f, 0x78, 0xc6, 0x78,
+	0x82, 0x1f, 0x48, 0xc2, 0xad, 0x2b, 0x6f, 0xa4, 0x08, 0x15, 0xd7, 0x8c, 0x76, 0x88, 0x56, 0x07,
+	0xcf, 0xd1, 0xf0, 0x15, 0xcd, 0x93, 0x2b, 0xc6, 0x63, 0x92, 0x7c, 0x6a, 0x5a, 0xdb, 0xda, 0xad,
+	0xb5, 0x83, 0xf7, 0x6b, 0xfc, 0x45, 0xf4, 0xd1, 0xb9, 0x44, 0xbd, 0xb9, 0x10, 0x79, 0x81, 0x2d,
+	0xbf, 0x33, 0x1e, 0x9e, 0x3b, 0xa1, 0x99, 0xe3, 0xd0, 0x0c, 0x65, 0xbb, 0xfb, 0xa5, 0x54, 0x6f,
+	0xaa, 0x6c, 0xa2, 0xf0, 0xe0, 0x87, 0x85, 0x8e, 0xdf, 0x88, 0x94, 0x71, 0xd8, 0xfc, 0x1e, 0x75,
+	0xad, 0x47, 0xce, 0xde, 0x7d, 0xe4, 0x42, 0xd4, 0x85, 0xec, 0x7f, 0x8f, 0x35, 0x44, 0x5b, 0x65,
+	0x06, 0x44, 0xea, 0xe4, 0xd8, 0xcd, 0xd3, 0x42, 0x4e, 0xf5, 0x1f, 0xcf, 0x0b, 0x44, 0xcd, 0xd8,
+	0x81, 0x49, 0xa4, 0x2e, 0xf8, 0xde, 0x3e, 0x14, 0xdc, 0xd6, 0xbe, 0x87, 0x32, 0x05, 0xda, 0xbb,
+	0x17, 0x18, 0x89, 0x78, 0xcb, 0x3b, 0x05, 0xd1, 0xa6, 0xf3, 0x62, 0xd8, 0x1f, 0x3e, 0xf0, 0xe6,
+	0xe4, 0x45, 0xaa, 0xcf, 0xd3, 0x7a, 0x73, 0xf2, 0x22, 0xd5, 0x6a, 0xb0, 0x08, 0x88, 0xe4, 0x61,
+	0xde, 0x25, 0x3c, 0x86, 0xb3, 0x5c, 0x52, 0x96, 0x35, 0xc9, 0xac, 0xfd, 0x92, 0xd9, 0x3b, 0x24,
+	0xdb, 0xfb, 0xc1, 0x35, 0x17, 0xd5, 0xdd, 0xed, 0xa2, 0x82, 0x1c, 0x0d, 0x5f, 0x96, 0x6c, 0x71,
+	0xdf, 0x66, 0xdb, 0xf3, 0xbf, 0x04, 0x6c, 0x9d, 0x4e, 0xb7, 0xc1, 0xbf, 0xba, 0xb9, 0x09, 0xfe,
+	0xb6, 0x74, 0xad, 0xbb, 0xa5, 0x6b, 0xfd, 0x5a, 0xba, 0xd6, 0x97, 0x95, 0x7b, 0x70, 0xb7, 0x72,
+	0x0f, 0x7e, 0xae, 0xdc, 0x83, 0x69, 0x5f, 0x8e, 0xe6, 0xd3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0x01, 0xfd, 0x33, 0x7d, 0x77, 0x07, 0x00, 0x00,
 }

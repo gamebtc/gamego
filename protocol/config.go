@@ -57,7 +57,7 @@ type DatabaseConfig struct {
 // 房间服务配置
 type RoomConfig struct {
 	Id   int32    `yaml:"id" bson:"_id"`    //房间唯一ID
-	Kind int32    `yaml:"kind" bson:"kind"` //游戏分类
+	Game int32    `yaml:"game" bson:"game"` //游戏分类
 	Key  string   `yaml:"key" bson:"-"`     //服务器KEY
 	Addr []string `yaml:"addr" bson:"addr"` //服务器地址
 }

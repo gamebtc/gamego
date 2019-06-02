@@ -75,7 +75,7 @@ func (sess *Session) SendError(id int32, code int32, m string, k string) {
 	sess.UnsafeSend(&protocol.ErrorInfo{ReqId: id, Code: code, Msg: m, Key: k})
 }
 
-func (sess *Session) Start(stream protocol.GameStream) {
+func (sess *Session) Start(stream protocol.RoomStream) {
 	if stream != nil {
 		sess.sendChan = make(chan interface{}, 128)
 		sess.stopSend = make(chan struct{})
@@ -92,7 +92,7 @@ func (sess *Session) Start(stream protocol.GameStream) {
 }
 
 // 写消息循环
-func (sess *Session) sendLoop(stream protocol.GameStream) {
+func (sess *Session) sendLoop(stream protocol.RoomStream) {
 	defer util.PrintPanicStack()
 	defer close(sess.stopSend)
 	for {
@@ -122,7 +122,7 @@ func (sess *Session) sendLoop(stream protocol.GameStream) {
 	}
 }
 
-func (sess *Session) recvLoop(stream protocol.GameStream) {
+func (sess *Session) recvLoop(stream protocol.RoomStream) {
 	defer util.PrintPanicStack()
 	defer close(sess.stopRecv)
 	for sess.Flag < SESS_CLOSE {
@@ -147,7 +147,7 @@ func (sess *Session) recvLoop(stream protocol.GameStream) {
 	}
 }
 
-func (sess *Session) mainLoop(stream protocol.GameStream) {
+func (sess *Session) mainLoop(stream protocol.RoomStream) {
 	defer util.PrintPanicStack()
 	defer sess.Close()
 	for sess.Flag < SESS_CLOSE {
@@ -182,7 +182,7 @@ func (sess *Session) Close() {
 }
 
 func(sess *Session) lockRoom(uid model.UserId, win int64, bet int64, round int32) (*model.User, error) {
-	return db.Driver.LockUserRoom(sess.AgentId, uid, KindId, RoomId, CoinKey, win, bet, round)
+	return db.Driver.LockUserRoom(sess.AgentId, uid, GameId, RoomId, CoinKey, win, bet, round)
 }
 
 func(sess *Session) unlockRoom() bool {

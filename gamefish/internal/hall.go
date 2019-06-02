@@ -187,12 +187,11 @@ func loadRobots(count int) {
 		if dec == 0 {
 			return
 		}
-		temp := waitRobots[:dec]
-		waitRobots = waitRobots[dec:]
-		ids := make([]model.UserId, 0, len(temp))
-		for i, r := range temp {
+		ids := make([]model.UserId, dec)
+		for i, r := range waitRobots[:dec] {
 			ids[i] = r.Id
 		}
+		waitRobots = waitRobots[dec:]
 		unloadRobots(ids)
 	} else if count > 0 {
 		// 增加机器人
@@ -221,7 +220,7 @@ func (hall *gameHall) Start() {
 	gameRand = room.NewRand()
 
 	//// 获取参数
-	//switch room.KindId {
+	//switch room.GameId {
 	//case model.GameKind_ZJH:
 	//	betItemCount = 6
 	//	switch room.Config.Level {

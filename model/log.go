@@ -15,7 +15,7 @@ type CoinFlow struct {
 	New   int64       `json:"w" bson:"w" msg:"w"`                               // 变化后的金币
 	Tax   int64       `json:"x,omitempty" bson:"x,omitempty" msg:"x,omitempty"` // 税收
 	Bet   int64       `json:"b,omitempty" bson:"b,omitempty" msg:"b,omitempty"` // 投注
-	Kind  int32       `json:"k" bson:"-" msg:"k"`                               // 所在游戏
+	Game  int32       `json:"k" bson:"-" msg:"k"`                               // 所在游戏
 	Room  int32       `json:"r,omitempty" bson:"r,omitempty" msg:"r,omitempty"` // 所在房间ID
 	Type  int32       `json:"t,omitempty" bson:"t,omitempty" msg:"t,omitempty"` // 原因
 	State int32       `json:"s,omitempty" bson:"s,omitempty" msg:"s,omitempty"` // 状态
@@ -32,7 +32,7 @@ type LoginLog struct {
 	Init  time.Time `bson:"init"`
 	Up    time.Time `bson:"up"`
 	State int32     `bson:"state"`
-	Kind  int32     `bson:"kind"`
+	Game  int32     `bson:"game"`
 	Room  int32     `bson:"room"`
 	Uid   int32     `bson:"uid"`
 	Coin  int64     `bson:"coin"`

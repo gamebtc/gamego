@@ -18,7 +18,7 @@ import (
 var(
 	Config    model.RoomInfo
 	RoomId    int32   //房间唯一ID
-	KindId    int32   //游戏分类
+	GameId    int32   //游戏分类
 	CoinKey   string  //金币类型
 )
 

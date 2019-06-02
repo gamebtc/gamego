@@ -19,7 +19,7 @@ type RoomRobot struct {
 // 房间信息
 type RoomInfo struct {
 	Id      int32     `bson:"_id"`     //房间唯一ID
-	Kind    int32     `bson:"kind"`    //游戏分类
+	Game    int32     `bson:"game"`    //游戏分类
 	Name    string    `bson:"name"`    //房间名字
 	Tax     int64     `bson:"tax"`     //房间税率(千分比)
 	Level   int32     `bson:"level"`   //房间等级
@@ -58,7 +58,7 @@ type RoomInfo struct {
 func (room *RoomInfo) GetMsg() *protocol.RoomInfo {
 	return &protocol.RoomInfo{
 		Id:      room.Id,
-		Kind:    room.Kind,
+		Game:    room.Game,
 		Name:    room.Name,
 		Ante:    room.Ante,
 		DoorMin: room.DoorMin,

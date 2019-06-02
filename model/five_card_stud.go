@@ -189,7 +189,7 @@ func (a FiveCard) StraightFlush() byte {
 	return 0
 }
 
-// 四条（Four of a Kind，亦称“铁支”、“四张”或“炸弹”）：有四张同一点数的牌。
+// 四条（Four of a Game，亦称“铁支”、“四张”或“炸弹”）：有四张同一点数的牌。
 func (a FiveCard) FourKind() uint32 {
 	if a.p[1] == a.p[2] && a.p[2] == a.p[3] {
 		if a.p[0] == a.p[1] {
@@ -239,7 +239,7 @@ func (a FiveCard) Straight() byte {
 	return 0
 }
 
-// 三条（Three of a kind，亦称“三张”）：有三张同一点数的牌。
+// 三条（Three of a game，亦称“三张”）：有三张同一点数的牌。
 func (a FiveCard) ThreeKind() uint32 {
 	if a.p[2] == a.p[1] {
 		if a.p[0] == a.p[1] {
@@ -398,7 +398,7 @@ func (d *FiveCardDealer) SumPower() (i int) {
 	return
 }
 
-func (d *FiveCardDealer) Kind() {
+func (d *FiveCardDealer) Game() {
 	i := len(d.All) - 1
 
 	end := i
@@ -540,7 +540,7 @@ func NewFiveCardDealer() *FiveCardDealer {
 	for i := 0; i < len(dealer.All); i++ {
 		dealer.All[i].Weight = int32(i)
 	}
-	dealer.Kind()
+	dealer.Game()
 	return dealer
 }
 
@@ -622,7 +622,7 @@ func CreateFiveCardDealer(a []byte, b []byte) *FiveCardDealer {
 		}
 	}
 	sort.Sort(dealer)
-	dealer.Kind()
+	dealer.Game()
 	return dealer
 }
 

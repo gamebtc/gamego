@@ -170,16 +170,16 @@ func Init(config *AppConfig, r Haller) error {
 
 	Config = *roomInfo
 	RoomId = roomInfo.Id
-	KindId = roomInfo.Kind
+	GameId = roomInfo.Game
 	CoinKey = roomInfo.CoinKey
-	logName = "play" + CoinKey + "_" + strconv.Itoa(int(KindId))
+	logName = "play" + CoinKey + "_" + strconv.Itoa(int(GameId))
 
 	// 加载房间
 	sessions = make(map[model.UserId]*Session, roomInfo.Cap*2)
 	messageChan = make(chan interface{}, 65536+roomInfo.Cap*128)
 
 	RegistMsg(int32(protocol.MsgId_ErrorInfo), (*protocol.ErrorInfo)(nil) )
-	RegistMsg(int32(protocol.MsgId_LoginRoomAck), (*protocol.LoginRoomAck)(nil))
+	RegistMsg(int32(protocol.MsgId_LoginGameAck), (*protocol.LoginGameAck)(nil))
 
 	log.Infof("room:%#v", roomInfo)
 	return nil
@@ -275,7 +275,7 @@ func NewKindSn() (sn int64) {
 	if startKindSn < endKindSn {
 		sn = startKindSn
 		startKindSn++
-	} else if newStart := db.Driver.NewSN(KindId, roundAllot); newStart > 0 {
+	} else if newStart := db.Driver.NewSN(GameId, roundAllot); newStart > 0 {
 		sn = newStart
 		startKindSn = newStart + 1
 		endKindSn = newStart + roundAllot

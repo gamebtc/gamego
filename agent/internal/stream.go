@@ -31,13 +31,14 @@ func (stream *GrpcStream) Close() {
 	stream.ClientStream.CloseSend()
 }
 
+const NetBuffSize = 1024*1024
 type NetStream struct {
-	conn net.Conn
-	head [HeadLen]byte
-	disposed   uint32           // 会话关闭标记
+	conn     net.Conn
+	recvBuf  [HeadLen+NetBuffSize]byte // 接收缓冲
+	disposed uint32                    // 会话关闭标记
 }
 
-func (stream *NetStream) Send(d []byte) error {
+func (stream * NetStream) Send(d []byte) error {
 	if _, e := stream.conn.Write(d); e == nil {
 		return nil
 	} else {
@@ -46,22 +47,25 @@ func (stream *NetStream) Send(d []byte) error {
 }
 
 func (stream *NetStream) Recv() ([]byte, error) {
-	head := stream.head[:]
+	head := stream.recvBuf[:HeadLen]
 	n, err := io.ReadFull(stream.conn, head)
 	if err != nil || n != HeadLen {
 		return nil, err
 	}
-
 	size := int(GetHeadLen(head))
-	payload := make([]byte, HeadLen+size)
-
+	var payload []byte
+	if size > NetBuffSize {
+		payload = make([]byte, HeadLen+size)
+		copy(payload[:HeadLen], head)
+	}else{
+		payload = stream.recvBuf[:HeadLen+size]
+	}
 	if size > 0 {
 		n, err = io.ReadFull(stream.conn, payload[HeadLen:])
 		if err != nil || n != size {
 			return nil, err
 		}
 	}
-	copy(payload[:HeadLen], head)
 	return payload, nil
 }
 

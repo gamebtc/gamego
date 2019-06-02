@@ -11,7 +11,7 @@ import (
 func (d *driver) LockRoomServer(room *protocol.RoomConfig) (obj *model.RoomInfo, err error) {
 	query := bson.D{
 		{"_id", room.Id},
-		{"kind", room.Kind},
+		{"game", room.Game},
 		{"state", int32(1)},
 		{"key", bson.D{{"$in", []string{"", room.Key}}}},
 	}
@@ -49,7 +49,7 @@ func (d *driver) FindRoomInfos(query interface{}) (all []*model.RoomInfo, err er
 }
 
 func(d *driver) FindRoomConfigs(query interface{}) (all []*protocol.RoomConfig, err error){
-	op:=options.Find().SetProjection(bson.D{{"kind", true},{"addr", true}})
+	op:=options.Find().SetProjection(bson.D{{"game", true},{"addr", true}})
 	cur, err := d.roomCache.Find(d.ctx, query, op)
 	if err != nil {
 		return nil, err

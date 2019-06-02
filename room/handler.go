@@ -16,8 +16,8 @@ func userOnline(sess *Session, uid int32) {
 
 	if oldSess == nil && Config.Lock > 0 {
 		// 检查房间配置
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "房间已锁定")
-		sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "房间已锁定", "")
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, GameId, RoomId, "房间已锁定")
+		sess.SendError(int32(protocol.MsgId_LoginGameReq), 1000, "房间已锁定", "")
 		sess.Close()
 		return
 	}
@@ -34,14 +34,14 @@ func userOnline(sess *Session, uid int32) {
 	user, err := sess.lockRoom(uid, win, bet, round)
 	if err != nil {
 		// 发送错误消息
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, err.Error())
-		sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "登录失败", err.Error())
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, GameId, RoomId, err.Error())
+		sess.SendError(int32(protocol.MsgId_LoginGameReq), 1000, "登录失败", err.Error())
 		sess.Close()
 		return
 	}
 	if user == nil || user.Id == 0{
-		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败2", sess.AgentId, uid, KindId, RoomId)
-		sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "登录失败2", "")
+		log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败2", sess.AgentId, uid, GameId, RoomId)
+		sess.SendError(int32(protocol.MsgId_LoginGameReq), 1000, "登录失败2", "")
 		sess.Close()
 		return
 	}
@@ -54,9 +54,9 @@ func userOnline(sess *Session, uid int32) {
 		oldSess.locked = false
 		AddUser(sess)
 		// 发送登录游戏信息
-		sess.UnsafeSend(&protocol.LoginRoomAck{
+		sess.UnsafeSend(&protocol.LoginGameAck{
 			Room: RoomId,
-			Kind: KindId,
+			Game: GameId,
 		})
 
 		hall.UserReline(oldSess, sess)
@@ -66,17 +66,17 @@ func userOnline(sess *Session, uid int32) {
 		// 检查所带金币
 		coin := user.Coin
 		if coin < Config.DoorMin || coin > Config.DoorMax {
-			log.Debugf("id:%v,uid:%v,kid:%v,room:%v,登录失败:%v", sess.AgentId, uid, KindId, RoomId, "金币不足")
-			sess.SendError(int32(protocol.MsgId_LoginRoomReq), 1000, "金币不足", "")
+			log.Debugf("id:%v,uid:%v,gid:%v,room:%v,登录失败:%v", sess.AgentId, uid, GameId, RoomId, "金币不足")
+			sess.SendError(int32(protocol.MsgId_LoginGameReq), 1000, "金币不足", "")
 			sess.Close()
 			return
 		}
 		user.Online = true
 		AddUser(sess)
 		// 发送登录游戏信息
-		sess.UnsafeSend(&protocol.LoginRoomAck{
+		sess.UnsafeSend(&protocol.LoginGameAck{
 			Room: RoomId,
-			Kind: KindId,
+			Game: GameId,
 		})
 		hall.UserOnline(sess, user)
 	}

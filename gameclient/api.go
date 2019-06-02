@@ -39,12 +39,12 @@ func Run(config *AppConfig) {
 	jsonCoder = GetCoder("json") //jsonIter
 
 	registMsg(int32(MsgId_UserLoginReq), (*LoginReq)(nil), nil)
-	registMsg(int32(MsgId_LoginRoomReq), (*LoginRoomReq)(nil), nil)
-	registMsg(int32(MsgId_LoginRoomAck), (*LoginRoomAck)(nil), loginRoom)
+	registMsg(int32(MsgId_LoginGameReq), (*LoginGameReq)(nil), nil)
+	registMsg(int32(MsgId_LoginGameAck), (*LoginGameAck)(nil), loginGame)
 	registMsg(int32(folks.Folks_BetReq), (*folks.BetReq)(nil), nil)
 
-	registMsg(int32(MsgId_ExitRoomReq), (*ExitRoomReq)(nil), nil)
-	registMsg(int32(MsgId_ExitRoomAck), (*ExitRoomAck)(nil), exitRoom)
+	registMsg(int32(MsgId_ExitGameReq), (*ExitGameReq)(nil), nil)
+	registMsg(int32(MsgId_ExitGameAck), (*ExitGameAck)(nil), exitGame)
 
 	registMsg(int32(folks.Folks_BetAck), (*folks.BetAck)(nil), betAck)
 	registMsg(int32(MsgId_HandshakeAck), (*Handshake)(nil), handshake)
@@ -114,17 +114,17 @@ func verCheck(sess *Session, arg interface{}) {
 		log.Debugf("verCheckAck:%#v", arg)
 	}
 }
-func loginRoom(sess *Session, arg interface{}) {
-	if arg, ok := arg.(*LoginRoomAck); ok && arg != nil {
+func loginGame(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*LoginGameAck); ok && arg != nil {
 		sess.roomId = arg.Room
-		log.Debugf("loginRoom:%#v", arg)
+		log.Debugf("loginGame:%#v", arg)
 	}
 }
 
-func exitRoom(sess *Session, arg interface{}) {
-	if arg, ok := arg.(*ExitRoomAck); ok && arg != nil {
+func exitGame(sess *Session, arg interface{}) {
+	if arg, ok := arg.(*ExitGameAck); ok && arg != nil {
 		sess.roomId = 0
-		log.Debugf("exitRoom:%#v", arg)
+		log.Debugf("exitGame:%#v", arg)
 	}
 }
 

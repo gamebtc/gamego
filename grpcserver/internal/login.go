@@ -175,7 +175,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 		Name:  user.Name,
 		Phone: acc.Phone,
 		Bag:   user.Bag,
-		Kind:  lock.Kind,
+		Game:  lock.Game,
 		Room:  lock.Room,
 	}
 }

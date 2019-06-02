@@ -309,7 +309,7 @@ func (d *GoldenFlowerDealer) GetGroup(a []byte) *GoldenFlowerGroup {
 	return d.Groups[num]
 }
 
-func (d *GoldenFlowerDealer) Kind() {
+func (d *GoldenFlowerDealer) Game() {
 	i := len(d.All) - 1
 	//[22048-22099]52
 	end := i
@@ -409,6 +409,6 @@ func NewGoldenFlowerDealer(flower bool) *GoldenFlowerDealer {
 			}
 		}
 	}
-	dealer.Kind()
+	dealer.Game()
 	return dealer
 }

@@ -91,7 +91,7 @@ let f = function (agent, ip, req) {
         newId = newId ? newId : ObjectId();
         const zeroInt = NumberInt(0);
         const newLock = { bag: t.bag, udid, ip, agent, init: now, up: now, record: newId };
-        const newRoom = { kind: zeroInt, room: zeroInt, table: zeroInt };
+        const newRoom = { game: zeroInt, room: zeroInt, table: zeroInt };
         const oldLock = db.userLocker.findOneAndUpdate({ _id: userId }, { $set: newLock, $max: newRoom },{ upsert: true });
         // 更新旧的登录日志
         if (oldLock) {
@@ -99,7 +99,7 @@ let f = function (agent, ip, req) {
                 db.loginLog.updateOne({ _id: oldLock.record }, { $set: { force: newId } });
             }
             // 记录当前房间位置
-            t.kind = oldLock.kind;
+            t.game = oldLock.game;
             t.room = oldLock.room;
             t.table = oldLock.table;
         }

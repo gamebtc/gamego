@@ -25,7 +25,7 @@ import (
 var driver GameDriver
 const bagGold = "gc1"
 const bankGold = "gc2"
-const kind = 0
+const game = 0
 
 func getTestDrive(t *testing.T)GameDriver {
 	var testUrl = "mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs"
@@ -44,11 +44,11 @@ func getTestDrive(t *testing.T)GameDriver {
 func TestBagDeal(t *testing.T) {
 	d := getTestDrive(t)
 	flow := &model.CoinFlow{
-		Sn:    d.NewSN(kind, 1),
+		Sn:    d.NewSN(game, 1),
 		Uid:   2743405,
 		Add:   333,
 		Coin:  0,
-		Kind:  kind,
+		Game:  game,
 		Room:  1001,
 		Type: 1,
 		State: 0,
@@ -68,13 +68,13 @@ func BenchmarkBagDeal(b *testing.B) {
 		Uid:   2743405,
 		Add:   444,
 		Coin:  0,
-		Kind:  0,
+		Game:  0,
 		Room:  0,
 		Type: 1,
 		State: 0,
 		Note:  "BagDeal",
 	}
-	sn := d.NewSN(kind,int64(b.N))
+	sn := d.NewSN(game,int64(b.N))
 	flow.Sn = sn
 	var err error
 	for i := 0; i < b.N; i++ {
@@ -91,11 +91,11 @@ func BenchmarkBagDeal(b *testing.B) {
 func TestBagDealSafe(t *testing.T) {
 	d := getTestDrive(t)
 	flow := &model.CoinFlow{
-		Sn:    d.NewSN(kind,1),
+		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   555,
 		Coin:  0,
-		Kind:  kind,
+		Game:  game,
 		Room:  1001,
 		Type: 2,
 		State: 0,
@@ -114,13 +114,13 @@ func BenchmarkBagDealSafe(b *testing.B) {
 		Uid:   2743405,
 		Add:   666,
 		Coin:  0,
-		Kind:  0,
+		Game:  0,
 		Room:  0,
 		Type: 1,
 		State: 0,
 		Note:  "BagDealSafe",
 	}
-	sn := d.NewSN(kind,int64(b.N))
+	sn := d.NewSN(game,int64(b.N))
 	for i := 0; i < b.N; i++ {
 		flow.Sn = sn + int64(i)
 		flow.Room += 1
@@ -133,11 +133,11 @@ func BenchmarkBagDealSafe(b *testing.B) {
 func TestBank2Bag(t *testing.T) {
 	d := getTestDrive(t)
 	flow := &model.CoinFlow{
-		Sn:    d.NewSN(kind,1),
+		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   777,
 		Coin:  0,
-		Kind:  kind,
+		Game:  game,
 		Room:  1001,
 		Type:  3,
 		State: 0,
@@ -156,13 +156,13 @@ func BenchmarkBank2Bag(b *testing.B) {
 		Uid:   2743405,
 		Add:   888,
 		Coin:  0,
-		Kind:  0,
+		Game:  0,
 		Room:  0,
 		Type:  1,
 		State: 0,
 		Note:  "Bank2Bag",
 	}
-	sn := d.NewSN(kind,int64(b.N))
+	sn := d.NewSN(game,int64(b.N))
 	for i := 0; i < b.N; i++ {
 		flow.Sn = sn + int64(i)
 		flow.Room += 1
@@ -175,11 +175,11 @@ func BenchmarkBank2Bag(b *testing.B) {
 func TestBag2Bank(t *testing.T) {
 	d := getTestDrive(t)
 	flow := &model.CoinFlow{
-		Sn:    d.NewSN(kind,1),
+		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   999,
 		Coin:  0,
-		Kind:  kind,
+		Game:  game,
 		Room:  1001,
 		Type:  4,
 		State: 0,
@@ -199,13 +199,13 @@ func BenchmarkBag2Bank(b *testing.B) {
 		Uid:   2743405,
 		Add:   333,
 		Coin:  0,
-		Kind:  kind,
+		Game:  game,
 		Room:  0,
 		Type:  1,
 		State: 0,
 		Note:  "Bag2Bank",
 	}
-	sn := d.NewSN(kind, int64(b.N))
+	sn := d.NewSN(game, int64(b.N))
 	for i := 0; i < b.N; i++ {
 		flow.Sn = sn + int64(i)
 		flow.Room += 1

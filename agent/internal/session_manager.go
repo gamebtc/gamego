@@ -31,14 +31,14 @@ func newSession(ip uint32, addr string, conn net.Conn) {
 	signal.Add(1)
 	defer signal.Done()
 	s := &Session{
-		Id:       id,
-		Ip:       ip,
-		Addr:     addr,
-		Created:  time.Now(),
-		Coder:    coder,
-		conn:     conn,
-		dieChan:  make(chan struct{}),
-		stopRecv: make(chan struct{}),
+		Id:         id,
+		Ip:         ip,
+		Addr:       addr,
+		Created:    time.Now(),
+		Coder:      coder,
+		clientConn: conn,
+		dieChan:    make(chan struct{}),
+		stopRecv:   make(chan struct{}),
 	}
 	defer delSession(s)
 	log.Debugf("new session %v: %v", s.Id, s.Addr)

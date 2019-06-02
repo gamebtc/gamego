@@ -68,6 +68,9 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (e error) 
 	user.Up = i.Up
 	user.Last = i.Up
 	f := func(sc mongo.SessionContext) (err error) {
+		if err = sc.StartTransaction(); err != nil {
+			return err
+		}
 		if _, err = d.user.InsertOne(d.ctx, user); err == nil {
 			// 创建背包
 			query := bson.D{{"_id", id}}
@@ -105,7 +108,7 @@ func (d *driver) LoadUser(uid model.UserId, ip model.IP) (user *model.User, err 
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}}
+var zeroRoom = bson.D{{"game", zero32}, {"room", zero32}}
 var maxRoom = bson.E{Key: "$max", Value: zeroRoom}
 
 func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Time, req *protocol.LoginReq) (*model.UserLocker, error) {
@@ -119,7 +122,6 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 	}
 
 	up := bson.D{{"$set", newLock}, maxRoom}
-
 	query := bson.D{{"_id", uid}}
 	lock := new(model.UserLocker)
 	replace := false
@@ -186,14 +188,14 @@ func (d *driver) UnlockUser(agent int64, uid model.UserId) bool {
 }
 
 // 锁定用户到指定房间
-func (d *driver) LockUserRoom(agent int64, uid model.UserId, kind int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error) {
+func (d *driver) LockUserRoom(agent int64, uid model.UserId, game int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error) {
 	query := bson.D{
 		{"_id", uid},
 		{"agent", agent},
 		{"room", bson.D{{"$in", []int32{zero32, roomId}}}},
 	}
 	newId := model.NewObjectId()
-	up := bson.D{{"$set", bson.D{{"log2", newId}, {"kind", kind}, {"room", roomId}}}, upNow}
+	up := bson.D{{"$set", bson.D{{"log2", newId}, {"game", game}, {"room", roomId}}}, upNow}
 
 	lock := new(model.UserLocker)
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, returnNew).Decode(lock); err != nil {
@@ -209,7 +211,7 @@ func (d *driver) LockUserRoom(agent int64, uid model.UserId, kind int32, roomId 
 				return nil, protocol.ErrorLoginExpired
 			} else if lock.Room != roomId {
 				// 已登录其它房间
-				return nil, errors.New(fmt.Sprintf("您已登录游戏[%v]房间[%v]", lock.Kind, lock.Room))
+				return nil, errors.New(fmt.Sprintf("您已登录游戏[%v]房间[%v]", lock.Game, lock.Room))
 			}
 			return nil, protocol.ErrorLoginExpired
 		}
@@ -243,7 +245,7 @@ func (d *driver) LockUserRoom(agent int64, uid model.UserId, kind int32, roomId 
 		{"bet", zero64},
 		{"round", zero32},
 		{"state", zero32},
-		{"kind", kind},
+		{"game", game},
 		{"room", roomId},
 		{coinKey, user.Coin},
 		{"ip", user.Ip},
@@ -264,7 +266,7 @@ func (d *driver) UnlockUserRoom(agent int64, uid model.UserId, roomId int32, win
 		{"_id", uid},
 		{"room", roomId},
 	}
-	up := bson.D{{"$set", bson.D{{"kind", zero32}, {"room", zero32}}}, upNow}
+	up := bson.D{{"$set", bson.D{{"game", zero32}, {"room", zero32}}}, upNow}
 	lock := new(model.UserLocker)
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, retnew).Decode(lock); err == nil {
 		if lock.Log2.IsZero() == false {

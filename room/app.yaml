@@ -42,7 +42,7 @@ logLevel: 'debug'
 
 room:
   id: 28001
-  kind: 280
+  game: 280
   addr: ['127.0.0.1:50001']
   key: 'fdf843JJE'
 

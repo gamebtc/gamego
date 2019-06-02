@@ -57,7 +57,7 @@ type GameDriver interface {
 	ClearRobot(room int32)
 
 	// 锁定用户到指定房间
-	LockUserRoom(agent int64, uid model.UserId, kind int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error)
+	LockUserRoom(agent int64, uid model.UserId, game int32, roomId int32, coinKey string, win int64, bet int64, round int32) (*model.User, error)
 	// 解锁用户从指定房间
 	UnlockUserRoom(agent int64, uid model.UserId, roomId int32, win int64, bet int64, round int32) bool
 	// 更新agentId

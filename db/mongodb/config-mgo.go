@@ -62,7 +62,7 @@ func (d *driver) NewSN(key interface{}, count int64) int64 {
 		ReturnNew: true,
 	}
 	doc := incrementKeyDoc{}
-	d.conf.Find(bson.D{{"_id", kind}}).Apply(change,&doc)
+	d.conf.Find(bson.D{{"_id", game}}).Apply(change,&doc)
 	start := (doc.N - count) + 1
 	if start > 0 {
 		return start

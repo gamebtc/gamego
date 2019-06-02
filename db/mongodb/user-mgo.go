@@ -99,7 +99,7 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error
 }
 
 // 锁定玩家登录
-var zeroRoom = bson.D{{"kind", zero32}, {"room", zero32}}
+var zeroRoom = bson.D{{"game", zero32}, {"room", zero32}}
 var maxRoom = bson.DocElem{Name: "$max", Value: zeroRoom}
 
 func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq) (*model.UserLocker, error) {
@@ -125,7 +125,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 		set := bson.D{
 			{"up", t},
 			{"state", 2},
-			{"kind", lock.Kind},
+			{"game", lock.Game},
 			{"room", lock.Room},
 		}
 		d.loginLog.UpdateId(lock.Log1, bson.D{{"$set", set}})
@@ -133,7 +133,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	// 写登录日志
 	newLock = append(newLock,
 		bson.DocElem{"state", zero32},
-		bson.DocElem{"kind", lock.Kind},
+		bson.DocElem{"game", lock.Game},
 		bson.DocElem{"room", lock.Room},
 		bson.DocElem{"uid", user.Id},
 		bson.DocElem{"bag", user.Bag},
@@ -177,7 +177,7 @@ func (d *driver) UnlockUser(agent int64, userId int32) bool {
 }
 
 // 锁定用户到指定房间
-func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int32) (*model.User, error) {
+func (d *driver) LockUserRoom(agent int64, userId int32, game int32, roomId int32) (*model.User, error) {
 	query := bson.D{
 		{"_id", userId},
 		{"agent", agent},
@@ -185,7 +185,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 	}
 	newId := model.NewObjectId()
 	change := mgo.Change{
-		Update:    bson.D{{"$set", bson.D{{"log2", newId}, {"kind", kind}, {"room", roomId}}}, upNow},
+		Update:    bson.D{{"$set", bson.D{{"log2", newId}, {"game", game}, {"room", roomId}}}, upNow},
 		ReturnNew: false,
 	}
 	oldLock := new(model.UserLocker)
@@ -214,7 +214,7 @@ func (d *driver) LockUserRoom(agent int64, userId int32, kind int32, roomId int3
 		{"_id", newId},
 		{"win", zero32},
 		{"state", zero32},
-		{"kind", kind},
+		{"game", game},
 		{"room", roomId},
 		{"uid", user.Id},
 		{"bag", user.Bag},
@@ -233,7 +233,7 @@ func (d *driver) UnlockUserRoom(agent int64, userId int32, roomId int32) bool {
 		{"room", roomId},
 	}
 	change := mgo.Change{
-		Update:    bson.D{{"$set", bson.D{{"kind", zero32}, {"room", zero32}}}, upNow},
+		Update:    bson.D{{"$set", bson.D{{"game", zero32}, {"room", zero32}}}, upNow},
 		ReturnNew: false,
 	}
 	lock := new(model.UserLocker)

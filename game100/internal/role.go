@@ -191,7 +191,7 @@ func (role *Role) balance(round *GameRound) {
 		Old:   role.Coin - addCoin,
 		Tax:   tax,
 		Room:  room.RoomId,
-		Kind:  room.KindId,
+		Game:  room.GameId,
 		Note:  round.Note,
 		Bet:   bet,
 		LogId: round.Id,

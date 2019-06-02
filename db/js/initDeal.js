@@ -3,7 +3,7 @@
 // Uid    UserId `bson:"u"`  //用户ID
 // Add    int64  `bson:"a"`  //游戏币变化量
 // Coin   int64  `bson:"c"`  //游戏币变化后的金币
-// Kind   int32  `bson:"k"`  //所在游戏
+// Game   int32  `bson:"k"`  //所在游戏
 // Room   int32  `bson:"r"`  //所在房间ID
 // Type   int32  `bson:"t"`  //原因
 // State  int32  `bson:"s"`  //状态

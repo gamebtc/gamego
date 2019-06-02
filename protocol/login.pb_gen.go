@@ -1739,8 +1739,8 @@ func (z *LoginSuccessAck) DecodeMsg(dc *msgp.Reader) (err error) {
 				}
 				z.Bag[zema] = zpez
 			}
-		case "kind":
-			z.Kind, err = dc.ReadInt32()
+		case "game":
+			z.Game, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -1858,12 +1858,12 @@ func (z *LoginSuccessAck) EncodeMsg(en *msgp.Writer) (err error) {
 			return
 		}
 	}
-	// write "kind"
-	err = en.Append(0xa4, 0x6b, 0x69, 0x6e, 0x64)
+	// write "game"
+	err = en.Append(0xa4, 0x67, 0x61, 0x6d, 0x65)
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt32(z.Kind)
+	err = en.WriteInt32(z.Game)
 	if err != nil {
 		return
 	}
@@ -1923,9 +1923,9 @@ func (z *LoginSuccessAck) MarshalMsg(b []byte) (o []byte, err error) {
 		o = msgp.AppendString(o, zema)
 		o = msgp.AppendInt64(o, zpez)
 	}
-	// string "kind"
-	o = append(o, 0xa4, 0x6b, 0x69, 0x6e, 0x64)
-	o = msgp.AppendInt32(o, z.Kind)
+	// string "game"
+	o = append(o, 0xa4, 0x67, 0x61, 0x6d, 0x65)
+	o = msgp.AppendInt32(o, z.Game)
 	// string "level"
 	o = append(o, 0xa5, 0x6c, 0x65, 0x76, 0x65, 0x6c)
 	o = msgp.AppendInt32(o, z.Level)
@@ -2018,8 +2018,8 @@ func (z *LoginSuccessAck) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				}
 				z.Bag[zema] = zpez
 			}
-		case "kind":
-			z.Kind, bts, err = msgp.ReadInt32Bytes(bts)
+		case "game":
+			z.Game, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}

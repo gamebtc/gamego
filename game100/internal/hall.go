@@ -70,7 +70,7 @@ func (hall *gameHall) Update() {
 
 func (hall *gameHall) Start() {
 	gameRand = room.NewRand()
-	switch room.KindId {
+	switch room.GameId {
 	case model.GameKind_BJL:
 		newDealer = NewBjlDealer
 		gameName = "百家乐"

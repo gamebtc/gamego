@@ -48,16 +48,16 @@ func Run(config *conf.AppConfig) {
 	registMsg(MsgId_VerCheckAck, (*VerCheckAck)(nil))
 	registMsg(MsgId_HeartBeatAck, (*HeartBeatAck)(nil))
 	registMsg(MsgId_UserLoginFailAck, (*LoginFailAck)(nil))
-	registMsg(MsgId_LoginRoomAck, (*LoginRoomAck)(nil))
+	registMsg(MsgId_LoginGameAck, (*LoginGameAck)(nil))
 	registMsg(MsgId_UserLoginSuccessAck, (*LoginSuccessAck)(nil))
-	registMsg(MsgId_ExitRoomAck, (*ExitRoomAck)(nil))
+	registMsg(MsgId_ExitGameAck, (*ExitGameAck)(nil))
 
 	handlers[MsgId_HandshakeReq] = handshakeHandler
 	handlers[MsgId_UserLoginReq] = userLoginHandler
 	handlers[MsgId_VerCheckReq] = verCheckHandler
 	//handlers[MsgId_HeartBeatReq] = heartBeatHandler
-	handlers[MsgId_LoginRoomReq] = loginRoomHandler
-	handlers[MsgId_ExitRoomReq] = exitRoomHandler
+	handlers[MsgId_LoginGameReq] = loginGameHandler
+	handlers[MsgId_ExitGameReq] = exitGameHandler
 	//handlers[MsgId_ConnectRoomReq] = connectRoomHandler
 
 	//user := &Handshake{}

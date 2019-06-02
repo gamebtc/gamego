@@ -70,12 +70,12 @@ message MsgId{
 		RankGetReq            = 270; // 获取排行榜
 		RankGetAck            = 271; // 获取排行榜
 
-		LoginRoomReq          = 301; // 请求连接房间
-		LoginRoomAck          = 302; // 连接房间返回
-		SendRoomFail          = 304; // 消息发送到房间失败，需要客户端重新连接房间
+		LoginGameReq          = 301; // 请求连接游戏
+		LoginGameAck          = 302; // 连接游戏返回
+		SendGameFail          = 304; // 消息发送到游戏失败，需要客户端重新连接游戏
 
-		ExitRoomReq           = 305; // 请求退出房间
-		ExitRoomAck           = 306; // 请求退出房间
+		ExitGameReq           = 305; // 请求退出游戏
+		ExitGameAck           = 306; // 请求退出游戏
 
 		// 1024=1个服务段，共8个服务段
 		//OtherMessageHeadSplit  = 1024; // 每个服务占用1024个协议，共支持8个服务

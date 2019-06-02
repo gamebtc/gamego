@@ -146,7 +146,7 @@ func (role *Role) writeCoin() {
 			New:   role.Coin,
 			Old:   round.OldCoin,
 			Room:  room.RoomId,
-			Kind:  room.KindId,
+			Game:  room.GameId,
 			Bet:   round.Bet,
 			LogId: round.Id,
 		}

@@ -44,7 +44,7 @@ func (s *grpcServer) Send(stream protocol.Game_SendServer) (err error) {
 	return s.newSession(&GrpcStream{ServerStream: stream}, user)
 }
 
-func (s *grpcServer) newSession(stream protocol.GameStream, user *protocol.UserContext) error {
+func (s *grpcServer) newSession(stream protocol.RoomStream, user *protocol.UserContext) error {
 	sess := &Session{
 		AgentId:  user.AgentId,
 		Ip:       user.Ip,

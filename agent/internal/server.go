@@ -22,7 +22,7 @@ var (
 	sameIp          uint32            //同一IP连接数限制
 	connectCount    int32             //当前连接数
 	maxConnect      int32             //最大连接数
-	coder           Coder         //编码方式
+	coder           Coder             //编码方式
 	rpcServicePool  ServicePool
 	roomServicePool ServicePool
 	tcpReadBuf 		int
@@ -30,7 +30,7 @@ var (
 )
 
 func startServer(config *conf.AppConfig) {
-	rpcServicePool = NewServicePool(config.Consul.Addr, config.Consul.ServerPrefix, config.Consul.Services, true)
+	rpcServicePool = NewServicePool(config.Consul.Addr, config.Consul.ServerPrefix, config.Consul.Services, false)
 
 	if config.Consul.RoomPrefix != "" {
 		roomServicePool = NewServicePool(config.Consul.Addr, config.Consul.RoomPrefix, config.Consul.Services, false)

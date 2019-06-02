@@ -54,7 +54,7 @@ let fRoomLogin = function (agent, ip, userId, roomId) {
         }
     }
 
-    const up = { kind: NumberInt(room.kind), room: NumberInt(roomId), up: now };
+    const up = { game: NumberInt(room.game), room: NumberInt(roomId), up: now };
     const query = { _id: userId, agent, $or: [{ room: 0 }, { room: roomId }] };
     // 开启事务，锁定玩家到房间
     const sess = db.getMongo().startSession(); //{ readPreference: { mode: "primary" } }
@@ -79,7 +79,7 @@ let fRoomLogin = function (agent, ip, userId, roomId) {
                 }
             }
             sess.commitTransaction();
-            user.kind = up.kind;
+            user.game = up.game;
             user.room = up.room;
             user.table = lock.table;
             user.agent = agent;
@@ -99,7 +99,7 @@ let fRoomLogin = function (agent, ip, userId, roomId) {
     user._id = 0;
     const lock = db.userLocker.findOne(userKey);
     if (lock) {
-        user.kind = lock.kind;
+        user.game = lock.game;
         user.room = lock.room;
         user.table = lock.table;
         user.agent = lock.agent;

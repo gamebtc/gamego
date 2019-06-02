@@ -106,7 +106,7 @@ message LoginSuccessAck{
     string name = 7 [(gogoproto.moretags) = 'bson:"name" msg:"name"'];          // 玩家昵称
     string phone = 8 [(gogoproto.moretags) = 'bson:"phone" msg:"phone"'];       // 手机号
     map<string, int64> bag = 9 [(gogoproto.moretags) = 'bson:"bag" msg:"bag"']; // 钱包
-    int32 kind = 10 [(gogoproto.moretags) = 'bson:"kind" msg:"kind"'];          // 所在游戏分类
+    int32 game = 10 [(gogoproto.moretags) = 'bson:"game" msg:"game"'];          // 所在游戏分类
     int32 level = 11 [(gogoproto.moretags) = 'bson:"level" msg:"level"'];       // 所在房间等级
     int32 room = 12 [(gogoproto.moretags) = 'bson:"room" msg:"room"'];          // 当前所在游戏房间
 }

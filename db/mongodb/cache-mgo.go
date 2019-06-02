@@ -60,7 +60,7 @@ func(c *AppCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions
 	}
 	for {
 		for stream.Next(&doc) {
-			if doc.Document.Kind == bson.ElementDocument {
+			if doc.Document.Game == bson.ElementDocument {
 				v := new(model.AppInfo)
 				if err = bson.Unmarshal(doc.Document.Data, v); err == nil {
 					c.SetCache(v)
@@ -133,7 +133,7 @@ func(c *PackCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 	}
 	for {
 		for stream.Next(&doc) {
-			if doc.Document.Kind == bson.ElementDocument {
+			if doc.Document.Game == bson.ElementDocument {
 				v := new(model.PackInfo)
 				if err = bson.Unmarshal(doc.Document.Data, v); err == nil {
 					c.SetCache(v)
@@ -206,7 +206,7 @@ func(c *ChanCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 	}
 	for {
 		for stream.Next(&doc) {
-			if doc.Document.Kind == bson.ElementDocument {
+			if doc.Document.Game == bson.ElementDocument {
 				v := new(model.ChanInfo)
 				if err = bson.Unmarshal(doc.Document.Data, v); err == nil {
 					c.SetCache(v)
@@ -279,7 +279,7 @@ func(c *HintCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 	}
 	for {
 		for stream.Next(&doc) {
-			if doc.Document.Kind == bson.ElementDocument {
+			if doc.Document.Game == bson.ElementDocument {
 				v := new(model.HintInfo)
 				if err = bson.Unmarshal(doc.Document.Data, v); err == nil {
 					c.SetCache(v)
@@ -352,7 +352,7 @@ func(c *RoomCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 	}
 	for {
 		for stream.Next(&doc) {
-			if doc.Document.Kind == bson.ElementDocument {
+			if doc.Document.Game == bson.ElementDocument {
 				v := new(model.RoomInfo)
 				if err = bson.Unmarshal(doc.Document.Data, v); err == nil {
 					c.SetCache(v)

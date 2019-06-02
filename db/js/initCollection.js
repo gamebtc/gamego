@@ -114,9 +114,11 @@ db.loginLog.createIndex(
     { "uid": 1}
 );
 
-// db.account.remove({});
-// db.user.remove({});
-// db.bag.remove({});
+//  db.account.remove({});
+//  db.user.remove({});
+//  db.bag.remove({});
+//  db.gameConf.remove({});
+ 
 db.userLocker.remove({});
 db.loginLog.remove({});
 db.execErr.remove({});

@@ -123,7 +123,7 @@ type MachineInfo struct {
 
 type RoomToken struct {
 	Id      int32     `bson:"_id"`     //房间唯一ID
-	Kind    int32     `bson:"kind"`    //游戏分类
+	Game    int32     `bson:"game"`    //游戏分类
 	Key     string    `bson:"key"`     //服务器KEY
 	Addr    string    `bson:"addr"`    //服务器地址
 }

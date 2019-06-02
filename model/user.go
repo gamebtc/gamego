@@ -69,7 +69,7 @@ type UserLocker struct {
 	Id    UserId    `bson:"_id"`   //唯一ID
 	Agent int64     `bson:"agent"` //前端代理号
 	Ip    IP        `bson:"ip"`    //登录IP
-	Kind  int32     `bson:"kind"`  //所在游戏
+	Game  int32     `bson:"game"`  //所在游戏
 	Room  int32     `bson:"room"`  //所在房间ID
 	Init  time.Time `bson:"init"`  //创建时间
 	Up    time.Time `bson:"up"`    //更新时间
