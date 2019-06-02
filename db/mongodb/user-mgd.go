@@ -124,18 +124,17 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 	up := bson.D{{"$set", newLock}, maxRoom}
 	query := bson.D{{"_id", uid}}
 	lock := new(model.UserLocker)
-	replace := false
 	if err := d.locker.FindOneAndUpdate(d.ctx, query, up, upsert).Decode(lock); err != nil {
 		if err != model.ErrNoDocuments {
 			return nil, err
 		}
 	} else {
-		replace = !lock.Log1.IsZero()
-		if replace {
+		if !lock.Log1.IsZero() {
 			// 旧的连接设置为强制退出
 			set := bson.D{{"$set", bson.D{
 				{"up", t},
 				{"state", 2},
+				{"f", newId},
 			}}}
 			query[0].Value = lock.Log1 //bson.D{{"_id", lock.Log1}
 			d.loginLog.UpdateOne(d.ctx, query, set)
@@ -149,11 +148,8 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 		bson.E{Key: "uid", Value: uid},
 		bson.E{Key: "udid", Value: req.Udid},
 		bson.E{Key: "env", Value: req.Env},
-		bson.E{Key: "dev", Value: req.Dev})
-
-	if replace {
-		newLock = append(newLock, bson.E{Key: "f", Value: lock.Log1})
-	}
+		bson.E{Key: "dev", Value: req.Dev},
+		)
 
 	d.loginLog.InsertOne(d.ctx, newLock)
 
@@ -218,10 +214,9 @@ func (d *driver) LockUserRoom(agent int64, uid model.UserId, game int32, roomId 
 		return nil, err
 	}
 
-	replace := !lock.Log2.IsZero()
-	if replace {
+	if !lock.Log2.IsZero() {
 		// 旧的连接设置为强制退出
-		up1 := bson.D{{"$set", bson.D{{"state", int32(2)}, {"win", win}, {"bet", bet}, {"round", round}}}, upNow}
+		up1 := bson.D{{"$set", bson.D{{"state", int32(2)}, {"win", win}, {"bet", bet}, {"round", round}, {"f", newId}}}, upNow}
 		d.roomLog.UpdateOne(d.ctx, bson.D{{"_id", lock.Log2}, {"state", int32(0)}}, up1)
 	}
 
@@ -251,9 +246,6 @@ func (d *driver) LockUserRoom(agent int64, uid model.UserId, game int32, roomId 
 		{"ip", user.Ip},
 		{"init", lock.Up},
 		{"up", lock.Up},
-	}
-	if replace {
-		newLock = append(newLock, bson.E{Key: "f", Value: lock.Log2})
 	}
 	d.roomLog.InsertOne(d.ctx, newLock)
 
