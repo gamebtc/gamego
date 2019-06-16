@@ -18,8 +18,8 @@ start call grpcserver
 
 cd ../game100
 go build
-::start call game100
+start call game100
 
 cd ../gamezjh
 go build
-::start call gamezjh
+start call gamezjh

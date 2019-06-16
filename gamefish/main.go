@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"gamezjh/internal"
+	"gamefish/internal"
 	"local.com/abc/game/room"
 )
 

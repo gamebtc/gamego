@@ -307,7 +307,7 @@ func (table *Table) updateFishes(second float64) {
 		fish.Update(second)
 		if fish.EndPath {
 			if fish.InSide {
-				// 创建新的移动，一直延原来的方向移动出屏幕
+				// TODO:创建新的移动，一直延原来的方向移动出屏幕
 				fish.Path = nil
 				fish.initAngle()
 			} else {

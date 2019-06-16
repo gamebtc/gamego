@@ -53,9 +53,9 @@ require (
 	github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90 // indirect
 	github.com/prometheus/common v0.3.0 // indirect
 	github.com/prometheus/procfs v0.0.0-20190507164030-5867b95ac084 // indirect
-	github.com/sirupsen/logrus v1.4.1
+	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/tinylib/msgp v0.0.0-20190104030839-ade0ca4ace05
+	github.com/tinylib/msgp v0.0.0-20190613010652-0573788bc2a8
 	github.com/ugorji/go v1.1.4
 	github.com/vmihailenco/msgpack v4.0.4+incompatible
 	golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284 // indirect
