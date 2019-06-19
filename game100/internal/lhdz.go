@@ -20,7 +20,7 @@ var (
 	// 2和1赔8, 龙虎全退
 	dtTie = []int32{0 + radix, 0 + radix, 8*radix + radix}
 	// 龙虎点数映射表
-	dtPoint = [64]byte{}
+	dtPoint = [66]byte{}
 )
 
 func init() {
@@ -37,6 +37,7 @@ func init() {
 	dtPoint[model.AJ], dtPoint[model.BJ], dtPoint[model.CJ], dtPoint[model.DJ] = 11, 11, 11, 11
 	dtPoint[model.AQ], dtPoint[model.BQ], dtPoint[model.CQ], dtPoint[model.DQ] = 12, 12, 12, 12
 	dtPoint[model.AK], dtPoint[model.BK], dtPoint[model.CK], dtPoint[model.DK] = 13, 13, 13, 13
+	dtPoint[model.BlackJoker], dtPoint[model.RedJoker] = 14, 15
 }
 
 // 龙虎大战发牌

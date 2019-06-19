@@ -214,9 +214,9 @@ func Balance(group []int64, odds []int32) (prize, tax, bet int64) {
 		// 下注金币大于0
 		if b := group[i]; b > 0 {
 			bet += b
-			//有钱回收,包含输1半
-			if odd := int64(odds[i]); odd != lostRadix {
+			if odd := int64(odds[i]); odd != 0 {
 				w := b * odd / radix
+				//有钱回收,包含输1半
 				if w > b {
 					// 赢钱了收税，税率按千分比配置，需除以1000
 					tax += (w - b) * taxRate[i] / 1000
