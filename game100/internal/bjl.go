@@ -6,27 +6,6 @@ import (
 	"local.com/abc/game/model"
 )
 
-var (
-	// 百家乐点数映射表
-	bjlPoint = [64]byte{}
-)
-
-func init() {
-	bjlPoint[model.AA], bjlPoint[model.BA], bjlPoint[model.CA], bjlPoint[model.DA] = 1, 1, 1, 1
-	bjlPoint[model.A2], bjlPoint[model.B2], bjlPoint[model.C2], bjlPoint[model.D2] = 2, 2, 2, 2
-	bjlPoint[model.A3], bjlPoint[model.B3], bjlPoint[model.C3], bjlPoint[model.D3] = 3, 3, 3, 3
-	bjlPoint[model.A4], bjlPoint[model.B4], bjlPoint[model.C4], bjlPoint[model.D4] = 4, 4, 4, 4
-	bjlPoint[model.A5], bjlPoint[model.B5], bjlPoint[model.C5], bjlPoint[model.D5] = 5, 5, 5, 5
-	bjlPoint[model.A6], bjlPoint[model.B6], bjlPoint[model.C6], bjlPoint[model.D6] = 6, 6, 6, 6
-	bjlPoint[model.A7], bjlPoint[model.B7], bjlPoint[model.C7], bjlPoint[model.D7] = 7, 7, 7, 7
-	bjlPoint[model.A8], bjlPoint[model.B8], bjlPoint[model.C8], bjlPoint[model.D8] = 8, 8, 8, 8
-	bjlPoint[model.A9], bjlPoint[model.B9], bjlPoint[model.C9], bjlPoint[model.D9] = 9, 9, 9, 9
-	bjlPoint[model.A10], bjlPoint[model.B10], bjlPoint[model.C10], bjlPoint[model.D10] = 10, 10, 10, 10
-	bjlPoint[model.AJ], bjlPoint[model.BJ], bjlPoint[model.CJ], bjlPoint[model.DJ] = 20, 20, 20, 20
-	bjlPoint[model.AQ], bjlPoint[model.BQ], bjlPoint[model.CQ], bjlPoint[model.DQ] = 30, 30, 30, 30
-	bjlPoint[model.AK], bjlPoint[model.BK], bjlPoint[model.CK], bjlPoint[model.DK] = 40, 40, 40, 40
-}
-
 // 百家乐
 type BjlDealer struct {
 	i      int32
@@ -94,7 +73,7 @@ func (this *BjlDealer) repairCard(a, b []byte, offset int) int {
 		//闲家0-5必须博牌
 		if pa <= 5 {
 			a[2] = this.Poker[offset]
-			aa = bjlPoint[a[2]] % 10
+			aa = model.BjlPoint[a[2]] % 10
 			offset++
 			count++
 		}
