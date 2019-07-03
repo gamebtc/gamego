@@ -13,15 +13,15 @@ tcp:
   writeBuf: 1048576
 
 udp:
+  #set DSCP(6bit)
+  dscp: 46
+
+kcp:
   listen: '0.0.0.0:8888'
   #UDP read buffer 256K
   readBuf: 262144
   #UDP write buffer 1MB
   writeBuf: 1048576
-  #set DSCP(6bit)
-  dscp: 46
-
-kcp:
   #per connection UDP send window
   sndwnd: 32
   #per connection UDP recv window

@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 
-	"agent/conf"
 	"agent/internal"
 
 	"local.com/abc/game/util"
@@ -15,6 +14,6 @@ func main() {
 	flag.Parse()
 	defer util.PrintPanicStack()
 	// open profiling
-	config := conf.InitConfig(name)
+	config := internal.InitConfig(name)
 	internal.Run(config)
 }

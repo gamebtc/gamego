@@ -3,12 +3,14 @@
 
 package protocol
 
-import proto "github.com/gogo/protobuf/proto"
-import fmt "fmt"
-import math "math"
-import _ "github.com/gogo/protobuf/gogoproto"
-
-import io "io"
+import (
+	fmt "fmt"
+	_ "github.com/gogo/protobuf/gogoproto"
+	proto "github.com/gogo/protobuf/proto"
+	io "io"
+	math "math"
+	math_bits "math/bits"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -22,28 +24,28 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 type RoomInfo struct {
-	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty" bson:"name" msg:"name"`
-	Id      int32  `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty" bson:"id" msg:"id"`
-	Game    int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
-	Level   int32  `protobuf:"varint,4,opt,name=level,proto3" json:"level,omitempty" bson:"level" msg:"level"`
-	Cap     int32  `protobuf:"varint,5,opt,name=cap,proto3" json:"cap,omitempty" bson:"cap" msg:"cap"`
-	Ante    int64  `protobuf:"varint,6,opt,name=ante,proto3" json:"ante,omitempty" bson:"ante" msg:"ante"`
-	DoorMin int64  `protobuf:"varint,7,opt,name=doorMin,proto3" json:"doorMin,omitempty" bson:"doorMin" msg:"doorMin"`
-	DoorMax int64  `protobuf:"varint,8,opt,name=doorMax,proto3" json:"doorMax,omitempty" bson:"doorMax" msg:"doorMax"`
-	StayMin int64  `protobuf:"varint,9,opt,name=stayMin,proto3" json:"stayMin,omitempty" bson:"stayMin" msg:"stayMin"`
-	StayMax int64  `protobuf:"varint,10,opt,name=stayMax,proto3" json:"stayMax,omitempty" bson:"stayMax" msg:"stayMax"`
-	PlayMin int64  `protobuf:"varint,11,opt,name=playMin,proto3" json:"playMin,omitempty" bson:"playMin" msg:"playMin"`
-	PlayMax int64  `protobuf:"varint,12,opt,name=playMax,proto3" json:"playMax,omitempty" bson:"playMax" msg:"playMax"`
-	CoinKey string `protobuf:"bytes,13,opt,name=coinKey,proto3" json:"coinKey,omitempty" bson:"coinKey" msg:"coinKey"`
-	Icon    int32  `protobuf:"varint,14,opt,name=icon,proto3" json:"icon,omitempty" bson:"icon" msg:"icon"`
-	Online  int32  `protobuf:"varint,15,opt,name=online,proto3" json:"online,omitempty" bson:"online" msg:"online"`
+	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name" bson:"name" msg:"name"`
+	Id      int32  `protobuf:"varint,2,opt,name=id,proto3" json:"id" bson:"id" msg:"id"`
+	Game    int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
+	Level   int32  `protobuf:"varint,4,opt,name=level,proto3" json:"level" bson:"level" msg:"level"`
+	Cap     int32  `protobuf:"varint,5,opt,name=cap,proto3" json:"cap" bson:"cap" msg:"cap"`
+	Ante    int64  `protobuf:"varint,6,opt,name=ante,proto3" json:"ante" bson:"ante" msg:"ante"`
+	DoorMin int64  `protobuf:"varint,7,opt,name=doorMin,proto3" json:"doorMin" bson:"doorMin" msg:"doorMin"`
+	DoorMax int64  `protobuf:"varint,8,opt,name=doorMax,proto3" json:"doorMax" bson:"doorMax" msg:"doorMax"`
+	StayMin int64  `protobuf:"varint,9,opt,name=stayMin,proto3" json:"stayMin" bson:"stayMin" msg:"stayMin"`
+	StayMax int64  `protobuf:"varint,10,opt,name=stayMax,proto3" json:"stayMax" bson:"stayMax" msg:"stayMax"`
+	PlayMin int64  `protobuf:"varint,11,opt,name=playMin,proto3" json:"playMin" bson:"playMin" msg:"playMin"`
+	PlayMax int64  `protobuf:"varint,12,opt,name=playMax,proto3" json:"playMax" bson:"playMax" msg:"playMax"`
+	CoinKey string `protobuf:"bytes,13,opt,name=coinKey,proto3" json:"coinKey" bson:"coinKey" msg:"coinKey"`
+	Icon    int32  `protobuf:"varint,14,opt,name=icon,proto3" json:"icon" bson:"icon" msg:"icon"`
+	Online  int32  `protobuf:"varint,15,opt,name=online,proto3" json:"online" bson:"online" msg:"online"`
 }
 
 func (m *RoomInfo) Reset()         { *m = RoomInfo{} }
 func (m *RoomInfo) String() string { return proto.CompactTextString(m) }
 func (*RoomInfo) ProtoMessage()    {}
 func (*RoomInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{0}
+	return fileDescriptor_38fc58335341d769, []int{0}
 }
 func (m *RoomInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -60,8 +62,8 @@ func (m *RoomInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (dst *RoomInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RoomInfo.Merge(dst, src)
+func (m *RoomInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RoomInfo.Merge(m, src)
 }
 func (m *RoomInfo) XXX_Size() int {
 	return m.Size()
@@ -179,14 +181,14 @@ func (m *RoomInfo) GetOnline() int32 {
 
 // 获取游戏列表
 type GameKindReq struct {
-	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
+	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
 }
 
 func (m *GameKindReq) Reset()         { *m = GameKindReq{} }
 func (m *GameKindReq) String() string { return proto.CompactTextString(m) }
 func (*GameKindReq) ProtoMessage()    {}
 func (*GameKindReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{1}
+	return fileDescriptor_38fc58335341d769, []int{1}
 }
 func (m *GameKindReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -203,8 +205,8 @@ func (m *GameKindReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *GameKindReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GameKindReq.Merge(dst, src)
+func (m *GameKindReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameKindReq.Merge(m, src)
 }
 func (m *GameKindReq) XXX_Size() int {
 	return m.Size()
@@ -223,14 +225,14 @@ func (m *GameKindReq) GetGame() int32 {
 }
 
 type GameKindAck struct {
-	Rooms []*RoomInfo `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms,omitempty" bson:"rooms" msg:"rooms"`
+	Rooms []*RoomInfo `protobuf:"bytes,1,rep,name=rooms,proto3" json:"rooms" bson:"rooms" msg:"rooms"`
 }
 
 func (m *GameKindAck) Reset()         { *m = GameKindAck{} }
 func (m *GameKindAck) String() string { return proto.CompactTextString(m) }
 func (*GameKindAck) ProtoMessage()    {}
 func (*GameKindAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{2}
+	return fileDescriptor_38fc58335341d769, []int{2}
 }
 func (m *GameKindAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -247,8 +249,8 @@ func (m *GameKindAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *GameKindAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GameKindAck.Merge(dst, src)
+func (m *GameKindAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameKindAck.Merge(m, src)
 }
 func (m *GameKindAck) XXX_Size() int {
 	return m.Size()
@@ -268,17 +270,17 @@ func (m *GameKindAck) GetRooms() []*RoomInfo {
 
 // 用户连接房间
 type LoginGameReq struct {
-	Game  int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
-	Level int32  `protobuf:"varint,2,opt,name=level,proto3" json:"level,omitempty" bson:"level" msg:"level"`
-	Room  int32  `protobuf:"varint,3,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
-	Args  string `protobuf:"bytes,4,opt,name=args,proto3" json:"args,omitempty" bson:"args" msg:"args"`
+	Game  int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
+	Level int32  `protobuf:"varint,2,opt,name=level,proto3" json:"level" bson:"level" msg:"level"`
+	Room  int32  `protobuf:"varint,3,opt,name=room,proto3" json:"room" bson:"room" msg:"room"`
+	Args  string `protobuf:"bytes,4,opt,name=args,proto3" json:"args" bson:"args" msg:"args"`
 }
 
 func (m *LoginGameReq) Reset()         { *m = LoginGameReq{} }
 func (m *LoginGameReq) String() string { return proto.CompactTextString(m) }
 func (*LoginGameReq) ProtoMessage()    {}
 func (*LoginGameReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{3}
+	return fileDescriptor_38fc58335341d769, []int{3}
 }
 func (m *LoginGameReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,8 +297,8 @@ func (m *LoginGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *LoginGameReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginGameReq.Merge(dst, src)
+func (m *LoginGameReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginGameReq.Merge(m, src)
 }
 func (m *LoginGameReq) XXX_Size() int {
 	return m.Size()
@@ -337,17 +339,17 @@ func (m *LoginGameReq) GetArgs() string {
 
 // 用户连接房间
 type LoginGameAck struct {
-	Game int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
-	Room int32  `protobuf:"varint,2,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
-	Code int32  `protobuf:"varint,3,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
-	Msg  string `protobuf:"bytes,4,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
+	Game int32  `protobuf:"varint,1,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
+	Room int32  `protobuf:"varint,2,opt,name=room,proto3" json:"room" bson:"room" msg:"room"`
+	Code int32  `protobuf:"varint,3,opt,name=code,proto3" json:"code" bson:"code" msg:"code"`
+	Msg  string `protobuf:"bytes,4,opt,name=msg,proto3" json:"msg" bson:"msg" msg:"msg"`
 }
 
 func (m *LoginGameAck) Reset()         { *m = LoginGameAck{} }
 func (m *LoginGameAck) String() string { return proto.CompactTextString(m) }
 func (*LoginGameAck) ProtoMessage()    {}
 func (*LoginGameAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{4}
+	return fileDescriptor_38fc58335341d769, []int{4}
 }
 func (m *LoginGameAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -364,8 +366,8 @@ func (m *LoginGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *LoginGameAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LoginGameAck.Merge(dst, src)
+func (m *LoginGameAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoginGameAck.Merge(m, src)
 }
 func (m *LoginGameAck) XXX_Size() int {
 	return m.Size()
@@ -406,17 +408,17 @@ func (m *LoginGameAck) GetMsg() string {
 
 // 消息转发到房间失败，需要重新连接房间
 type SendGameFail struct {
-	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
-	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
-	Game int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
-	Room int32  `protobuf:"varint,4,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
+	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code" bson:"code" msg:"code"`
+	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg" bson:"msg" msg:"msg"`
+	Game int32  `protobuf:"varint,3,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
+	Room int32  `protobuf:"varint,4,opt,name=room,proto3" json:"room" bson:"room" msg:"room"`
 }
 
 func (m *SendGameFail) Reset()         { *m = SendGameFail{} }
 func (m *SendGameFail) String() string { return proto.CompactTextString(m) }
 func (*SendGameFail) ProtoMessage()    {}
 func (*SendGameFail) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{5}
+	return fileDescriptor_38fc58335341d769, []int{5}
 }
 func (m *SendGameFail) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -433,8 +435,8 @@ func (m *SendGameFail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (dst *SendGameFail) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SendGameFail.Merge(dst, src)
+func (m *SendGameFail) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendGameFail.Merge(m, src)
 }
 func (m *SendGameFail) XXX_Size() int {
 	return m.Size()
@@ -475,15 +477,15 @@ func (m *SendGameFail) GetRoom() int32 {
 
 // 请求退出游戏
 type ExitGameReq struct {
-	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game,omitempty" bson:"game" msg:"game"`
-	Room int32 `protobuf:"varint,2,opt,name=room,proto3" json:"room,omitempty" bson:"room" msg:"room"`
+	Game int32 `protobuf:"varint,1,opt,name=game,proto3" json:"game" bson:"game" msg:"game"`
+	Room int32 `protobuf:"varint,2,opt,name=room,proto3" json:"room" bson:"room" msg:"room"`
 }
 
 func (m *ExitGameReq) Reset()         { *m = ExitGameReq{} }
 func (m *ExitGameReq) String() string { return proto.CompactTextString(m) }
 func (*ExitGameReq) ProtoMessage()    {}
 func (*ExitGameReq) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{6}
+	return fileDescriptor_38fc58335341d769, []int{6}
 }
 func (m *ExitGameReq) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -500,8 +502,8 @@ func (m *ExitGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *ExitGameReq) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExitGameReq.Merge(dst, src)
+func (m *ExitGameReq) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExitGameReq.Merge(m, src)
 }
 func (m *ExitGameReq) XXX_Size() int {
 	return m.Size()
@@ -528,15 +530,15 @@ func (m *ExitGameReq) GetRoom() int32 {
 
 // 请求退出游戏
 type ExitGameAck struct {
-	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty" bson:"code" msg:"code"`
-	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty" bson:"msg" msg:"msg"`
+	Code int32  `protobuf:"varint,1,opt,name=code,proto3" json:"code" bson:"code" msg:"code"`
+	Msg  string `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg" bson:"msg" msg:"msg"`
 }
 
 func (m *ExitGameAck) Reset()         { *m = ExitGameAck{} }
 func (m *ExitGameAck) String() string { return proto.CompactTextString(m) }
 func (*ExitGameAck) ProtoMessage()    {}
 func (*ExitGameAck) Descriptor() ([]byte, []int) {
-	return fileDescriptor_game_c4578d3b0aa65042, []int{7}
+	return fileDescriptor_38fc58335341d769, []int{7}
 }
 func (m *ExitGameAck) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -553,8 +555,8 @@ func (m *ExitGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (dst *ExitGameAck) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ExitGameAck.Merge(dst, src)
+func (m *ExitGameAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExitGameAck.Merge(m, src)
 }
 func (m *ExitGameAck) XXX_Size() int {
 	return m.Size()
@@ -589,6 +591,54 @@ func init() {
 	proto.RegisterType((*ExitGameReq)(nil), "protocol.ExitGameReq")
 	proto.RegisterType((*ExitGameAck)(nil), "protocol.ExitGameAck")
 }
+
+func init() { proto.RegisterFile("game.proto", fileDescriptor_38fc58335341d769) }
+
+var fileDescriptor_38fc58335341d769 = []byte{
+	// 648 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xcf, 0x6a, 0xdb, 0x4e,
+	0x10, 0xc7, 0x23, 0xf9, 0x4f, 0x9c, 0x75, 0x7e, 0xbf, 0x82, 0x28, 0x61, 0x31, 0x41, 0x12, 0x3a,
+	0x14, 0x53, 0xa8, 0x02, 0x29, 0xf4, 0x10, 0xe8, 0xa1, 0x86, 0xa6, 0x94, 0xb4, 0x97, 0x2d, 0x7d,
+	0x80, 0xb5, 0xa4, 0xa8, 0x4b, 0xa5, 0x5d, 0xd7, 0x72, 0x8a, 0xf2, 0x16, 0x7d, 0x92, 0x3e, 0x47,
+	0xe9, 0x29, 0xf4, 0xd4, 0x93, 0x28, 0xf6, 0x1b, 0xe8, 0x09, 0xca, 0xec, 0x1f, 0x59, 0x75, 0x7d,
+	0xb0, 0x03, 0x3d, 0x69, 0x66, 0xf6, 0xfb, 0xd9, 0x99, 0x5d, 0xcd, 0x2c, 0x42, 0x29, 0xcd, 0x93,
+	0x70, 0x36, 0x17, 0x0b, 0xe1, 0x0c, 0xe4, 0x27, 0x12, 0xd9, 0xe8, 0x49, 0xca, 0x16, 0x1f, 0x6e,
+	0xa6, 0x61, 0x24, 0xf2, 0xb3, 0x54, 0xa4, 0xe2, 0x4c, 0xae, 0x4c, 0x6f, 0xae, 0xa5, 0x27, 0x1d,
+	0x69, 0x29, 0x30, 0xf8, 0xda, 0x47, 0x03, 0x22, 0x44, 0xfe, 0x9a, 0x5f, 0x0b, 0x27, 0x44, 0x5d,
+	0x4e, 0xf3, 0x04, 0x5b, 0xbe, 0x35, 0x3e, 0x9a, 0x8c, 0xea, 0xca, 0x3b, 0x99, 0x16, 0x82, 0x5f,
+	0x04, 0x10, 0x0d, 0xfc, 0xbc, 0x48, 0xb5, 0x49, 0xa4, 0xce, 0x79, 0x84, 0x6c, 0x16, 0x63, 0xdb,
+	0xb7, 0xc6, 0xbd, 0xc9, 0x49, 0x5d, 0x79, 0x8e, 0x52, 0xb3, 0x58, 0x6b, 0x59, 0x1c, 0x10, 0x9b,
+	0xc5, 0xb0, 0x2f, 0xd4, 0x8a, 0x3b, 0x52, 0xd9, 0xda, 0x37, 0x5d, 0xef, 0x9b, 0xaa, 0x7d, 0xe1,
+	0xe3, 0x9c, 0xa3, 0x5e, 0x96, 0x7c, 0x4e, 0x32, 0xdc, 0x95, 0xc0, 0x69, 0x5d, 0x79, 0x58, 0x01,
+	0x32, 0xac, 0x09, 0x65, 0x13, 0x25, 0x75, 0x1e, 0xa3, 0x4e, 0x44, 0x67, 0xb8, 0x27, 0x09, 0x5c,
+	0x57, 0xde, 0x43, 0x45, 0x44, 0x74, 0xa6, 0xf5, 0x60, 0x11, 0x10, 0x41, 0x3d, 0x94, 0x2f, 0x12,
+	0xdc, 0xf7, 0xad, 0x71, 0xa7, 0x5d, 0x0f, 0x44, 0xb5, 0x5a, 0x9a, 0x44, 0xea, 0x9c, 0x0b, 0x74,
+	0x18, 0x0b, 0x31, 0x7f, 0xcb, 0x38, 0x3e, 0x94, 0x88, 0x5f, 0x57, 0xde, 0xa9, 0x42, 0xf4, 0x82,
+	0xa6, 0x8c, 0x47, 0x0c, 0xd0, 0xb0, 0xb4, 0xc4, 0x83, 0xad, 0x2c, 0x2d, 0xdb, 0x2c, 0x2d, 0x0d,
+	0x4b, 0x4b, 0x60, 0x8b, 0x05, 0xbd, 0x85, 0xbc, 0x47, 0x9b, 0xac, 0x5e, 0xd0, 0xac, 0xf1, 0x88,
+	0x01, 0x1a, 0x96, 0x96, 0x18, 0x6d, 0x65, 0x9b, 0xbc, 0xc6, 0x23, 0x06, 0x00, 0x76, 0x96, 0xa9,
+	0xbc, 0xc3, 0x4d, 0x56, 0x2f, 0x68, 0xd6, 0x78, 0xc4, 0x00, 0x0d, 0x4b, 0x4b, 0x7c, 0xbc, 0x95,
+	0x6d, 0xf2, 0x1a, 0x8f, 0x18, 0x00, 0xd8, 0x48, 0x30, 0x7e, 0x95, 0xdc, 0xe2, 0xff, 0x64, 0x0b,
+	0xb6, 0x58, 0xbd, 0x60, 0xfe, 0xa5, 0xf6, 0x88, 0x01, 0xe0, 0x9f, 0xb2, 0x48, 0x70, 0xfc, 0xff,
+	0x66, 0x8f, 0x41, 0xd4, 0xf4, 0x23, 0x98, 0x44, 0xea, 0x9c, 0x67, 0xa8, 0x2f, 0x78, 0xc6, 0x78,
+	0x82, 0x1f, 0x48, 0xc2, 0xad, 0x2b, 0x6f, 0xa4, 0x08, 0x15, 0xd7, 0x8c, 0x76, 0x88, 0x56, 0x07,
+	0xcf, 0xd1, 0xf0, 0x15, 0xcd, 0x93, 0x2b, 0xc6, 0x63, 0x92, 0x7c, 0x6a, 0x5a, 0xdb, 0xda, 0xad,
+	0xb5, 0x83, 0xf7, 0x6b, 0xfc, 0x45, 0xf4, 0xd1, 0xb9, 0x44, 0xbd, 0xb9, 0x10, 0x79, 0x81, 0x2d,
+	0xbf, 0x33, 0x1e, 0x9e, 0x3b, 0xa1, 0x99, 0xe3, 0xd0, 0x0c, 0x65, 0xbb, 0xfb, 0xa5, 0x54, 0x6f,
+	0xaa, 0x6c, 0xa2, 0xf0, 0xe0, 0x87, 0x85, 0x8e, 0xdf, 0x88, 0x94, 0x71, 0xd8, 0xfc, 0x1e, 0x75,
+	0xad, 0x47, 0xce, 0xde, 0x7d, 0xe4, 0x42, 0xd4, 0x85, 0xec, 0x7f, 0x8f, 0x35, 0x44, 0x5b, 0x65,
+	0x06, 0x44, 0xea, 0xe4, 0xd8, 0xcd, 0xd3, 0x42, 0x4e, 0xf5, 0x1f, 0xcf, 0x0b, 0x44, 0xcd, 0xd8,
+	0x81, 0x49, 0xa4, 0x2e, 0xf8, 0xde, 0x3e, 0x14, 0xdc, 0xd6, 0xbe, 0x87, 0x32, 0x05, 0xda, 0xbb,
+	0x17, 0x18, 0x89, 0x78, 0xcb, 0x3b, 0x05, 0xd1, 0xa6, 0xf3, 0x62, 0xd8, 0x1f, 0x3e, 0xf0, 0xe6,
+	0xe4, 0x45, 0xaa, 0xcf, 0xd3, 0x7a, 0x73, 0xf2, 0x22, 0xd5, 0x6a, 0xb0, 0x08, 0x88, 0xe4, 0x61,
+	0xde, 0x25, 0x3c, 0x86, 0xb3, 0x5c, 0x52, 0x96, 0x35, 0xc9, 0xac, 0xfd, 0x92, 0xd9, 0x3b, 0x24,
+	0xdb, 0xfb, 0xc1, 0x35, 0x17, 0xd5, 0xdd, 0xed, 0xa2, 0x82, 0x1c, 0x0d, 0x5f, 0x96, 0x6c, 0x71,
+	0xdf, 0x66, 0xdb, 0xf3, 0xbf, 0x04, 0x6c, 0x9d, 0x4e, 0xb7, 0xc1, 0xbf, 0xba, 0xb9, 0x09, 0xfe,
+	0xb6, 0x74, 0xad, 0xbb, 0xa5, 0x6b, 0xfd, 0x5a, 0xba, 0xd6, 0x97, 0x95, 0x7b, 0x70, 0xb7, 0x72,
+	0x0f, 0x7e, 0xae, 0xdc, 0x83, 0x69, 0x5f, 0x8e, 0xe6, 0xd3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0x01, 0xfd, 0x33, 0x7d, 0x77, 0x07, 0x00, 0x00,
+}
+
 func (m *RoomInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1101,14 +1151,7 @@ func (m *ExitGameAck) Size() (n int) {
 }
 
 func sovGame(x uint64) (n int) {
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
+	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozGame(x uint64) (n int) {
 	return sovGame(uint64((x << 1) ^ uint64((int64(x) >> 63))))
@@ -1128,7 +1171,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1156,7 +1199,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1166,6 +1209,9 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1185,7 +1231,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= (int32(b) & 0x7F) << shift
+				m.Id |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1204,7 +1250,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1223,7 +1269,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Level |= (int32(b) & 0x7F) << shift
+				m.Level |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1242,7 +1288,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Cap |= (int32(b) & 0x7F) << shift
+				m.Cap |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1261,7 +1307,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Ante |= (int64(b) & 0x7F) << shift
+				m.Ante |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1280,7 +1326,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DoorMin |= (int64(b) & 0x7F) << shift
+				m.DoorMin |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1299,7 +1345,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.DoorMax |= (int64(b) & 0x7F) << shift
+				m.DoorMax |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1318,7 +1364,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.StayMin |= (int64(b) & 0x7F) << shift
+				m.StayMin |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1337,7 +1383,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.StayMax |= (int64(b) & 0x7F) << shift
+				m.StayMax |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1356,7 +1402,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.PlayMin |= (int64(b) & 0x7F) << shift
+				m.PlayMin |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1375,7 +1421,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.PlayMax |= (int64(b) & 0x7F) << shift
+				m.PlayMax |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1394,7 +1440,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1404,6 +1450,9 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1423,7 +1472,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Icon |= (int32(b) & 0x7F) << shift
+				m.Icon |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1442,7 +1491,7 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Online |= (int32(b) & 0x7F) << shift
+				m.Online |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1454,6 +1503,9 @@ func (m *RoomInfo) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -1483,7 +1535,7 @@ func (m *GameKindReq) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1511,7 +1563,7 @@ func (m *GameKindReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1523,6 +1575,9 @@ func (m *GameKindReq) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -1552,7 +1607,7 @@ func (m *GameKindAck) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1580,7 +1635,7 @@ func (m *GameKindAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1589,6 +1644,9 @@ func (m *GameKindAck) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1604,6 +1662,9 @@ func (m *GameKindAck) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -1633,7 +1694,7 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1661,7 +1722,7 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1680,7 +1741,7 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Level |= (int32(b) & 0x7F) << shift
+				m.Level |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1699,7 +1760,7 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Room |= (int32(b) & 0x7F) << shift
+				m.Room |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1718,7 +1779,7 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1728,6 +1789,9 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1740,6 +1804,9 @@ func (m *LoginGameReq) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -1769,7 +1836,7 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1797,7 +1864,7 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1816,7 +1883,7 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Room |= (int32(b) & 0x7F) << shift
+				m.Room |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1835,7 +1902,7 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Code |= (int32(b) & 0x7F) << shift
+				m.Code |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1854,7 +1921,7 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1864,6 +1931,9 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1876,6 +1946,9 @@ func (m *LoginGameAck) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -1905,7 +1978,7 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1933,7 +2006,7 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Code |= (int32(b) & 0x7F) << shift
+				m.Code |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1952,7 +2025,7 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1962,6 +2035,9 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1981,7 +2057,7 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2000,7 +2076,7 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Room |= (int32(b) & 0x7F) << shift
+				m.Room |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2012,6 +2088,9 @@ func (m *SendGameFail) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -2041,7 +2120,7 @@ func (m *ExitGameReq) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -2069,7 +2148,7 @@ func (m *ExitGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Game |= (int32(b) & 0x7F) << shift
+				m.Game |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2088,7 +2167,7 @@ func (m *ExitGameReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Room |= (int32(b) & 0x7F) << shift
+				m.Room |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2100,6 +2179,9 @@ func (m *ExitGameReq) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -2129,7 +2211,7 @@ func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -2157,7 +2239,7 @@ func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Code |= (int32(b) & 0x7F) << shift
+				m.Code |= int32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2176,7 +2258,7 @@ func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2186,6 +2268,9 @@ func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthGame
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGame
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -2198,6 +2283,9 @@ func (m *ExitGameAck) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthGame
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthGame
 			}
 			if (iNdEx + skippy) > l {
@@ -2266,8 +2354,11 @@ func skipGame(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthGame
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthGame
 			}
 			return iNdEx, nil
@@ -2298,6 +2389,9 @@ func skipGame(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthGame
+				}
 			}
 			return iNdEx, nil
 		case 4:
@@ -2316,50 +2410,3 @@ var (
 	ErrInvalidLengthGame = fmt.Errorf("proto: negative length found during unmarshaling")
 	ErrIntOverflowGame   = fmt.Errorf("proto: integer overflow")
 )
-
-func init() { proto.RegisterFile("game.proto", fileDescriptor_game_c4578d3b0aa65042) }
-
-var fileDescriptor_game_c4578d3b0aa65042 = []byte{
-	// 648 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x94, 0xcf, 0x6a, 0xdb, 0x4e,
-	0x10, 0xc7, 0x23, 0xf9, 0x4f, 0x9c, 0x75, 0x7e, 0xbf, 0x82, 0x28, 0x61, 0x31, 0x41, 0x12, 0x3a,
-	0x14, 0x53, 0xa8, 0x02, 0x29, 0xf4, 0x10, 0xe8, 0xa1, 0x86, 0xa6, 0x94, 0xb4, 0x97, 0x2d, 0x7d,
-	0x80, 0xb5, 0xa4, 0xa8, 0x4b, 0xa5, 0x5d, 0xd7, 0x72, 0x8a, 0xf2, 0x16, 0x7d, 0x92, 0x3e, 0x47,
-	0xe9, 0x29, 0xf4, 0xd4, 0x93, 0x28, 0xf6, 0x1b, 0xe8, 0x09, 0xca, 0xec, 0x1f, 0x59, 0x75, 0x7d,
-	0xb0, 0x03, 0x3d, 0x69, 0x66, 0xf6, 0xfb, 0xd9, 0x99, 0x5d, 0xcd, 0x2c, 0x42, 0x29, 0xcd, 0x93,
-	0x70, 0x36, 0x17, 0x0b, 0xe1, 0x0c, 0xe4, 0x27, 0x12, 0xd9, 0xe8, 0x49, 0xca, 0x16, 0x1f, 0x6e,
-	0xa6, 0x61, 0x24, 0xf2, 0xb3, 0x54, 0xa4, 0xe2, 0x4c, 0xae, 0x4c, 0x6f, 0xae, 0xa5, 0x27, 0x1d,
-	0x69, 0x29, 0x30, 0xf8, 0xda, 0x47, 0x03, 0x22, 0x44, 0xfe, 0x9a, 0x5f, 0x0b, 0x27, 0x44, 0x5d,
-	0x4e, 0xf3, 0x04, 0x5b, 0xbe, 0x35, 0x3e, 0x9a, 0x8c, 0xea, 0xca, 0x3b, 0x99, 0x16, 0x82, 0x5f,
-	0x04, 0x10, 0x0d, 0xfc, 0xbc, 0x48, 0xb5, 0x49, 0xa4, 0xce, 0x79, 0x84, 0x6c, 0x16, 0x63, 0xdb,
-	0xb7, 0xc6, 0xbd, 0xc9, 0x49, 0x5d, 0x79, 0x8e, 0x52, 0xb3, 0x58, 0x6b, 0x59, 0x1c, 0x10, 0x9b,
-	0xc5, 0xb0, 0x2f, 0xd4, 0x8a, 0x3b, 0x52, 0xd9, 0xda, 0x37, 0x5d, 0xef, 0x9b, 0xaa, 0x7d, 0xe1,
-	0xe3, 0x9c, 0xa3, 0x5e, 0x96, 0x7c, 0x4e, 0x32, 0xdc, 0x95, 0xc0, 0x69, 0x5d, 0x79, 0x58, 0x01,
-	0x32, 0xac, 0x09, 0x65, 0x13, 0x25, 0x75, 0x1e, 0xa3, 0x4e, 0x44, 0x67, 0xb8, 0x27, 0x09, 0x5c,
-	0x57, 0xde, 0x43, 0x45, 0x44, 0x74, 0xa6, 0xf5, 0x60, 0x11, 0x10, 0x41, 0x3d, 0x94, 0x2f, 0x12,
-	0xdc, 0xf7, 0xad, 0x71, 0xa7, 0x5d, 0x0f, 0x44, 0xb5, 0x5a, 0x9a, 0x44, 0xea, 0x9c, 0x0b, 0x74,
-	0x18, 0x0b, 0x31, 0x7f, 0xcb, 0x38, 0x3e, 0x94, 0x88, 0x5f, 0x57, 0xde, 0xa9, 0x42, 0xf4, 0x82,
-	0xa6, 0x8c, 0x47, 0x0c, 0xd0, 0xb0, 0xb4, 0xc4, 0x83, 0xad, 0x2c, 0x2d, 0xdb, 0x2c, 0x2d, 0x0d,
-	0x4b, 0x4b, 0x60, 0x8b, 0x05, 0xbd, 0x85, 0xbc, 0x47, 0x9b, 0xac, 0x5e, 0xd0, 0xac, 0xf1, 0x88,
-	0x01, 0x1a, 0x96, 0x96, 0x18, 0x6d, 0x65, 0x9b, 0xbc, 0xc6, 0x23, 0x06, 0x00, 0x76, 0x96, 0xa9,
-	0xbc, 0xc3, 0x4d, 0x56, 0x2f, 0x68, 0xd6, 0x78, 0xc4, 0x00, 0x0d, 0x4b, 0x4b, 0x7c, 0xbc, 0x95,
-	0x6d, 0xf2, 0x1a, 0x8f, 0x18, 0x00, 0xd8, 0x48, 0x30, 0x7e, 0x95, 0xdc, 0xe2, 0xff, 0x64, 0x0b,
-	0xb6, 0x58, 0xbd, 0x60, 0xfe, 0xa5, 0xf6, 0x88, 0x01, 0xe0, 0x9f, 0xb2, 0x48, 0x70, 0xfc, 0xff,
-	0x66, 0x8f, 0x41, 0xd4, 0xf4, 0x23, 0x98, 0x44, 0xea, 0x9c, 0x67, 0xa8, 0x2f, 0x78, 0xc6, 0x78,
-	0x82, 0x1f, 0x48, 0xc2, 0xad, 0x2b, 0x6f, 0xa4, 0x08, 0x15, 0xd7, 0x8c, 0x76, 0x88, 0x56, 0x07,
-	0xcf, 0xd1, 0xf0, 0x15, 0xcd, 0x93, 0x2b, 0xc6, 0x63, 0x92, 0x7c, 0x6a, 0x5a, 0xdb, 0xda, 0xad,
-	0xb5, 0x83, 0xf7, 0x6b, 0xfc, 0x45, 0xf4, 0xd1, 0xb9, 0x44, 0xbd, 0xb9, 0x10, 0x79, 0x81, 0x2d,
-	0xbf, 0x33, 0x1e, 0x9e, 0x3b, 0xa1, 0x99, 0xe3, 0xd0, 0x0c, 0x65, 0xbb, 0xfb, 0xa5, 0x54, 0x6f,
-	0xaa, 0x6c, 0xa2, 0xf0, 0xe0, 0x87, 0x85, 0x8e, 0xdf, 0x88, 0x94, 0x71, 0xd8, 0xfc, 0x1e, 0x75,
-	0xad, 0x47, 0xce, 0xde, 0x7d, 0xe4, 0x42, 0xd4, 0x85, 0xec, 0x7f, 0x8f, 0x35, 0x44, 0x5b, 0x65,
-	0x06, 0x44, 0xea, 0xe4, 0xd8, 0xcd, 0xd3, 0x42, 0x4e, 0xf5, 0x1f, 0xcf, 0x0b, 0x44, 0xcd, 0xd8,
-	0x81, 0x49, 0xa4, 0x2e, 0xf8, 0xde, 0x3e, 0x14, 0xdc, 0xd6, 0xbe, 0x87, 0x32, 0x05, 0xda, 0xbb,
-	0x17, 0x18, 0x89, 0x78, 0xcb, 0x3b, 0x05, 0xd1, 0xa6, 0xf3, 0x62, 0xd8, 0x1f, 0x3e, 0xf0, 0xe6,
-	0xe4, 0x45, 0xaa, 0xcf, 0xd3, 0x7a, 0x73, 0xf2, 0x22, 0xd5, 0x6a, 0xb0, 0x08, 0x88, 0xe4, 0x61,
-	0xde, 0x25, 0x3c, 0x86, 0xb3, 0x5c, 0x52, 0x96, 0x35, 0xc9, 0xac, 0xfd, 0x92, 0xd9, 0x3b, 0x24,
-	0xdb, 0xfb, 0xc1, 0x35, 0x17, 0xd5, 0xdd, 0xed, 0xa2, 0x82, 0x1c, 0x0d, 0x5f, 0x96, 0x6c, 0x71,
-	0xdf, 0x66, 0xdb, 0xf3, 0xbf, 0x04, 0x6c, 0x9d, 0x4e, 0xb7, 0xc1, 0xbf, 0xba, 0xb9, 0x09, 0xfe,
-	0xb6, 0x74, 0xad, 0xbb, 0xa5, 0x6b, 0xfd, 0x5a, 0xba, 0xd6, 0x97, 0x95, 0x7b, 0x70, 0xb7, 0x72,
-	0x0f, 0x7e, 0xae, 0xdc, 0x83, 0x69, 0x5f, 0x8e, 0xe6, 0xd3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
-	0x01, 0xfd, 0x33, 0x7d, 0x77, 0x07, 0x00, 0x00,
-}

@@ -1,8 +1,6 @@
 package internal
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/xtaci/kcp-go"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
@@ -10,7 +8,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"agent/conf"
+	log "github.com/sirupsen/logrus"
+	"github.com/xtaci/kcp-go"
+	_"github.com/gorilla/websocket"
 
 	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
@@ -29,7 +29,7 @@ var (
 	tcpWriteBuf 	int
 )
 
-func startServer(config *conf.AppConfig) {
+func startServer(config *AppConfig) {
 	rpcServicePool = NewServicePool(config.Consul.Addr, config.Consul.ServerPrefix, config.Consul.Services, false)
 
 	if config.Consul.RoomPrefix != "" {
@@ -46,7 +46,7 @@ func startServer(config *conf.AppConfig) {
 	if config.Tcp.Listen != "" {
 		go tcpServer(config)
 	}
-	if config.Udp.Listen != "" {
+	if config.Kcp.Listen != "" {
 		go kcpServer(config)
 	}
 }
@@ -83,7 +83,7 @@ func makeMsg(h *Handshake) []byte {
 	return src
 }
 
-func tcpServer(config *conf.AppConfig) {
+func tcpServer(config *AppConfig) {
 	// resolve address & start listening
 	l, err := net.Listen("tcp", config.Tcp.Listen)
 	log.Info("listening on:", l.Addr())
@@ -133,21 +133,21 @@ func tcpServer(config *conf.AppConfig) {
 	}
 }
 
-func kcpServer(config *conf.AppConfig) {
-	l, err := kcp.Listen(config.Udp.Listen)
+func kcpServer(config *AppConfig) {
+	l, err := kcp.Listen(config.Kcp.Listen)
 	checkError(err)
 	log.Info("udp listening on:", l.Addr())
 
 	lis := l.(*kcp.Listener)
-	if err := lis.SetReadBuffer(config.Udp.ReadBuf); err != nil {
+	if err := lis.SetReadBuffer(config.Kcp.ReadBuf); err != nil {
 		log.Fatalf("SetReadBuffer:", err)
 	}
-	if err := lis.SetWriteBuffer(config.Udp.WriteBuf); err != nil {
+	if err := lis.SetWriteBuffer(config.Kcp.WriteBuf); err != nil {
 		log.Fatalf("SetWriteBuffer:", err)
 	}
-	if err := lis.SetDSCP(config.Udp.Dscp); err != nil {
-		log.Fatalf("SetDSCP:", err)
-	}
+	//if err := lis.SetDSCP(config.Udp.Dscp); err != nil {
+	//	log.Fatalf("SetDSCP:", err)
+	//}
 
 	success := makeMsg(new(Handshake))
 	fail := makeMsg(&Handshake{

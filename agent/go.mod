@@ -1,12 +1,16 @@
 module agent
 
 require (
+	github.com/gorilla/websocket v1.4.0
 	github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e // indirect
 	github.com/klauspost/crc32 v0.0.0-20170628072449-bab58d77464a // indirect
 	github.com/klauspost/reedsolomon v0.0.0-20180704173009-925cb01d6510 // indirect
 	github.com/sirupsen/logrus v1.4.2
-	github.com/xtaci/kcp-go v2.0.3+incompatible
-	golang.org/x/net v0.0.0-20190619014844-b5b0513f8c1b
+	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
+	github.com/templexxx/xor v0.0.0-20181023030647-4e92f724b73b // indirect
+	github.com/tjfoc/gmsm v1.0.1 // indirect
+	github.com/xtaci/kcp-go v5.4.2+incompatible
+	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
 	google.golang.org/grpc v1.20.1
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/protocol v0.0.0

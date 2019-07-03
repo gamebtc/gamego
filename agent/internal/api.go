@@ -10,8 +10,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"agent/conf"
-
 	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
 )
@@ -29,7 +27,7 @@ func registMsg(id MsgId_Code, msg interface{}) {
 	coder.SetMsgId(t, int32(id))
 }
 
-func Run(config *conf.AppConfig) {
+func Run(config *AppConfig) {
 	// listeners
 	checkVerSign = config.VerSign
 	tcpReadBuf = config.Tcp.ReadBuf

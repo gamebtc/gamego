@@ -37,13 +37,16 @@ type UdpConfig struct {
 }
 
 type KcpConfig struct {
-	Sndwnd   int `yaml:"sndwnd"`
-	Rcvwnd   int `yaml:"rcvwnd"`
-	Mtu      int `yaml:"mtu"`
-	Nodelay  int `yaml:"nodelay"`
-	Interval int `yaml:"interval"`
-	Resend   int `yaml:"resend"`
-	Nc       int `yaml:"nc"`
+	Listen   string `yaml:"listen"`
+	ReadBuf  int    `yaml:"readBuf"`
+	WriteBuf int    `yaml:"writeBuf"`
+	Sndwnd   int    `yaml:"sndwnd"`
+	Rcvwnd   int    `yaml:"rcvwnd"`
+	Mtu      int    `yaml:"mtu"`
+	Nodelay  int    `yaml:"nodelay"`
+	Interval int    `yaml:"interval"`
+	Resend   int    `yaml:"resend"`
+	Nc       int    `yaml:"nc"`
 }
 
 type DatabaseConfig struct {

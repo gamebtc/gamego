@@ -8,7 +8,7 @@ require (
 	github.com/templexxx/cpufeat v0.0.0-20180724012125-cef66df7f161 // indirect
 	github.com/templexxx/xor v0.0.0-20181023030647-4e92f724b73b // indirect
 	github.com/tjfoc/gmsm v1.0.1 // indirect
-	github.com/xtaci/kcp-go v4.3.4+incompatible
+	github.com/xtaci/kcp-go v5.4.2+incompatible
 	google.golang.org/grpc v1.20.1
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/db v0.0.0

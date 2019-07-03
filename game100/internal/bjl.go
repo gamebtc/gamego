@@ -57,7 +57,7 @@ func (this *BjlDealer) Deal(table *Table) ([]byte, []int32, string, bool) {
 }
 
 func getBjlPoint(a []byte) byte {
-	return (bjlPoint[a[0]] + bjlPoint[a[1]] + bjlPoint[a[2]]) % 10
+	return (model.BjlPoint[a[0]] + model.BjlPoint[a[1]] + model.BjlPoint[a[2]]) % 10
 }
 
 // 是否补牌
@@ -121,12 +121,12 @@ func bjlPk(a []byte, b []byte) (odds []int32) {
 		odds[0], odds[1], odds[2] = radix, radix, 8*radix+radix
 	}
 	//闲对
-	if (bjlPoint[a[0]]) == (bjlPoint[a[1]]) {
+	if (model.BjlPoint[a[0]]) == (model.BjlPoint[a[1]]) {
 		odds[3] = 11*radix + radix
 		log.Debug("闲对")
 	}
 	//庄对
-	if (bjlPoint[b[0]]) == (bjlPoint[b[1]]) {
+	if (model.BjlPoint[b[0]]) == (model.BjlPoint[b[1]]) {
 		odds[4] = 11*radix + radix
 		log.Debug("庄对")
 	}
