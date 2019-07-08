@@ -1,0 +1,1 @@
+pbjs --force-number --no-beautify -t static-module login.proto game.proto msg_id.proto fish.proto zjh.proto folks.proto > game.js

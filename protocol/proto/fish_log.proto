@@ -1,0 +1,31 @@
+syntax = "proto3";
+option go_package = "fish";
+package fish;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+// 捕鱼日志
+message GameRound {
+	// 全局唯一游戏ID(i有建立索引，不要更改名称)
+	int64 id = 1 [(gogoproto.jsontag) = 'i', (gogoproto.moretags) = 'bson:"i" msg:"i"'];
+	// 玩家ID
+	int32 uid = 2 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
+	// 游戏开始时间(s有建立索引，不要更改名称)
+	int64 start = 3 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
+	// 游戏结束时间
+	int64 end = 4 [(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
+	// 房间ID
+	int32 room = 5 [(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	// 桌子ID
+	int32 tab = 6 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
+	// 开始游戏时带的钱
+	int64 oldCoin = 7 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
+	// 下注总金币
+	int64 bet = 8 [(gogoproto.jsontag) = 'm', (gogoproto.moretags) = 'bson:"m" msg:"m"'];
+	// 玩家输赢
+	sint64 win = 9 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	// 动作日志(子弹消耗的钱/击中的鱼/得分)
+	repeated int32 log = 11 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
+	// 备注
+	string note = 12 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
+}

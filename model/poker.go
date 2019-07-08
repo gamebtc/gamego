@@ -165,16 +165,14 @@ func UpsetPro(src []byte, a, b int64) {
 	} else {
 		r2 = rand.New(rand.NewSource(b))
 	}
-	l := uint32(len(src))
-	for i := l; i > 0; i-- {
-		x := r1.Uint32() % l
-		y := r1.Uint32() % l
-		src[x], src[y] = src[y], src[x]
-		x = r2.Uint32() % l
-		y = r2.Uint32() % l
-		src[x], src[y] = src[y], src[x]
-		x = r1.Uint32() % l
-		y = r2.Uint32() % l
+	size := uint32(len(src))
+	for i := uint32(0); i < size; i++ {
+		j := r1.Uint32() % size
+		src[i], src[j] = src[j], src[i]
+	}
+	for i := uint32(0); i < size; i++ {
+		x := r1.Uint32() % size
+		y := r2.Uint32() % size
 		src[x], src[y] = src[y], src[x]
 	}
 }

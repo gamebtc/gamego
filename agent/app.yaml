@@ -12,6 +12,9 @@ tcp:
   #TCP write buffer 1MB
   writeBuf: 1048576
 
+web:
+  listen: '0.0.0.0:8889'
+
 udp:
   #set DSCP(6bit)
   dscp: 46

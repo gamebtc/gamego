@@ -9,6 +9,7 @@ import (
 )
 
 var upgrader = websocket.Upgrader{
+	// 支持跨域
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},

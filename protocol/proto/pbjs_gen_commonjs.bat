@@ -1,0 +1,1 @@
+pbjs --force-number -t static-module -w commonjs login.proto game.proto msg_id.proto fish.proto zjh.proto folks.proto > Msg.js

@@ -12,6 +12,7 @@ import (
 type AppConfig struct {
 	Consul       ConsulConfig `yaml:"consul"`
 	Tcp          TcpConfig    `yaml:"tcp"`
+	Web          TcpConfig    `yaml:"web"`
 	Udp          UdpConfig    `yaml:"udp"`
 	Kcp          KcpConfig    `yaml:"kcp"`
 	MaxConnect   int32        `yaml:"maxConnect"`

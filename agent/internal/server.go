@@ -7,10 +7,11 @@ import (
 	"os"
 	"sync"
 	"sync/atomic"
+	"time"
 
+	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 	"github.com/xtaci/kcp-go"
-	_"github.com/gorilla/websocket"
 
 	. "local.com/abc/game/protocol"
 	"local.com/abc/game/util"
@@ -48,6 +49,9 @@ func startServer(config *AppConfig) {
 	}
 	if config.Kcp.Listen != "" {
 		go kcpServer(config)
+	}
+	if config.Web.Listen != "" {
+		go webServer(config)
 	}
 }
 
@@ -202,6 +206,90 @@ func handleClient(ip uint32, addr string, conn net.Conn) {
 	if count <= maxConnect {
 		newSession(ip, addr, conn)
 	}
+}
+
+type WebConn struct {
+	*websocket.Conn
+	remain  []byte    // 剩余未处理
+}
+
+func(c *WebConn)Read(b []byte) (int, error) {
+	var msgType int
+	var message []byte
+	var err error
+	if len(c.remain) > 0 {
+		msgType, message, err = websocket.BinaryMessage, c.remain, nil
+	} else {
+		msgType, message, err = c.ReadMessage()
+		if err != nil {
+			return 0, err
+		}
+	}
+	if msgType == websocket.TextMessage || msgType == websocket.BinaryMessage {
+		copyLen := copy(b, message)
+		if copyLen < len(message) {
+			c.remain = message[:copyLen]
+		} else {
+			c.remain = nil
+		}
+		return copyLen, nil
+	}
+	return 0, nil
+}
+
+func(c *WebConn)Write(b []byte) (int, error) {
+	err := c.WriteMessage(websocket.BinaryMessage, b)
+	if err != nil {
+		return 0, nil
+	}
+	return len(b), nil
+}
+
+func(c *WebConn)SetDeadline(t time.Time) error {
+	return nil
+}
+
+var upgrader = websocket.Upgrader{
+	// 支持跨域
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+func handleWeb(w http.ResponseWriter, r *http.Request) {
+	c, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Info("web connect error:", err.Error())
+		return
+	}
+	conn := &WebConn{Conn: c}
+	if atomic.LoadInt32(&connectCount) >= maxConnect {
+		// TODO: IP实现服务自发现
+		fail := makeMsg(&Handshake{
+			Code: 1,
+			Msg:  "服务器忙",
+		})
+		conn.Write(fail)
+		conn.Close()
+	} else {
+		addr := conn.RemoteAddr().String()
+		log.Info("web connect:", addr)
+		ipStr, _, _ := net.SplitHostPort(addr)
+		ip := util.IpToUint32(ipStr)
+		if addIpLimit(ip) {
+			success := makeMsg(&Handshake{
+				Ip: []string{"127.0.0.1"},
+			})
+			conn.Write(success)
+			handleClient(ip, addr, conn)
+		}
+	}
+}
+
+func webServer(config *AppConfig ){
+	http.HandleFunc("/", handleWeb)
+	log.Info("web listening on:", config.Web.Listen)
+	http.ListenAndServe(config.Web.Listen, nil)
 }
 
 func checkError(err error) {
