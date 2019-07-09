@@ -228,7 +228,7 @@ func(c *WebConn)Read(b []byte) (int, error) {
 	if msgType == websocket.TextMessage || msgType == websocket.BinaryMessage {
 		copyLen := copy(b, message)
 		if copyLen < len(message) {
-			c.remain = message[:copyLen]
+			c.remain = message[copyLen:]
 		} else {
 			c.remain = nil
 		}
