@@ -3,6 +3,7 @@
 
 //var $protobuf = require("protobufjs/minimal");
 var $protobuf = protobuf;
+
 // Common aliases
 var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
@@ -5849,10 +5850,10 @@ $root.protocol = (function() {
          * @name protocol.MsgId.Code
          * @enum {string}
          * @property {number} None=0 None value
-         * @property {number} UserOffline=1 UserOffline value
+         * @property {number} Offline=1 Offline value
          * @property {number} AllocAgentId=2 AllocAgentId value
          * @property {number} UserMessageHeadSplit=100 UserMessageHeadSplit value
-         * @property {number} UserOfflineReq=101 UserOfflineReq value
+         * @property {number} OfflineReq=101 OfflineReq value
          * @property {number} HandshakeReq=102 HandshakeReq value
          * @property {number} HandshakeAck=103 HandshakeAck value
          * @property {number} VerCheckReq=104 VerCheckReq value
@@ -5861,13 +5862,13 @@ $root.protocol = (function() {
          * @property {number} RegistAck=108 RegistAck value
          * @property {number} ErrorInfo=109 ErrorInfo value
          * @property {number} FatalInfo=112 FatalInfo value
-         * @property {number} UserLoginReq=113 UserLoginReq value
-         * @property {number} UserLoginSuccessAck=115 UserLoginSuccessAck value
-         * @property {number} UserLoginFailAck=117 UserLoginFailAck value
+         * @property {number} LoginReq=113 LoginReq value
+         * @property {number} LoginSuccessAck=115 LoginSuccessAck value
+         * @property {number} LoginFailAck=117 LoginFailAck value
          * @property {number} ClientErrorAck=119 ClientErrorAck value
          * @property {number} CodeLoginPwdReq=120 CodeLoginPwdReq value
          * @property {number} CodeLoginPwdAck=121 CodeLoginPwdAck value
-         * @property {number} UserLoginMessageSplit=200 UserLoginMessageSplit value
+         * @property {number} LoggedMessageSplit=200 LoggedMessageSplit value
          * @property {number} HeartBeatReq=202 HeartBeatReq value
          * @property {number} HeartBeatAck=203 HeartBeatAck value
          * @property {number} GameListReq=204 GameListReq value
@@ -5930,10 +5931,10 @@ $root.protocol = (function() {
         MsgId.Code = (function() {
             var valuesById = {}, values = Object.create(valuesById);
             values[valuesById[0] = "None"] = 0;
-            values[valuesById[1] = "UserOffline"] = 1;
+            values[valuesById[1] = "Offline"] = 1;
             values[valuesById[2] = "AllocAgentId"] = 2;
             values[valuesById[100] = "UserMessageHeadSplit"] = 100;
-            values[valuesById[101] = "UserOfflineReq"] = 101;
+            values[valuesById[101] = "OfflineReq"] = 101;
             values[valuesById[102] = "HandshakeReq"] = 102;
             values[valuesById[103] = "HandshakeAck"] = 103;
             values[valuesById[104] = "VerCheckReq"] = 104;
@@ -5942,13 +5943,13 @@ $root.protocol = (function() {
             values[valuesById[108] = "RegistAck"] = 108;
             values[valuesById[109] = "ErrorInfo"] = 109;
             values[valuesById[112] = "FatalInfo"] = 112;
-            values[valuesById[113] = "UserLoginReq"] = 113;
-            values[valuesById[115] = "UserLoginSuccessAck"] = 115;
-            values[valuesById[117] = "UserLoginFailAck"] = 117;
+            values[valuesById[113] = "LoginReq"] = 113;
+            values[valuesById[115] = "LoginSuccessAck"] = 115;
+            values[valuesById[117] = "LoginFailAck"] = 117;
             values[valuesById[119] = "ClientErrorAck"] = 119;
             values[valuesById[120] = "CodeLoginPwdReq"] = 120;
             values[valuesById[121] = "CodeLoginPwdAck"] = 121;
-            values[valuesById[200] = "UserLoginMessageSplit"] = 200;
+            values[valuesById[200] = "LoggedMessageSplit"] = 200;
             values[valuesById[202] = "HeartBeatReq"] = 202;
             values[valuesById[203] = "HeartBeatAck"] = 203;
             values[valuesById[204] = "GameListReq"] = 204;

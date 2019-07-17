@@ -87,9 +87,9 @@ func userLoginHandler(sess *Session, data []byte) (interface{}, error) {
 	}
 	sess.Flag = SESS_LOGINING
 	//转发到服务器处理
-	ret, err := sess.callServer(int32(MsgId_UserLoginReq), data)
+	ret, err := sess.callServer(int32(MsgId_LoginReq), data)
 	if ret, ok := ret.([]byte); ok && len(ret) > HeadLen {
-		if GetHeadId(ret) == int32(MsgId_UserLoginSuccessAck) {
+		if GetHeadId(ret) == int32(MsgId_LoginSuccessAck) {
 			// 登录成功
 			ack := LoginSuccessAck{}
 			if err = sess.Unmarshal(ret[HeadLen:], &ack); err == nil {

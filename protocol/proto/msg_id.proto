@@ -5,12 +5,12 @@ package protocol;
 message MsgId{
 	enum Code{
 		None                  = 0;   // 无
-		UserOffline           = 1;   // 用户下线
+		Offline               = 1;   // 用户下线
 		AllocAgentId          = 2;   // 分配代理ID
 
 		// 100以上玩家可以发送的消息
 		UserMessageHeadSplit  = 100; // 用户消息分隔
-		UserOfflineReq        = 101; // 请求断线
+		OfflineReq            = 101; // 请求断线
         HandshakeReq          = 102; // 握手
         HandshakeAck          = 103; // 握手返回
 		VerCheckReq           = 104; // 游戏版本检查
@@ -19,15 +19,15 @@ message MsgId{
 		RegistAck             = 108; // 用户注册返回
 		ErrorInfo             = 109; // 通用错误信息
 		FatalInfo             = 112; // 严重错误信息
-        UserLoginReq          = 113; // 登录请求
-        UserLoginSuccessAck   = 115; // 登录成功
-        UserLoginFailAck      = 117; // 登录失败
+        LoginReq              = 113; // 登录请求
+        LoginSuccessAck       = 115; // 登录成功
+        LoginFailAck          = 117; // 登录失败
         ClientErrorAck        = 119; // 客户端错误
 		CodeLoginPwdReq       = 120; // 获取验证码(找回密码)
 		CodeLoginPwdAck       = 121; // 获取验证码(找回密码)
 
         // 200以上需要登录才能调用的协议
-        UserLoginMessageSplit = 200; // 已登录用户消息分隔
+		LoggedMessageSplit    = 200; // 已登录用户消息分隔
 		HeartBeatReq          = 202; // 心跳请求
 		HeartBeatAck          = 203; // 心跳应答
 		GameListReq           = 204; // 获取游戏列表

@@ -11,7 +11,7 @@ require (
 	github.com/tjfoc/gmsm v1.0.1 // indirect
 	github.com/xtaci/kcp-go v5.4.2+incompatible
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7
-	google.golang.org/grpc v1.20.1
+	google.golang.org/grpc v1.22.0
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/protocol v0.0.0
 	local.com/abc/game/util v0.0.0

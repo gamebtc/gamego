@@ -45,13 +45,13 @@ func Run(config *AppConfig) {
 	registMsg(MsgId_HandshakeAck, (*Handshake)(nil))
 	registMsg(MsgId_VerCheckAck, (*VerCheckAck)(nil))
 	registMsg(MsgId_HeartBeatAck, (*HeartBeatAck)(nil))
-	registMsg(MsgId_UserLoginFailAck, (*LoginFailAck)(nil))
+	registMsg(MsgId_LoginFailAck, (*LoginFailAck)(nil))
 	registMsg(MsgId_LoginGameAck, (*LoginGameAck)(nil))
-	registMsg(MsgId_UserLoginSuccessAck, (*LoginSuccessAck)(nil))
+	registMsg(MsgId_LoginSuccessAck, (*LoginSuccessAck)(nil))
 	registMsg(MsgId_ExitGameAck, (*ExitGameAck)(nil))
 
 	handlers[MsgId_HandshakeReq] = handshakeHandler
-	handlers[MsgId_UserLoginReq] = userLoginHandler
+	handlers[MsgId_LoginReq] = userLoginHandler
 	handlers[MsgId_VerCheckReq] = verCheckHandler
 	//handlers[MsgId_HeartBeatReq] = heartBeatHandler
 	handlers[MsgId_LoginGameReq] = loginGameHandler

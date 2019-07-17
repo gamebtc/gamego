@@ -44,15 +44,15 @@ func (s *Server) Init(config *AppConfig) (err error) {
 
 	s.RegistMsg(MsgId_ErrorInfo, &ErrorInfo{})
 
-	s.RegistHandler(MsgId_UserOffline, nil, userOffline)
+	s.RegistHandler(MsgId_Offline, nil, userOffline)
 	s.RegistHandler(MsgId_AllocAgentId, nil, allocAgentId)
 
 	s.RegistHandler(MsgId_VerCheckReq, &VerCheckReq{}, verCheck)
 	s.RegistMsg(MsgId_VerCheckAck, &VerCheckAck{})
 
-	s.RegistHandler(MsgId_UserLoginReq, &LoginReq{}, userLogin)
-	s.RegistMsg(MsgId_UserLoginSuccessAck, &LoginSuccessAck{})
-	s.RegistMsg(MsgId_UserLoginFailAck, &LoginFailAck{})
+	s.RegistHandler(MsgId_LoginReq, &LoginReq{}, userLogin)
+	s.RegistMsg(MsgId_LoginSuccessAck, &LoginSuccessAck{})
+	s.RegistMsg(MsgId_LoginFailAck, &LoginFailAck{})
 
 	s.RegistHandler(MsgId_HeartBeatReq, &HeartBeatReq{}, heartBeat)
 	s.RegistMsg(MsgId_HeartBeatAck, &HeartBeatAck{})
@@ -76,7 +76,7 @@ func (s *Server) Call(ctx context.Context, req *GameFrame) (res *GameFrame, err 
 	}
 	user := ParseUserContext(ctx)
 	// 检查登录
-	if id >= int32(MsgId_UserLoginMessageSplit) {
+	if id >= int32(MsgId_LoggedMessageSplit) {
 		// 登录已过期
 		if (user.UserId == 0) || (!driver.CheckUserAgent(user.UserId, user.AgentId)) {
 			var buf []byte

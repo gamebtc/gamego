@@ -1,5 +1,5 @@
 let msg = require('msg/msg');
-let net = require('net/client');
+let {codec, WebClient} = require('net/client');
 let protocol = msg.protocol;
 let msgid = msg.protocol.MsgId.Code;
 
@@ -37,23 +37,24 @@ let Game = cc.Class({
         console.log("loginSuccess");
     },
 
+    // 监听网络消息
     initMsg() {
-        net.codec.regMsg(msgid.VerCheckReq, protocol.VerCheckReq);
-        net.codec.regMsg(msgid.UserLoginReq, protocol.LoginReq);
+        codec.onMsg(msgid.VerCheckReq, protocol.VerCheckReq);
+        codec.onMsg(msgid.LoginReq, protocol.LoginReq);
 
-        net.codec.regMsg(msgid.UserLoginFailAck, protocol.Handshake, (...args) => {
+        codec.onMsg(msgid.HandshakeAck, protocol.Handshake, (...args) => {
             this.hand(...args)
         });
-        net.codec.regMsg(msgid.UserLoginSuccessAck, protocol.LoginSuccessAck, (...args) => {
+        codec.onMsg(msgid.LoginSuccessAck, protocol.LoginSuccessAck, (...args) => {
             this.loginSuccess(...args)
         });
-        net.codec.regMsg(msgid.LoginFailAck, protocol.LoginFailAck, loginFail);
+        codec.onMsg(msgid.LoginFailAck, protocol.LoginFailAck, loginFail);
     },
 
     onLoad() {
         this.initMsg();
         this.timer = 0;
-        let client = new net.WebClient(this.ip, this.port);
+        let client = new WebClient(this.ip, this.port);
         this.client = client;
         client.connect(function (event) {
             console.log("open");

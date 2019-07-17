@@ -36,8 +36,8 @@ class Codec {
         this.codec = new Map();
     }
 
-    // 注册消息
-    regMsg(id, msg, h) {
+    // 监听消息
+    onMsg(id, msg, h) {
         this.codec.set(id, {m: msg, h: h});
     }
 
@@ -58,7 +58,7 @@ class Codec {
         }
     }
 
-    call(client, data) {
+    emit(client, data) {
         let head = new Uint8Array(data, 0, 6)
         let ln = (head[0] << 16) | (head[1] << 8) | (head[2])
         let id = (head[3] << 16) | (head[4] << 8) | (head[5])
@@ -94,7 +94,7 @@ class WebClient {
         ws.onopen = onopen;
         ws.onmessage = function (event) {
             console.log("onmessage : " + event.data);
-            codec.call(ws, event.data);
+            codec.emit(ws, event.data);
         };
         ws.onerror = function (event) {
             console.log("on error :", event.data);
@@ -116,7 +116,4 @@ class WebClient {
     }
 }
 
-module.exports = {
-    codec: codec,
-    WebClient: WebClient,
-};
+module.exports = { codec, WebClient};

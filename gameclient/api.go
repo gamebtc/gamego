@@ -38,7 +38,7 @@ func Run(config *AppConfig) {
 	coder = GetCoder(config.Codec)
 	jsonCoder = GetCoder("json") //jsonIter
 
-	registMsg(int32(MsgId_UserLoginReq), (*LoginReq)(nil), nil)
+	registMsg(int32(MsgId_LoginReq), (*LoginReq)(nil), nil)
 	registMsg(int32(MsgId_LoginGameReq), (*LoginGameReq)(nil), nil)
 	registMsg(int32(MsgId_LoginGameAck), (*LoginGameAck)(nil), loginGame)
 	registMsg(int32(folks.Folks_BetReq), (*folks.BetReq)(nil), nil)
@@ -48,8 +48,8 @@ func Run(config *AppConfig) {
 
 	registMsg(int32(folks.Folks_BetAck), (*folks.BetAck)(nil), betAck)
 	registMsg(int32(MsgId_HandshakeAck), (*Handshake)(nil), handshake)
-	registMsg(int32(MsgId_UserLoginFailAck), (*LoginFailAck)(nil), loginFail)
-	registMsg(int32(MsgId_UserLoginSuccessAck), (*LoginSuccessAck)(nil), loginSuccess)
+	registMsg(int32(MsgId_LoginFailAck), (*LoginFailAck)(nil), loginFail)
+	registMsg(int32(MsgId_LoginSuccessAck), (*LoginSuccessAck)(nil), loginSuccess)
 	registMsg(int32(MsgId_ErrorInfo), (*ErrorInfo)(nil), showErrorInfo)
 
 	registMsg(int32(MsgId_VerCheckReq), (*VerCheckReq)(nil), nil)
@@ -70,7 +70,7 @@ func Run(config *AppConfig) {
 	//registMsg(int32(folks.Folks_CloseBetAck), (*folks.CloseBetAck)(nil), folksGameInit)
 
 	//handlers[MsgId_HandshakeReq] = handshakeHandler
-	//handlers[MsgId_UserLoginReq] = userLoginHandler
+	//handlers[MsgId_LoginReq] = userLoginHandler
 	//handlers[MsgId_VerCheckReq] = verCheckHandler
 	//handlers[MsgId_HeartBeatReq] = heartBeatHandler
 	//handlers[MsgId_LoginRoomReq] = loginRoomHandler

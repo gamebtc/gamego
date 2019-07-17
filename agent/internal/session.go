@@ -37,7 +37,7 @@ var (
 )
 
 func init() {
-	SetHead(userOffline.Data, int32(MsgId_UserOffline))
+	SetHead(userOffline.Data, int32(MsgId_Offline))
 }
 
 type Session struct {
@@ -216,7 +216,7 @@ func (sess *Session) route(data []byte) (ret interface{}, err error) {
 	}
 
 	// 需要登录才能调用的协议
-	if id >= int32(MsgId_UserLoginMessageSplit) && sess.Flag != SESS_LOGINED {
+	if id >= int32(MsgId_LoggedMessageSplit) && sess.Flag != SESS_LOGINED {
 		err = ErrorUnauthorized
 		return
 	}
