@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // 玩家结算信息
 type GameBill struct {
@@ -65,7 +65,7 @@ func (m *GameBill) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GameBill.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -220,7 +220,7 @@ func (m *GameRound) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GameRound.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -387,7 +387,7 @@ func (m *ActionLog) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_ActionLog.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -501,7 +501,7 @@ var fileDescriptor_89d1366e1d3f95d7 = []byte{
 func (m *GameBill) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -509,66 +509,15 @@ func (m *GameBill) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameBill) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameBill) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Uid))
-	}
-	if m.Job != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Job))
-	}
-	if m.OldCoin != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.OldCoin))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Bet))
-	}
-	if len(m.Poker) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(len(m.Poker)))
-		i += copy(dAtA[i:], m.Poker)
-	}
-	if m.Weight != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Weight))
-	}
-	if m.Win != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
-	}
-	if m.Tax != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tax))
-	}
-	if m.Water != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Water))
-	}
-	if m.Lucky != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Lucky))
-	}
-	if m.Robot != 0 {
-		dAtA[i] = 0x58
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Robot)<<1)^uint64((m.Robot>>63))))
-	}
 	if len(m.Pk) > 0 {
 		dAtA2 := make([]byte, len(m.Pk)*10)
 		var j1 int
@@ -582,18 +531,76 @@ func (m *GameBill) MarshalTo(dAtA []byte) (int, error) {
 			dAtA2[j1] = uint8(num)
 			j1++
 		}
-		dAtA[i] = 0x62
-		i++
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintZjhLog(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x62
 	}
-	return i, nil
+	if m.Robot != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Robot)<<1)^uint64((m.Robot>>63))))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.Lucky != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Lucky))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.Water != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Water))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.Tax != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tax))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Win != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Weight != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Weight))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Poker) > 0 {
+		i -= len(m.Poker)
+		copy(dAtA[i:], m.Poker)
+		i = encodeVarintZjhLog(dAtA, i, uint64(len(m.Poker)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Bet != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.OldCoin != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.OldCoin))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Job != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Job))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Uid != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameRound) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -601,126 +608,136 @@ func (m *GameRound) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameRound) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Id))
-	}
-	if m.Start != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Start))
-	}
-	if m.End != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.End))
-	}
-	if m.Room != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Room))
-	}
-	if m.Tab != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tab))
-	}
-	if len(m.Bill) > 0 {
-		for _, msg := range m.Bill {
-			dAtA[i] = 0x32
-			i++
-			i = encodeVarintZjhLog(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.Ante != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Ante))
-	}
-	if m.Ring != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Ring))
-	}
-	if m.Sum != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Sum))
-	}
-	if m.Win != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
-	}
-	if m.Tax != 0 {
-		dAtA[i] = 0x58
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tax))
-	}
-	if m.Water != 0 {
-		dAtA[i] = 0x60
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Water))
-	}
-	if len(m.Log) > 0 {
-		for _, msg := range m.Log {
-			dAtA[i] = 0x6a
-			i++
-			i = encodeVarintZjhLog(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.Pool != 0 {
-		dAtA[i] = 0x70
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Pool))
-	}
-	if m.Lucky != 0 {
-		dAtA[i] = 0x78
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Lucky))
-	}
-	if len(m.Note) > 0 {
-		dAtA[i] = 0x82
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(len(m.Note)))
-		i += copy(dAtA[i:], m.Note)
-	}
 	if m.Cheat {
-		dAtA[i] = 0x88
-		i++
-		dAtA[i] = 0x1
-		i++
+		i--
 		if m.Cheat {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x88
 	}
-	return i, nil
+	if len(m.Note) > 0 {
+		i -= len(m.Note)
+		copy(dAtA[i:], m.Note)
+		i = encodeVarintZjhLog(dAtA, i, uint64(len(m.Note)))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x82
+	}
+	if m.Lucky != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Lucky))
+		i--
+		dAtA[i] = 0x78
+	}
+	if m.Pool != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Pool))
+		i--
+		dAtA[i] = 0x70
+	}
+	if len(m.Log) > 0 {
+		for iNdEx := len(m.Log) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Log[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintZjhLog(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x6a
+		}
+	}
+	if m.Water != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Water))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.Tax != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tax))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.Win != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.Sum != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Sum))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.Ring != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Ring))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Ante != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Ante))
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.Bill) > 0 {
+		for iNdEx := len(m.Bill) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Bill[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintZjhLog(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if m.Tab != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Tab))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Room != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.End != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.End))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Start != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Start))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ActionLog) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -728,34 +745,19 @@ func (m *ActionLog) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ActionLog) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActionLog) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Start != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Start))
-	}
-	if m.Type != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Type))
-	}
-	if m.Uid != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Uid))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjhLog(dAtA, i, uint64(m.Bet))
-	}
-	if len(m.Players) > 0 {
-		dAtA4 := make([]byte, len(m.Players)*10)
+	if len(m.Winners) > 0 {
+		dAtA4 := make([]byte, len(m.Winners)*10)
 		var j3 int
-		for _, num1 := range m.Players {
+		for _, num1 := range m.Winners {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
@@ -765,15 +767,16 @@ func (m *ActionLog) MarshalTo(dAtA []byte) (int, error) {
 			dAtA4[j3] = uint8(num)
 			j3++
 		}
-		dAtA[i] = 0x2a
-		i++
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
 		i = encodeVarintZjhLog(dAtA, i, uint64(j3))
-		i += copy(dAtA[i:], dAtA4[:j3])
+		i--
+		dAtA[i] = 0x32
 	}
-	if len(m.Winners) > 0 {
-		dAtA6 := make([]byte, len(m.Winners)*10)
+	if len(m.Players) > 0 {
+		dAtA6 := make([]byte, len(m.Players)*10)
 		var j5 int
-		for _, num1 := range m.Winners {
+		for _, num1 := range m.Players {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA6[j5] = uint8(uint64(num)&0x7f | 0x80)
@@ -783,22 +786,45 @@ func (m *ActionLog) MarshalTo(dAtA []byte) (int, error) {
 			dAtA6[j5] = uint8(num)
 			j5++
 		}
-		dAtA[i] = 0x32
-		i++
+		i -= j5
+		copy(dAtA[i:], dAtA6[:j5])
 		i = encodeVarintZjhLog(dAtA, i, uint64(j5))
-		i += copy(dAtA[i:], dAtA6[:j5])
+		i--
+		dAtA[i] = 0x2a
 	}
-	return i, nil
+	if m.Bet != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Uid != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Type != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Start != 0 {
+		i = encodeVarintZjhLog(dAtA, i, uint64(m.Start))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintZjhLog(dAtA []byte, offset int, v uint64) int {
+	offset -= sovZjhLog(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *GameBill) Size() (n int) {
 	if m == nil {

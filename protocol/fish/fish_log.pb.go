@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // 捕鱼日志
 type GameRound struct {
@@ -63,7 +63,7 @@ func (m *GameRound) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GameRound.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -197,7 +197,7 @@ var fileDescriptor_6003c6f775c9819e = []byte{
 func (m *GameRound) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -205,54 +205,21 @@ func (m *GameRound) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameRound) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Id))
-	}
-	if m.Uid != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Uid))
-	}
-	if m.Start != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Start))
-	}
-	if m.End != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.End))
-	}
-	if m.Room != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Room))
-	}
-	if m.Tab != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Tab))
-	}
-	if m.OldCoin != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.OldCoin))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(m.Bet))
-	}
-	if m.Win != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+	if len(m.Note) > 0 {
+		i -= len(m.Note)
+		copy(dAtA[i:], m.Note)
+		i = encodeVarintFishLog(dAtA, i, uint64(len(m.Note)))
+		i--
+		dAtA[i] = 0x62
 	}
 	if len(m.Log) > 0 {
 		dAtA2 := make([]byte, len(m.Log)*10)
@@ -267,28 +234,70 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA2[j1] = uint8(num)
 			j1++
 		}
-		dAtA[i] = 0x5a
-		i++
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintFishLog(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x5a
 	}
-	if len(m.Note) > 0 {
-		dAtA[i] = 0x62
-		i++
-		i = encodeVarintFishLog(dAtA, i, uint64(len(m.Note)))
-		i += copy(dAtA[i:], m.Note)
+	if m.Win != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+		i--
+		dAtA[i] = 0x48
 	}
-	return i, nil
+	if m.Bet != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.OldCoin != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.OldCoin))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Tab != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Tab))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Room != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.End != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.End))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Start != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Start))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Uid != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintFishLog(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintFishLog(dAtA []byte, offset int, v uint64) int {
+	offset -= sovFishLog(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *GameRound) Size() (n int) {
 	if m == nil {

@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // 握手返回
 type Handshake struct {
@@ -45,7 +45,7 @@ func (m *Handshake) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Handshake.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -111,7 +111,7 @@ func (m *HeartBeatReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_HeartBeatReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -156,7 +156,7 @@ func (m *HeartBeatAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_HeartBeatAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -204,7 +204,7 @@ func (m *ErrorInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_ErrorInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -273,7 +273,7 @@ func (m *FatalInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_FatalInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -348,7 +348,7 @@ func (m *DeviceInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_DeviceInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -461,7 +461,7 @@ func (m *Envirnment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Envirnment.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -543,7 +543,7 @@ func (m *VerCheckReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_VerCheckReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -610,7 +610,7 @@ func (m *VerCheckAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_VerCheckAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -718,7 +718,7 @@ func (m *LoginReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_LoginReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -823,7 +823,7 @@ func (m *LoginSuccessAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return xxx_messageInfo_LoginSuccessAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -946,7 +946,7 @@ func (m *LoginFailAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_LoginFailAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1082,7 +1082,7 @@ var fileDescriptor_67c21677aa7f4e4f = []byte{
 func (m *Handshake) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1090,48 +1090,48 @@ func (m *Handshake) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Handshake) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Handshake) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
-	}
-	if m.Seed != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Seed))
-	}
-	if len(m.Msg) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
-	}
 	if len(m.Ip) > 0 {
-		for _, s := range m.Ip {
+		for iNdEx := len(m.Ip) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Ip[iNdEx])
+			copy(dAtA[i:], m.Ip[iNdEx])
+			i = encodeVarintLogin(dAtA, i, uint64(len(m.Ip[iNdEx])))
+			i--
 			dAtA[i] = 0x22
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
-			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
 		}
 	}
-	return i, nil
+	if len(m.Msg) > 0 {
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Seed != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Seed))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Code != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *HeartBeatReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1139,22 +1139,27 @@ func (m *HeartBeatReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *HeartBeatReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HeartBeatReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
 		i = encodeVarintLogin(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *HeartBeatAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1162,22 +1167,27 @@ func (m *HeartBeatAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *HeartBeatAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HeartBeatAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
 		i = encodeVarintLogin(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ErrorInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1185,39 +1195,46 @@ func (m *ErrorInfo) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ErrorInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ErrorInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.ReqId != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.ReqId))
-	}
-	if m.Code != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.Msg) > 0 {
-		dAtA[i] = 0x1a
-		i++
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
 		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+		i--
+		dAtA[i] = 0x1a
 	}
-	if len(m.Key) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
+	if m.Code != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.ReqId != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.ReqId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *FatalInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1225,39 +1242,46 @@ func (m *FatalInfo) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *FatalInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FatalInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.ReqId != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.ReqId))
-	}
-	if m.Code != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.Msg) > 0 {
-		dAtA[i] = 0x1a
-		i++
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
 		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+		i--
+		dAtA[i] = 0x1a
 	}
-	if len(m.Key) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Key)))
-		i += copy(dAtA[i:], m.Key)
+	if m.Code != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.ReqId != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.ReqId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *DeviceInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1265,77 +1289,92 @@ func (m *DeviceInfo) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *DeviceInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *DeviceInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Id) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Id)))
-		i += copy(dAtA[i:], m.Id)
-	}
-	if len(m.Vend) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Vend)))
-		i += copy(dAtA[i:], m.Vend)
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if len(m.Mac) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Mac)))
-		i += copy(dAtA[i:], m.Mac)
-	}
-	if len(m.Imei) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Imei)))
-		i += copy(dAtA[i:], m.Imei)
-	}
-	if len(m.Emid) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Emid)))
-		i += copy(dAtA[i:], m.Emid)
-	}
-	if len(m.Sn) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Sn)))
-		i += copy(dAtA[i:], m.Sn)
-	}
-	if len(m.OsLang) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.OsLang)))
-		i += copy(dAtA[i:], m.OsLang)
+	if len(m.Other) > 0 {
+		i -= len(m.Other)
+		copy(dAtA[i:], m.Other)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Other)))
+		i--
+		dAtA[i] = 0x52
 	}
 	if len(m.OsVer) > 0 {
-		dAtA[i] = 0x4a
-		i++
+		i -= len(m.OsVer)
+		copy(dAtA[i:], m.OsVer)
 		i = encodeVarintLogin(dAtA, i, uint64(len(m.OsVer)))
-		i += copy(dAtA[i:], m.OsVer)
+		i--
+		dAtA[i] = 0x4a
 	}
-	if len(m.Other) > 0 {
-		dAtA[i] = 0x52
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Other)))
-		i += copy(dAtA[i:], m.Other)
+	if len(m.OsLang) > 0 {
+		i -= len(m.OsLang)
+		copy(dAtA[i:], m.OsLang)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.OsLang)))
+		i--
+		dAtA[i] = 0x42
 	}
-	return i, nil
+	if len(m.Sn) > 0 {
+		i -= len(m.Sn)
+		copy(dAtA[i:], m.Sn)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Sn)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Emid) > 0 {
+		i -= len(m.Emid)
+		copy(dAtA[i:], m.Emid)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Emid)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Imei) > 0 {
+		i -= len(m.Imei)
+		copy(dAtA[i:], m.Imei)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Imei)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Mac) > 0 {
+		i -= len(m.Mac)
+		copy(dAtA[i:], m.Mac)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Mac)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Vend) > 0 {
+		i -= len(m.Vend)
+		copy(dAtA[i:], m.Vend)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Vend)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Envirnment) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1343,51 +1382,60 @@ func (m *Envirnment) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Envirnment) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Envirnment) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.App != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.App))
-	}
-	if m.Pack != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Pack))
-	}
-	if len(m.Ver) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Ver)))
-		i += copy(dAtA[i:], m.Ver)
-	}
-	if len(m.Chan) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Chan)))
-		i += copy(dAtA[i:], m.Chan)
+	if len(m.Other) > 0 {
+		i -= len(m.Other)
+		copy(dAtA[i:], m.Other)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Other)))
+		i--
+		dAtA[i] = 0x32
 	}
 	if len(m.Refer) > 0 {
-		dAtA[i] = 0x2a
-		i++
+		i -= len(m.Refer)
+		copy(dAtA[i:], m.Refer)
 		i = encodeVarintLogin(dAtA, i, uint64(len(m.Refer)))
-		i += copy(dAtA[i:], m.Refer)
+		i--
+		dAtA[i] = 0x2a
 	}
-	if len(m.Other) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Other)))
-		i += copy(dAtA[i:], m.Other)
+	if len(m.Chan) > 0 {
+		i -= len(m.Chan)
+		copy(dAtA[i:], m.Chan)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Chan)))
+		i--
+		dAtA[i] = 0x22
 	}
-	return i, nil
+	if len(m.Ver) > 0 {
+		i -= len(m.Ver)
+		copy(dAtA[i:], m.Ver)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Ver)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Pack != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Pack))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.App != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.App))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *VerCheckReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1395,37 +1443,44 @@ func (m *VerCheckReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *VerCheckReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VerCheckReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Env != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Env.Size()))
-		n1, err1 := m.Env.MarshalTo(dAtA[i:])
-		if err1 != nil {
-			return 0, err1
-		}
-		i += n1
+	if m.Check != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Check))
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.Time != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintLogin(dAtA, i, uint64(m.Time))
+		i--
+		dAtA[i] = 0x10
 	}
-	if m.Check != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Check))
+	if m.Env != nil {
+		{
+			size, err := m.Env.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintLogin(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *VerCheckAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1433,79 +1488,91 @@ func (m *VerCheckAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *VerCheckAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VerCheckAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
-	}
-	if len(m.Msg) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
-	}
-	if m.CanReg != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.CanReg))
-	}
-	if m.CanLogin != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.CanLogin))
-	}
-	if len(m.Url) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Url)))
-		i += copy(dAtA[i:], m.Url)
-	}
-	if len(m.Country) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Country)))
-		i += copy(dAtA[i:], m.Country)
-	}
-	if len(m.Region) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Region)))
-		i += copy(dAtA[i:], m.Region)
-	}
-	if len(m.City) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.City)))
-		i += copy(dAtA[i:], m.City)
-	}
 	if len(m.Conf) > 0 {
-		for k, _ := range m.Conf {
-			dAtA[i] = 0x4a
-			i++
+		for k := range m.Conf {
 			v := m.Conf[k]
-			mapSize := 1 + len(k) + sovLogin(uint64(len(k))) + 1 + len(v) + sovLogin(uint64(len(v)))
-			i = encodeVarintLogin(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintLogin(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x12
-			i++
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
 			i = encodeVarintLogin(dAtA, i, uint64(len(v)))
-			i += copy(dAtA[i:], v)
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintLogin(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintLogin(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x4a
 		}
 	}
-	return i, nil
+	if len(m.City) > 0 {
+		i -= len(m.City)
+		copy(dAtA[i:], m.City)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.City)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Region) > 0 {
+		i -= len(m.Region)
+		copy(dAtA[i:], m.Region)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Region)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Country) > 0 {
+		i -= len(m.Country)
+		copy(dAtA[i:], m.Country)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Country)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Url) > 0 {
+		i -= len(m.Url)
+		copy(dAtA[i:], m.Url)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Url)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.CanLogin != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.CanLogin))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.CanReg != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.CanReg))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Msg) > 0 {
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Code != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *LoginReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1513,70 +1580,82 @@ func (m *LoginReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LoginReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LoginReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Type != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Type))
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if len(m.Pwd) > 0 {
-		dAtA[i] = 0x1a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Pwd)))
-		i += copy(dAtA[i:], m.Pwd)
-	}
-	if len(m.Udid) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Udid)))
-		i += copy(dAtA[i:], m.Udid)
-	}
-	if m.Uid != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Uid))
-	}
-	if m.Time != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Time))
+	if m.Env != nil {
+		{
+			size, err := m.Env.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintLogin(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x42
 	}
 	if m.Dev != nil {
+		{
+			size, err := m.Dev.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintLogin(dAtA, i, uint64(size))
+		}
+		i--
 		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Dev.Size()))
-		n2, err2 := m.Dev.MarshalTo(dAtA[i:])
-		if err2 != nil {
-			return 0, err2
-		}
-		i += n2
 	}
-	if m.Env != nil {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Env.Size()))
-		n3, err3 := m.Env.MarshalTo(dAtA[i:])
-		if err3 != nil {
-			return 0, err3
-		}
-		i += n3
+	if m.Time != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Time))
+		i--
+		dAtA[i] = 0x30
 	}
-	return i, nil
+	if m.Uid != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Udid) > 0 {
+		i -= len(m.Udid)
+		copy(dAtA[i:], m.Udid)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Udid)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Pwd) > 0 {
+		i -= len(m.Pwd)
+		copy(dAtA[i:], m.Pwd)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Pwd)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Type != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *LoginSuccessAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1584,91 +1663,100 @@ func (m *LoginSuccessAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LoginSuccessAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LoginSuccessAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Id))
-	}
-	if m.Agent != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Agent))
-	}
-	if m.Icon != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Icon))
-	}
-	if m.Sex != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Sex))
-	}
-	if m.Vip != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Vip))
-	}
-	if len(m.Act) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Act)))
-		i += copy(dAtA[i:], m.Act)
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if len(m.Phone) > 0 {
-		dAtA[i] = 0x42
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(len(m.Phone)))
-		i += copy(dAtA[i:], m.Phone)
-	}
-	if len(m.Bag) > 0 {
-		for k, _ := range m.Bag {
-			dAtA[i] = 0x4a
-			i++
-			v := m.Bag[k]
-			mapSize := 1 + len(k) + sovLogin(uint64(len(k))) + 1 + sovLogin(uint64(v))
-			i = encodeVarintLogin(dAtA, i, uint64(mapSize))
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintLogin(dAtA, i, uint64(len(k)))
-			i += copy(dAtA[i:], k)
-			dAtA[i] = 0x10
-			i++
-			i = encodeVarintLogin(dAtA, i, uint64(v))
-		}
-	}
-	if m.Game != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Game))
+	if m.Room != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x60
 	}
 	if m.Level != 0 {
-		dAtA[i] = 0x58
-		i++
 		i = encodeVarintLogin(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x58
 	}
-	if m.Room != 0 {
-		dAtA[i] = 0x60
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Room))
+	if m.Game != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x50
 	}
-	return i, nil
+	if len(m.Bag) > 0 {
+		for k := range m.Bag {
+			v := m.Bag[k]
+			baseI := i
+			i = encodeVarintLogin(dAtA, i, uint64(v))
+			i--
+			dAtA[i] = 0x10
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintLogin(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintLogin(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x4a
+		}
+	}
+	if len(m.Phone) > 0 {
+		i -= len(m.Phone)
+		copy(dAtA[i:], m.Phone)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Phone)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Act) > 0 {
+		i -= len(m.Act)
+		copy(dAtA[i:], m.Act)
+		i = encodeVarintLogin(dAtA, i, uint64(len(m.Act)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Vip != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Vip))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Sex != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Sex))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Icon != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Icon))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Agent != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Agent))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *LoginFailAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1676,32 +1764,40 @@ func (m *LoginFailAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LoginFailAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LoginFailAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
-	}
 	if len(m.Msg) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
 		i = encodeVarintLogin(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if m.Code != 0 {
+		i = encodeVarintLogin(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintLogin(dAtA []byte, offset int, v uint64) int {
+	offset -= sovLogin(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Handshake) Size() (n int) {
 	if m == nil {

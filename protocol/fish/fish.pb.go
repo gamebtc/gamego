@@ -22,7 +22,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Code int32
 
@@ -84,7 +84,7 @@ func (m *TimeSyncReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_TimeSyncReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -130,7 +130,7 @@ func (m *TimeSyncAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_TimeSyncAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -193,7 +193,7 @@ func (m *Player) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Player.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -290,7 +290,7 @@ func (m *Bullet) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Bullet.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -410,7 +410,7 @@ func (m *Fish) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Fish.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -525,7 +525,7 @@ func (m *ShootReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_ShootReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -594,7 +594,7 @@ func (m *HitReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_HitReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -662,7 +662,7 @@ func (m *GameInitAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_GameInitAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -768,7 +768,7 @@ func (m *KillFish) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_KillFish.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -830,7 +830,7 @@ func (m *FishSeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_FishSeed.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -905,7 +905,7 @@ func (m *GameUpdateAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return xxx_messageInfo_GameUpdateAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -1118,7 +1118,7 @@ var fileDescriptor_f6e43ef05c84ed98 = []byte{
 func (m *TimeSyncReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1126,22 +1126,27 @@ func (m *TimeSyncReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *TimeSyncReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TimeSyncReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if m.Tick != 0 {
-		dAtA[i] = 0x8
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.Tick))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *TimeSyncAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1149,27 +1154,32 @@ func (m *TimeSyncAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *TimeSyncAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TimeSyncAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Client != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Client))
-	}
 	if m.Server != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.Server))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.Client != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Client))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Player) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1177,48 +1187,54 @@ func (m *Player) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Player) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Player) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Id))
-	}
-	if m.Icon != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Icon))
-	}
-	if m.Vip != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Vip))
-	}
-	if m.Chair != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Chair))
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintFish(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x32
 	}
 	if m.Coin != 0 {
-		dAtA[i] = 0x28
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.Coin))
+		i--
+		dAtA[i] = 0x28
 	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x32
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
+	if m.Chair != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Chair))
+		i--
+		dAtA[i] = 0x20
 	}
-	return i, nil
+	if m.Vip != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Vip))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Icon != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Icon))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Bullet) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1226,65 +1242,70 @@ func (m *Bullet) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Bullet) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Bullet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Id))
-	}
-	if m.Uid != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Uid))
-	}
-	if m.Client != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Client))
-	}
-	if m.Created != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Created))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Bet))
-	}
-	if m.Direction != 0 {
-		dAtA[i] = 0x31
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
-		i += 8
-	}
-	if m.X != 0 {
-		dAtA[i] = 0x39
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.X))))
-		i += 8
+	if m.Fish != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Fish))
+		i--
+		dAtA[i] = 0x48
 	}
 	if m.Y != 0 {
-		dAtA[i] = 0x41
-		i++
+		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Y))))
-		i += 8
+		i--
+		dAtA[i] = 0x41
 	}
-	if m.Fish != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Fish))
+	if m.X != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.X))))
+		i--
+		dAtA[i] = 0x39
 	}
-	return i, nil
+	if m.Direction != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
+		i--
+		dAtA[i] = 0x31
+	}
+	if m.Bet != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Created != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Created))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Client != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Client))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Uid != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *Fish) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1292,76 +1313,81 @@ func (m *Fish) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Fish) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Fish) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Id))
-	}
-	if m.TmpId != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.TmpId))
-	}
-	if m.PathId != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.PathId))
-	}
-	if m.BoxId != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.BoxId))
-	}
-	if m.Speed != 0 {
-		dAtA[i] = 0x29
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Speed))))
-		i += 8
-	}
-	if m.Created != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Created))
-	}
-	if m.Direction != 0 {
-		dAtA[i] = 0x39
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
-		i += 8
-	}
-	if m.X != 0 {
-		dAtA[i] = 0x41
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.X))))
-		i += 8
-	}
-	if m.Y != 0 {
-		dAtA[i] = 0x49
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Y))))
-		i += 8
-	}
 	if m.Troop {
-		dAtA[i] = 0x50
-		i++
+		i--
 		if m.Troop {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x50
 	}
-	return i, nil
+	if m.Y != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Y))))
+		i--
+		dAtA[i] = 0x49
+	}
+	if m.X != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.X))))
+		i--
+		dAtA[i] = 0x41
+	}
+	if m.Direction != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
+		i--
+		dAtA[i] = 0x39
+	}
+	if m.Created != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Created))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Speed != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Speed))))
+		i--
+		dAtA[i] = 0x29
+	}
+	if m.BoxId != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.BoxId))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.PathId != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.PathId))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.TmpId != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.TmpId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ShootReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1369,38 +1395,43 @@ func (m *ShootReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ShootReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ShootReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Fish != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Fish))
-	}
-	if m.Client != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Client))
+	if m.Direction != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
+		i--
+		dAtA[i] = 0x21
 	}
 	if m.Bet != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.Direction != 0 {
-		dAtA[i] = 0x21
-		i++
-		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Direction))))
-		i += 8
+	if m.Client != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Client))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.Fish != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Fish))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *HitReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1408,27 +1439,32 @@ func (m *HitReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *HitReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HitReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.BulletId != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.BulletId))
-	}
 	if m.FishId != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.FishId))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.BulletId != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.BulletId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameInitAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1436,88 +1472,99 @@ func (m *GameInitAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameInitAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameInitAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Table != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Table))
-	}
-	if m.Tick != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Tick))
-	}
-	if m.Scene != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Scene))
-	}
-	if len(m.Players) > 0 {
-		for _, msg := range m.Players {
-			dAtA[i] = 0x22
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.Fishes) > 0 {
-		for _, msg := range m.Fishes {
-			dAtA[i] = 0x2a
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.Bullets) > 0 {
-		for _, msg := range m.Bullets {
-			dAtA[i] = 0x32
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if m.MaxBullet != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.MaxBullet))
-	}
-	if m.FireInterval != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.FireInterval))
-	}
 	if m.StopFire {
-		dAtA[i] = 0x48
-		i++
+		i--
 		if m.StopFire {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x48
 	}
-	return i, nil
+	if m.FireInterval != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.FireInterval))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.MaxBullet != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.MaxBullet))
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.Bullets) > 0 {
+		for iNdEx := len(m.Bullets) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Bullets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Fishes) > 0 {
+		for iNdEx := len(m.Fishes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Fishes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Players) > 0 {
+		for iNdEx := len(m.Players) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Players[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if m.Scene != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Scene))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Tick != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Tick))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Table != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Table))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *KillFish) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1525,32 +1572,37 @@ func (m *KillFish) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *KillFish) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *KillFish) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+	if m.Score != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Score))
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.Uid != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintFish(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x10
 	}
-	if m.Score != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Score))
+	if m.Id != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *FishSeed) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1558,28 +1610,33 @@ func (m *FishSeed) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *FishSeed) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *FishSeed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Id))
-	}
 	if m.Speed != 0 {
-		dAtA[i] = 0x21
-		i++
+		i -= 8
 		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Speed))))
-		i += 8
+		i--
+		dAtA[i] = 0x21
 	}
-	return i, nil
+	if m.Id != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameUpdateAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1587,70 +1644,28 @@ func (m *GameUpdateAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameUpdateAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameUpdateAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.StopFire {
-		dAtA[i] = 0x8
-		i++
-		if m.StopFire {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i++
-	}
-	if m.Tick != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.Tick))
-	}
-	if m.SwitchScene != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFish(dAtA, i, uint64(m.SwitchScene))
-	}
-	if len(m.Players) > 0 {
-		for _, msg := range m.Players {
-			dAtA[i] = 0x22
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
+	if len(m.Describe) > 0 {
+		for iNdEx := len(m.Describe) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Describe[iNdEx])
+			copy(dAtA[i:], m.Describe[iNdEx])
+			i = encodeVarintFish(dAtA, i, uint64(len(m.Describe[iNdEx])))
+			i--
+			dAtA[i] = 0x62
 		}
 	}
-	if len(m.Fishes) > 0 {
-		for _, msg := range m.Fishes {
-			dAtA[i] = 0x2a
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.Bullets) > 0 {
-		for _, msg := range m.Bullets {
-			dAtA[i] = 0x32
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.DieBullets) > 0 {
-		dAtA2 := make([]byte, len(m.DieBullets)*10)
+	if len(m.Offline) > 0 {
+		dAtA2 := make([]byte, len(m.Offline)*10)
 		var j1 int
-		for _, num1 := range m.DieBullets {
+		for _, num1 := range m.Offline {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
@@ -1660,10 +1675,39 @@ func (m *GameUpdateAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA2[j1] = uint8(num)
 			j1++
 		}
-		dAtA[i] = 0x3a
-		i++
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintFish(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x5a
+	}
+	if len(m.Seed) > 0 {
+		for iNdEx := len(m.Seed) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Seed[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x52
+		}
+	}
+	if len(m.Kills) > 0 {
+		for iNdEx := len(m.Kills) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Kills[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x4a
+		}
 	}
 	if len(m.DieFishes) > 0 {
 		dAtA4 := make([]byte, len(m.DieFishes)*10)
@@ -1678,39 +1722,16 @@ func (m *GameUpdateAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA4[j3] = uint8(num)
 			j3++
 		}
-		dAtA[i] = 0x42
-		i++
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
 		i = encodeVarintFish(dAtA, i, uint64(j3))
-		i += copy(dAtA[i:], dAtA4[:j3])
+		i--
+		dAtA[i] = 0x42
 	}
-	if len(m.Kills) > 0 {
-		for _, msg := range m.Kills {
-			dAtA[i] = 0x4a
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.Seed) > 0 {
-		for _, msg := range m.Seed {
-			dAtA[i] = 0x52
-			i++
-			i = encodeVarintFish(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
-		}
-	}
-	if len(m.Offline) > 0 {
-		dAtA6 := make([]byte, len(m.Offline)*10)
+	if len(m.DieBullets) > 0 {
+		dAtA6 := make([]byte, len(m.DieBullets)*10)
 		var j5 int
-		for _, num1 := range m.Offline {
+		for _, num1 := range m.DieBullets {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA6[j5] = uint8(uint64(num)&0x7f | 0x80)
@@ -1720,37 +1741,87 @@ func (m *GameUpdateAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA6[j5] = uint8(num)
 			j5++
 		}
-		dAtA[i] = 0x5a
-		i++
+		i -= j5
+		copy(dAtA[i:], dAtA6[:j5])
 		i = encodeVarintFish(dAtA, i, uint64(j5))
-		i += copy(dAtA[i:], dAtA6[:j5])
+		i--
+		dAtA[i] = 0x3a
 	}
-	if len(m.Describe) > 0 {
-		for _, s := range m.Describe {
-			dAtA[i] = 0x62
-			i++
-			l = len(s)
-			for l >= 1<<7 {
-				dAtA[i] = uint8(uint64(l)&0x7f | 0x80)
-				l >>= 7
-				i++
+	if len(m.Bullets) > 0 {
+		for iNdEx := len(m.Bullets) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Bullets[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
 			}
-			dAtA[i] = uint8(l)
-			i++
-			i += copy(dAtA[i:], s)
+			i--
+			dAtA[i] = 0x32
 		}
 	}
-	return i, nil
+	if len(m.Fishes) > 0 {
+		for iNdEx := len(m.Fishes) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Fishes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.Players) > 0 {
+		for iNdEx := len(m.Players) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Players[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFish(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if m.SwitchScene != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.SwitchScene))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Tick != 0 {
+		i = encodeVarintFish(dAtA, i, uint64(m.Tick))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.StopFire {
+		i--
+		if m.StopFire {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintFish(dAtA []byte, offset int, v uint64) int {
+	offset -= sovFish(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *TimeSyncReq) Size() (n int) {
 	if m == nil {

@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // 用户日志(龙虎/红黑/百家乐/骰宝)
 type GameBill struct {
@@ -55,7 +55,7 @@ func (m *GameBill) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GameBill.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -175,7 +175,7 @@ func (m *GameRound) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_GameRound.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -368,7 +368,7 @@ var fileDescriptor_63d07aad1698a57b = []byte{
 func (m *GameBill) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -376,24 +376,29 @@ func (m *GameBill) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameBill) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameBill) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Uid != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Uid))
+	if m.Job != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Job))
+		i--
+		dAtA[i] = 0x38
 	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Coin))
+	if m.Tax != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tax))
+		i--
+		dAtA[i] = 0x30
 	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Bet))
+	if m.Win != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+		i--
+		dAtA[i] = 0x28
 	}
 	if len(m.Group) > 0 {
 		dAtA2 := make([]byte, len(m.Group)*10)
@@ -408,33 +413,34 @@ func (m *GameBill) MarshalTo(dAtA []byte) (int, error) {
 			dAtA2[j1] = uint8(num)
 			j1++
 		}
-		dAtA[i] = 0x22
-		i++
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x22
 	}
-	if m.Win != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+	if m.Bet != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.Tax != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tax))
+	if m.Coin != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Coin))
+		i--
+		dAtA[i] = 0x10
 	}
-	if m.Job != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Job))
+	if m.Uid != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *GameRound) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -442,51 +448,38 @@ func (m *GameRound) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameRound) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Id))
-	}
-	if m.Start != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Start))
-	}
-	if m.End != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.End))
-	}
-	if m.Room != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Room))
-	}
-	if m.Tab != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tab))
-	}
-	if len(m.Bill) > 0 {
-		for _, msg := range m.Bill {
-			dAtA[i] = 0x32
-			i++
-			i = encodeVarintFolksLog(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
-			}
-			i += n
+	if m.Cheat {
+		i--
+		if m.Cheat {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
 		}
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x88
 	}
-	if len(m.Flow) > 0 {
-		dAtA4 := make([]byte, len(m.Flow)*10)
+	if m.Bank != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Bank))
+		i--
+		dAtA[i] = 0x1
+		i--
+		dAtA[i] = 0x80
+	}
+	if len(m.UserBet) > 0 {
+		dAtA4 := make([]byte, len(m.UserBet)*10)
 		var j3 int
-		for _, num1 := range m.Flow {
+		for _, num1 := range m.UserBet {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
@@ -496,15 +489,16 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA4[j3] = uint8(num)
 			j3++
 		}
-		dAtA[i] = 0x3a
-		i++
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j3))
-		i += copy(dAtA[i:], dAtA4[:j3])
+		i--
+		dAtA[i] = 0x7a
 	}
-	if len(m.Group) > 0 {
-		dAtA6 := make([]byte, len(m.Group)*10)
+	if len(m.Rich) > 0 {
+		dAtA6 := make([]byte, len(m.Rich)*10)
 		var j5 int
-		for _, num1 := range m.Group {
+		for _, num1 := range m.Rich {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA6[j5] = uint8(uint64(num)&0x7f | 0x80)
@@ -514,16 +508,28 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA6[j5] = uint8(num)
 			j5++
 		}
-		dAtA[i] = 0x42
-		i++
+		i -= j5
+		copy(dAtA[i:], dAtA6[:j5])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j5))
-		i += copy(dAtA[i:], dAtA6[:j5])
+		i--
+		dAtA[i] = 0x72
 	}
-	if len(m.Poker) > 0 {
-		dAtA[i] = 0x4a
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(len(m.Poker)))
-		i += copy(dAtA[i:], m.Poker)
+	if len(m.Note) > 0 {
+		i -= len(m.Note)
+		copy(dAtA[i:], m.Note)
+		i = encodeVarintFolksLog(dAtA, i, uint64(len(m.Note)))
+		i--
+		dAtA[i] = 0x6a
+	}
+	if m.Win != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.Tax != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tax))
+		i--
+		dAtA[i] = 0x58
 	}
 	if len(m.Odds) > 0 {
 		dAtA7 := make([]byte, len(m.Odds)*5)
@@ -538,31 +544,23 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA7[j8] = uint8(x9)
 			j8++
 		}
-		dAtA[i] = 0x52
-		i++
+		i -= j8
+		copy(dAtA[i:], dAtA7[:j8])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j8))
-		i += copy(dAtA[i:], dAtA7[:j8])
+		i--
+		dAtA[i] = 0x52
 	}
-	if m.Tax != 0 {
-		dAtA[i] = 0x58
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tax))
+	if len(m.Poker) > 0 {
+		i -= len(m.Poker)
+		copy(dAtA[i:], m.Poker)
+		i = encodeVarintFolksLog(dAtA, i, uint64(len(m.Poker)))
+		i--
+		dAtA[i] = 0x4a
 	}
-	if m.Win != 0 {
-		dAtA[i] = 0x60
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64((uint64(m.Win)<<1)^uint64((m.Win>>63))))
-	}
-	if len(m.Note) > 0 {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(len(m.Note)))
-		i += copy(dAtA[i:], m.Note)
-	}
-	if len(m.Rich) > 0 {
-		dAtA11 := make([]byte, len(m.Rich)*10)
+	if len(m.Group) > 0 {
+		dAtA11 := make([]byte, len(m.Group)*10)
 		var j10 int
-		for _, num1 := range m.Rich {
+		for _, num1 := range m.Group {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA11[j10] = uint8(uint64(num)&0x7f | 0x80)
@@ -572,15 +570,16 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA11[j10] = uint8(num)
 			j10++
 		}
-		dAtA[i] = 0x72
-		i++
+		i -= j10
+		copy(dAtA[i:], dAtA11[:j10])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j10))
-		i += copy(dAtA[i:], dAtA11[:j10])
+		i--
+		dAtA[i] = 0x42
 	}
-	if len(m.UserBet) > 0 {
-		dAtA13 := make([]byte, len(m.UserBet)*10)
+	if len(m.Flow) > 0 {
+		dAtA13 := make([]byte, len(m.Flow)*10)
 		var j12 int
-		for _, num1 := range m.UserBet {
+		for _, num1 := range m.Flow {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
@@ -590,41 +589,64 @@ func (m *GameRound) MarshalTo(dAtA []byte) (int, error) {
 			dAtA13[j12] = uint8(num)
 			j12++
 		}
-		dAtA[i] = 0x7a
-		i++
+		i -= j12
+		copy(dAtA[i:], dAtA13[:j12])
 		i = encodeVarintFolksLog(dAtA, i, uint64(j12))
-		i += copy(dAtA[i:], dAtA13[:j12])
+		i--
+		dAtA[i] = 0x3a
 	}
-	if m.Bank != 0 {
-		dAtA[i] = 0x80
-		i++
-		dAtA[i] = 0x1
-		i++
-		i = encodeVarintFolksLog(dAtA, i, uint64(m.Bank))
-	}
-	if m.Cheat {
-		dAtA[i] = 0x88
-		i++
-		dAtA[i] = 0x1
-		i++
-		if m.Cheat {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+	if len(m.Bill) > 0 {
+		for iNdEx := len(m.Bill) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Bill[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintFolksLog(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
 		}
-		i++
 	}
-	return i, nil
+	if m.Tab != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Tab))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Room != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.End != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.End))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Start != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Start))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintFolksLog(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintFolksLog(dAtA []byte, offset int, v uint64) int {
+	offset -= sovFolksLog(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *GameBill) Size() (n int) {
 	if m == nil {

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"walle/internal"
 )
@@ -47,8 +48,23 @@ func main() {
 }
 
 type ChannArgs struct {
-	Channel string `json:"channel"`
-	Key     string `json:"key"`
+	Channel string      `json:"channel"`
+	Key     string      `json:"key"`
+	Arg     string      `json:"arg"`
+	Ip      string      `json:"ip"`
+	Time    string      `json:"time"`
+	Head    http.Header `json:"header"`
+	//Agent   string      `json:"agent"`
+}
+
+func getClientIp(r *http.Request)string{
+    if ips:= r.Header.Get("X-Forwarded-For");ips != "" {
+		return strings.Split(ips, ",")[0]
+	}
+	if ips:= r.Header.Get("X-Real-IP");ips != "" {
+		return strings.Split(ips, ",")[0]
+	}
+	return r.RemoteAddr
 }
 
 func apkProcess(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +74,8 @@ func apkProcess(w http.ResponseWriter, r *http.Request) {
 	if l >= 4 {
 		channel := paths[l-3]
 		key := paths[l-2]
-		name := paths[l-1]
+		name := strings.Split(paths[l-1], "?")[0]
+		r.UserAgent()
 		apkFile, err := internal.NewApkFile(name)
 		if err == nil {
 			check := apkFile.Check()
@@ -66,7 +83,13 @@ func apkProcess(w http.ResponseWriter, r *http.Request) {
 			data, _ := json.Marshal(&ChannArgs{
 				Channel: channel,
 				Key:     key,
+				//Agent:   r.UserAgent(),
+				Arg:     r.URL.RawQuery,
+				Ip:      getClientIp(r),
+				Time:    time.Now().Format("2006-01-02 15:04:05"), //20060102150405
+				Head:    r.Header,
 			})
+			w.Header().Set("Content-Type","application/apk")
 			r := apkFile.CreatFile(data)
 			for _, d := range r {
 				w.Write(d)

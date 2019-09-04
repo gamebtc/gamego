@@ -6,3 +6,5 @@ replace (
 	local.com/abc/game/model => ../model
 	local.com/abc/game/protocol => ../protocol
 )
+
+go 1.13

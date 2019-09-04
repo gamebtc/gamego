@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type Code int32
 
@@ -216,7 +216,7 @@ func (m *Player) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_Player.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -329,7 +329,7 @@ func (m *ActionReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_ActionReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -400,7 +400,7 @@ func (m *ActionAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_ActionAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -499,7 +499,7 @@ func (m *GameInitAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_GameInitAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -591,7 +591,7 @@ func (m *GameStartAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_GameStartAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -661,7 +661,7 @@ func (m *GameResultAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return xxx_messageInfo_GameResultAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -792,7 +792,7 @@ var fileDescriptor_953ac353d286795d = []byte{
 func (m *Player) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -800,73 +800,79 @@ func (m *Player) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *Player) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Player) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
-	}
-	if m.Icon != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Icon))
-	}
-	if m.Vip != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Vip))
-	}
-	if m.Chair != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Chair))
-	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
-	}
-	if len(m.Name) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if m.State != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.State))
+	if m.Down != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64((uint32(m.Down)<<1)^uint32((m.Down>>31))))
+		i--
+		dAtA[i] = 0x50
 	}
 	if m.Look {
-		dAtA[i] = 0x48
-		i++
+		i--
 		if m.Look {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
 		}
-		i++
+		i--
+		dAtA[i] = 0x48
 	}
-	if m.Down != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64((uint32(m.Down)<<1)^uint32((m.Down>>31))))
+	if m.State != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.State))
+		i--
+		dAtA[i] = 0x40
 	}
-	return i, nil
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintZjh(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.Bet != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Coin != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Chair != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Chair))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Vip != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Vip))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Icon != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Icon))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ActionReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -874,32 +880,37 @@ func (m *ActionReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ActionReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActionReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Type != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
+	if m.Opponent != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.Bet != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x10
 	}
-	if m.Opponent != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Opponent))
+	if m.Type != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *ActionAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -907,35 +918,24 @@ func (m *ActionAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ActionAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ActionAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Type != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
+	if m.Coin != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+		i--
+		dAtA[i] = 0x38
 	}
-	if len(m.Poker) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
-		i += copy(dAtA[i:], m.Poker)
-	}
-	if m.Uid != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
-	}
-	if m.Bet != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
-	}
-	if len(m.Players) > 0 {
-		dAtA2 := make([]byte, len(m.Players)*10)
+	if len(m.Winners) > 0 {
+		dAtA2 := make([]byte, len(m.Winners)*10)
 		var j1 int
-		for _, num1 := range m.Players {
+		for _, num1 := range m.Winners {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
@@ -945,15 +945,16 @@ func (m *ActionAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA2[j1] = uint8(num)
 			j1++
 		}
-		dAtA[i] = 0x2a
-		i++
+		i -= j1
+		copy(dAtA[i:], dAtA2[:j1])
 		i = encodeVarintZjh(dAtA, i, uint64(j1))
-		i += copy(dAtA[i:], dAtA2[:j1])
+		i--
+		dAtA[i] = 0x32
 	}
-	if len(m.Winners) > 0 {
-		dAtA4 := make([]byte, len(m.Winners)*10)
+	if len(m.Players) > 0 {
+		dAtA4 := make([]byte, len(m.Players)*10)
 		var j3 int
-		for _, num1 := range m.Winners {
+		for _, num1 := range m.Players {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
@@ -963,23 +964,41 @@ func (m *ActionAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA4[j3] = uint8(num)
 			j3++
 		}
-		dAtA[i] = 0x32
-		i++
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
 		i = encodeVarintZjh(dAtA, i, uint64(j3))
-		i += copy(dAtA[i:], dAtA4[:j3])
+		i--
+		dAtA[i] = 0x2a
 	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+	if m.Bet != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Bet))
+		i--
+		dAtA[i] = 0x20
 	}
-	return i, nil
+	if m.Uid != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Uid))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Poker) > 0 {
+		i -= len(m.Poker)
+		copy(dAtA[i:], m.Poker)
+		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Type != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameInitAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -987,60 +1006,68 @@ func (m *GameInitAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameInitAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameInitAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Table != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Table))
-	}
-	if m.Id != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
-	}
-	if m.Pool != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
-	}
-	if m.State != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.State))
-	}
-	if m.Ring != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Ring))
+	if len(m.Poker) > 0 {
+		i -= len(m.Poker)
+		copy(dAtA[i:], m.Poker)
+		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
+		i--
+		dAtA[i] = 0x3a
 	}
 	if len(m.Players) > 0 {
-		for _, msg := range m.Players {
-			dAtA[i] = 0x32
-			i++
-			i = encodeVarintZjh(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
+		for iNdEx := len(m.Players) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Players[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintZjh(dAtA, i, uint64(size))
 			}
-			i += n
+			i--
+			dAtA[i] = 0x32
 		}
 	}
-	if len(m.Poker) > 0 {
-		dAtA[i] = 0x3a
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
-		i += copy(dAtA[i:], m.Poker)
+	if m.Ring != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Ring))
+		i--
+		dAtA[i] = 0x28
 	}
-	return i, nil
+	if m.State != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.State))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Pool != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Id != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Table != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Table))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameStartAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1048,39 +1075,46 @@ func (m *GameStartAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameStartAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameStartAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
-	}
-	if m.Pool != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
-	}
 	if len(m.Players) > 0 {
-		for _, msg := range m.Players {
-			dAtA[i] = 0x1a
-			i++
-			i = encodeVarintZjh(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
+		for iNdEx := len(m.Players) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Players[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintZjh(dAtA, i, uint64(size))
 			}
-			i += n
+			i--
+			dAtA[i] = 0x1a
 		}
 	}
-	return i, nil
+	if m.Pool != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Pool))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Id != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameResultAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -1088,19 +1122,36 @@ func (m *GameResultAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameResultAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameResultAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
+	if m.Lucky != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Lucky))
+		i--
+		dAtA[i] = 0x30
 	}
-	if len(m.Winner) > 0 {
-		dAtA6 := make([]byte, len(m.Winner)*10)
+	if len(m.Poker) > 0 {
+		i -= len(m.Poker)
+		copy(dAtA[i:], m.Poker)
+		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.Coin != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Prize) > 0 {
+		dAtA6 := make([]byte, len(m.Prize)*10)
 		var j5 int
-		for _, num1 := range m.Winner {
+		for _, num1 := range m.Prize {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA6[j5] = uint8(uint64(num)&0x7f | 0x80)
@@ -1110,15 +1161,16 @@ func (m *GameResultAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA6[j5] = uint8(num)
 			j5++
 		}
-		dAtA[i] = 0x12
-		i++
+		i -= j5
+		copy(dAtA[i:], dAtA6[:j5])
 		i = encodeVarintZjh(dAtA, i, uint64(j5))
-		i += copy(dAtA[i:], dAtA6[:j5])
+		i--
+		dAtA[i] = 0x1a
 	}
-	if len(m.Prize) > 0 {
-		dAtA8 := make([]byte, len(m.Prize)*10)
+	if len(m.Winner) > 0 {
+		dAtA8 := make([]byte, len(m.Winner)*10)
 		var j7 int
-		for _, num1 := range m.Prize {
+		for _, num1 := range m.Winner {
 			num := uint64(num1)
 			for num >= 1<<7 {
 				dAtA8[j7] = uint8(uint64(num)&0x7f | 0x80)
@@ -1128,38 +1180,30 @@ func (m *GameResultAck) MarshalTo(dAtA []byte) (int, error) {
 			dAtA8[j7] = uint8(num)
 			j7++
 		}
-		dAtA[i] = 0x1a
-		i++
+		i -= j7
+		copy(dAtA[i:], dAtA8[:j7])
 		i = encodeVarintZjh(dAtA, i, uint64(j7))
-		i += copy(dAtA[i:], dAtA8[:j7])
+		i--
+		dAtA[i] = 0x12
 	}
-	if m.Coin != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Coin))
+	if m.Id != 0 {
+		i = encodeVarintZjh(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
-	if len(m.Poker) > 0 {
-		dAtA[i] = 0x2a
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(len(m.Poker)))
-		i += copy(dAtA[i:], m.Poker)
-	}
-	if m.Lucky != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintZjh(dAtA, i, uint64(m.Lucky))
-	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintZjh(dAtA []byte, offset int, v uint64) int {
+	offset -= sovZjh(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *Player) Size() (n int) {
 	if m == nil {

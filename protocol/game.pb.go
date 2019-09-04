@@ -21,7 +21,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type RoomInfo struct {
 	Name    string `protobuf:"bytes,1,opt,name=name,proto3" json:"name" bson:"name" msg:"name"`
@@ -55,7 +55,7 @@ func (m *RoomInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return xxx_messageInfo_RoomInfo.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -198,7 +198,7 @@ func (m *GameKindReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_GameKindReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -242,7 +242,7 @@ func (m *GameKindAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_GameKindAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -290,7 +290,7 @@ func (m *LoginGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_LoginGameReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -359,7 +359,7 @@ func (m *LoginGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_LoginGameAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -428,7 +428,7 @@ func (m *SendGameFail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return xxx_messageInfo_SendGameFail.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -495,7 +495,7 @@ func (m *ExitGameReq) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_ExitGameReq.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -548,7 +548,7 @@ func (m *ExitGameAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return xxx_messageInfo_ExitGameAck.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
-		n, err := m.MarshalTo(b)
+		n, err := m.MarshalToSizedBuffer(b)
 		if err != nil {
 			return nil, err
 		}
@@ -642,7 +642,7 @@ var fileDescriptor_38fc58335341d769 = []byte{
 func (m *RoomInfo) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -650,94 +650,101 @@ func (m *RoomInfo) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *RoomInfo) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RoomInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Name) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(len(m.Name)))
-		i += copy(dAtA[i:], m.Name)
-	}
-	if m.Id != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Id))
-	}
-	if m.Game != 0 {
-		dAtA[i] = 0x18
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Game))
-	}
-	if m.Level != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Level))
-	}
-	if m.Cap != 0 {
-		dAtA[i] = 0x28
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Cap))
-	}
-	if m.Ante != 0 {
-		dAtA[i] = 0x30
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Ante))
-	}
-	if m.DoorMin != 0 {
-		dAtA[i] = 0x38
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.DoorMin))
-	}
-	if m.DoorMax != 0 {
-		dAtA[i] = 0x40
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.DoorMax))
-	}
-	if m.StayMin != 0 {
-		dAtA[i] = 0x48
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.StayMin))
-	}
-	if m.StayMax != 0 {
-		dAtA[i] = 0x50
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.StayMax))
-	}
-	if m.PlayMin != 0 {
-		dAtA[i] = 0x58
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.PlayMin))
-	}
-	if m.PlayMax != 0 {
-		dAtA[i] = 0x60
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.PlayMax))
-	}
-	if len(m.CoinKey) > 0 {
-		dAtA[i] = 0x6a
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(len(m.CoinKey)))
-		i += copy(dAtA[i:], m.CoinKey)
+	if m.Online != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Online))
+		i--
+		dAtA[i] = 0x78
 	}
 	if m.Icon != 0 {
-		dAtA[i] = 0x70
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Icon))
+		i--
+		dAtA[i] = 0x70
 	}
-	if m.Online != 0 {
-		dAtA[i] = 0x78
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Online))
+	if len(m.CoinKey) > 0 {
+		i -= len(m.CoinKey)
+		copy(dAtA[i:], m.CoinKey)
+		i = encodeVarintGame(dAtA, i, uint64(len(m.CoinKey)))
+		i--
+		dAtA[i] = 0x6a
 	}
-	return i, nil
+	if m.PlayMax != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.PlayMax))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.PlayMin != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.PlayMin))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.StayMax != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.StayMax))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.StayMin != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.StayMin))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.DoorMax != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.DoorMax))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.DoorMin != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.DoorMin))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Ante != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Ante))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Cap != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Cap))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Level != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Game != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Id != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintGame(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *GameKindReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -745,22 +752,27 @@ func (m *GameKindReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameKindReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameKindReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if m.Game != 0 {
-		dAtA[i] = 0x8
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x8
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *GameKindAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -768,29 +780,36 @@ func (m *GameKindAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *GameKindAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameKindAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
 	if len(m.Rooms) > 0 {
-		for _, msg := range m.Rooms {
-			dAtA[i] = 0xa
-			i++
-			i = encodeVarintGame(dAtA, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(dAtA[i:])
-			if err != nil {
-				return 0, err
+		for iNdEx := len(m.Rooms) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Rooms[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGame(dAtA, i, uint64(size))
 			}
-			i += n
+			i--
+			dAtA[i] = 0xa
 		}
 	}
-	return i, nil
+	return len(dAtA) - i, nil
 }
 
 func (m *LoginGameReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -798,38 +817,44 @@ func (m *LoginGameReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LoginGameReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LoginGameReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Game != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Game))
-	}
-	if m.Level != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Level))
+	if len(m.Args) > 0 {
+		i -= len(m.Args)
+		copy(dAtA[i:], m.Args)
+		i = encodeVarintGame(dAtA, i, uint64(len(m.Args)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if m.Room != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x18
 	}
-	if len(m.Args) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(len(m.Args)))
-		i += copy(dAtA[i:], m.Args)
+	if m.Level != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Level))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.Game != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *LoginGameAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -837,38 +862,44 @@ func (m *LoginGameAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *LoginGameAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LoginGameAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Game != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Game))
-	}
-	if m.Room != 0 {
-		dAtA[i] = 0x10
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+	if len(m.Msg) > 0 {
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
+		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if m.Code != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x18
 	}
-	if len(m.Msg) > 0 {
-		dAtA[i] = 0x22
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+	if m.Room != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.Game != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *SendGameFail) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -876,38 +907,44 @@ func (m *SendGameFail) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *SendGameFail) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendGameFail) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Code))
-	}
-	if len(m.Msg) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+	if m.Room != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x20
 	}
 	if m.Game != 0 {
-		dAtA[i] = 0x18
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x18
 	}
-	if m.Room != 0 {
-		dAtA[i] = 0x20
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+	if len(m.Msg) > 0 {
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
+		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if m.Code != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ExitGameReq) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -915,27 +952,32 @@ func (m *ExitGameReq) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ExitGameReq) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ExitGameReq) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Game != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Game))
-	}
 	if m.Room != 0 {
-		dAtA[i] = 0x10
-		i++
 		i = encodeVarintGame(dAtA, i, uint64(m.Room))
+		i--
+		dAtA[i] = 0x10
 	}
-	return i, nil
+	if m.Game != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Game))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *ExitGameAck) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
 	if err != nil {
 		return nil, err
 	}
@@ -943,32 +985,40 @@ func (m *ExitGameAck) Marshal() (dAtA []byte, err error) {
 }
 
 func (m *ExitGameAck) MarshalTo(dAtA []byte) (int, error) {
-	var i int
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ExitGameAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Code != 0 {
-		dAtA[i] = 0x8
-		i++
-		i = encodeVarintGame(dAtA, i, uint64(m.Code))
-	}
 	if len(m.Msg) > 0 {
-		dAtA[i] = 0x12
-		i++
+		i -= len(m.Msg)
+		copy(dAtA[i:], m.Msg)
 		i = encodeVarintGame(dAtA, i, uint64(len(m.Msg)))
-		i += copy(dAtA[i:], m.Msg)
+		i--
+		dAtA[i] = 0x12
 	}
-	return i, nil
+	if m.Code != 0 {
+		i = encodeVarintGame(dAtA, i, uint64(m.Code))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func encodeVarintGame(dAtA []byte, offset int, v uint64) int {
+	offset -= sovGame(v)
+	base := offset
 	for v >= 1<<7 {
 		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
 	dAtA[offset] = uint8(v)
-	return offset + 1
+	return base
 }
 func (m *RoomInfo) Size() (n int) {
 	if m == nil {
