@@ -17,3 +17,5 @@ replace (
 	local.com/abc/game/room => ../room
 	local.com/abc/game/util => ../util
 )
+
+go 1.13

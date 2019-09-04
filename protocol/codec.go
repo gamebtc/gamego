@@ -11,7 +11,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/tinylib/msgp/msgp"
-	"github.com/vmihailenco/msgpack"
+	"github.com/vmihailenco/msgpack/v4"
 )
 
 type Handler func(context.Context, interface{}) interface{}

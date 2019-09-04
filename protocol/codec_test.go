@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/vmihailenco/msgpack"
+	"github.com/vmihailenco/msgpack/v4"
 )
 
 // go test -v -run="指定函数名"
