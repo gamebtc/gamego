@@ -88,7 +88,7 @@ func (d *driver) GetIpInfo(ip model.IP)*model.IpInfo {
 		if err == mongo.ErrNoDocuments {
 			now := time.Now()
 			info.Id = ip
-			info.Init = now
+			info.Born = now
 			info.Up = now
 			_, err = d.ip.InsertOne(d.ctx, info)
 			if err == nil {

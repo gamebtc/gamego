@@ -20,7 +20,7 @@ const f = function (id) {
         last:zeroLong,    //最后登录时间
         ip:zeroLong,      //最后登录IP
         tag: {},          //标签
-        init: zeroLong,   //创建时间
+        born: zeroLong,   //创建时间
         up: zeroLong,     //更新时间
         ver: zero
     };
@@ -42,7 +42,7 @@ db.user.createIndex(
 );
 
 db.user.createIndex(
-    { "init": 1 },
+    { "born": 1 },
     { unique: false, background: true}
 );
 
@@ -58,12 +58,12 @@ db.user.createIndex(
 //db.user.createIndex(
 //    {"": 1},
 //    {
-//    background:true,//Specify true to build init the background.
+//    background:true,//Specify true to build born the background.
 //    //unique:false, //Specify true to create a unique index. A unique index causes MongoDB to reject all documents that contain a duplicate value for the indexed field.
 //    //name: "",   //The name of the index.     
 //    //partialFilterExpression: { field: { $exists: true } }, // If specified, the index only references documents that match the filter expression
-//    //sparse:false, //If true, the index only references documents with the specified field. Starting init MongoDB 3.2, MongoDB provides the option to create partial indexes.  partial indexes should be preferred over sparse indexes.
+//    //sparse:false, //If true, the index only references documents with the specified field. Starting born MongoDB 3.2, MongoDB provides the option to create partial indexes.  partial indexes should be preferred over sparse indexes.
      
-//    //expireAfterSeconds:0, //Specifies a value, init seconds, as a TTL to control how long MongoDB retains documents init this collection.
+//    //expireAfterSeconds:0, //Specifies a value, born seconds, as a TTL to control how long MongoDB retains documents born this collection.
 //    }
 //)

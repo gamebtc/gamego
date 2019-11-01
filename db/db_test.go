@@ -28,17 +28,19 @@ const bankGold = "gc2"
 const game = 0
 
 func getTestDrive(t *testing.T)GameDriver {
-	var testUrl = "mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs"
-	conf := new(protocol.DatabaseConfig)
-	conf.Url = testUrl
-	conf.Name = "game"
-	conf.Driver = "mongodb"
-	d, err := mongodb.NewGameDriver(conf)
-	if err != nil {
-		t.Fatal(err)
+	if driver == nil {
+		var testUrl= "mongodb://127.0.0.1:27088,127.0.0.1:27089,127.0.0.1:27090/admin?replicaSet=gameRs"
+		conf := new(protocol.DatabaseConfig)
+		conf.Url = testUrl
+		conf.Name = "game"
+		conf.Driver = "mongodb"
+		d, err := mongodb.NewGameDriver(conf)
+		if err != nil {
+			t.Fatal(err)
+		}
+		driver = d
 	}
-	driver = d
-	return d
+	return driver
 }
 
 func TestBagDeal(t *testing.T) {
@@ -47,7 +49,6 @@ func TestBagDeal(t *testing.T) {
 		Sn:    d.NewSN(game, 1),
 		Uid:   2743405,
 		Add:   333,
-		Coin:  0,
 		Game:  game,
 		Room:  1001,
 		Type: 1,
@@ -67,7 +68,6 @@ func BenchmarkBagDeal(b *testing.B) {
 	flow := &model.CoinFlow{
 		Uid:   2743405,
 		Add:   444,
-		Coin:  0,
 		Game:  0,
 		Room:  0,
 		Type: 1,
@@ -80,7 +80,6 @@ func BenchmarkBagDeal(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		flow.Sn = sn + int64(i)
 		flow.Room += 1
-		flow.Coin = 0
 		err = d.BagDeal(bagGold, flow)
 	}
 	if err != nil {
@@ -94,7 +93,6 @@ func TestBagDealSafe(t *testing.T) {
 		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   555,
-		Coin:  0,
 		Game:  game,
 		Room:  1001,
 		Type: 2,
@@ -113,7 +111,6 @@ func BenchmarkBagDealSafe(b *testing.B) {
 	flow := &model.CoinFlow{
 		Uid:   2743405,
 		Add:   666,
-		Coin:  0,
 		Game:  0,
 		Room:  0,
 		Type: 1,
@@ -136,7 +133,6 @@ func TestBank2Bag(t *testing.T) {
 		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   777,
-		Coin:  0,
 		Game:  game,
 		Room:  1001,
 		Type:  3,
@@ -155,7 +151,6 @@ func BenchmarkBank2Bag(b *testing.B) {
 	flow := &model.CoinFlow{
 		Uid:   2743405,
 		Add:   888,
-		Coin:  0,
 		Game:  0,
 		Room:  0,
 		Type:  1,
@@ -178,7 +173,6 @@ func TestBag2Bank(t *testing.T) {
 		Sn:    d.NewSN(game,1),
 		Uid:   2743405,
 		Add:   999,
-		Coin:  0,
 		Game:  game,
 		Room:  1001,
 		Type:  4,
@@ -198,7 +192,6 @@ func BenchmarkBag2Bank(b *testing.B) {
 	flow := &model.CoinFlow{
 		Uid:   2743405,
 		Add:   333,
-		Coin:  0,
 		Game:  game,
 		Room:  0,
 		Type:  1,

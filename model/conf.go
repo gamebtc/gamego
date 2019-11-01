@@ -60,19 +60,19 @@ type PackInfo struct {
 
 // 渠道信息
 type ChanInfo struct {
-	Id       int32     `bson:"_id"`      //包ID
-	Code     string    `bson:"code"`     //包编码，唯一
-	Name     string    `bson:"name"`     //包名称
-	Packs    []int32   `bson:"packs"`    //渠道可以推广的包
-	Parent   int32     `bson:"parent"`   //上级
-	State    int32     `bson:"state"`    //包状态
-	Conf     ConfType  `bson:"conf"`     //包配置
-	Ban      BanType   `bson:"ban"`      //禁止注册/登录
-	CanPlay  []int32   `bson:"canPlay"`  //游戏客户端显示的游戏
-	Note     string    `bson:"note"`     //备注
-	Init     time.Time `bson:"init"`     //初始时间
-	Up       time.Time `bson:"up"`       //更新时间
-	Ver      int32     `bson:"ver"`      //版本
+	Id      int32     `bson:"_id"`     //包ID
+	Code    string    `bson:"code"`    //包编码，唯一
+	Name    string    `bson:"name"`    //包名称
+	Packs   []int32   `bson:"packs"`   //渠道可以推广的包
+	Parent  int32     `bson:"parent"`  //上级
+	State   int32     `bson:"state"`   //包状态
+	Conf    ConfType  `bson:"conf"`    //包配置
+	Ban     BanType   `bson:"ban"`     //禁止注册/登录
+	CanPlay []int32   `bson:"canPlay"` //游戏客户端显示的游戏
+	Note    string    `bson:"note"`    //备注
+	Born    time.Time `bson:"born"`    //初始时间
+	Up      time.Time `bson:"up"`      //更新时间
+	Ver     int32     `bson:"ver"`     //版本
 }
 
 func (c* ChanInfo)ExistsPack(p int32) bool {
@@ -95,7 +95,7 @@ type HintInfo struct {
 type IpInfo struct {
 	Id      int64     `bson:"_id"`     //IP
 	Risk    int32     `bson:"risk"`    //风险
-	Proxy   int32     `bson:"risk"`    //是否是代理
+	Proxy   int32     `bson:"proxy"`   //是否是代理
 	Ports   []int32   `bson:"ports"`   //开放的端口
 	Tag     TagType   `bson:"tag"`     //标签
 	Ban     BanType   `bson:"ban"`     //禁止注册/登录
@@ -105,7 +105,7 @@ type IpInfo struct {
 	TalReg  int32     `bson:"talReg"`  //总注册人数
 	DayReg  int32     `bson:"dayReg"`  //当天注册人数
 	LastReg time.Time `bson:"lastReg"` //最后一个注册成功的时间
-	Init    time.Time `bson:"init"`    //初始时间
+	Born    time.Time `bson:"born"`    //初始时间
 	Up      time.Time `bson:"up"`      //更新时间
 	Ver     int32     `bson:"ver"`     //版本
 }
@@ -116,7 +116,7 @@ type MachineInfo struct {
 	Risk int32     `bson:"risk"` //风险
 	Tag  TagType   `bson:"tag"`  //标签
 	Ban  BanType   `bson:"ban"`  //禁止注册/登录
-	Init time.Time `bson:"init"` //初始时间
+	Born time.Time `bson:"born"` //初始时间
 	Up   time.Time `bson:"up"`   //更新时间
 	Ver  int32     `bson:"ver"`  //版本
 }

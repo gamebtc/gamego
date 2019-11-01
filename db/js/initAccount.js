@@ -18,7 +18,7 @@ const f = function (id) {
         chan: zero,  //所属渠道
         ip: empty,      //创建时的IP
         udid: empty, //创建时的机器码
-        init: zero,     //创建时间
+        born: zero,     //创建时间
         up: zero,       //更新时间
         device: null,   //设备信息
         appInfo: null   //应用程序信息

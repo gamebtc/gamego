@@ -91,7 +91,7 @@ func (d *driver) GetIpInfo(ip model.IP)(*model.IpInfo) {
 			return info
 		}
 		now := time.Now()
-		info.Init = now
+		info.Born = now
 		info.Up = now
 		d.ip.Insert(info)
 	}

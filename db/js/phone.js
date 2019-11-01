@@ -471,7 +471,7 @@
                 };
             l(function (r) {
                 c({
-                    url: o(I.server + "/web/init/" + e.appKey, n, r),
+                    url: o(I.server + "/web/born/" + e.appKey, n, r),
                     method: "POST",
                     contentType: "text/plain;charset=utf-8",
                     data: t,

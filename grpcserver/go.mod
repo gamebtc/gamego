@@ -7,7 +7,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
-	google.golang.org/grpc v1.23.0
+	google.golang.org/grpc v1.24.0
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0

@@ -12,7 +12,7 @@
 //         room: zero,     //所在房间ID
 //         table: zero,    //所在桌子ID
 //         seat: zero,     //所在桌子位置
-//         init: zeroLong, //创建时间
+//         born: zeroLong, //创建时间
 //         up: zeroLong,   //更新时间
 //         record: zero    //登录日志
 //     };

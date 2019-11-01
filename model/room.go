@@ -46,7 +46,7 @@ type RoomInfo struct {
 	Sort    int32     `bson:"sort"`    //房间排序
 	Addr    []string  `bson:"addr"`    //服务器地址
 	Key     string    `bson:"key"`     //服务器KEY
-	Init    time.Time `bson:"init"`    //创建时间
+	Born    time.Time `bson:"born"`    //创建时间
 	Up      time.Time `bson:"up"`      //更新时间
 	Ver     int32     `bson:"ver"`     //房间版本
 	Conf    Raw       `bson:"conf"`    //其它配置项

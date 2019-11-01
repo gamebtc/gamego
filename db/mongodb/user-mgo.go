@@ -12,7 +12,7 @@ import (
 
 var (
 	upNow       = bson.DocElem{Name: "$currentDate", Value: bson.D{{"up", true}}}
-	initNow     = bson.DocElem{Name: "$currentDate", Value: bson.D{{"init", true}, {"up", true}}}
+	bornNow     = bson.DocElem{Name: "$currentDate", Value: bson.D{{"born", true}, {"up", true}}}
 	upNowChange = mgo.Change{Update: bson.D{{"$currentDate", bson.D{{"up", true}}}}, ReturnNew: true}
 )
 
@@ -36,7 +36,7 @@ func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err 
 	if err == nil {
 		set := bson.DocElem{Name: "$set", Value: bson.D{{"env", req.Env}, {"dev", req.Dev}}}
 		// 更新为数据库时间
-		d.account.UpdateId(acc.Id, bson.D{initNow, set})
+		d.account.UpdateId(acc.Id, bson.D{bornNow, set})
 	}
 	return
 }
@@ -88,7 +88,7 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (err error
 	}
 	// 加入玩家表
 	user.Id = id
-	user.Init = i.Up
+	user.Born = i.Up
 	user.Up = i.Up
 	user.Last = i.Up
 	if err = d.user.Insert(user); err == nil {
@@ -109,7 +109,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 		{"log1", newId},
 		{"agent", agent},
 		{"ip", user.Ip},
-		{"init", t},
+		{"born", t},
 		{"up", t},
 	}
 	change := mgo.Change{
@@ -147,7 +147,7 @@ func (d *driver) LockUser(agent int64, user *model.User, req *protocol.LoginReq)
 	lock.Ip = user.Ip
 	lock.Log1 = newId
 	lock.Up = t
-	lock.Init = t
+	lock.Born = t
 
 	return lock, nil
 }

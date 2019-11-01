@@ -29,7 +29,7 @@ type LoginLog struct {
 	Id    ObjectId  `bson:"_id"` //唯一ID
 	Agent int64     `bson:"agent"`
 	Ip    IP        `bson:"ip"`
-	Init  time.Time `bson:"init"`
+	Born  time.Time `bson:"born"`
 	Up    time.Time `bson:"up"`
 	State int32     `bson:"state"`
 	Game  int32     `bson:"game"`

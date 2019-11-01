@@ -107,7 +107,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 		acc.Ip0 = ip
 		acc.Udid = req.Udid
 		acc.Users = make([]int32, 0, 1)
-		acc.Init = now
+		acc.Born = now
 		acc.Up = now
 		err = driver.CreateAccount(acc, req)
 		if err != nil {
@@ -132,7 +132,7 @@ func userLogin(ctx context.Context, in interface{}) interface{} {
 			Last: now,
 			Ip:   ip,
 			Bag:  bag,
-			Init: now,
+			Born: now,
 			Up:   now,
 		}
 		user.Name = getRandName()

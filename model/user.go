@@ -33,35 +33,35 @@ type Account struct {
 	Ip0   IP        `bson:"ip0"`   //创建时的IP
 	Udid  string    `bson:"udid"`  //创建时的机器码
 	Tag   TagType   `bson:"tag"`   //标签
-	Init  time.Time `bson:"init"`  //创建时间
+	Born  time.Time `bson:"born"`  //创建时间
 	Up    time.Time `bson:"up"`    //更新时间
 }
 
 // User struct: 玩家基本信息
 type User struct {
-	Id     UserId    `bson:"_id"`    //唯一ID
-	Icon   int32     `bson:"icon"`   //头像
-	Vip    int32     `bson:"vip "`   //vip等级
-	Name   string    `bson:"name"`   //玩家昵称
-	App    int32     `bson:"app"`    //所属应用(同一应用类型的客户端可以互通)
-	Sex    int32     `bson:"sex"`    //性别
-	State  int32     `bson:"state"`  //账号状态(0:正常)
-	Job    int32     `bson:"job "`   //玩家类型(0:用户；1:测试；2:管理；10:机器人)
-	Risk   int32     `bson:"risk"`   //用户风险
-	Act    AccountId `bson:"act"`    //关联的账号
-	Pack   int32     `bson:"pack"`   //包ID
-	Chan   int32     `bson:"chan"`   //渠道ID
-	Ip0    IP        `bson:"ip0"`    //创建时的IP
-	Last   time.Time `bson:"last"`   //最后登录时间
-	Ip     IP        `bson:"ip"`     //最后登录时间
-	Tag    TagType   `bson:"tag"`    //标签
-	Init   time.Time `bson:"init"`   //创建时间
-	Up     time.Time `bson:"up"`     //更新时间
-	Ver    int64     `bson:"ver"`    //币的版本
-	Bag    CoinBag   `bson:"-"`      //玩家的背包
-	Coin   int64     `bson:"-"`      //携带金币
-	Online bool      `bson:"-"`      //是否在线
-	FlowSn int64     `bson:"-"`      //最后的写分序号,返回时用于验证
+	Id     UserId    `bson:"_id"`   //唯一ID
+	Icon   int32     `bson:"icon"`  //头像
+	Vip    int32     `bson:"vip"`   //vip等级
+	Name   string    `bson:"name"`  //玩家昵称
+	App    int32     `bson:"app"`   //所属应用(同一应用类型的客户端可以互通)
+	Sex    int32     `bson:"sex"`   //性别
+	State  int32     `bson:"state"` //账号状态(0:正常)
+	Job    int32     `bson:"job"`   //玩家类型(0:用户；1:测试；2:管理；10:机器人)
+	Risk   int32     `bson:"risk"`  //用户风险
+	Act    AccountId `bson:"act"`   //关联的账号
+	Pack   int32     `bson:"pack"`  //包ID
+	Chan   int32     `bson:"chan"`  //渠道ID
+	Ip0    IP        `bson:"ip0"`   //创建时的IP
+	Last   time.Time `bson:"last"`  //最后登录时间
+	Ip     IP        `bson:"ip"`    //最后登录时间
+	Tag    TagType   `bson:"tag"`   //标签
+	Born   time.Time `bson:"born"`  //创建时间
+	Up     time.Time `bson:"up"`    //更新时间
+	Ver    int64     `bson:"ver"`   //币的版本
+	Bag    CoinBag   `bson:"-"`     //玩家的背包
+	Coin   int64     `bson:"-"`     //携带金币
+	Online bool      `bson:"-"`     //是否在线
+	FlowSn int64     `bson:"-"`     //最后的写分序号,返回时用于验证
 }
 
 // 在线玩家锁定信息
@@ -71,7 +71,7 @@ type UserLocker struct {
 	Ip    IP        `bson:"ip"`    //登录IP
 	Game  int32     `bson:"game"`  //所在游戏
 	Room  int32     `bson:"room"`  //所在房间ID
-	Init  time.Time `bson:"init"`  //创建时间
+	Born  time.Time `bson:"born"`  //创建时间
 	Up    time.Time `bson:"up"`    //更新时间
 	Log1  ObjectId  `bson:"log1"`  //登录大厅日志ID
 	Log2  ObjectId  `bson:"log2"`  //登录房间日志ID

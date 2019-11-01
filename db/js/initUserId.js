@@ -41,10 +41,10 @@ db.system.js.save({
     _id: "initUserId",
     value: f
 });
-// db.runCommand({
-//     eval: "initUserId(9000000,100)",
-//     nolock: true
-// });
+db.runCommand({
+    eval: "initUserId(9000000,100)",
+    nolock: true
+});
 
 // db.createUser( 
 //     { 

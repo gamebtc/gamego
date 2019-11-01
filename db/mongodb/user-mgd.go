@@ -16,7 +16,7 @@ import (
 
 var (
 	upNow       = bson.E{Key: "$currentDate", Value: bson.D{{"up", true}}}
-	initNow     = bson.E{Key: "$currentDate", Value: bson.D{{"init", true}, {"up", true}}}
+	bornNow     = bson.E{Key: "$currentDate", Value: bson.D{{"born", true}, {"up", true}}}
 	upNowChange = bson.D{{"$currentDate", bson.D{{"up", true}}}}
 
 	retnew = options.FindOneAndUpdate().SetReturnDocument(options.After)
@@ -27,7 +27,7 @@ var (
 func (d *driver) CreateAccount(acc *model.Account, req *protocol.LoginReq) (err error) {
 	if _, err = d.account.InsertOne(d.ctx, acc); err == nil {
 		// 更新为数据库时间
-		set := bson.D{initNow, {"$set", bson.D{{"env", req.Env}, {"dev", req.Dev}}}}
+		set := bson.D{bornNow, {"$set", bson.D{{"env", req.Env}, {"dev", req.Dev}}}}
 		d.account.UpdateOne(d.ctx, bson.D{{"_id", acc.Id}}, set)
 	}
 	log.Debugf("CreateAccount:%v,err%v", acc, err)
@@ -64,7 +64,7 @@ func (d *driver) CreateUser(user *model.User, req *protocol.LoginReq) (e error) 
 	}
 	// 加入玩家表
 	user.Id = id
-	user.Init = i.Up
+	user.Born = i.Up
 	user.Up = i.Up
 	user.Last = i.Up
 	f := func(sc mongo.SessionContext) (err error) {
@@ -117,7 +117,7 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 		{"log1", newId},
 		{"agent", agent},
 		{"ip", ip},
-		{"init", t},
+		{"born", t},
 		{"up", t},
 	}
 
@@ -156,7 +156,7 @@ func (d *driver) LockUser(agent int64, uid model.UserId, ip model.IP, t time.Tim
 	lock.Ip = ip
 	lock.Log1 = newId
 	lock.Up = t
-	lock.Init = t
+	lock.Born = t
 
 	return lock, nil
 }
@@ -244,7 +244,7 @@ func (d *driver) LockUserRoom(agent int64, uid model.UserId, game int32, roomId 
 		{"room", roomId},
 		{coinKey, user.Coin},
 		{"ip", user.Ip},
-		{"init", lock.Up},
+		{"born", lock.Up},
 		{"up", lock.Up},
 	}
 	d.roomLog.InsertOne(d.ctx, newLock)
