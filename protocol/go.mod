@@ -24,7 +24,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/tinylib/msgp v1.1.1-0.20190628005314-efe20429c9b7
 	github.com/vmihailenco/msgpack/v4 v4.2.1
-	golang.org/x/net v0.0.0-20191028085509-fe3aa8a45271
+	golang.org/x/net v0.0.0-20191101175033-0deb6923b6d9
 	golang.org/x/sys v0.0.0-20191029155521-f43be2a4598c // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191028173616-919d9bdd9fe6 // indirect

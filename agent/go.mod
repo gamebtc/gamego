@@ -10,7 +10,7 @@ require (
 	github.com/templexxx/xor v0.0.0-20181023030647-4e92f724b73b // indirect
 	github.com/tjfoc/gmsm v1.0.1 // indirect
 	github.com/xtaci/kcp-go v5.4.2+incompatible
-	golang.org/x/net v0.0.0-20191028085509-fe3aa8a45271
+	golang.org/x/net v0.0.0-20191101175033-0deb6923b6d9
 	google.golang.org/grpc v1.24.0
 	gopkg.in/yaml.v2 v2.2.2
 	local.com/abc/game/protocol v0.0.0
