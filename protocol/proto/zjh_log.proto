@@ -10,27 +10,27 @@ message GameBill {
 	// 玩家ID(u有建立索引，不要更改名称)
 	int32 uid = 1 [(gogoproto.jsontag) = 'u', (gogoproto.moretags) = 'bson:"u" msg:"u"'];
 	// 玩家类型
-	int32 job = 2 ;//[(gogoproto.jsontag) = 'j,omitempty', (gogoproto.moretags) = 'bson:"j,omitempty" msg:"j,omitempty"'];
+	int32 job = 2 [(gogoproto.jsontag) = 'j,omitempty', (gogoproto.moretags) = 'bson:"j,omitempty" msg:"j,omitempty"'];
 	// 开始游戏时带的钱
-	int64 oldCoin = 3 ;//[(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
+	int64 oldCoin = 3 [(gogoproto.jsontag) = 'c', (gogoproto.moretags) = 'bson:"c" msg:"c"'];
 	// 投注总额
-	int64 bet = 4 ;//[(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
+	int64 bet = 4 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
 	// 发牌情况
-	bytes poker = 5 ;//[(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
+	bytes poker = 5 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
 	// 牌力
-	int32 weight = 6 ;//[(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+	int32 weight = 6 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
 	// 输赢情况
-	sint64 win = 7 ;//[(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	sint64 win = 7 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
 	// 税收
-	int64 tax = 8 ;//[(gogoproto.jsontag) = 'x,omitempty', (gogoproto.moretags) = 'bson:"x,omitempty" msg:"x,omitempty"'];
+	int64 tax = 8 [(gogoproto.jsontag) = 'x,omitempty', (gogoproto.moretags) = 'bson:"x,omitempty" msg:"x,omitempty"'];
 	// 进入彩池的税收
-	int64 water = 9 ;//[(gogoproto.jsontag) = 'o,omitempty', (gogoproto.moretags) = 'bson:"o,omitempty" msg:"o,omitempty"'];
+	int64 water = 9 [(gogoproto.jsontag) = 'o,omitempty', (gogoproto.moretags) = 'bson:"o,omitempty" msg:"o,omitempty"'];
 	// 喜钱，从彩池单独出
-	int64 lucky = 10 ;//[(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
+	int64 lucky = 10 [(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
 	// 和机器人之间的输赢
-	sint64 robot = 11 ;//[(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
+	sint64 robot = 11 [(gogoproto.jsontag) = 't,omitempty', (gogoproto.moretags) = 'bson:"t,omitempty" msg:"t,omitempty"'];
 	// PK过的玩家ID
-	repeated int32 pk = 12 ;//[(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"-" msg:"k,omitempty"'];
+	repeated int32 pk = 12 [(gogoproto.jsontag) = 'k,omitempty', (gogoproto.moretags) = 'bson:"-" msg:"k,omitempty"'];
 }
 
 // 炸金花日志
@@ -40,48 +40,48 @@ message GameRound {
 	// 游戏开始时间(s有建立索引，不要更改名称)
 	int64 start = 2 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
 	// 游戏结束时间
-	int64 end = 3 ;//[(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
+	int64 end = 3 [(gogoproto.jsontag) = 'e', (gogoproto.moretags) = 'bson:"e" msg:"e"'];
 	// 房间ID
-	int32 room = 4 ;//[(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
+	int32 room = 4 [(gogoproto.jsontag) = 'r', (gogoproto.moretags) = 'bson:"r" msg:"r"'];
 	// 桌子ID
-	int32 tab = 5 ;//[(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
+	int32 tab = 5 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
 	// 所有玩家结算汇总(b.u有建立索引，不要更改名称)
 	repeated GameBill bill = 6 [(gogoproto.jsontag) = 'b', (gogoproto.moretags) = 'bson:"b" msg:"b"'];
 	// 底注
-	int32 ante = 7 ;//[(gogoproto.jsontag) = 'a', (gogoproto.moretags) = 'bson:"a" msg:"a"'];
+	int32 ante = 7 [(gogoproto.jsontag) = 'a', (gogoproto.moretags) = 'bson:"a" msg:"a"'];
 	// 下注轮数
-	int32 ring = 8 ;//[(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
+	int32 ring = 8 [(gogoproto.jsontag) = 'g', (gogoproto.moretags) = 'bson:"g" msg:"g"'];
 	// 下注总金币
-	int64 sum = 9 ;//[(gogoproto.jsontag) = 'm', (gogoproto.moretags) = 'bson:"m" msg:"m"'];
+	int64 sum = 9 [(gogoproto.jsontag) = 'm', (gogoproto.moretags) = 'bson:"m" msg:"m"'];
 	// 本局所有真实玩家的输赢
-	sint64 win = 10 ;//[(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
+	sint64 win = 10 [(gogoproto.jsontag) = 'w', (gogoproto.moretags) = 'bson:"w" msg:"w"'];
 	// 真实玩家总税收
-	int64 tax = 11 ;//[(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
+	int64 tax = 11 [(gogoproto.jsontag) = 'x', (gogoproto.moretags) = 'bson:"x" msg:"x"'];
 	// 真实玩家进入彩池的税收
-	int64 water = 12 ;//[(gogoproto.jsontag) = 'o', (gogoproto.moretags) = 'bson:"o" msg:"o"'];
+	int64 water = 12 [(gogoproto.jsontag) = 'o', (gogoproto.moretags) = 'bson:"o" msg:"o"'];
 	// 动作日志
-	repeated ActionLog log = 13 ;//[(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
+	repeated ActionLog log = 13 [(gogoproto.jsontag) = 'l', (gogoproto.moretags) = 'bson:"l" msg:"l"'];
 	// 当前池子的钱
-	int64 pool = 14 ;//[(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
+	int64 pool = 14 [(gogoproto.jsontag) = 'p', (gogoproto.moretags) = 'bson:"p" msg:"p"'];
 	// 真实玩家获得的喜钱，从彩池单独出
-	int64 lucky = 15 ;//[(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
+	int64 lucky = 15 [(gogoproto.jsontag) = 'y,omitempty', (gogoproto.moretags) = 'bson:"y,omitempty" msg:"y,omitempty"'];
 	// 备注
-	string note = 16 ;//[(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
+	string note = 16 [(gogoproto.jsontag) = 'n,omitempty', (gogoproto.moretags) = 'bson:"n,omitempty" msg:"n,omitempty"'];
 	// 系统必赢
-	bool cheat = 17 ;//[(gogoproto.jsontag) = 'v,omitempty', (gogoproto.moretags) = 'bson:"v,omitempty" msg:"v,omitempty"'];
+	bool cheat = 17 [(gogoproto.jsontag) = 'v,omitempty', (gogoproto.moretags) = 'bson:"v,omitempty" msg:"v,omitempty"'];
 }
 
 message ActionLog{
 	// 时间
-	int64 start = 1 ;//[(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
+	int64 start = 1 [(gogoproto.jsontag) = 's', (gogoproto.moretags) = 'bson:"s" msg:"s"'];
 	// 动作类型
-	ActionType type = 2 ;//[(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
+	ActionType type = 2 [(gogoproto.jsontag) = 't', (gogoproto.moretags) = 'bson:"t" msg:"t"'];
 	// 玩家ID
-	int32 uid = 3 ;//[(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
+	int32 uid = 3 [(gogoproto.jsontag) = 'u,omitempty', (gogoproto.moretags) = 'bson:"u,omitempty" msg:"u,omitempty"'];
 	// 下注
-	int32 bet = 4 ;//[(gogoproto.jsontag) = 'c,omitempty', (gogoproto.moretags) = 'bson:"c,omitempty" msg:"c,omitempty"'];
+	int32 bet = 4 [(gogoproto.jsontag) = 'c,omitempty', (gogoproto.moretags) = 'bson:"c,omitempty" msg:"c,omitempty"'];
 	// 对手ID
-	repeated int32 players = 5 ;//[(gogoproto.jsontag) = 'p,omitempty', (gogoproto.moretags) = 'bson:"p,omitempty" msg:"p,omitempty"'];
+	repeated int32 players = 5 [(gogoproto.jsontag) = 'p,omitempty', (gogoproto.moretags) = 'bson:"p,omitempty" msg:"p,omitempty"'];
 	// 赢的人
-	repeated int32 winners = 6 ;//[(gogoproto.jsontag) = 'w,omitempty', (gogoproto.moretags) = 'bson:"w,omitempty" msg:"w,omitempty"'];
+	repeated int32 winners = 6 [(gogoproto.jsontag) = 'w,omitempty', (gogoproto.moretags) = 'bson:"w,omitempty" msg:"w,omitempty"'];
 }
