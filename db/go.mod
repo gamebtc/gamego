@@ -13,4 +13,4 @@ replace (
 	local.com/abc/game/util => ../util
 )
 
-go 1.13
+go 1.14

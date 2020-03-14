@@ -2,7 +2,7 @@ module gamefish
 
 require (
 	github.com/sirupsen/logrus v1.4.2
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.8
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0
 	local.com/abc/game/protocol v0.0.0
@@ -18,4 +18,4 @@ replace (
 	local.com/abc/game/util => ../util
 )
 
-go 1.13
+go 1.14
