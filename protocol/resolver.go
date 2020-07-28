@@ -15,7 +15,7 @@ const scheme = "consul"
 
 type consulResolverBuilder struct{}
 
-func (*consulResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOption) (resolver.Resolver, error) {
+func (*consulResolverBuilder) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 
 	var addr, service string
 	if ss := strings.Split(target.Endpoint, "/"); len(ss) >= 2 {
@@ -58,7 +58,7 @@ type consulResolver struct {
 	wg   sync.WaitGroup
 }
 
-func (r *consulResolver) ResolveNow(o resolver.ResolveNowOption) {
+func (r *consulResolver) ResolveNow(o resolver.ResolveNowOptions) {
 	r.resolveOnce(o)
 }
 
@@ -76,13 +76,13 @@ func (r *consulResolver) watchAddrUpdates() {
 	r.wg.Add(1)
 	defer r.wg.Done()
 
-	o := resolver.ResolveNowOption{}
+	o := resolver.ResolveNowOptions{}
 	for r.done != true {
 		r.resolveOnce(o)
 	}
 }
 
-func (r *consulResolver) resolveOnce(o resolver.ResolveNowOption) {
+func (r *consulResolver) resolveOnce(o resolver.ResolveNowOptions) {
 	services, meta, err := r.consulClient.Health().Service(r.service, "", true, &consul_api.QueryOptions{
 		WaitIndex: r.lastIndex,
 	})

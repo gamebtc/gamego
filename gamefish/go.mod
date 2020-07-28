@@ -1,7 +1,7 @@
 module gamefish
 
 require (
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.6.0
 	gopkg.in/yaml.v2 v2.2.8
 	local.com/abc/game/db v0.0.0
 	local.com/abc/game/model v0.0.0

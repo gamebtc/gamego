@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dodoZeng/grpclb/balancer/ketama"
 	"github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	"github.com/hashicorp/consul/api"
 	log "github.com/sirupsen/logrus"
@@ -71,7 +70,7 @@ func (p *service_pool) addService(id int32) *grpc.ClientConn {
 		grpc.WithInsecure(),
 		opt,
 		//grpc.WithBalancerName(roundrobin.Name),
-		grpc.WithBalancerName(ketama.Name),
+		//grpc.WithBalancerName(ketama.BalancerName),
 	)
 	if err != nil {
 		log.Errorf("addService err:%v, serviceName:%v, target:%v", err, serviceName, target)
