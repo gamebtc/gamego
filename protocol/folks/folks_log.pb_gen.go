@@ -93,9 +93,31 @@ func (z *GameBill) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 7
+	// omitempty: check for empty values
+	zb0001Len := uint32(7)
+	var zb0001Mask uint8 /* 7 bits */
+	if z.Win == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x10
+	}
+	if z.Tax == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x20
+	}
+	if z.Job == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x40
+	}
+	// variable map header, size zb0001Len
+	err = en.Append(0x80 | uint8(zb0001Len))
+	if err != nil {
+		return
+	}
+	if zb0001Len == 0 {
+		return
+	}
 	// write "u"
-	err = en.Append(0x87, 0xa1, 0x75)
+	err = en.Append(0xa1, 0x75)
 	if err != nil {
 		return
 	}
@@ -141,35 +163,41 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 			return
 		}
 	}
-	// write "w"
-	err = en.Append(0xa1, 0x77)
-	if err != nil {
-		return
+	if (zb0001Mask & 0x10) == 0 { // if not empty
+		// write "w"
+		err = en.Append(0xa1, 0x77)
+		if err != nil {
+			return
+		}
+		err = en.WriteInt64(z.Win)
+		if err != nil {
+			err = msgp.WrapError(err, "Win")
+			return
+		}
 	}
-	err = en.WriteInt64(z.Win)
-	if err != nil {
-		err = msgp.WrapError(err, "Win")
-		return
+	if (zb0001Mask & 0x20) == 0 { // if not empty
+		// write "x"
+		err = en.Append(0xa1, 0x78)
+		if err != nil {
+			return
+		}
+		err = en.WriteInt64(z.Tax)
+		if err != nil {
+			err = msgp.WrapError(err, "Tax")
+			return
+		}
 	}
-	// write "x"
-	err = en.Append(0xa1, 0x78)
-	if err != nil {
-		return
-	}
-	err = en.WriteInt64(z.Tax)
-	if err != nil {
-		err = msgp.WrapError(err, "Tax")
-		return
-	}
-	// write "j"
-	err = en.Append(0xa1, 0x6a)
-	if err != nil {
-		return
-	}
-	err = en.WriteInt32(z.Job)
-	if err != nil {
-		err = msgp.WrapError(err, "Job")
-		return
+	if (zb0001Mask & 0x40) == 0 { // if not empty
+		// write "j"
+		err = en.Append(0xa1, 0x6a)
+		if err != nil {
+			return
+		}
+		err = en.WriteInt32(z.Job)
+		if err != nil {
+			err = msgp.WrapError(err, "Job")
+			return
+		}
 	}
 	return
 }
@@ -177,9 +205,28 @@ func (z *GameBill) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 7
+	// omitempty: check for empty values
+	zb0001Len := uint32(7)
+	var zb0001Mask uint8 /* 7 bits */
+	if z.Win == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x10
+	}
+	if z.Tax == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x20
+	}
+	if z.Job == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x40
+	}
+	// variable map header, size zb0001Len
+	o = append(o, 0x80|uint8(zb0001Len))
+	if zb0001Len == 0 {
+		return
+	}
 	// string "u"
-	o = append(o, 0x87, 0xa1, 0x75)
+	o = append(o, 0xa1, 0x75)
 	o = msgp.AppendInt32(o, z.Uid)
 	// string "c"
 	o = append(o, 0xa1, 0x63)
@@ -193,15 +240,21 @@ func (z *GameBill) MarshalMsg(b []byte) (o []byte, err error) {
 	for za0001 := range z.Group {
 		o = msgp.AppendInt64(o, z.Group[za0001])
 	}
-	// string "w"
-	o = append(o, 0xa1, 0x77)
-	o = msgp.AppendInt64(o, z.Win)
-	// string "x"
-	o = append(o, 0xa1, 0x78)
-	o = msgp.AppendInt64(o, z.Tax)
-	// string "j"
-	o = append(o, 0xa1, 0x6a)
-	o = msgp.AppendInt32(o, z.Job)
+	if (zb0001Mask & 0x10) == 0 { // if not empty
+		// string "w"
+		o = append(o, 0xa1, 0x77)
+		o = msgp.AppendInt64(o, z.Win)
+	}
+	if (zb0001Mask & 0x20) == 0 { // if not empty
+		// string "x"
+		o = append(o, 0xa1, 0x78)
+		o = msgp.AppendInt64(o, z.Tax)
+	}
+	if (zb0001Mask & 0x40) == 0 { // if not empty
+		// string "j"
+		o = append(o, 0xa1, 0x6a)
+		o = msgp.AppendInt32(o, z.Job)
+	}
 	return
 }
 
@@ -519,9 +572,43 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 17
+	// omitempty: check for empty values
+	zb0001Len := uint32(17)
+	var zb0001Mask uint32 /* 17 bits */
+	if z.Tab == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x10
+	}
+	if z.Note == "" {
+		zb0001Len--
+		zb0001Mask |= 0x1000
+	}
+	if z.Rich == nil {
+		zb0001Len--
+		zb0001Mask |= 0x2000
+	}
+	if z.UserBet == nil {
+		zb0001Len--
+		zb0001Mask |= 0x4000
+	}
+	if z.Bank == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x8000
+	}
+	if z.Cheat == false {
+		zb0001Len--
+		zb0001Mask |= 0x10000
+	}
+	// variable map header, size zb0001Len
+	err = en.WriteMapHeader(zb0001Len)
+	if err != nil {
+		return
+	}
+	if zb0001Len == 0 {
+		return
+	}
 	// write "i"
-	err = en.Append(0xde, 0x0, 0x11, 0xa1, 0x69)
+	err = en.Append(0xa1, 0x69)
 	if err != nil {
 		return
 	}
@@ -560,15 +647,17 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "Room")
 		return
 	}
-	// write "t"
-	err = en.Append(0xa1, 0x74)
-	if err != nil {
-		return
-	}
-	err = en.WriteInt32(z.Tab)
-	if err != nil {
-		err = msgp.WrapError(err, "Tab")
-		return
+	if (zb0001Mask & 0x10) == 0 { // if not empty
+		// write "t"
+		err = en.Append(0xa1, 0x74)
+		if err != nil {
+			return
+		}
+		err = en.WriteInt32(z.Tab)
+		if err != nil {
+			err = msgp.WrapError(err, "Tab")
+			return
+		}
 	}
 	// write "b"
 	err = en.Append(0xa1, 0x62)
@@ -675,69 +764,79 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "Win")
 		return
 	}
-	// write "n"
-	err = en.Append(0xa1, 0x6e)
-	if err != nil {
-		return
-	}
-	err = en.WriteString(z.Note)
-	if err != nil {
-		err = msgp.WrapError(err, "Note")
-		return
-	}
-	// write "h"
-	err = en.Append(0xa1, 0x68)
-	if err != nil {
-		return
-	}
-	err = en.WriteArrayHeader(uint32(len(z.Rich)))
-	if err != nil {
-		err = msgp.WrapError(err, "Rich")
-		return
-	}
-	for za0005 := range z.Rich {
-		err = en.WriteInt32(z.Rich[za0005])
+	if (zb0001Mask & 0x1000) == 0 { // if not empty
+		// write "n"
+		err = en.Append(0xa1, 0x6e)
 		if err != nil {
-			err = msgp.WrapError(err, "Rich", za0005)
+			return
+		}
+		err = en.WriteString(z.Note)
+		if err != nil {
+			err = msgp.WrapError(err, "Note")
 			return
 		}
 	}
-	// write "u"
-	err = en.Append(0xa1, 0x75)
-	if err != nil {
-		return
-	}
-	err = en.WriteArrayHeader(uint32(len(z.UserBet)))
-	if err != nil {
-		err = msgp.WrapError(err, "UserBet")
-		return
-	}
-	for za0006 := range z.UserBet {
-		err = en.WriteInt64(z.UserBet[za0006])
+	if (zb0001Mask & 0x2000) == 0 { // if not empty
+		// write "h"
+		err = en.Append(0xa1, 0x68)
 		if err != nil {
-			err = msgp.WrapError(err, "UserBet", za0006)
+			return
+		}
+		err = en.WriteArrayHeader(uint32(len(z.Rich)))
+		if err != nil {
+			err = msgp.WrapError(err, "Rich")
+			return
+		}
+		for za0005 := range z.Rich {
+			err = en.WriteInt32(z.Rich[za0005])
+			if err != nil {
+				err = msgp.WrapError(err, "Rich", za0005)
+				return
+			}
+		}
+	}
+	if (zb0001Mask & 0x4000) == 0 { // if not empty
+		// write "u"
+		err = en.Append(0xa1, 0x75)
+		if err != nil {
+			return
+		}
+		err = en.WriteArrayHeader(uint32(len(z.UserBet)))
+		if err != nil {
+			err = msgp.WrapError(err, "UserBet")
+			return
+		}
+		for za0006 := range z.UserBet {
+			err = en.WriteInt64(z.UserBet[za0006])
+			if err != nil {
+				err = msgp.WrapError(err, "UserBet", za0006)
+				return
+			}
+		}
+	}
+	if (zb0001Mask & 0x8000) == 0 { // if not empty
+		// write "k"
+		err = en.Append(0xa1, 0x6b)
+		if err != nil {
+			return
+		}
+		err = en.WriteInt32(z.Bank)
+		if err != nil {
+			err = msgp.WrapError(err, "Bank")
 			return
 		}
 	}
-	// write "k"
-	err = en.Append(0xa1, 0x6b)
-	if err != nil {
-		return
-	}
-	err = en.WriteInt32(z.Bank)
-	if err != nil {
-		err = msgp.WrapError(err, "Bank")
-		return
-	}
-	// write "v"
-	err = en.Append(0xa1, 0x76)
-	if err != nil {
-		return
-	}
-	err = en.WriteBool(z.Cheat)
-	if err != nil {
-		err = msgp.WrapError(err, "Cheat")
-		return
+	if (zb0001Mask & 0x10000) == 0 { // if not empty
+		// write "v"
+		err = en.Append(0xa1, 0x76)
+		if err != nil {
+			return
+		}
+		err = en.WriteBool(z.Cheat)
+		if err != nil {
+			err = msgp.WrapError(err, "Cheat")
+			return
+		}
 	}
 	return
 }
@@ -745,9 +844,40 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 17
+	// omitempty: check for empty values
+	zb0001Len := uint32(17)
+	var zb0001Mask uint32 /* 17 bits */
+	if z.Tab == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x10
+	}
+	if z.Note == "" {
+		zb0001Len--
+		zb0001Mask |= 0x1000
+	}
+	if z.Rich == nil {
+		zb0001Len--
+		zb0001Mask |= 0x2000
+	}
+	if z.UserBet == nil {
+		zb0001Len--
+		zb0001Mask |= 0x4000
+	}
+	if z.Bank == 0 {
+		zb0001Len--
+		zb0001Mask |= 0x8000
+	}
+	if z.Cheat == false {
+		zb0001Len--
+		zb0001Mask |= 0x10000
+	}
+	// variable map header, size zb0001Len
+	o = msgp.AppendMapHeader(o, zb0001Len)
+	if zb0001Len == 0 {
+		return
+	}
 	// string "i"
-	o = append(o, 0xde, 0x0, 0x11, 0xa1, 0x69)
+	o = append(o, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Id)
 	// string "s"
 	o = append(o, 0xa1, 0x73)
@@ -758,9 +888,11 @@ func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "r"
 	o = append(o, 0xa1, 0x72)
 	o = msgp.AppendInt32(o, z.Room)
-	// string "t"
-	o = append(o, 0xa1, 0x74)
-	o = msgp.AppendInt32(o, z.Tab)
+	if (zb0001Mask & 0x10) == 0 { // if not empty
+		// string "t"
+		o = append(o, 0xa1, 0x74)
+		o = msgp.AppendInt32(o, z.Tab)
+	}
 	// string "b"
 	o = append(o, 0xa1, 0x62)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Bill)))
@@ -802,27 +934,37 @@ func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "w"
 	o = append(o, 0xa1, 0x77)
 	o = msgp.AppendInt64(o, z.Win)
-	// string "n"
-	o = append(o, 0xa1, 0x6e)
-	o = msgp.AppendString(o, z.Note)
-	// string "h"
-	o = append(o, 0xa1, 0x68)
-	o = msgp.AppendArrayHeader(o, uint32(len(z.Rich)))
-	for za0005 := range z.Rich {
-		o = msgp.AppendInt32(o, z.Rich[za0005])
+	if (zb0001Mask & 0x1000) == 0 { // if not empty
+		// string "n"
+		o = append(o, 0xa1, 0x6e)
+		o = msgp.AppendString(o, z.Note)
 	}
-	// string "u"
-	o = append(o, 0xa1, 0x75)
-	o = msgp.AppendArrayHeader(o, uint32(len(z.UserBet)))
-	for za0006 := range z.UserBet {
-		o = msgp.AppendInt64(o, z.UserBet[za0006])
+	if (zb0001Mask & 0x2000) == 0 { // if not empty
+		// string "h"
+		o = append(o, 0xa1, 0x68)
+		o = msgp.AppendArrayHeader(o, uint32(len(z.Rich)))
+		for za0005 := range z.Rich {
+			o = msgp.AppendInt32(o, z.Rich[za0005])
+		}
 	}
-	// string "k"
-	o = append(o, 0xa1, 0x6b)
-	o = msgp.AppendInt32(o, z.Bank)
-	// string "v"
-	o = append(o, 0xa1, 0x76)
-	o = msgp.AppendBool(o, z.Cheat)
+	if (zb0001Mask & 0x4000) == 0 { // if not empty
+		// string "u"
+		o = append(o, 0xa1, 0x75)
+		o = msgp.AppendArrayHeader(o, uint32(len(z.UserBet)))
+		for za0006 := range z.UserBet {
+			o = msgp.AppendInt64(o, z.UserBet[za0006])
+		}
+	}
+	if (zb0001Mask & 0x8000) == 0 { // if not empty
+		// string "k"
+		o = append(o, 0xa1, 0x6b)
+		o = msgp.AppendInt32(o, z.Bank)
+	}
+	if (zb0001Mask & 0x10000) == 0 { // if not empty
+		// string "v"
+		o = append(o, 0xa1, 0x76)
+		o = msgp.AppendBool(o, z.Cheat)
+	}
 	return
 }
 

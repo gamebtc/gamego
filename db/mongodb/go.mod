@@ -1,5 +1,7 @@
 module db/mongodb
 
+go 1.15
+
 require (
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/google/uuid v1.0.0
@@ -17,5 +19,3 @@ replace (
 	local.com/abc/game/protocol => ../../protocol
 	local.com/abc/game/util => ../../util
 )
-
-go 1.14

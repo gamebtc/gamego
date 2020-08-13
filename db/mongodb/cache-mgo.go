@@ -45,7 +45,6 @@ func(c *AppCache) Watch() error {
 }
 
 func(c *AppCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions) bool {
-	doc := changeEvent{}
 	var err error
 	defer func() { recover() }()
 	select {
@@ -58,6 +57,7 @@ func(c *AppCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions
 			}
 		}
 	}
+	doc := changeEvent{}
 	for {
 		for stream.Next(&doc) {
 			if doc.Document.Game == bson.ElementDocument {
@@ -118,7 +118,6 @@ func(c *PackCache) Watch() error {
 }
 
 func(c *PackCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions) bool {
-	doc := changeEvent{}
 	var err error
 	defer func() { recover() }()
 	select {
@@ -131,6 +130,7 @@ func(c *PackCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 			}
 		}
 	}
+	doc := changeEvent{}
 	for {
 		for stream.Next(&doc) {
 			if doc.Document.Game == bson.ElementDocument {
@@ -191,7 +191,6 @@ func(c *ChanCache) Watch() error {
 }
 
 func(c *ChanCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions) bool {
-	doc := changeEvent{}
 	var err error
 	defer func() { recover() }()
 	select {
@@ -204,6 +203,7 @@ func(c *ChanCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 			}
 		}
 	}
+	doc := changeEvent{}
 	for {
 		for stream.Next(&doc) {
 			if doc.Document.Game == bson.ElementDocument {
@@ -264,7 +264,6 @@ func(c *HintCache) Watch() error {
 }
 
 func(c *HintCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions) bool {
-	doc := changeEvent{}
 	var err error
 	defer func() { recover() }()
 	select {
@@ -277,6 +276,7 @@ func(c *HintCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 			}
 		}
 	}
+	doc := changeEvent{}
 	for {
 		for stream.Next(&doc) {
 			if doc.Document.Game == bson.ElementDocument {
@@ -337,7 +337,6 @@ func(c *RoomCache) Watch() error {
 }
 
 func(c *RoomCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOptions) bool {
-	doc := changeEvent{}
 	var err error
 	defer func() { recover() }()
 	select {
@@ -350,6 +349,7 @@ func(c *RoomCache)watchLoop(stream *mgo.ChangeStream, op *mgo.ChangeStreamOption
 			}
 		}
 	}
+	doc := changeEvent{}
 	for {
 		for stream.Next(&doc) {
 			if doc.Document.Game == bson.ElementDocument {

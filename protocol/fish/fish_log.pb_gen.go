@@ -117,9 +117,23 @@ func (z *GameRound) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 11
+	// omitempty: check for empty values
+	zb0001Len := uint32(11)
+	var zb0001Mask uint16 /* 11 bits */
+	if z.Note == "" {
+		zb0001Len--
+		zb0001Mask |= 0x400
+	}
+	// variable map header, size zb0001Len
+	err = en.Append(0x80 | uint8(zb0001Len))
+	if err != nil {
+		return
+	}
+	if zb0001Len == 0 {
+		return
+	}
 	// write "i"
-	err = en.Append(0x8b, 0xa1, 0x69)
+	err = en.Append(0xa1, 0x69)
 	if err != nil {
 		return
 	}
@@ -225,15 +239,17 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 			return
 		}
 	}
-	// write "n"
-	err = en.Append(0xa1, 0x6e)
-	if err != nil {
-		return
-	}
-	err = en.WriteString(z.Note)
-	if err != nil {
-		err = msgp.WrapError(err, "Note")
-		return
+	if (zb0001Mask & 0x400) == 0 { // if not empty
+		// write "n"
+		err = en.Append(0xa1, 0x6e)
+		if err != nil {
+			return
+		}
+		err = en.WriteString(z.Note)
+		if err != nil {
+			err = msgp.WrapError(err, "Note")
+			return
+		}
 	}
 	return
 }
@@ -241,9 +257,20 @@ func (z *GameRound) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 11
+	// omitempty: check for empty values
+	zb0001Len := uint32(11)
+	var zb0001Mask uint16 /* 11 bits */
+	if z.Note == "" {
+		zb0001Len--
+		zb0001Mask |= 0x400
+	}
+	// variable map header, size zb0001Len
+	o = append(o, 0x80|uint8(zb0001Len))
+	if zb0001Len == 0 {
+		return
+	}
 	// string "i"
-	o = append(o, 0x8b, 0xa1, 0x69)
+	o = append(o, 0xa1, 0x69)
 	o = msgp.AppendInt64(o, z.Id)
 	// string "u"
 	o = append(o, 0xa1, 0x75)
@@ -275,9 +302,11 @@ func (z *GameRound) MarshalMsg(b []byte) (o []byte, err error) {
 	for za0001 := range z.Log {
 		o = msgp.AppendInt32(o, z.Log[za0001])
 	}
-	// string "n"
-	o = append(o, 0xa1, 0x6e)
-	o = msgp.AppendString(o, z.Note)
+	if (zb0001Mask & 0x400) == 0 { // if not empty
+		// string "n"
+		o = append(o, 0xa1, 0x6e)
+		o = msgp.AppendString(o, z.Note)
+	}
 	return
 }
 

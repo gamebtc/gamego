@@ -52,7 +52,6 @@ func (c *AppCache) Watch() error {
 
 func (c *AppCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
-	doc := changeEvent{}
 	var err error
 	if stream == nil {
 		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
@@ -60,6 +59,7 @@ func (c *AppCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op
 		}
 	}
 	defer stream.Close(ctx)
+	doc := changeEvent{}
 	for {
 		for stream.Next(ctx) {
 			if err = stream.Decode(&doc); err == nil {
@@ -132,7 +132,6 @@ func (c *PackCache) Watch() error {
 
 func (c *PackCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
-	doc := changeEvent{}
 	var err error
 	if stream == nil {
 		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
@@ -140,6 +139,7 @@ func (c *PackCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, o
 		}
 	}
 	defer stream.Close(ctx)
+	doc := changeEvent{}
 	for {
 		for stream.Next(ctx) {
 			if err = stream.Decode(&doc); err == nil {
@@ -212,7 +212,6 @@ func (c *ChanCache) Watch() error {
 
 func (c *ChanCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
-	doc := changeEvent{}
 	var err error
 	if stream == nil {
 		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
@@ -220,6 +219,7 @@ func (c *ChanCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, o
 		}
 	}
 	defer stream.Close(ctx)
+	doc := changeEvent{}
 	for {
 		for stream.Next(ctx) {
 			if err = stream.Decode(&doc); err == nil {
@@ -293,7 +293,6 @@ func (c *HintCache) Watch() error {
 
 func (c *HintCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
-	doc := changeEvent{}
 	var err error
 	if stream == nil {
 		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
@@ -301,6 +300,7 @@ func (c *HintCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, o
 		}
 	}
 	defer stream.Close(ctx)
+	doc := changeEvent{}
 	for {
 		for stream.Next(ctx) {
 			if err = stream.Decode(&doc); err == nil {
@@ -373,7 +373,6 @@ func (c *RoomCache) Watch() error {
 
 func (c *RoomCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, op *options.ChangeStreamOptions) bool {
 	defer func() { recover() }()
-	doc := changeEvent{}
 	var err error
 	if stream == nil {
 		if stream, err = c.Collection.Watch(ctx, nil, op); err != nil {
@@ -381,6 +380,7 @@ func (c *RoomCache) watchLoop(ctx context.Context, stream *mongo.ChangeStream, o
 		}
 	}
 	defer stream.Close(ctx)
+	doc := changeEvent{}
 	for {
 		for stream.Next(ctx) {
 			if err = stream.Decode(&doc); err == nil {

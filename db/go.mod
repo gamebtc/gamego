@@ -1,5 +1,7 @@
 module db
 
+go 1.15
+
 require (
 	local.com/abc/game/db/mongodb v0.0.0
 	local.com/abc/game/model v0.0.0
@@ -12,5 +14,3 @@ replace (
 	local.com/abc/game/protocol => ../protocol
 	local.com/abc/game/util => ../util
 )
-
-go 1.14

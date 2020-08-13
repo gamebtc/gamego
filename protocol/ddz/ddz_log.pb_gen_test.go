@@ -74,7 +74,7 @@ func TestEncodeDecodeActionLog(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeActionLog Msgsize() is inaccurate")
 	}
 
 	vn := ActionLog{}
@@ -187,7 +187,7 @@ func TestEncodeDecodeGameBill(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeGameBill Msgsize() is inaccurate")
 	}
 
 	vn := GameBill{}
@@ -300,7 +300,7 @@ func TestEncodeDecodeGameRound(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeGameRound Msgsize() is inaccurate")
 	}
 
 	vn := GameRound{}

@@ -1,5 +1,7 @@
 module dnsfix
 
+go 1.15
+
 require (
 	github.com/miekg/dns v1.1.3
 	github.com/sirupsen/logrus v1.6.0
@@ -8,5 +10,3 @@ require (
 )
 
 replace local.com/abc/game/util => ../util
-
-go 1.14

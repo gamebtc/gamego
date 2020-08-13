@@ -1,5 +1,7 @@
 module agent
 
+go 1.15
+
 require (
 	github.com/gorilla/websocket v1.4.1
 	github.com/klauspost/cpuid v0.0.0-20180405133222-e7e905edc00e // indirect
@@ -11,7 +13,7 @@ require (
 	github.com/tjfoc/gmsm v1.0.1 // indirect
 	github.com/xtaci/kcp-go v5.4.2+incompatible
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
-	google.golang.org/grpc v1.30.0
+	google.golang.org/grpc v1.31.0
 	gopkg.in/yaml.v2 v2.2.8
 	local.com/abc/game/protocol v0.0.0
 	local.com/abc/game/util v0.0.0
@@ -21,5 +23,3 @@ replace (
 	local.com/abc/game/protocol => ../protocol
 	local.com/abc/game/util => ../util
 )
-
-go 1.14

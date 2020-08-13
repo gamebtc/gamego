@@ -74,7 +74,7 @@ func TestEncodeDecodeActionAck(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeActionAck Msgsize() is inaccurate")
 	}
 
 	vn := ActionAck{}
@@ -187,7 +187,7 @@ func TestEncodeDecodeActionReq(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeActionReq Msgsize() is inaccurate")
 	}
 
 	vn := ActionReq{}
@@ -300,7 +300,7 @@ func TestEncodeDecodeGameInitAck(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeGameInitAck Msgsize() is inaccurate")
 	}
 
 	vn := GameInitAck{}
@@ -413,7 +413,7 @@ func TestEncodeDecodeGameResultAck(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeGameResultAck Msgsize() is inaccurate")
 	}
 
 	vn := GameResultAck{}
@@ -526,7 +526,7 @@ func TestEncodeDecodeGameStartAck(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodeGameStartAck Msgsize() is inaccurate")
 	}
 
 	vn := GameStartAck{}
@@ -639,7 +639,7 @@ func TestEncodeDecodePlayer(t *testing.T) {
 
 	m := v.Msgsize()
 	if buf.Len() > m {
-		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
+		t.Log("WARNING: TestEncodeDecodePlayer Msgsize() is inaccurate")
 	}
 
 	vn := Player{}

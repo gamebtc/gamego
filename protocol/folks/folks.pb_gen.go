@@ -818,9 +818,23 @@ func (z *GameInitAck) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *GameInitAck) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 9
+	// omitempty: check for empty values
+	zb0001Len := uint32(9)
+	var zb0001Mask uint16 /* 9 bits */
+	if z.Bank == nil {
+		zb0001Len--
+		zb0001Mask |= 0x100
+	}
+	// variable map header, size zb0001Len
+	err = en.Append(0x80 | uint8(zb0001Len))
+	if err != nil {
+		return
+	}
+	if zb0001Len == 0 {
+		return
+	}
 	// write "table"
-	err = en.Append(0x89, 0xa5, 0x74, 0x61, 0x62, 0x6c, 0x65)
+	err = en.Append(0xa5, 0x74, 0x61, 0x62, 0x6c, 0x65)
 	if err != nil {
 		return
 	}
@@ -927,21 +941,23 @@ func (z *GameInitAck) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "Log")
 		return
 	}
-	// write "bank"
-	err = en.Append(0xa4, 0x62, 0x61, 0x6e, 0x6b)
-	if err != nil {
-		return
-	}
-	if z.Bank == nil {
-		err = en.WriteNil()
+	if (zb0001Mask & 0x100) == 0 { // if not empty
+		// write "bank"
+		err = en.Append(0xa4, 0x62, 0x61, 0x6e, 0x6b)
 		if err != nil {
 			return
 		}
-	} else {
-		err = z.Bank.EncodeMsg(en)
-		if err != nil {
-			err = msgp.WrapError(err, "Bank")
-			return
+		if z.Bank == nil {
+			err = en.WriteNil()
+			if err != nil {
+				return
+			}
+		} else {
+			err = z.Bank.EncodeMsg(en)
+			if err != nil {
+				err = msgp.WrapError(err, "Bank")
+				return
+			}
 		}
 	}
 	return
@@ -950,9 +966,20 @@ func (z *GameInitAck) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *GameInitAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 9
+	// omitempty: check for empty values
+	zb0001Len := uint32(9)
+	var zb0001Mask uint16 /* 9 bits */
+	if z.Bank == nil {
+		zb0001Len--
+		zb0001Mask |= 0x100
+	}
+	// variable map header, size zb0001Len
+	o = append(o, 0x80|uint8(zb0001Len))
+	if zb0001Len == 0 {
+		return
+	}
 	// string "table"
-	o = append(o, 0x89, 0xa5, 0x74, 0x61, 0x62, 0x6c, 0x65)
+	o = append(o, 0xa5, 0x74, 0x61, 0x62, 0x6c, 0x65)
 	o = msgp.AppendInt32(o, z.Table)
 	// string "id"
 	o = append(o, 0xa2, 0x69, 0x64)
@@ -992,15 +1019,17 @@ func (z *GameInitAck) MarshalMsg(b []byte) (o []byte, err error) {
 	// string "log"
 	o = append(o, 0xa3, 0x6c, 0x6f, 0x67)
 	o = msgp.AppendBytes(o, z.Log)
-	// string "bank"
-	o = append(o, 0xa4, 0x62, 0x61, 0x6e, 0x6b)
-	if z.Bank == nil {
-		o = msgp.AppendNil(o)
-	} else {
-		o, err = z.Bank.MarshalMsg(o)
-		if err != nil {
-			err = msgp.WrapError(err, "Bank")
-			return
+	if (zb0001Mask & 0x100) == 0 { // if not empty
+		// string "bank"
+		o = append(o, 0xa4, 0x62, 0x61, 0x6e, 0x6b)
+		if z.Bank == nil {
+			o = msgp.AppendNil(o)
+		} else {
+			o, err = z.Bank.MarshalMsg(o)
+			if err != nil {
+				err = msgp.WrapError(err, "Bank")
+				return
+			}
 		}
 	}
 	return
@@ -1779,9 +1808,23 @@ func (z *OpenBetAck) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *OpenBetAck) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 4
+	// omitempty: check for empty values
+	zb0001Len := uint32(4)
+	var zb0001Mask uint8 /* 4 bits */
+	if z.Bank == nil {
+		zb0001Len--
+		zb0001Mask |= 0x8
+	}
+	// variable map header, size zb0001Len
+	err = en.Append(0x80 | uint8(zb0001Len))
+	if err != nil {
+		return
+	}
+	if zb0001Len == 0 {
+		return
+	}
 	// write "id"
-	err = en.Append(0x84, 0xa2, 0x69, 0x64)
+	err = en.Append(0xa2, 0x69, 0x64)
 	if err != nil {
 		return
 	}
@@ -1824,21 +1867,23 @@ func (z *OpenBetAck) EncodeMsg(en *msgp.Writer) (err error) {
 			}
 		}
 	}
-	// write "bank"
-	err = en.Append(0xa4, 0x62, 0x61, 0x6e, 0x6b)
-	if err != nil {
-		return
-	}
-	if z.Bank == nil {
-		err = en.WriteNil()
+	if (zb0001Mask & 0x8) == 0 { // if not empty
+		// write "bank"
+		err = en.Append(0xa4, 0x62, 0x61, 0x6e, 0x6b)
 		if err != nil {
 			return
 		}
-	} else {
-		err = z.Bank.EncodeMsg(en)
-		if err != nil {
-			err = msgp.WrapError(err, "Bank")
-			return
+		if z.Bank == nil {
+			err = en.WriteNil()
+			if err != nil {
+				return
+			}
+		} else {
+			err = z.Bank.EncodeMsg(en)
+			if err != nil {
+				err = msgp.WrapError(err, "Bank")
+				return
+			}
 		}
 	}
 	return
@@ -1847,9 +1892,20 @@ func (z *OpenBetAck) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *OpenBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 4
+	// omitempty: check for empty values
+	zb0001Len := uint32(4)
+	var zb0001Mask uint8 /* 4 bits */
+	if z.Bank == nil {
+		zb0001Len--
+		zb0001Mask |= 0x8
+	}
+	// variable map header, size zb0001Len
+	o = append(o, 0x80|uint8(zb0001Len))
+	if zb0001Len == 0 {
+		return
+	}
 	// string "id"
-	o = append(o, 0x84, 0xa2, 0x69, 0x64)
+	o = append(o, 0xa2, 0x69, 0x64)
 	o = msgp.AppendInt32(o, z.Id)
 	// string "time"
 	o = append(o, 0xa4, 0x74, 0x69, 0x6d, 0x65)
@@ -1868,15 +1924,17 @@ func (z *OpenBetAck) MarshalMsg(b []byte) (o []byte, err error) {
 			}
 		}
 	}
-	// string "bank"
-	o = append(o, 0xa4, 0x62, 0x61, 0x6e, 0x6b)
-	if z.Bank == nil {
-		o = msgp.AppendNil(o)
-	} else {
-		o, err = z.Bank.MarshalMsg(o)
-		if err != nil {
-			err = msgp.WrapError(err, "Bank")
-			return
+	if (zb0001Mask & 0x8) == 0 { // if not empty
+		// string "bank"
+		o = append(o, 0xa4, 0x62, 0x61, 0x6e, 0x6b)
+		if z.Bank == nil {
+			o = msgp.AppendNil(o)
+		} else {
+			o, err = z.Bank.MarshalMsg(o)
+			if err != nil {
+				err = msgp.WrapError(err, "Bank")
+				return
+			}
 		}
 	}
 	return
